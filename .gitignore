@@ -1,0 +1,9 @@
+_pycache_
+_dev
+build
+src
+dist
+*/__pycache__
+*.egg-info
+*.pyc
+*.png

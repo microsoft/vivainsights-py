@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61.0", "pandas", "dateutil", "datetime", "plotnine", "seaborn", "matplotlib"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vivainsights"
+version = "0.0.1"
+authors = [
+  { name="Martin Chan", email="martinchan@microsoft.com" },
+  { name="Aadarsh Indurkhya", email="aindurkhya@microsoft.com" },
+  { name="Aaron Harrison", email="aaron.harrison@microsoft.com" },
+  { name="Arghya Mukherjee", email="arghya.mukherjee@microsoft.com" },
+  { name="Carlos Morales Torrado", email="carlos.morales@microsoft.com" },
+  { name="Ellen Trinklein", email="" },
+  { name="JJ Walia", email="jjwalia@microsoft.com" },
+  { name="Kari Eifler", email="karieifler@microsoft.com" }  
+]
+description = "Python library to analyze and visualize data from Microsoft Viva Insights."
+readme = "README.md"
+license = {file = "LICENSE.md"}
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/microsoft/vivainsights-py"
+"Bug Tracker" = "https://github.com/microsoft/vivainsights-py/issues"
