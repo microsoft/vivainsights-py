@@ -46,7 +46,7 @@ def create_line_viz(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5):
         data = sum_df,    
         x = 'MetricDate',
         y = 'metric',
-        hue = 'Organization',
+        hue = hrvar,
         ax = ax,
         palette = COLOR_PALLET_ALT_2[0:sum_df[hrvar].nunique()] # count distinct values of hrvar
     )
