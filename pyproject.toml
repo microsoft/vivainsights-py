@@ -11,7 +11,7 @@ authors = [
   { name="Aaron Harrison", email="aaron.harrison@microsoft.com" },
   { name="Arghya Mukherjee", email="arghya.mukherjee@microsoft.com" },
   { name="Carlos Morales Torrado", email="carlos.morales@microsoft.com" },
-  { name="Ellen Trinklein", email="" },
+  { name="Ellen Trinklein"},
   { name="JJ Walia", email="jjwalia@microsoft.com" },
   { name="Kari Eifler", email="karieifler@microsoft.com" }  
 ]
