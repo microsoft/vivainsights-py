@@ -41,12 +41,14 @@ def export(x,
         #TODO: Check if is data frame
         if file_format == "csv":
             newpath = f"{newpath}.csv"
+            print(f"Exporting to {newpath}...")
             x.to_csv(newpath, index=False)
 
         # Export option: png,svg,jpeg,pdf
         #TODO: Check if this works for matplotlib figures
         elif file_format in ["png", "svg", "jpeg", "pdf"]:
             newpath = f"{newpath}.{ file_format}"
+            print(f"Exporting to {newpath}...")
             x.savefig(newpath) # matplotlib.savefig
 
         # clipboard export
