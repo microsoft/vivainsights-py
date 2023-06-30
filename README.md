@@ -24,15 +24,24 @@ mt_data = vi.load_mt_data() # load and assign in-built meeting query
 out_plot = vi.create_bar(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup=5)
 out_tab = vi.create_bar(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup=5, return_type='table')
 
-print(out_plot)
-print(out_tab)
+out_plot.show() # display plot interactively, using plt
+print(out_tab) # print summary table to console
+```
 
-# export results to clipboard
-out_tb = vi.create_bar(data=pq_data, metric='Chats_sent', hrvar='Organization', mingroup=5, return_type = 'table')
-vi.export(out_tb)
+Most functions come with an option to generate a matplotlib figure object or a summary table in the form of a Pandas DataFrame, which can be specified with the argument `return_type`. Once these output objects are generated, they can also be copied to clipboard or saved locally using the `vi.export()` function: 
 
+```python
+# export summary table results to clipboard
+vi.export(out_tab)
+
+# save plot locally as png
+vi.export(out_plot, file_format = 'png')
+```
+
+The following demonstrates several other examples of visualization outputs:
+```python
 # Calculate counts of distinct people in each sub-population
-vi.hrvar_count(data=pq_data, hrvar='Organization', return_type='plot')
+vi.hrvar_count(data=pq_data, hrvar='Organization', return_type='plot').show()
 vi.hrvar_count(data=pq_data, hrvar='Organization', return_type='table')
 
 # Get date ranges from data frame, using 'MetricDate'
@@ -40,8 +49,30 @@ vi.extract_date_range(data=pq_data)
 vi.extract_date_range(data=pq_data, return_type = "text")
 
 # create a line chart showing average of metrics by sub-pop group over time
-vi.create_line(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup=5, return_type='plot')
+vi.create_line(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup=5, return_type='plot').show()
 vi.create_line(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup=5, return_type='table')
+
+# create a heatmap chart showing average of metrics by sub-pop group over time
+vi.create_trend(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup=5, return_type='plot').show()
+vi.create_trend(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup=5, return_type='table')
+
+# Calculate the mean value of a metric for all groups in the dataset
+vi.create_rank(
+    data=pq_data,
+    metric='Emails_sent',
+    hrvar=['Organization', 'FunctionType', 'LevelDesignation'],
+    mingroup=5,
+    return_type='table'
+    )
+
+# Visualize the top and bottom values across organizational attributes
+vi.create_rank(
+    data=pq_data,
+    metric='Emails_sent',
+    hrvar=['Organization', 'FunctionType', 'LevelDesignation'],
+    mingroup=5,
+    return_type='plot'
+    ).show()    
 ```
 
 To perform analysis on a dataset from a flexible query (stored as a .csv file), there is a simple three step process:
@@ -60,8 +91,6 @@ vi.create_rank(
     hrvar = ['Organization', 'LevelDesignation', 'FunctionType']
 )
 ```
-
-
 
 ## Contributing
 
