@@ -3,6 +3,7 @@ _dev
 build
 src
 dist
+html
 */__pycache__
 *.egg-info
 *.pyc
