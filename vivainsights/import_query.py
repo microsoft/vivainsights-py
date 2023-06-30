@@ -2,12 +2,13 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# This is a Python function that imports a Viva Insights Query from a .csv file and optimizes the
-# variable classifications for other functions in the package. The function takes in a file path (x)
-# and an optional encoding parameter (default is 'utf-8'). It checks if the file is a .csv file, reads
-# in the file using pandas, cleans the column names by removing spaces and special characters, and
-# returns the resulting data as a pandas dataframe. If there is an error
-# reading the file, the function prints an error message.
+"""
+This function imports a Viva Insights Query from a .csv file and optimizes the
+variable classifications for other functions in the package. The function takes in a file path (x)
+and an optional encoding parameter (default is 'utf-8'). It checks if the file is a .csv file, reads
+in the file using pandas, cleans the column names by removing spaces and special characters, and
+returns the resulting data as a pandas dataframe. If there is an error reading the file, the function prints an error message.
+"""
 import pandas as pd
 import re 
 

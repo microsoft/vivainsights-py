@@ -2,21 +2,18 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# Python program to
-# combine variable class, number of unique values,
-# and regular expression matching to extract HR / organizational attributes from a data frame.
+"""
+This module extracts HR attributes (organizational data) through a combination of detecting variable class, 
+number of unique values, regular expressions. There is an option to return either just a list of the variable names 
+or a DataFrame containing only the variables themselves.
+"""
 import pandas as pd
 def extract_hr(
     data: pd.DataFrame,
     max_unique =50,
     exclude_constants =True,
     return_type: str = "names"):
-    """
-    The function extracts HR attributes (organizational data) by selecting categorical variables 
-    from a pandas dataframe based on the maximum number of
-    unique values, excluding constants, and returns either the variable names or the variables
-    themselves.
-    
+    """    
     :param data: a pandas DataFrame containing the data to extract HR (highly-recurring) variables from
     :param max_unique: The maximum number of unique values a column can have to be included in the
     output, defaults to 50 (optional)

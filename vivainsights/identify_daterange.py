@@ -2,13 +2,11 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
-"""_summary_
+"""
 Takes a vector of dates and identify whether the frequency is 'daily', 'weekly', or 'monthly'. 
 The primary use case for this function is to provide an accurate description of the query type 
 used and for raising errors should a wrong date grouping be used in the data input.
 """
-
 import pandas as pd
 
 def identify_datefreq(x):

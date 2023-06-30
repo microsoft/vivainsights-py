@@ -2,9 +2,28 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-"""_summary_
-This module generates an analysis of a selected metric by calculating a mean per metric, grouping this at a user-level. 
-Returns a bar plot showing the average of a selected metric by default. Additional options available to return a summary table.
+"""
+The code defines a function `create_bar` that calculates and visualizes the mean of a selected
+metric, grouped by a selected HR variable. The metrics are first aggregated at a user-level prior to being aggregated at the
+level of the HR variable. The function `create_bar` returns either a plot object or a table, depending on the value passed to
+`return_type`. 
+
+:param data: A pandas DataFrame containing the data to be analyzed
+:type data: pd.DataFrame
+:param metric: The `metric` parameter is the name of the metric that you want to analyze. It should
+be a string
+:type metric: str
+:param hrvar: The `hrvar` parameter is the name of the organizational attribute that you want to use
+for grouping the data. It could be any attribute that you have in your dataset, such as department,
+location, or job title
+:type hrvar: str
+:param mingroup: The `mingroup` parameter is an optional parameter that specifies the minimum number
+of unique individuals required in each group of the HR variable. If the number of unique individuals
+in a group is less than `mingroup`, that group will be excluded from the analysis. The default value
+is 5, defaults to 5 (optional)
+:return: The function `create_bar` returns either a plot object or a table, depending on the value
+of the `return_type` parameter. If `return_type` is set to "plot", the function returns a plot
+object. If `return_type` is set to "table", the function returns a table.
 """
 import pandas as pd
 import seaborn as sns

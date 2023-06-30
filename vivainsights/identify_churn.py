@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-"""_summary_
+"""
 This module identifies and counts the number of employees who have churned from the dataset.
 This is done by measuring whether an employee who is present in the first `n` (n1) weeks of the data,
 is also present in the last `n` (n2) weeks of the data.

@@ -2,6 +2,11 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+"""
+This module accepts a data frame or matplotlib figure object and exports it using the specified method/format. 
+By default, a data frame is copied to the clipboard, and matplotlib objects are saved as PNG files.
+"""
+
 import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime

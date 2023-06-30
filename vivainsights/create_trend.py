@@ -2,13 +2,20 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+"""
+The `create_trend` function provides a week by week view of a selected Viva Insights metric, 
+allowing you to either return a week by week heatmap bar plot or a summary table. 
+By default, `create_trend` returns a week by week heatmap bar plot, highlighting the points intime with most activity. 
+Additional options available to return a summary table.
+"""
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import seaborn as sns
 from vivainsights.extract_date_range import extract_date_range
 
-"""_summary_
+"""
 This module provides a week by week view of a selected Viva Insights metric. 
 By default returns a week by week heatmap bar plot, highlighting the points intime with most activity. 
 Additional options available to return a summary table.

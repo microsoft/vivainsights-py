@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-"""_summary_
+"""
 This module generates a count of the distinct persons in the data population.
 Returns a bar plot of the counts by default, with an option to return a summary table.
 """

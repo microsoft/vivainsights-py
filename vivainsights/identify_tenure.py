@@ -2,6 +2,31 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+"""
+The `identify_tenure` function calculates and summarizes employee tenure based on hire and metric
+dates, and provides various options for returning the results.
+
+:param data: A pandas DataFrame containing the data for analysis
+:type data: pd.DataFrame
+:param beg_date: The column name in the DataFrame that represents the start date of employment for
+each employee. By default, it is set to "HireDate", defaults to HireDate (optional)
+:param end_date: The `end_date` parameter is the name of the column in the `data` DataFrame that
+represents the end date of the tenure period for each employee. This column should contain date
+values in the format specified by the `date_format` parameter (default is "%Y-%m-%d"), defaults to
+MetricDate (optional)
+:param maxten: The `maxten` parameter is used to specify the maximum tenure in years. It is used to
+identify employees with a tenure greater than or equal to the specified value, defaults to 40
+(optional)
+:param return_type: The `return_type` parameter determines the type of output that the function will
+return. It can have the following values:, defaults to message (optional)
+:param date_format: The `date_format` parameter is used to specify the format of the date strings in
+the `beg_date` and `end_date` columns of the input data. It is used when converting these columns to
+datetime format using the `pd.to_datetime` function. The default value is "%Y-%m, defaults to
+%Y-%m-%d (optional)
+:return: The function `identify_tenure` returns different outputs based on the value of the
+`return_type` parameter. The possible return values are:
+"""
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt

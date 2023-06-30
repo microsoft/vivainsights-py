@@ -2,16 +2,14 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+"""
+This module returns a data frame containing a person query.
+"""
 import pkg_resources
 import pandas as pd
 import os
 
 def load_pq_data():
-    """
-    Return a data frame containing a person query.
-
-    """
     # This is a stream-like object. If you want the actual info, call
     # stream.read()
     # stream = pkg_resources.resource_stream(__name__, 'data/pq_data.csv')

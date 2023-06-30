@@ -1,3 +1,10 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+"""
+This module creates an incidence analysis reflecting the proportion of the population scoring above or below a specified threshold for a metric. 
+"""
 import typing
 import pandas as pd
 import numpy as np

@@ -2,8 +2,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# The above code defines an Enum class for colors and creates two color palettes using the defined
-# colors.
+"""
+This module defines an Enum class for colors and creates two color palettes using the defined colors.
+"""
 from enum import Enum
 
 class Colors(Enum):

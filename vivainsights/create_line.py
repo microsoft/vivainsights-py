@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-"""_summary_
+"""
 This module visualizes the average of metric by sub-population over time. 
 Returns a line plot showing the average of a selected metric by default.
 Additional options available to return a summary table.
