@@ -217,7 +217,8 @@ def create_trend_viz(
   # Set caption
   ax.text(x=-0.08, y=-0.12, s=caption_text, transform=fig.transFigure, ha='left', fontsize=9, alpha=.7)
   
-  return ax
+  # return the plot object
+  return fig
   
   """Legacy 
   # plot_object.set_title(f"{clean_nm}\nHotspots by {hrvar.lower()}")

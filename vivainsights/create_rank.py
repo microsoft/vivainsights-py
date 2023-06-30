@@ -143,8 +143,8 @@ def create_rank_viz(data: pd.DataFrame,
     # Set caption
     ax.text(x = -0.08, y = 0.04, s = cap_str, transform = fig.transFigure, ha = 'left', fontsize = 9, alpha = .7)
     
-    # return fig, ax    
-    fig.show()  
+    # return the plot object
+    return fig
 
 
 def create_rank(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, return_type: str = "plot"):

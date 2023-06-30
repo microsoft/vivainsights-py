@@ -98,8 +98,9 @@ def create_line_viz(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5):
     # Set source text
     ax.text(x=0.12, y=-0.08, s=cap_str, transform=fig.transFigure, ha='left', fontsize=9, alpha=.7)
 
-
-    fig.show()
+    # return the plot object
+    return fig
+    # fig.show()
     
     """ Legacy ggplot 
     plot = (

@@ -118,9 +118,10 @@ def create_bar_viz(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, pe
     else:
         ax.bar_label(ax.containers[0], fmt = '%.0f', label_type='edge', padding = 3) # annotate
         
-    ax.margins(y=0.3) # pad the spacing between the number and the edge of the figure  
-    # return fig, ax    
-    fig.show()    
+    ax.margins(y=0.3) # pad the spacing between the number and the edge of the figure 
+     
+    # return the plot object
+    return fig    
     
 
 def create_bar(

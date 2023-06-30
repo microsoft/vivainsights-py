@@ -85,8 +85,9 @@ def hrvar_count_viz(data: pd.DataFrame, hrvar: str):
     
     plt.bar_label(ax.containers[0], fmt = '%.0f', label_type='edge', padding = 3) # annotate
     plt.margins(y=0.3) # pad the spacing between the number and the edge of the figure  
-    # return fig, ax    
-    fig.show() 
+    
+    # return the plot object
+    return fig
 
 def hrvar_count(data: pd.DataFrame, hrvar: str = 'Organization', return_type: str = "plot"):
     """_summary_

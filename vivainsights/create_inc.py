@@ -238,9 +238,10 @@ def create_inc_grid(data: pd.DataFrame, metric: str, hrvar: typing.List, mingrou
         )
         
         # Set caption
-        out = ax.text(x=0, y=0.02, s=cap_str, transform=fig.transFigure, ha='left', fontsize=9, alpha=.7)  
+        ax.text(x=0, y=0.02, s=cap_str, transform=fig.transFigure, ha='left', fontsize=9, alpha=.7)  
         
-        return out
+        # return the plot object
+        return fig
         # plt.show()
            
         """ Legacy
