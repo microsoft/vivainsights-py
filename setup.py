@@ -2,7 +2,7 @@
 # specifically the name of the package, its version, platform-dependencies, etc.
 from setuptools import setup, find_packages
 setup(name='vivainsights',
-      version='0.0.9999',
+      version='0.1.0',
       url='https://github.com/microsoft/vivainsights',
       license='MIT',
       author='Martin Chan',
