@@ -49,7 +49,12 @@ def export(x,
         elif file_format in ["png", "svg", "jpeg", "pdf"]:
             newpath = f"{newpath}.{ file_format}"
             print(f"Exporting to {newpath}...")
-            x.savefig(newpath) # matplotlib.savefig
+            x.savefig( # matplotlib.savefig
+                newpath,
+                dpi = 300, # Set dots per inch
+                bbox_inches="tight", # Remove extra whitespace around plot
+                facecolor='white' # Set background color to white   
+                ) 
 
         # clipboard export
         #TODO: Check if is data frame
