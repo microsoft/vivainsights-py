@@ -5,32 +5,13 @@
 """
 The `identify_tenure` function calculates and summarizes employee tenure based on hire and metric
 dates, and provides various options for returning the results.
-
-:param data: A pandas DataFrame containing the data for analysis
-:type data: pd.DataFrame
-:param beg_date: The column name in the DataFrame that represents the start date of employment for
-each employee. By default, it is set to "HireDate", defaults to HireDate (optional)
-:param end_date: The `end_date` parameter is the name of the column in the `data` DataFrame that
-represents the end date of the tenure period for each employee. This column should contain date
-values in the format specified by the `date_format` parameter (default is "%Y-%m-%d"), defaults to
-MetricDate (optional)
-:param maxten: The `maxten` parameter is used to specify the maximum tenure in years. It is used to
-identify employees with a tenure greater than or equal to the specified value, defaults to 40
-(optional)
-:param return_type: The `return_type` parameter determines the type of output that the function will
-return. It can have the following values:, defaults to message (optional)
-:param date_format: The `date_format` parameter is used to specify the format of the date strings in
-the `beg_date` and `end_date` columns of the input data. It is used when converting these columns to
-datetime format using the `pd.to_datetime` function. The default value is "%Y-%m, defaults to
-%Y-%m-%d (optional)
-:return: The function `identify_tenure` returns different outputs based on the value of the
-`return_type` parameter. The possible return values are:
 """
 
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.stats import gaussian_kde
+from vivainsights.check_inputs import *
 
 def identify_tenure(data: pd.DataFrame,
                     beg_date = "HireDate",
@@ -38,6 +19,38 @@ def identify_tenure(data: pd.DataFrame,
                     maxten = 40,
                     return_type = "message", # use return_type to avoid conflict with built-in function
                     date_format = "%Y-%m-%d"): 
+  
+  '''The function `identify_tenure` calculates and summarizes employee tenure based on hire and metric
+  dates, and provides various options for returning the results.
+  
+  Parameters
+  ----------
+  data : pd.DataFrame
+    The `data` parameter is a pandas DataFrame that contains the employee data. It should have columns
+  for the hire date (`beg_date`) and the metric date (`end_date`).
+  beg_date, optional
+    The `beg_date` parameter is the name of the column in the DataFrame that represents the start date
+  of employment for each employee. By default, it is set to "HireDate".
+  end_date, optional
+    The `end_date` parameter is the name of the column in the `data` DataFrame that represents the end
+  date of the tenure period for each employee.
+  maxten, optional
+    The `maxten` parameter is used to specify the maximum tenure in years. Employees with a tenure
+  greater than or equal to `maxten` will be considered as "odd" employees.
+  return_type, optional
+    The `return_type` parameter determines the type of output that the function will return. It can
+  have the following values:
+  date_format, optional
+    The `date_format` parameter is used to specify the format of the date strings in the `beg_date` and
+  `end_date` columns of the input DataFrame. It is set to "%Y-%m-%d" by default, which represents the
+  format "YYYY-MM-DD".
+  
+  Returns
+  -------
+    The function `identify_tenure` returns different outputs based on the value of the `return_type`
+  parameter. The possible return values are:
+  
+  '''  
   required_variables = [beg_date, end_date]
   # check if required columns are not present
   check_inputs(data, requirements = required_variables)
@@ -104,9 +117,3 @@ def identify_tenure(data: pd.DataFrame,
   else:
     raise ValueError("Error: please check inputs for `return`")
 
-def check_inputs(data, requirements):
-  # Check if the required variables are in the data
-  # Raise an error if not
-  for var in requirements:
-    if var not in data.columns:
-      raise ValueError(f"Error: {var} is not in the data")

@@ -5,26 +5,13 @@
 """
 The function `create_boxplot` creates a boxplot visualization and summary table for a given metric
 and grouping variable in a dataset.
-
-:param data: The input data for the boxplot, which should be a pandas DataFrame
-:param total_value: `total_value` is a parameter in the `totals_col` function that specifies the
-name of the new column to be added to the input data with a constant value of "Total", defaults to
-Total (optional)
-:return: The `create_boxplot()` function returns either a summary table, a plot object, or a data
-frame depending on the value of the `return_type` parameter.
 """
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from vivainsights.extract_date_range import extract_date_range
 from vivainsights.color_codes import *
-
-def totals_col(data: pd.DataFrame, total_value='Total'):
-    if total_value in data.columns:
-        raise ValueError(f"Column '{total_value}' already exists. Please supply a different value to `total_value`")
-
-    data[total_value] = total_value
-    return data
+from vivainsights.totals_col import *
 
 def create_boxplot_calc(data: pd.DataFrame, metric, hrvar, mingroup):
         # Data calculations    
