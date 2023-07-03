@@ -1,5 +1,9 @@
 [build-system]
-requires = ["setuptools>=61.0", "pandas", "dateutil", "datetime", "plotnine", "seaborn", "matplotlib"]
+requires = [
+    "setuptools>=42",
+    "wheel",
+    "-r requirements.txt"
+]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -19,11 +23,15 @@ description = "Python library to analyze and visualize data from Microsoft Viva 
 readme = "README.md"
 license = {file = "LICENSE.md"}
 requires-python = ">=3.7"
+dynamic = ["dependencies"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
 
 [project.urls]
 "Homepage" = "https://github.com/microsoft/vivainsights-py"
