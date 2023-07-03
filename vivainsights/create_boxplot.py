@@ -156,32 +156,35 @@ def create_boxplot_viz(data: pd.DataFrame, metric, hrvar, mingroup):
         """
     
 def create_boxplot(data: pd.DataFrame, metric: str, hrvar: str ="Organization", mingroup=5, return_type: str = "plot"):
-    """
+    '''
     This function creates a boxplot visualization and summary table for a given metric and HR variable
     in a pandas DataFrame.
     
-    :param data: A pandas DataFrame containing the data to be used for creating the boxplot
-    :type data: pd.DataFrame
-    :param metric: The metric variable is a string representing the name of the metric being analyzed in
-    the boxplot
-    :type metric: str
-    :param hrvar: `hrvar` stands for the variable that represents the grouping variable for the boxplot.
-    By default, it is set to "Organization", but it can be changed to any other variable in the input
-    data. If `hrvar` is set to None, the function will calculate the boxplot for, defaults to
-    Organization
-    :type hrvar: str (optional)
-    :param mingroup: `mingroup` is a parameter that specifies the minimum number of individuals required
-    in each group for the boxplot to be created. If a group has fewer individuals than `mingroup`, it
-    will not be included in the boxplot, defaults to 5 (optional)
-    :param return_type: The parameter `return_type` specifies the type of output that the function
-    should return. It can be set to "plot" to return a boxplot visualization, "table" to return a
-    summary table, or "data" to return the calculated data used to create the boxplot. If an invalid,
-    defaults to plot
-    :type return_type: str (optional)
-    :return: either a summary table, a plot object, or a plot data depending on the value of the
-    `return_type` parameter.
-    """
-
+    Parameters
+    ----------
+    data : pd.DataFrame
+        A pandas DataFrame containing the data for analysis.
+    metric : str
+        The `metric` parameter is a string that represents the variable or metric for which you want to
+    create the boxplot visualization and summary table. This variable should be present in the input
+    `data` DataFrame.
+    hrvar : str, optional
+        The `hrvar` parameter is the HR variable that you want to use for grouping the data. By default, it
+    is set to "Organization", but you can pass a different HR variable if needed.
+    mingroup, optional
+        The `mingroup` parameter is an optional parameter that specifies the minimum number of observations
+    required in each group for the boxplot to be created. If a group has fewer observations than the
+    `mingroup` value, it will be excluded from the boxplot. The default value is 5.
+    return_type : str, optional
+        The `return_type` parameter determines the type of output that the function will return. It can
+    take one of three values:
+    
+    Returns
+    -------
+        The function `create_boxplot` returns different outputs based on the value of the `return_type`
+    parameter:
+    
+    '''
     # Check inputs
     required_variables = ["MetricDate", metric, "PersonId"]
 
