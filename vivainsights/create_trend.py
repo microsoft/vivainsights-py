@@ -19,8 +19,38 @@ from vivainsights.extract_date_range import extract_date_range
 This module provides a week by week view of a selected Viva Insights metric. 
 By default returns a week by week heatmap bar plot, highlighting the points intime with most activity. 
 Additional options available to return a summary table.
+  
+Args:
+  data (pd.DataFrame): The input data as a pandas DataFrame.
+  metric (str): The metric parameter is a string that represents the column name in the data
+DataFrame that contains the values to be plotted or analyzed. This could be any numerical metric
+such as sales, revenue, or number of hours worked.
+  palette: The `palette` parameter is a list of colors that will be used to represent different
+groups in the trend plot. Each color in the list corresponds to a different group. By default, the
+palette includes 8 colors, but you can modify it to include more or fewer colors if needed.
+  hrvar (str): hrvar is a string parameter that represents the variable used for grouping the data.
+In this case, it is used to group the data by organization. Defaults to Organization
+  mingroup: The `mingroup` parameter is used to specify the minimum number of groups that should be
+present in the data for the trend analysis. If the number of unique values in the `hrvar` column is
+less than `mingroup`, the function will raise an error. Defaults to 5
+  return_type (str): The `return_type` parameter determines the type of output that the function
+will return. It can have two possible values:. Defaults to plot
+  legend_title (str): The title for the legend in the plot. It is used to label the different
+categories or groups in the data. Defaults to Hours
+  date_column (str): The name of the column in the DataFrame that contains the dates for the trend
+analysis. Defaults to MetricDate
+  date_format (str): The `date_format` parameter is used to specify the format of the dates in the
+`date_column` of the input data. It should be a string that follows the syntax of the Python
+`datetime` module's `strftime` function. This allows you to specify how the dates are formatted in
+the. Defaults to %Y-%m-%d
+
+Returns:
+  The function `create_trend` returns either a table or a plot, depending on the value of the
+`return_type` parameter.
 """
+
 def create_trend(data: pd.DataFrame,
+  
                  metric: str,
                  palette = [
                     "#0c3c44",
@@ -53,20 +83,6 @@ def create_trend_calc(data, metric, hrvar, mingroup, date_column, date_format):
   """
   This function creates a trend calculation by grouping data by a specified variable and calculating
   the mean of a specified metric over time.
-  
-  :param data: The input data as a pandas DataFrame
-  :param metric: The metric is a variable that represents the numerical value being analyzed in the
-  data. It could be something like sales, revenue, or customer satisfaction score
-  :param hrvar: hrvar is a variable that represents the time interval for grouping the data, such as
-  "hour", "day", or "week". If hrvar is None, a dummy column called "Total" is created for grouping
-  the data
-  :param mingroup: mingroup is a parameter that specifies the minimum number of employees required in
-  a group for it to be included in the trend calculation
-  :param date_column: The name of the column in the input data that contains the date information
-  :param date_format: The format of the date column in the data, e.g. "%Y-%m-%d" for "2022-01-01"
-  :return: a pandas DataFrame containing the mean value of a given metric, the mean employee count,
-  and the date and group columns. The DataFrame is filtered to only include groups with a minimum
-  number of employees specified by the mingroup parameter.
   """
   # Check inputs
   required_variables = [date_column, metric, "PersonId"]
@@ -117,25 +133,6 @@ def create_trend_viz(
   """
   This function creates a heatmap visualization of trends in a given metric by a specified variable
   over time.
-  
-  :param data: a pandas DataFrame containing the data to be visualized
-  :type data: pd.DataFrame
-  :param metric: The metric to be plotted on the y-axis of the heatmap
-  :type metric: str
-  :param palette: The color palette to use for the heatmap
-  :param hrvar: hrvar stands for "high-level reference variable" and refers to the variable that is
-  used to group the data in the visualization. For example, if the data is about sales by region,
-  hrvar could be "region" and the visualization would show the trend of sales for each region over
-  time
-  :type hrvar: str
-  :param mingroup: mingroup is a parameter that specifies the minimum number of observations required
-  for a group to be included in the visualization
-  :param legend_title: The title for the colorbar legend in the heatmap plot
-  :type legend_title: str
-  :param date_column: The name of the column in the input data that contains the date information
-  :type date_column: str
-  :param date_format: The format of the date column in the input data
-  :type date_format: str
   """
   
   myTable = create_trend_calc(data, metric, hrvar, mingroup, date_column, date_format)

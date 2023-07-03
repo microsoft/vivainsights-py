@@ -4,26 +4,9 @@
 # --------------------------------------------------------------------------------------------
 """
 The code defines a function `create_bar` that calculates and visualizes the mean of a selected
-metric, grouped by a selected HR variable. The metrics are first aggregated at a user-level prior to being aggregated at the
-level of the HR variable. The function `create_bar` returns either a plot object or a table, depending on the value passed to
-`return_type`. 
+metric, grouped by a selected HR variable. 
 
-:param data: A pandas DataFrame containing the data to be analyzed
-:type data: pd.DataFrame
-:param metric: The `metric` parameter is the name of the metric that you want to analyze. It should
-be a string
-:type metric: str
-:param hrvar: The `hrvar` parameter is the name of the organizational attribute that you want to use
-for grouping the data. It could be any attribute that you have in your dataset, such as department,
-location, or job title
-:type hrvar: str
-:param mingroup: The `mingroup` parameter is an optional parameter that specifies the minimum number
-of unique individuals required in each group of the HR variable. If the number of unique individuals
-in a group is less than `mingroup`, that group will be excluded from the analysis. The default value
-is 5, defaults to 5 (optional)
-:return: The function `create_bar` returns either a plot object or a table, depending on the value
-of the `return_type` parameter. If `return_type` is set to "plot", the function returns a plot
-object. If `return_type` is set to "table", the function returns a table.
+The metrics are first aggregated at a user-level prior to being aggregated at the level of the HR variable. The function `create_bar` returns either a plot object or a table, depending on the value passed to `return_type`. 
 """
 import pandas as pd
 import seaborn as sns
@@ -53,7 +36,14 @@ def create_bar_calc(
     output = output.sort_values(by = 'metric', ascending=False)
     return output
 
-def create_bar_viz(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, percent: bool = False, plot_title = None, plot_subtitle = None):
+def create_bar_viz(
+    data: pd.DataFrame,
+    metric: str,
+    hrvar: str,
+    mingroup = 5,
+    percent: bool = False,
+    plot_title = None,
+    plot_subtitle = None):
     """Visualise the mean of a selected metric, grouped by a selected HR variable."""
     # summarised output
     sum_df = create_bar_calc(data, metric, hrvar, mingroup)
@@ -152,7 +142,7 @@ def create_bar(
     return_type: str = "plot",
     plot_title = None,
     plot_subtitle = None):
-    """_summary_
+    """
     Args:
         data (df): person query data
         metric (str): name of the metric to be analysed

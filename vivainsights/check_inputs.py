@@ -2,8 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-'''The function `check_inputs` checks if the required variables are present in the given data and
-raises an error if any of them are missing.
+'''
+The function `check_inputs` checks if the required variables are present in the given data and raises an error if any of them are missing.
 '''
 import pandas as pd
 

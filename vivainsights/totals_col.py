@@ -2,12 +2,13 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+"""
+The function `totals_col` adds a new column with a specified total value to a given pandas DataFrame.
+"""
 import pandas as pd
 
-def totals_col(data: pd.DataFrame, total_value='Total'):
-    '''The function `totals_col` adds a new column with a specified total value to a given pandas
-    DataFrame.
-    
+def totals_col(data: pd.DataFrame, total_value: str ='Total'):
+    '''    
     Parameters
     ----------
     data : pd.DataFrame

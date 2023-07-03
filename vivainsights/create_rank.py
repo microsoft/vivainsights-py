@@ -148,7 +148,7 @@ def create_rank_viz(data: pd.DataFrame,
 
 
 def create_rank(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, return_type: str = "plot"):
-    """_summary_
+    """
     Args:
         data (df): person query data
         metric (str): name of the metric to be analysed

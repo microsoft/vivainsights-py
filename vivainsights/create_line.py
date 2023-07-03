@@ -123,7 +123,7 @@ def create_line_viz(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5):
     """
 
 def create_line(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, return_type: str = 'plot'):
-    """_summary_
+    """
     Args:
         data (df): person query data
         metric (str): name of the metric to be analysed
