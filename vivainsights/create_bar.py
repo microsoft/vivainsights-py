@@ -15,6 +15,7 @@ from vivainsights.us_to_space import us_to_space
 import matplotlib.ticker as mtick
 import matplotlib.pyplot as plt
 import matplotlib
+import warnings
 matplotlib.use("QtAgg")
     
 def create_bar_calc(
@@ -45,6 +46,10 @@ def create_bar_viz(
     plot_title = None,
     plot_subtitle = None):
     """Visualise the mean of a selected metric, grouped by a selected HR variable."""
+    
+    # suppress warnings
+    warnings.filterwarnings("ignore")    
+    
     # summarised output
     sum_df = create_bar_calc(data, metric, hrvar, mingroup)
     caption_text = extract_date_range(data, return_type = 'text')
