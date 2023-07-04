@@ -95,6 +95,16 @@ vi.create_rank(
 )
 ```
 
+## Related repositories
+
+- [Viva Insights R library](https://microsoft.github.io/vivainsights/)
+- [Viva RMarkdown Report Marketplace](https://github.com/microsoft/VivaRMDReportMarketplace/)
+- [Viva Insights Sample Code](https://github.com/microsoft/viva-insights-sample-code/)
+- [Viva Insights Zoom Integration](https://github.com/microsoft/vivainsights_zoom_int/)
+- [Viva Insights OData Query Download](https://github.com/microsoft/vivainsights-odatadl/)
+- [Viva Insights R library (legacy)](https://microsoft.github.io/wpa/)
+
+
 ## Contributing
 
 This project welcomes contributions and suggestions. For feature and complex bug fix contributions, it is recommended that you first discuss the proposed change with vivainsight’s maintainers before submitting the pull request. Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution. For details, visit https://cla.microsoft.com.
