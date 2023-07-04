@@ -1,10 +1,6 @@
-vivainsights
 seaborn==0.12.2
 pandas==2.0.0
 matplotlib==3.7.1
 matplotlib-inline==0.1.6
 scipy==1.10.1
-datetime
-os
-pkg_resources
-gc
+numpy==1.20.3
