@@ -1,4 +1,4 @@
-name: Python package
+name: vivainsights CI
 
 on:
   push:
