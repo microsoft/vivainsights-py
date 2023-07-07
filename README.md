@@ -14,6 +14,11 @@ Access to the Analyst Experience is required. With this library, you can generat
 1. Clone this repository to your local drive. 
 1. On PowerShell, change directory (`cd`) to the repository on your local drive, and run `python setup.py install`. This should install 'vivainsights' to your python package registry. To check whether it is installed, you can run `pip freeze` on your command prompt.
 
+To install from this GitHub repository directly using pip, you may run this in Command Line:
+```
+pip install -e git+https://github.com/microsoft/vivainsights-py#egg=vivainsights
+```
+
 ## How to use
 
 Once confirmed that the library is installed, here are some examples of what you can run from the package:
