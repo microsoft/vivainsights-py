@@ -134,7 +134,7 @@ def create_boxplot_viz(data: pd.DataFrame, metric, hrvar, mingroup):
         # plt.show()
         # return the plot object
         return fig    
-      
+    
         """ ggplot implementation - legacy
         plot_object = (
         ggplot(plot_data, aes(x="group", y=metric)) +

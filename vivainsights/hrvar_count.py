@@ -57,6 +57,7 @@ def hrvar_count_viz(data: pd.DataFrame, hrvar: str):
         )  
     
     # Reformat y-axis tick labels
+    ax.set_yticks(range(len(sum_df)))
     ax.set_yticklabels(
         sum_df[hrvar],   # Set labels again
         ha = 'right'      # Set horizontal alignment to right
