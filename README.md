@@ -19,6 +19,11 @@ To install from this GitHub repository directly using pip, you may run this in C
 pip install -e git+https://github.com/microsoft/vivainsights-py#egg=vivainsights
 ```
 
+You can also install from a specific branch with the following, replacing the branch name with `<remote-branch-name>`:
+```
+pip install -e git+https://github.com/microsoft/vivainsights-py@<remote-branch-name>#egg=vivainsights
+```
+
 ## How to use
 
 Once confirmed that the library is installed, here are some examples of what you can run from the package:
