@@ -66,82 +66,47 @@ def create_rank_viz(data: pd.DataFrame,
     # Plot data
     # Plot horizontal lines first
     ax.hlines(
-        y=result_pivot['hrvar'],
+        y=range(len(result_pivot)),
         xmin=result_pivot['metric_min'],
         xmax=result_pivot['metric_max'],
         color='#758D99',
         zorder=2, linewidth=2, label='_nolegend_', alpha=.8
-        )
+    )
     
     # Plot bubbles next
-    ax.scatter(result_pivot['metric_min'], result_pivot['hrvar'], label='1960', s=60, color='#DB444B', zorder=3)
-    ax.scatter(result_pivot['metric_max'], result_pivot['hrvar'], label='2020', s=60, color= col_main, zorder=3)
+    ax.scatter(result_pivot['metric_min'], range(len(result_pivot)), label='1960', s=60, color='#DB444B', zorder=3)
+    ax.scatter(result_pivot['metric_max'], range(len(result_pivot)), label='2020', s=60, color=col_main, zorder=3)
     
     # Set xlim
     ax.set_xlim(0, 1.1*result_pivot['metric_max'].max())
-       
-    # Reformat x-axis tick labels
-    ax.xaxis.set_tick_params(labeltop=True,      # Put x-axis labels on top
-                            labelbottom=False,  # Set no x-axis labels on bottom
-                            bottom=False,       # Set no ticks on bottom
-                            labelsize=9,       # Set tick label size
-                            pad=-1)             # Lower tick labels a bit
     
-    ax.yaxis.set_tick_params(pad = 10, labelsize = 9, bottom = False) # no ticks on bottom
-    ax.set_yticklabels(result_pivot['hrvar'], ha = 'right', fontsize=9) # Set y-axis tick labels, align right
+    # Reformat x-axis tick labels
+    ax.xaxis.set_tick_params(labeltop=True, labelbottom=False, bottom=False, labelsize=9, pad=-1)
+    ax.yaxis.set_tick_params(pad=10, labelsize=9, bottom=False)
+    ax.set_yticks(range(len(result_pivot)))
+    ax.set_yticklabels(result_pivot['hrvar'], ha='right', fontsize=9)
     
     ax.legend(['min', 'max'],
-              loc = (-.29, 1.09),
-              ncol = 2,
-              frameon = False,
-              handletextpad = -.1,
-              handleheight = 1)
+              loc=(-.29, 1.09),
+              ncol=2,
+              frameon=False,
+              handletextpad=-.1,
+              handleheight=1)
     
     # Add in line and tag
-    ax.plot(
-        [-0.08, .9], # Set width of line
-        [1.17, 1.17], # Set height of line
-        transform = fig.transFigure, # Set location relative to plot
-        clip_on = False,
-        color = col_highlight,
-        linewidth = .6
-    )
+    ax.plot([-0.08, .9], [1.17, 1.17], transform=fig.transFigure, clip_on=False, color=col_highlight, linewidth=.6)
     
-    ax.add_patch(
-        plt.Rectangle(
-            (-0.08, 1.17),
-            0.05,
-            -0.025,
-            facecolor = col_highlight,
-            transform = fig.transFigure,
-            clip_on = False,
-            linewidth = 0
-            )
-    )
+    ax.add_patch(plt.Rectangle((-0.08, 1.17),
+                               0.05, -0.025, facecolor=col_highlight, transform=fig.transFigure, clip_on=False, linewidth=0))
     
     # Set title
-    ax.text(
-        x = -0.08, y = 1.09,
-        s = us_to_space(metric),
-        transform = fig.transFigure,
-        ha = 'left',
-        fontsize = 13,
-        weight = 'bold',
-        alpha = .8
-    )
+    ax.text(x=-0.08, y=1.09, s=us_to_space(metric), transform=fig.transFigure, ha='left', fontsize=13, weight='bold', alpha=.8)
     
     # Set subtitle
-    ax.text(
-        x = -0.08, y = 1.04,
-        s = 'By organizational attributes',
-        transform = fig.transFigure,
-        ha = 'left',
-        fontsize = 11,        
-        alpha = .8
-    )
+    ax.text(x=-0.08, y=1.04, s='By organizational attributes', transform=fig.transFigure, ha='left', fontsize=11, alpha=.8)
     
     # Set caption
-    ax.text(x = -0.08, y = 0.04, s = cap_str, transform = fig.transFigure, ha = 'left', fontsize = 9, alpha = .7)
+    ax.text(x=-0.08, y=0.04, s=cap_str, transform=fig.transFigure, ha='left', fontsize=9, alpha=.7)
     
     # return the plot object
     return fig

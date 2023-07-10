@@ -63,32 +63,14 @@ def create_line_viz(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5):
     ax.set_xlabel('') # Remove x-axis label
 
     # Reformat y-axis tick labels
-    ax.set_yticklabels(np.arange(0,25,5),            # Set labels again
-                    ha = 'right',                 # Set horizontal alignment to right
-                    verticalalignment='bottom')   # Set vertical alignment to make labels on top of gridline      
+    ax.yaxis.set_major_locator(plt.FixedLocator(np.arange(0, 25, 5)))
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{x:.0f}'))
 
     ax.yaxis.set_tick_params(pad=-2,             # Pad tick labels so they don't go over y-axis
                             labeltop=True,      # Put x-axis labels on top
                             labelbottom=False,  # Set no x-axis labels on bottom
                             bottom=False,       # Set no ticks on bottom
-                            labelsize=11)       # Set tick label size
-
-    # Add in line and tag
-    ax.plot([0.12, .9],                  # Set width of line
-            [.98, .98],                  # Set height of line
-            transform=fig.transFigure,   # Set location relative to plot
-            clip_on=False, 
-            color=col_highlight, 
-            linewidth=.6)
-
-    ax.add_patch(plt.Rectangle((0.12,.98),                 # Set location of rectangle by lower left corder
-                            0.04,                       # Width of rectangle
-                            -0.02,                      # Height of rectangle. Negative so it goes down.
-                            facecolor=col_highlight,    # Set color of rectangle
-                            transform=fig.transFigure, 
-                            clip_on=False, 
-                            linewidth = 0))
-
+                            labelsize=11)
     # Set title
     ax.text(x=0.12, y=.91, s= clean_nm, transform=fig.transFigure, ha='left', fontsize=13, weight='bold', alpha=.8)
 
