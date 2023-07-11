@@ -53,5 +53,7 @@ def import_query(x, encoding: str = 'utf-8'):
             # Remove leading and trailing spaces
             # Remove spaces and special characters and replacing them with underscores within column names.
             data.columns = [re.sub('[^a-zA-Z0-9,]', '_', c.strip()) for c in data]
+            
+            return data
         except: 
             raise ValueError('something went wrong when reading the file')
