@@ -23,7 +23,7 @@ from .check_inputs import *
 from .p2p_data import *
 from .g2g_data import *
 from .p2g_data import *
-
+from .network_g2g import *
 
 
 
