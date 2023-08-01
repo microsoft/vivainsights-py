@@ -10,6 +10,7 @@ import igraph as ig
 import numpy as np
 import matplotlib.pyplot as plt 
 import seaborn as sns
+import networkx as nx
 import re
 
 def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algorithm="fr", node_colour="lightblue", exc_threshold=0.1, org_count=None, subtitle="Collaboration Across Organizations", return_type="plot"):
@@ -48,3 +49,53 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
 
         #return long table
         return plot_data
+    
+    elif return_type in ["plot", "network"]:
+
+        # network object
+        mynet_em = plot_data[plot_data['metric_prop'] > exc_threshold]
+        mynet_em[['PrimaryOrg', 'SecondaryOrg']] = mynet_em[['PrimaryOrg', 'SecondaryOrg']].apply(lambda func: func.str.replace(' ', '\n'))
+        mynet_em['metric_prop'] = mynet_em['metric_prop'] * 10
+        
+        g = ig.Graph.TupleList(mynet_em.itertuples(index=False), directed=False)
+        #Org count can vary by size
+
+        if org_count is not None:
+            g.vs["org_size"] = (
+                pd.DataFrame({"id": g.vs["name"]})
+                .assign(id=lambda org: org["id"].str.replace("\n", " "))
+                .merge(org_count, how="left", left_on="id", right_on=hrvar_string)
+                .loc[:, "n"]
+                .tolist()
+            )
+
+        else:
+            #imputed size if not specified
+             g.vs['org_size'] = (
+                pd.DataFrame({"id": g.vs['name']})
+                .assign(id=lambda org: org['id'].str.replace('\n', ' '))
+                .assign(n=20)
+                .loc[:, 'n']
+                .tolist()
+            )
+             
+        #plot object
+        #do this    plot_obj <- mynet_em %>% ggraph::ggraph(layout = algorithm) + ggraph::geom_edge_link(aes(edge_width = metric_prop * 1), edge_alpha = 0.5, edge_colour = "grey") with matplotlib and seaborn
+        plot_obj = ig.plot(
+            g,
+            layout=g.layout(algorithm),
+            vertex_label=g.vs["name"],
+            vertex_size=g.vs["org_size"],
+            vertex_color=node_colour,
+            edge_width=mynet_em["metric_prop"],
+            edge_color="grey",
+            edge_alpha=0.5,
+            bbox=(500, 500),
+            margin=50,
+        )
+
+        if return_type == "network":
+            return  plot_obj.save('plot.png') #return 'igraph' object
+
+    else:
+        raise ValueError("Please enter a valid input for 'return'.")
