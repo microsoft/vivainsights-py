@@ -80,7 +80,6 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
             )
              
         #plot object
-        #do this    plot_obj <- mynet_em %>% ggraph::ggraph(layout = algorithm) + ggraph::geom_edge_link(aes(edge_width = metric_prop * 1), edge_alpha = 0.5, edge_colour = "grey") with matplotlib and seaborn
         plot_obj = ig.plot(
             g,
             layout=g.layout(algorithm),
@@ -96,6 +95,10 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
 
         if return_type == "network":
             return  plot_obj.save('plot.png') #return 'igraph' object
+        
+        #TODO: Custom Node Colours 
+        #TODO: Auto assign colours
+        #TODO: Return 'plot' object
 
     else:
         raise ValueError("Please enter a valid input for 'return'.")
