@@ -7,6 +7,7 @@ This module returns a network plot given a data frame containing a group-to-grou
 """
 import pandas as pd
 import igraph as ig
+import numpy as np
 import matplotlib.pyplot as plt 
 import seaborn as sns
 import re
@@ -23,18 +24,19 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
         print("Secondary field not provided. Assuming {} as the secondary variable.".format(secondary))
 
     #Get string of HR variable (for grouping)
-    hrvar_string = re.sub(pattern = "SecondaryCollaborator_", replacement = "",  string = secondary)
+    hrvar_string = re.sub("SecondaryCollaborator_", "",  string = secondary)
 
     #Warn if 'Within Group' is not in the data
-    if "WithinGroup" not in data[secondary].unique():
-        print("Warning: WithinGroup variable is not found in the " + secondary + " variable. The analysis may be excluding in-group collaboration.")
+    if "Within Group" not in data[secondary].unique().tolist():
+        print("Warning: Within Group variable is not found in the " + secondary + " variable. The analysis may be excluding in-group collaboration.")
 
     #Run plot_data
-    plot_data = data.rename(columns = {primary: "PrimaryOrg", secondary: "SecondaryOrg", metric: "Metric"})
-    plot_data = plot_data.assign(SecondaryOrg = lambda org: org.PrimaryOrg if org.SecondaryOrg == "Within Group" else org.SecondaryOrg)
+    plot_data = data.rename(columns={primary: "PrimaryOrg", secondary: "SecondaryOrg", metric: "Metric"})
+    plot_data = plot_data.assign(SecondaryOrg=np.where(plot_data.SecondaryOrg == "Within Group", plot_data.PrimaryOrg, plot_data.SecondaryOrg))    
     plot_data = plot_data.groupby(["PrimaryOrg", "SecondaryOrg"]).agg({"Metric": "mean"}).reset_index()
+    plot_data = plot_data.query('PrimaryOrg != "Other_Collaborators" & SecondaryOrg != "Other_Collaborators"')
     plot_data = plot_data.groupby("PrimaryOrg")
-    plot_data = plot_data.apply(lambda func: func.assign(metric_prop = func.Metric / func.Metric.sum())).reset_index(drop = True)
+    plot_data = plot_data.apply(lambda func: func.assign(metric_prop=func.Metric / func.Metric.sum())).reset_index(drop=True)
     plot_data = plot_data.loc[:, ["PrimaryOrg", "SecondaryOrg", "metric_prop"]]
 
     if return_type == "table":
@@ -46,4 +48,3 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
 
         #return long table
         return plot_data
-    
