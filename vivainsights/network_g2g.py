@@ -51,10 +51,11 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
 
         # network object
         mynet_em = plot_data[plot_data['metric_prop'] > exc_threshold]
-        mynet_em[['PrimaryOrg', 'SecondaryOrg']] = mynet_em[['PrimaryOrg', 'SecondaryOrg']].apply(lambda func: func.str.replace(' ', '\n'))
-        mynet_em['metric_prop'] = mynet_em['metric_prop'] * 10
+        mynet_em.loc[:, ['PrimaryOrg', 'SecondaryOrg']] = mynet_em[['PrimaryOrg', 'SecondaryOrg']].apply(lambda func: func.str.replace(' ', '\n'))
+        mynet_em.loc[:, 'metric_prop'] = mynet_em['metric_prop'] * 10
         
-        g = ig.Graph.TupleList(mynet_em.itertuples(index=False), directed=False )
+        g = ig.Graph.TupleList(mynet_em.itertuples(index=False), directed=False)
+        
         #Org count can vary by size
 
         if org_count is not None:
