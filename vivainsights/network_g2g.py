@@ -8,9 +8,6 @@ This module returns a network plot given a data frame containing a group-to-grou
 import pandas as pd
 import igraph as ig
 import numpy as np
-import matplotlib.pyplot as plt 
-import seaborn as sns
-import networkx as nx
 import re
 
 def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algorithm="fr", node_colour="lightblue", exc_threshold=0.1, org_count=None, subtitle="Collaboration Across Organizations", return_type="plot"):
@@ -57,7 +54,7 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
         mynet_em[['PrimaryOrg', 'SecondaryOrg']] = mynet_em[['PrimaryOrg', 'SecondaryOrg']].apply(lambda func: func.str.replace(' ', '\n'))
         mynet_em['metric_prop'] = mynet_em['metric_prop'] * 10
         
-        g = ig.Graph.TupleList(mynet_em.itertuples(index=False), directed=False)
+        g = ig.Graph.TupleList(mynet_em.itertuples(index=False), directed=False )
         #Org count can vary by size
 
         if org_count is not None:
@@ -74,27 +71,33 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
              g.vs['org_size'] = (
                 pd.DataFrame({"id": g.vs['name']})
                 .assign(id=lambda org: org['id'].str.replace('\n', ' '))
-                .assign(n=20)
+                .assign(n=50)
                 .loc[:, 'n']
                 .tolist()
             )
              
         #plot object
+        g = g.simplify() 
         plot_obj = ig.plot(
             g,
+            title="Group to Group Collaboration",
+            subtitle=subtitle,
+            caption="",
             layout=g.layout(algorithm),
             vertex_label=g.vs["name"],
             vertex_size=g.vs["org_size"],
-            vertex_color=node_colour,
-            edge_width=mynet_em["metric_prop"],
+            vertex_frame_width=0,          
+            vertex_color=node_colour,  
+            edge_width=mynet_em["metric_prop"] * 1,
             edge_color="grey",
             edge_alpha=0.5,
-            bbox=(500, 500),
-            margin=50,
+            edge_curved=False,
+            bbox=(1000, 1000), 
+            margin=100, 
         )
 
         if return_type == "network":
-            return  plot_obj.save('plot.png') #return 'igraph' object
+            return g #return 'igraph' object
         
         #TODO: Custom Node Colours 
         #TODO: Auto assign colours
