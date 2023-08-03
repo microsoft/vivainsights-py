@@ -43,12 +43,12 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
     if return_type == "table":
 
         #return a 'tidy' matrix
-        return plot_data.pivot(index = "PrimaryOrg", columns = "SecondaryOrg", values = "metric_prop")
+        return print(plot_data.pivot(index = "PrimaryOrg", columns = "SecondaryOrg", values = "metric_prop"))
     
     elif return_type == "data":
 
         #return long table
-        return plot_data
+        return print(plot_data)
     
     elif return_type in ["plot", "network"]:
 
@@ -82,7 +82,7 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
                      
         #plot object
         g = g.simplify() 
-        fig, ax = plt.subplots(figsize=(500, 500))
+        fig, ax = plt.subplots(figsize=(8, 8))
         ig.plot(
             g,
             layout=g.layout(algorithm),
@@ -97,11 +97,9 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
         )
 
         if return_type == "network":
-            return g #return 'igraph' object
+            return print(g) #return 'igraph' object
         else:
-            plt.suptitle("Group to Group Collaboration", fontsize=13, fontweight="bold")
-            plt.title(subtitle, fontsize=10)
-            plt.subplots_adjust(top=0.93, left=0.1)
+            plt.suptitle("Group to Group Collaboration" + '\n' + subtitle, fontsize=13)
             plt.figtext(0.95, 0.05, "Displays only collaboration above {}% of node's total collaboration".format(int(exc_threshold * 100)), ha="right", va="bottom", fontsize=8)     
 
             return plt.show() # return the netork plot
@@ -121,8 +119,12 @@ def setColor(node_colour, org):
     elif isinstance(node_colour, dict): #use dictionary to map each node to a colour
         node_colour = {node: colour for node, colour in node_colour.items()}
         for node, colour in node_colour.items():
-            node_colour[node] = colour
-        node_colour = [node_colour.get(o, "lightblue") for o in org]
+            if colour == "random":
+                node_colour[node] = f"#{random.randint(0, 0xFFFFFF):06x}"
+            else:
+                node_colour[node] = colour
+        node_colour = [node_colour.get(node, "lightblue") for node in org] #use default colour if key not found
+
     else: #default colour
         node_colour = "lightblue"
 
