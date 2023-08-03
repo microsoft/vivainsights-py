@@ -6,7 +6,9 @@
 This module returns a network plot given a data frame containing a group-to-group query.
 """
 import pandas as pd
+from igraph import *
 import igraph as ig
+import matplotlib.pyplot as plt
 import numpy as np
 import re
 import random
@@ -64,6 +66,7 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
                 pd.DataFrame({"id": g.vs["name"]})
                 .assign(id=lambda org: org["id"].str.replace("\n", " "))
                 .merge(org_count, how="left", left_on="id", right_on=hrvar_string)
+                .assign(n=lambda org: org["n"] / 100) #scale for plotting
                 .loc[:, "n"]
                 .tolist()
             )
@@ -72,35 +75,37 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
              g.vs['org_size'] = (
                 pd.DataFrame({"id": g.vs['name']})
                 .assign(id=lambda org: org['id'].str.replace('\n', ' '))
-                .assign(n=50)
+                .assign(n=0.4)
                 .loc[:, 'n']
                 .tolist()
             )
                      
         #plot object
         g = g.simplify() 
-        plot_obj = ig.plot(
+        fig, ax = plt.subplots(figsize=(500, 500))
+        ig.plot(
             g,
-            title="Group to Group Collaboration",
-            subtitle=subtitle,
-            caption="",
             layout=g.layout(algorithm),
+            target=ax,
             vertex_label=g.vs["name"],
+            vertex_frame_width=0,
             vertex_size=g.vs["org_size"],
             vertex_frame_width=0,          
             vertex_color=setColor(node_colour, g.vs["name"]),  
             edge_width=mynet_em["metric_prop"] * 1,
-            edge_color="grey",
             edge_alpha=0.5,
-            edge_curved=False,
-            bbox=(1000, 1000), 
-            margin=100, 
+            edge_color="grey",
         )
 
         if return_type == "network":
             return g #return 'igraph' object
         else:
-            return plot_obj.save('plot.png') #return 'cairoplot' object
+            plt.suptitle("Group to Group Collaboration", fontsize=13, fontweight="bold")
+            plt.title(subtitle, fontsize=10)
+            plt.subplots_adjust(top=0.93, left=0.1)
+            plt.figtext(0.95, 0.05, "Displays only collaboration above {}% of node's total collaboration".format(int(exc_threshold * 100)), ha="right", va="bottom", fontsize=8)     
+
+            return plt.show() # return the netork plot
     else:
         raise ValueError("Please enter a valid input for 'return'.")
     
@@ -113,20 +118,13 @@ def setColor(node_colour, org):
             node_colour = [f"#{random.randint(0, 0xFFFFFF):06x}" for _ in range(len(org))]
         else:
             node_colour = node_colour #use the colour provided
+            
     elif isinstance(node_colour, dict): #use dictionary to map each node to a colour
-        node_colour = {node: colour for node, colour in node_colour.items()} #key is node, value is colour
+        node_colour = {node: colour for node, colour in node_colour.items()}
         for node, colour in node_colour.items():
-            if colour == "#000000":
-                node_colour[node] = "#000000"
-            elif colour == "#808080":
-                node_colour[node] = "#808080"
-            elif colour == "lightblue":
-                node_colour[node] = "lightblue"
-            else:
-                node_colour[node] = colour
+            node_colour[node] = colour
         node_colour = [node_colour.get(o, "lightblue") for o in org]
     else: #default colour
         node_colour = "lightblue"
 
     return node_colour
-    
