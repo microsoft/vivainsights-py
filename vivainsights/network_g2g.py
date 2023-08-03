@@ -90,7 +90,6 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
             vertex_label=g.vs["name"],
             vertex_frame_width=0,
             vertex_size=g.vs["org_size"],
-            vertex_frame_width=0,          
             vertex_color=setColor(node_colour, g.vs["name"]),  
             edge_width=mynet_em["metric_prop"] * 1,
             edge_alpha=0.5,
