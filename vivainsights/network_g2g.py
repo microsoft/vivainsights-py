@@ -13,7 +13,7 @@ import numpy as np
 import re
 import random
 
-def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algorithm="fr", node_colour="lightblue", exc_threshold=0.1, org_count=None, subtitle="Collaboration Across Organizations", return_type="plot"):
+def network_g2g(data, primary=None,  secondary=None, metric="Meeting_Count", algorithm="fr", node_colour="lightblue", exc_threshold=0.1, org_count=None, subtitle="Collaboration Across Organizations", return_type="plot"):
     """
     :param data: Data frame containing a group-to-group query.
     :param primary: String containing the variable name for the Primary Collaborator column.
@@ -145,6 +145,7 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
         raise ValueError("Please enter a valid input for 'return'.")
     
 def setColor(node_colour, org):
+    org = [i.replace("\n", " ") for i in org]
     if isinstance(node_colour, str) and len(node_colour) > 1:
         #check if node_colour is set to default
         if node_colour == "lightblue":
