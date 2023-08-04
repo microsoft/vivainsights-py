@@ -13,7 +13,7 @@ import numpy as np
 import re
 import random
 
-def network_g2g(data, primary=None,  secondary=None, metric="Meeting_Count", algorithm="fr", node_colour="lightblue", exc_threshold=0.1, org_count=None, subtitle="Collaboration Across Organizations", return_type="plot"):
+def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algorithm="fr", node_colour="lightblue", exc_threshold=0.1, org_count=None, subtitle="Collaboration Across Organizations", return_type="plot"):
     """
     :param data: Data frame containing a group-to-group query.
     :param primary: String containing the variable name for the Primary Collaborator column.
@@ -37,10 +37,10 @@ def network_g2g(data, primary=None,  secondary=None, metric="Meeting_Count", alg
         - The data frame should contain only two columns: 
         - Name of the `secondary` attribute excluding any prefixes, e.g. `"Organization"`. 
         - Must be of character or factor type. `"n"`. Must be of numeric type. 
-        - Defaults to `NULL`, where node sizes will be fixed.
+        - Defaults to `None`, where node sizes will be fixed.
 
     :param subtitle: String to override default plot subtitle.
-    :param return: String specifying what to return. This must be one of the following strings:
+    :param return_type: String specifying what to return. This must be one of the following strings:
         - `"plot"`
         - `"table"`
         - `"network"`
@@ -81,12 +81,15 @@ def network_g2g(data, primary=None,  secondary=None, metric="Meeting_Count", alg
     if return_type == "table":
 
         #return a 'tidy' matrix
-        return print(plot_data.pivot(index = "PrimaryOrg", columns = "SecondaryOrg", values = "metric_prop"))
+        table = plot_data.pivot(index = "PrimaryOrg", columns = "SecondaryOrg", values = "metric_prop")
+        print(table)
+        return table
     
     elif return_type == "data":
 
         #return long table
-        return print(plot_data)
+        print(plot_data)
+        return plot_data
     
     elif return_type in ["plot", "network"]:
 
@@ -135,12 +138,13 @@ def network_g2g(data, primary=None,  secondary=None, metric="Meeting_Count", alg
         )
 
         if return_type == "network":
-            return print(g) #return 'igraph' object
+            print(g)
+            return g #return 'igraph' object
         else:
             plt.suptitle("Group to Group Collaboration" + '\n' + subtitle, fontsize=13)
             plt.figtext(0.95, 0.05, "Displays only collaboration above {}% of node's total collaboration".format(int(exc_threshold * 100)), ha="right", va="bottom", fontsize=8)     
-
-            return plt.show() # return the netork plot
+            plt.show()
+            return fig #return 'ggplot' object
     else:
         raise ValueError("Please enter a valid input for 'return'.")
     
