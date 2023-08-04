@@ -120,27 +120,27 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
                 .loc[:, 'n']
                 .tolist()
             )
-                     
-        #plot object
-        g = g.simplify() 
-        fig, ax = plt.subplots(figsize=(8, 8))
-        ig.plot(
-            g,
-            layout=g.layout(algorithm),
-            target=ax,
-            vertex_label=g.vs["name"],
-            vertex_frame_width=0,
-            vertex_size=g.vs["org_size"],
-            vertex_color=setColor(node_colour, g.vs["name"]),  
-            edge_width=mynet_em["metric_prop"] * 1,
-            edge_alpha=0.5,
-            edge_color="grey",
-        )
 
         if return_type == "network":
             print(g)
             return g #return 'igraph' object
         else:
+            #plot object
+            g = g.simplify()
+            fig, ax = plt.subplots(figsize=(8, 8))
+            ig.plot(
+                g,
+                layout=g.layout(algorithm),
+                target=ax,
+                vertex_label=g.vs["name"],
+                vertex_frame_width=0,
+                vertex_size=g.vs["org_size"],
+                vertex_color=setColor(node_colour, g.vs["name"]),  
+                edge_width=mynet_em["metric_prop"] * 1,
+                edge_alpha=0.5,
+                edge_color="grey",
+            )
+            
             plt.suptitle("Group to Group Collaboration" + '\n' + subtitle, fontsize=13)
             plt.figtext(0.95, 0.05, "Displays only collaboration above {}% of node's total collaboration".format(int(exc_threshold * 100)), ha="right", va="bottom", fontsize=8)     
             plt.show()
