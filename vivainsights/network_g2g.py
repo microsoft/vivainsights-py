@@ -82,13 +82,11 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
 
         #return a 'tidy' matrix
         table = plot_data.pivot(index = "PrimaryOrg", columns = "SecondaryOrg", values = "metric_prop")
-        print(table)
         return table
     
     elif return_type == "data":
 
         #return long table
-        print(plot_data)
         return plot_data
     
     elif return_type in ["plot", "network"]:
@@ -122,7 +120,6 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
             )
 
         if return_type == "network":
-            print(g)
             return g #return 'igraph' object
         else:
             #plot object
@@ -143,26 +140,21 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
             
             plt.suptitle("Group to Group Collaboration" + '\n' + subtitle, fontsize=13)
             plt.figtext(0.95, 0.05, "Displays only collaboration above {}% of node's total collaboration".format(int(exc_threshold * 100)), ha="right", va="bottom", fontsize=8)     
-            plt.show()
-            return fig #return 'ggplot' object
+            return plt.show() #return 'ggplot' object
     else:
         raise ValueError("Please enter a valid input for 'return'.")
     
 def setColor(node_colour, org):
     org = [i.replace("\n", " ") for i in org]
     if isinstance(node_colour, str) and len(node_colour) > 1:
-        #check if node_colour is set to default
-        if node_colour == "lightblue":
-            node_colour = "lightblue"
-        elif node_colour == "vary": #generate a random colour for each node in the network
+        if node_colour == "vary": #generate a random colour for each node in the network
             node_colour = [f"#{random.randint(0, 0xFFFFFF):06x}" for _ in range(len(org))]
         else:
             node_colour = node_colour #use the colour provided
-            
     elif isinstance(node_colour, dict): #use dictionary to map each node to a colour
         node_colour = {node: colour for node, colour in node_colour.items()}
         for node, colour in node_colour.items():
-            if colour == "random":
+            if colour == "random": 
                 node_colour[node] = f"#{random.randint(0, 0xFFFFFF):06x}"
             else:
                 node_colour[node] = colour
