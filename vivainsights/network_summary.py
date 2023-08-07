@@ -26,7 +26,6 @@ def network_summary(graph, hrvar = None, return_type = "table"):
        - `eigenvector`: a measure of the influence a node has on a network.
        - `pagerank`: calculates the PageRank for the specified vertices.
     """ 
-
     #calculate summary table
     sum_tb = pd.DataFrame({
         "node_id":  graph.vs["name"],
@@ -38,25 +37,22 @@ def network_summary(graph, hrvar = None, return_type = "table"):
     })
 
     if(hrvar is not None):
-        sum_tb = sum_tb.merge(graph.vs[hrvar], left_on = "node_id", right_index = True)
-        sum_tb = sum_tb.rename(columns = {hrvar: "hrvar"})
-    
+        sum_tb['hrvar'] = graph.vs[hrvar]
+
     graph = graph.simplify() 
 
     if return_type == "table":
-        print(sum_tb)
         return sum_tb #return table
-    
+
     elif return_type == "network":
         graph.vs["betweenness"] = sum_tb["betweenness"]
         graph.vs["closeness"] = sum_tb["closeness"]
         graph.vs["degree"] = sum_tb["degree"]
         graph.vs["eigenvector"] = sum_tb["eigenvector"]
         graph.vs["pagerank"] = sum_tb["pagerank"]
-        
-        print(graph)
+
         return graph #return network
-    
+
     elif return_type == "plot":
         if hrvar is None:
             raise ValueError("Visualisation options currently only available when a valid HR attribute is supplied.")
@@ -64,5 +60,3 @@ def network_summary(graph, hrvar = None, return_type = "table"):
             return #TODO: return plot
     else: 
         raise ValueError("Invalid input to `return`")
-    
-
