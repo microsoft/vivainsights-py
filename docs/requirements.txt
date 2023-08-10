@@ -4,3 +4,4 @@ matplotlib
 matplotlib-inline
 scipy
 numpy
+PyQt5
