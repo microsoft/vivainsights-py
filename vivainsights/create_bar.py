@@ -16,7 +16,6 @@ import matplotlib.ticker as mtick
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FixedLocator
 import matplotlib
-matplotlib.use("QtAgg")
     
 def create_bar_calc(
     data: pd.DataFrame,
