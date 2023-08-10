@@ -15,6 +15,13 @@ This documentation provides information on how to use vivainsights, a Python pac
    :caption: Contents:
 
    README.md
+   modules
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Module Index
+
+   modindex
 
 Indices and tables
 ==================
