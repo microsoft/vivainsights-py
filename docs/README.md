@@ -1,4 +1,4 @@
-# vivainsights 
+# README
 
 <img src="https://raw.githubusercontent.com/microsoft/vivainsights-py/main/images/vivainsights-py.png" align="right" width=15% />
 
