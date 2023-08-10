@@ -25,5 +25,3 @@ To install the package dependencies, run:
 .. code-block:: bash
 
    pip install -r requirements.txt
-
-.. include:: requirements.txt   
