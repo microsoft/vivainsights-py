@@ -6,6 +6,10 @@
 vivainsights
 ========================================
 
+Welcome to the documentation for vivainsights!
+
+This documentation provides information on how to use vivainsights, a Python package for analyzing and visualizing data from Microsoft Viva Insights.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
