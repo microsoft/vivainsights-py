@@ -1,4 +1,4 @@
-vivainsights package
+Reference - Functions
 ====================
 
 Submodules
