@@ -1,4 +1,4 @@
-setup module
+setup
 ============
 
 .. automodule:: setup
@@ -11,17 +11,15 @@ setup module
 Installation
 ------------
 
-To install the package, run:
+To install from this GitHub repository directly using pip, you may run this in Command Line:
 
 .. code-block:: bash
 
-   pip install .
+   pip install -e git+https://github.com/microsoft/vivainsights-py#egg=vivainsights
 
-Dependencies
-------------
 
-To install the package dependencies, run:
+You can also install from a specific branch with the following, replacing the branch name with `<remote-branch-name>`:
 
 .. code-block:: bash
 
-   pip install -r requirements.txt
+   pip install -e git+https://github.com/microsoft/vivainsights-py@<remote-branch-name>#egg=vivainsights
