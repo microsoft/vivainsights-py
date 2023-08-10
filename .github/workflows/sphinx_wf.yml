@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install -U sphinx
-          python -m pip install furo
+          python -m pip install furo myst-parser
       - name: Make docs
         run: |
           cd docs/
