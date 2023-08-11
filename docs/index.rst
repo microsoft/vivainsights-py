@@ -16,9 +16,9 @@ This documentation provides information on how to use vivainsights, a Python pac
 
    README.md
    modules
-   :doc:`../NEWS.md`
-   :doc:`../SECURITY.md`
-   :doc:`../CONTRIBUTORS.md`
+   NEWS.md
+   CONTRIBUTORS.md
+   SECURITY.md
 
 .. toctree::
    :maxdepth: 1
