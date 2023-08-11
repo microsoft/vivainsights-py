@@ -26,12 +26,9 @@ def import_query(x, encoding: str = 'utf-8'):
     Parameters
     ----------
     x : 
-        The parameter `x` is the input file name or path. It should be a string representing the file name
-    or path of the CSV file you want to import.
+        The parameter `x` is the input file name or path. It should be a string representing the file name or path of the CSV file you want to import.
     encoding : str, optional
-        The encoding parameter specifies the character encoding to be used when reading the CSV file. The
-    default value is 'utf-8', which is a widely used encoding for text files. However, you can specify a
-    different encoding if needed.
+        The encoding parameter specifies the character encoding to be used when reading the CSV file. The default value is 'utf-8', which is a widely used encoding for text files. However, you can specify a different encoding if needed.
     
     Returns
     -------

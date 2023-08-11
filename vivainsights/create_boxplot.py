@@ -171,24 +171,17 @@ def create_boxplot(data: pd.DataFrame, metric: str, hrvar: str ="Organization", 
     data : pandas dataframe
         A pandas DataFrame containing the data for analysis.
     metric : str
-        The `metric` parameter is a string that represents the variable or metric for which you want to
-    create the boxplot visualization and summary table. This variable should be present in the input
-    `data` DataFrame.
+        The `metric` parameter is a string that represents the variable or metric for which you want to create the boxplot visualization and summary table. This variable should be present in the input data` DataFrame.
     hrvar : str, optional
-        The `hrvar` parameter is the HR variable that you want to use for grouping the data. By default, it
-    is set to "Organization", but you can pass a different HR variable if needed.
+        The `hrvar` parameter is the HR variable that you want to use for grouping the data. By default, it is set to "Organization", but you can pass a different HR variable if needed.
     mingroup: int, optional
-        The `mingroup` parameter is an optional parameter that specifies the minimum number of observations
-    required in each group for the boxplot to be created. If a group has fewer observations than the
-    `mingroup` value, it will be excluded from the boxplot. The default value is 5.
+        The `mingroup` parameter is an optional parameter that specifies the minimum number of observations required in each group for the boxplot to be created. If a group has fewer observations than the `mingroup` value, it will be excluded from the boxplot. The default value is 5.
     return_type : str, optional
-        The `return_type` parameter determines the type of output that the function will return. It can
-    take one of three values:
+        The `return_type` parameter determines the type of output that the function will return. It can take one of three values:
     
     Returns
     -------
-        The function `create_boxplot` returns different outputs based on the value of the `return_type`
-    parameter
+        The function `create_boxplot` returns different outputs based on the value of the `return_type` parameter
 
     Example
     -------

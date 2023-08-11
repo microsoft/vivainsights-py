@@ -33,24 +33,24 @@ def identify_tenure(data: pd.DataFrame,
   Parameters
   ----------
   data : pandas dataframe
-    The `data` parameter is a pandas DataFrame that contains the employee data. It should have columns
-  for the hire date (`beg_date`) and the metric date (`end_date`).
+    The `data` parameter is a pandas DataFrame that contains the employee data. It should have columns for the hire date (`beg_date`) and the metric date (`end_date`).
   beg_date : optional
-    The `beg_date` parameter is the name of the column in the DataFrame that represents the start date
-  of employment for each employee. By default, it is set to "HireDate".
+    The `beg_date` parameter is the name of the column in the DataFrame that represents the start date of employment for each employee. By default, it is set to "HireDate".
   end_date : optional
-    The `end_date` parameter is the name of the column in the `data` DataFrame that represents the end
-  date of the tenure period for each employee.
+    The `end_date` parameter is the name of the column in the `data` DataFrame that represents the end date of the tenure period for each employee.
   maxten : optional
-    The `maxten` parameter is used to specify the maximum tenure in years. Employees with a tenure
-  greater than or equal to `maxten` will be considered as "odd" employees.
+    The `maxten` parameter is used to specify the maximum tenure in years. Employees with a tenure greater than or equal to `maxten` will be considered as "odd" employees.
   return_type :  optional
-    The `return_type` parameter determines the type of output that the function will return. It can
-  have the following values:
+    The `return_type` parameter determines the type of output that the function will return. It can have the following values:
+    - "message" (default)
+    - "plot"
+    - "data_cleaned"
+    - "data_dirty"
+    - "data"
+    - "text"
+  
   date_format : optional
-    The `date_format` parameter is used to specify the format of the date strings in the `beg_date` and
-  `end_date` columns of the input DataFrame. It is set to "%Y-%m-%d" by default, which represents the
-  format "YYYY-MM-DD".
+    The `date_format` parameter is used to specify the format of the date strings in the `beg_date` and `end_date` columns of the input DataFrame. It is set to "%Y-%m-%d" by default, which represents the format "YYYY-MM-DD".
   
   Returns
   -------

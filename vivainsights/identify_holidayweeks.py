@@ -48,7 +48,8 @@ def identify_holidayweeks(data: pd.DataFrame, sd = 1, return_type = "text"):
 
     Returns
     -------
-    A different output is returned depending on the value passed to return_type
+    A different output is returned depending on the value passed to return_type:
+
     message : str
         A message is printed identifying holiday weeks.
     data : pandas dataframe
