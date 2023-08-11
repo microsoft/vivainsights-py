@@ -19,8 +19,7 @@ def extract_date_range(data: pd.DataFrame, return_type: str = "table"):
     Parameters
     ---------
     data : pandas dataframe
-         The `data` parameter is a pandas DataFrame that contains the data from which you want
-    to extract the date range. It should have at least one column that represents the date
+         The `data` parameter is a pandas DataFrame that contains the data from which you want to extract the date range. It should have at least one column that represents the date
     return_type : str
         The `return_type` parameter is a string that specifies the format in which the date range should be returned. It has two possible values:, defaults to table
     

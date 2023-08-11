@@ -27,23 +27,15 @@ def extract_hr(
     data : pandas dataframe 
         Contains the data to extract HR (highly-recurring) variables from
     max_unique: int 
-        The maximum number of unique values a column can have to be included in the
-    output, defaults to 50 (optional)
+        The maximum number of unique values a column can have to be included in the output, defaults to 50 (optional)
     exclude_constants: boolean
-         A boolean value (True/False) indicating whether to exclude columns with
-    constant values or not. If True, columns with constant values will be excluded. If False, all
-    columns will be included regardless of whether they have constant values or not, defaults to True
-    (optional)
+         A boolean value (True/False) indicating whether to exclude columns with constant values or not. If True, columns with constant values will be excluded. If False, all columns will be included regardless of whether they have constant values or not, defaults to True (optional)
     return_type : str
-         The type of output to be returned, either "names" or "vars". If "names", the
-    function will return the names of the columns that meet the specified criteria. If "vars", the
-    function will return the actual columns that meet the specified criteria, defaults to names
-    (optional)
+         The type of output to be returned, either "names" or "vars". If "names", the function will return the names of the columns that meet the specified criteria. If "vars", the function will return the actual columns that meet the specified criteria, defaults to names (optional)
     
     Returns 
     -------
-    The function is not returning anything. It is printing the column names of the object
-    columns in the filtered dataframe.
+    The function is not returning anything. It is printing the column names of the object columns in the filtered dataframe.
     """
     try:
         if((isinstance(max_unique, int)) and (isinstance(exclude_constants, bool))\

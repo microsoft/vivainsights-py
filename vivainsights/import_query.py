@@ -32,8 +32,7 @@ def import_query(x, encoding: str = 'utf-8'):
     
     Returns
     -------
-        The variable `data` if the input file is a valid CSV file. If the input file is not a valid CSV
-    file, the function will print an error message and return `None`.
+    The variable `data` if the input file is a valid CSV file. If the input file is not a valid CSVfile, the function will print an error message and return `None`.
     """    
     
     # in case '.csv' is not all in lower case, make it lower case

@@ -181,7 +181,7 @@ def create_boxplot(data: pd.DataFrame, metric: str, hrvar: str ="Organization", 
     
     Returns
     -------
-        The function `create_boxplot` returns different outputs based on the value of the `return_type` parameter
+    The function `create_boxplot` returns different outputs based on the value of the `return_type` parameter
 
     Example
     -------

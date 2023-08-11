@@ -47,22 +47,22 @@ def create_trend(data: pd.DataFrame,
     
   Parameters
   ---------
-    data : panda dataframe
-       The input data as a pandas DataFrame.
-    metric : str
-      The metric parameter is a string that represents the column name in the data DataFrame that contains the values to be plotted or analyzed. This could be any numerical metric such as sales, revenue, or number of hours worked.
-    palette : list
-      The `palette` parameter is a list of colors that will be used to represent different groups in the trend plot. Each color in the list corresponds to a different group. By default, the palette includes 8 colors, but you can modify it to include more or fewer colors if needed.
-    hrvar : str
-      hrvar is a string parameter that represents the variable used for grouping the data. In this case, it is used to group the data by organization. Defaults to Organization mingroup: The `mingroup` parameter is used to specify the minimum number of groups that should be present in the data for the trend analysis. If the number of unique values in the `hrvar` column is less than `mingroup`, the function will raise an error. Defaults to 5
-    return_type : str
-       The `return_type` parameter determines the type of output that the function will return. It can have two possible values:. Defaults to plot
-    legend_title : str
-       The title for the legend in the plot. It is used to label the different categories or groups in the data. Defaults to Hours
-    date_column : str
-       The name of the column in the DataFrame that contains the dates for the trend analysis. Defaults to MetricDate
-    date_format : str
-       The `date_format` parameter is used to specify the format of the dates in the `date_column` of the input data. It should be a string that follows the syntax of the Python `datetime` module's `strftime` function. This allows you to specify how the dates are formatted in the. Defaults to %Y-%m-%d
+  data : panda dataframe
+      The input data as a pandas DataFrame.
+  metric : str
+    The metric parameter is a string that represents the column name in the data DataFrame that contains the values to be plotted or analyzed. This could be any numerical metric such as sales, revenue, or number of hours worked.
+  palette : list
+    The `palette` parameter is a list of colors that will be used to represent different groups in the trend plot. Each color in the list corresponds to a different group. By default, the palette includes 8 colors, but you can modify it to include more or fewer colors if needed.
+  hrvar : str
+    hrvar is a string parameter that represents the variable used for grouping the data. In this case, it is used to group the data by organization. Defaults to Organization mingroup: The `mingroup` parameter is used to specify the minimum number of groups that should be present in the data for the trend analysis. If the number of unique values in the `hrvar` column is less than `mingroup`, the function will raise an error. Defaults to 5
+  return_type : str
+      The `return_type` parameter determines the type of output that the function will return. It can have two possible values:. Defaults to plot
+  legend_title : str
+      The title for the legend in the plot. It is used to label the different categories or groups in the data. Defaults to Hours
+  date_column : str
+      The name of the column in the DataFrame that contains the dates for the trend analysis. Defaults to MetricDate
+  date_format : str
+      The `date_format` parameter is used to specify the format of the dates in the `date_column` of the input data. It should be a string that follows the syntax of the Python `datetime` module's `strftime` function. This allows you to specify how the dates are formatted in the. Defaults to %Y-%m-%d
 
   Returns
   ------

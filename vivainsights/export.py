@@ -28,10 +28,14 @@ def export(x,
         
         Parameters
         ---------
-            x (dataframe or matplotlib figure object): The object to export, which can be a data frame or a matplotlib figure object.
-            file_format (csv/png/svg/jpeg/pdf/clipboard): Character string specifying the method of export.
-            path (str, optional): If exporting a file, enter the path and the desired file name. Defaults to "insights export".
-            timestamp (bool, optional): Logical vector specifying whether to include a timestamp in the file name. Defaults to True.
+        x : dataframe or matplotlib figure object
+            The object to export, which can be a data frame or a matplotlib figure object.
+        file_format : csv/png/svg/jpeg/pdf/clipboard 
+            Character string specifying the method of export.
+        path : str or optional 
+            If exporting a file, enter the path and the desired file name. Defaults to "insights export". 
+        timestamp : bool or optional 
+            Logical vector specifying whether to include a timestamp in the file name. Defaults to True.
         
         Returns
         -------
