@@ -1,4 +1,4 @@
-setup
+Setup
 ============
 
 .. automodule:: setup
@@ -6,7 +6,8 @@ setup
    :undoc-members:
    :show-inheritance:
 
-.. include:: setup.py
+.. include:: 
+   :doc:`../setup.py`   
 
 Installation
 ------------
