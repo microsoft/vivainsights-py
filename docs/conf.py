@@ -25,7 +25,9 @@ extensions = ["myst_parser", "sphinx.ext.autodoc", "sphinx.ext.viewcode", "sphin
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
-
+# Add path to logo and favicon
+html_logo = '_static/vivainsights-py.png'
+html_favicon = '_static/favicon.svg'
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
