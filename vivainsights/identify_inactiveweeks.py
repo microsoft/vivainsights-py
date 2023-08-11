@@ -12,19 +12,31 @@ from vivainsights.create_bar import create_bar_calc
 
 def identify_inactiveweeks(data: pd.DataFrame, sd=2, return_type="text"):
     """
+    Name
+    ----
+    identify_inactiveweeks
+
+    Description
+    -----------
     The function `identify_inactiveweeks` identifies weeks where collaboration hours are more than a
     specified number of standard deviations below the mean and returns the result in the specified
     format.
     
-    :param data: The `data` parameter is a pandas DataFrame that contains the following columns:
-    :type data: pd.DataFrame
-    :param sd: The `sd` parameter stands for the number of standard deviations below the mean that is
+    Parameters
+    ----------
+    :data: pandas dataframe
+        The `data` parameter is a pandas DataFrame that contains the following columns:
+    sd : int
+        The `sd` parameter stands for the number of standard deviations below the mean that is
     considered as inactive. In this code, it is used to identify weeks where the collaboration hours are
     more than `sd` standard deviations below the mean, defaults to 2 (optional)
-    :param return_type: The `return_type` parameter determines the type of output that the function will
+    return_type : str
+         The `return_type` parameter determines the type of output that the function will
     return. It can have the following values:, defaults to text (optional)
-    :return: The function `identify_inactiveweeks` returns different outputs based on the value of the
-    `return_type` parameter.
+    
+    Returns
+    -------
+    The function `identify_inactiveweeks` returns different outputs based on the value of the `return_type` parameter.
     """
     # Z score calculation    
     data['z_score'] = (data['Collaboration_hours'] - data.groupby('PersonId')['Collaboration_hours'].transform('mean')) / data.groupby('PersonId')['Collaboration_hours'].transform('std')

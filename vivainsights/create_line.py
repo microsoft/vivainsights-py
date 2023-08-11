@@ -106,13 +106,26 @@ def create_line_viz(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5):
 
 def create_line(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, return_type: str = 'plot'):
     """
-    Args:
-        data (df): person query data
-        metric (str): name of the metric to be analysed
-        hrvar (str): name of the organizational attribute to be used for grouping
-        return_type (str, optional): type of output to return. Defaults to "plot".
-    Returns:
-        _type_: _description_
+    Name
+    ----
+    create_line
+    
+    Description
+    -----------
+    Provides a week by week view of a selected metric, visualised as line charts.
+
+    Parameters
+    ----------
+    data : pandas dataframe
+        person query data
+    metric : str
+        name of the metric to be analysed
+    hrvar : str
+        name of the organizational attribute to be used for grouping
+    mingroup : int, optional
+        Numeric value setting the privacy threshold / minimum group size, by default 5
+    return_type : str, optional
+        type of output to return. Defaults to "plot".
     """    
     if return_type == "plot":
         out = create_line_viz(data=data, metric=metric, hrvar=hrvar, mingroup=mingroup)

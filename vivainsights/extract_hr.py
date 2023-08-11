@@ -14,18 +14,35 @@ def extract_hr(
     exclude_constants =True,
     return_type: str = "names"):
     """    
-    :param data: a pandas DataFrame containing the data to extract HR (highly-recurring) variables from
-    :param max_unique: The maximum number of unique values a column can have to be included in the
+    Name
+    ----
+    extract_hr
+
+    Description
+    -----------
+    The function `extract_hr` extracts HR attributes (organizational data) through a combination of detecting variable class,
+
+    Parameters
+    ---------
+    data : pandas dataframe 
+        Contains the data to extract HR (highly-recurring) variables from
+    max_unique: int 
+        The maximum number of unique values a column can have to be included in the
     output, defaults to 50 (optional)
-    :param exclude_constants: A boolean value (True/False) indicating whether to exclude columns with
+    exclude_constants: boolean
+         A boolean value (True/False) indicating whether to exclude columns with
     constant values or not. If True, columns with constant values will be excluded. If False, all
     columns will be included regardless of whether they have constant values or not, defaults to True
     (optional)
-    :param return_type: The type of output to be returned, either "names" or "vars". If "names", the
+    return_type : str
+         The type of output to be returned, either "names" or "vars". If "names", the
     function will return the names of the columns that meet the specified criteria. If "vars", the
     function will return the actual columns that meet the specified criteria, defaults to names
     (optional)
-    :return: The function is not returning anything. It is printing the column names of the object
+    
+    Returns 
+    -------
+    The function is not returning anything. It is printing the column names of the object
     columns in the filtered dataframe.
     """
     try:

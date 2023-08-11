@@ -91,13 +91,27 @@ def hrvar_count_viz(data: pd.DataFrame, hrvar: str):
     return fig
 
 def hrvar_count(data: pd.DataFrame, hrvar: str = 'Organization', return_type: str = "plot"):
-    """_summary_
-    Args:
-    data (df): person query data
-    hrvar (str): name of the organizational attribute to be used for grouping
-    return_type (str, optional): type of output to return. Defaults to "plot".
-    Returns:
-        _type_: _description_
+    """
+    Name
+    ----
+    hrvar_count
+
+    Description
+    -----------
+    This function generates a count of the distinct persons in the data population, grouped by a selected HR variable.
+
+    Parameters
+    ---------
+    data : ppandas dataframe
+        person query data
+    hrvar : str
+         name of the organizational attribute to be used for grouping
+    return_type : str or optional 
+        type of output to return. Defaults to "plot".
+
+    Example
+    -------
+    >>> hrvar_count(pq_data, hrvar = "LevelDesignation")
     """
     if return_type == "plot":
         out = hrvar_count_viz(data=data, hrvar=hrvar)

@@ -15,33 +15,52 @@ from vivainsights.create_bar import create_bar
 from vivainsights.extract_date_range import extract_date_range
 
 def create_inc(data: pd.DataFrame, metric: str, hrvar: typing.List or str, mingroup: int = 5, threshold: float = None, position: str = None, return_type: str = 'plot'):
-    '''
+    """
+    Name
+    ----
+    create_inc
+
+    Description
+    -----------
     Create an incidence analysis reflecting proportion of population scoring above or below a threshold for a metric. 
     An incidence analysis is generated, with each value in the table reflecting the proportion of the population that 
     is above or below a threshold for a specified metric. There is an option to only provide a single `hrvar` in which a 
     bar plot is generated, or two `hrvar` values where an incidence table (heatmap) is generated.
 
-    Parameters:
-    data (pd.DataFrame): A Standard Person Query dataset in the form of a Pandas DataFrame.
-    metric (str): Name of the metric, e.g. "Collaboration_hours".
-    hrvar (str or list): Name(s) of the HR Variable(s) by which to split metrics.
-    mingroup (int): Privacy threshold / minimum group size. Defaults to 5.
-    threshold (float): Threshold value to split the data based on the position argument. Defaults to None.
-    position (str): One of the below valid values:
-                    - "above": show incidence of those equal to or above the threshold
-                    - "below": show incidence of those equal to or below the threshold
-    return_type (str): What to return. This must be one of the following strings:
-                    - "plot"
-                    - "table"
+    Parameters
+    ----------
+    data : pandas dataframe
+        A Standard Person Query dataset in the form of a Pandas DataFrame.
+    metric : str 
+        Name of the metric, e.g. "Collaboration_hours".
+    hrvar : str or list
+         Name(s) of the HR Variable(s) by which to split metrics.
+    mingroup : int
+        Privacy threshold / minimum group size. Defaults to 5.
+    threshold : float
+        Threshold value to split the data based on the position argument. Defaults to None.
+    position :  str 
+        One of the below valid values:
+        - "above": show incidence of those equal to or above the threshold
+        - "below": show incidence of those equal to or below the threshold
+    return_type : str
+        What to return. This must be one of the following strings:
+        - "plot"
+        - "table"
                     
-    Returns:
+    Returns
+    -------
     Output is returned depending on the value passed to the return_type argument:
     - "plot": Matplotlib or Seaborn plot object
     - "table": Pandas DataFrame
     
-    Raises:
+    Raises
+    ------
     ValueError: If hrvar is not a string or list with at most length 2.
-    '''
+
+    Example
+    -------
+    """
     
     if not isinstance(hrvar, list):
         hrvar = [hrvar]
@@ -54,30 +73,50 @@ def create_inc(data: pd.DataFrame, metric: str, hrvar: typing.List or str, mingr
         return create_inc_grid(data, metric, hrvar, mingroup, threshold, position, return_type)
     
 def create_inc_bar(data: pd.DataFrame, metric: str, hrvar: str, mingroup: int = 5, threshold: float = None, position: str = None, return_type: str='plot'):
-    '''
+    """
+    Name
+    -----
+    create_inc_bar
+
+    Description
+    -----------
     Run `create_inc` with only single `hrvar`. Returning a bar chart
 
-    Parameters:
-    data (pd.DataFrame): A Standard Person Query dataset in the form of a Pandas DataFrame.
-    metric (str): Name of the metric, e.g. "Collaboration_hours".
-    hrvar (str): Name of the HR Variable by which to split metrics.
-    mingroup (int): Privacy threshold / minimum group size. Defaults to 5.
-    threshold (float): Threshold value to split the data based on the position argument. Defaults to None.
-    position (str): One of the below valid values:
-                    - "above": show incidence of those equal to or above the threshold
-                    - "below": show incidence of those equal to or below the threshold
-    return_type (str): What to return. This must be one of the following strings:
-                    - "plot"
-                    - "table"
+    Parameters
+    ----------
+    data : pandas dataframe
+        A Standard Person Query dataset in the form of a Pandas DataFrame.
+    metric : str 
+        Name of the metric, e.g. "Collaboration_hours".
+    hrvar : str
+        Name of the HR Variable by which to split metrics.
+    mingroup : int
+        Privacy threshold / minimum group size. Defaults to 5.
+    threshold : float
+        Threshold value to split the data based on the position argument. Defaults to None.
+    position : str
+        One of the below valid values:
+        - "above": show incidence of those equal to or above the threshold
+        - "below": show incidence of those equal to or below the threshold
+    return_type : str 
+        What to return. This must be one of the following strings:
+        - "plot"
+        - "table"
                     
-    Returns:
+    Returns
+    -------
     Output is returned depending on the value passed to the return_type argument:
     - "plot": Matplotlib or Seaborn plot object
     - "table": Pandas DataFrame
 
-    Raises:
+    Raises
+    ------
     ValueError: If hrvar is not a string.
-    '''
+
+    Example
+    -------
+    >>> create_inc_bar(data = pq_data, metric = "Collaboration_hours", hrvar = "LevelDesignation", theshold = 20, position = "below", return_type = "plot")
+    """
 
     # Transform data so that metrics become proportions
     data_t = data.copy()
@@ -104,31 +143,47 @@ def create_inc_bar(data: pd.DataFrame, metric: str, hrvar: str, mingroup: int = 
         )
 
 def create_inc_grid(data: pd.DataFrame, metric: str, hrvar: typing.List, mingroup: int=5, threshold: float=None, position: str=None, return_type: str='plot'):
-    '''
+    """
+    Name
+    -----
+    create_inc_grid
+
+    Description
+    -----------
     Run `create_inc` with two `hrvar`.
     Returning a heatmap
 
-    Parameters:
-    data (pd.DataFrame): A Standard Person Query dataset in the form of a Pandas DataFrame.
-    metric (str): Name of the metric, e.g. "Collaboration_hours".
-    hrvar (list): Names of the HR Variables by which to split metrics.
-    mingroup (int): Privacy threshold / minimum group size. Defaults to 5.
-    threshold (float): Threshold value to split the data based on the position argument. Defaults to None.
-    position (str): One of the below valid values:
-                    - "above": show incidence of those equal to or above the threshold
-                    - "below": show incidence of those equal to or below the threshold
-    return_type (str): What to return. This must be one of the following strings:
-                    - "plot"
-                    - "table"
+    Parameters
+    ----------
+    data : pandas dataframe 
+        A Standard Person Query dataset in the form of a Pandas DataFrame.
+    metric : str
+         Name of the metric, e.g. "Collaboration_hours".
+    hrvar : list
+         Names of the HR Variables by which to split metrics.
+    mingroup : int
+         Privacy threshold / minimum group size. Defaults to 5.
+    threshold : float
+         Threshold value to split the data based on the position argument. Defaults to None.
+    position : str 
+        One of the below valid values:
+        - "above": show incidence of those equal to or above the threshold
+        - "below": show incidence of those equal to or below the threshold
+    return_type : str
+        What to return. This must be one of the following strings:
+        - "plot"
+        - "table"
                     
-    Returns:
+    Returns
+    -------
     Output is returned depending on the value passed to the return_type argument:
     - "plot": Matplotlib or Seaborn plot object
     - "table": Pandas DataFrame
 
-    Raises:
+    Raises
+    ------
     ValueError: If hrvar is not a list of length 2.
-    '''
+    """
 
     if not isinstance(hrvar, list) or len(hrvar) != 2:
         raise ValueError("`hrvar` must be a list of length 2.")

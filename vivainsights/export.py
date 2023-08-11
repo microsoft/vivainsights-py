@@ -17,23 +17,33 @@ def export(x,
            timestamp=True):
            
         """
+        Name
+        ----
+
+        Description
+        -----------
         Exports the data to the specified file format and saves it to the specified filename.
         A general use function to export 'vivainsights' outputs to CSV, clipboard, or save as
         images. By default, `export()` copies a data frame to the clipboard.
         
-        Args:
+        Parameters
+        ---------
             x (dataframe or matplotlib figure object): The object to export, which can be a data frame or a matplotlib figure object.
             file_format (csv/png/svg/jpeg/pdf/clipboard): Character string specifying the method of export.
             path (str, optional): If exporting a file, enter the path and the desired file name. Defaults to "insights export".
             timestamp (bool, optional): Logical vector specifying whether to include a timestamp in the file name. Defaults to True.
-        Return: A different output is returned depending on the value passed to the `file_format`
-                Argument:
-                  - `"clipboard"`: no return - data frame is saved to clipboard.
-                  - `"csv"`: CSV file containing data frame is saved to specified path.
-                  - `"png"`: PNG file containing '' object is saved to specified path.
-                  - `"svg"`: SVG file containing '' object is saved to specified path.
-                  - `"jpeg"`: JPEG file containing '' object is saved to specified path.
-                  - `"pdf"`: PDF file containing '' object is saved to specified path.
+        
+        Returns
+        -------
+        A different output is returned depending on the value passed to the `file_format`
+        Argument:
+        - `"clipboard"`: no return - data frame is saved to clipboard.
+        - `"csv"`: CSV file containing data frame is saved to specified path.
+        - `"png"`: PNG file containing '' object is saved to specified path.
+        - `"svg"`: SVG file containing '' object is saved to specified path.
+        - `"jpeg"`: JPEG file containing '' object is saved to specified path.
+        - `"pdf"`: PDF file containing '' object is saved to specified path.
+
         """
     
         # Create timestamped path (if applicable)

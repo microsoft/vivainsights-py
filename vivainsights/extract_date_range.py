@@ -2,23 +2,33 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-"""
-The function `extract_date_range` extracts the date range from a dataframe and returns it either as
-a table or as a text string.
-
-:param data: The `data` parameter is a pandas DataFrame that contains the data from which you want
-to extract the date range. It should have at least one column that represents the date
-:type data: pd.DataFrame
-:param return_type: The `return_type` parameter is a string that specifies the format in which the
-date range should be returned. It has two possible values:, defaults to table
-:type return_type: str (optional)
-:return: The function `extract_date_range` returns either a pandas DataFrame or a string, depending
-on the value of the `return_type` parameter.
-"""
 import pandas as pd
+"""Extracts the date range from a dataframe."""
 
 def extract_date_range(data: pd.DataFrame, return_type: str = "table"):
-    """Extracts the date range from a dataframe."""
+    """
+    Name
+    ----
+    extract_date_range
+
+    Description
+    -----------
+    The function `extract_date_range` extracts the date range from a dataframe and returns it either as
+    a table or as a text string.
+
+    Parameters
+    ---------
+    data : pandas dataframe
+         The `data` parameter is a pandas DataFrame that contains the data from which you want
+    to extract the date range. It should have at least one column that represents the date
+    return_type : str
+        The `return_type` parameter is a string that specifies the format in which the date range should be returned. It has two possible values:, defaults to table
+    
+    Returns 
+    -------
+    The function `extract_date_range` returns either a pandas DataFrame or a string, depending
+    on the value of the `return_type` parameter.
+    """
     date_var = None
     
     if "Date" in data.columns:
