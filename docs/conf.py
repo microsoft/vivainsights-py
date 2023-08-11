@@ -34,3 +34,13 @@ html_favicon = '_static/favicon.svg'
 
 html_theme = 'furo'
 html_static_path = ['_static']
+
+html_theme_options = {
+    'github_user': 'microsoft',
+    'github_repo': 'vivainsights-py',
+    'github_banner': True,
+    'github_button': True,
+    'github_type': 'star',
+    'github_count': 'true',
+    'show_related': 'true',
+}
