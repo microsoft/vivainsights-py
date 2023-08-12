@@ -12,19 +12,39 @@ import matplotlib.pyplot as plt
 
 def network_summary(graph, hrvar = None, return_type = "table"):
     """
-    :param graph: 'igraph' object that can be returned from `network_g2g()` or `network_p2p()` when the `return` argument is set to `"network"`.
-    :param hrvar: String containing the name of the HR Variable by which to split metrics. Defaults to `None`.
-    :return_type: String specifying what output to return. Valid inputs include:
+    Name
+    ----
+    network_summary
+
+    Description
+    ------------
+    This function summarises node centrality statistics with an igraph object.
+
+    Parameters
+    ----------
+    graph : igraph object
+        'igraph' object that can be returned from `network_g2g()` or `network_p2p()` when the `return` argument is set to `"network"`.
+    hrvar : str 
+        String containing the name of the HR Variable by which to split metrics. Defaults to `None`.
+    return_type : str 
+        String specifying what output to return. Valid inputs include:
         - `"table"`
         - `"network"`
         - `"plot"`
+   
+    Returns
+    -------
+    By default, a data frame containing centrality statistics. Available statistics include:
+    - `betweenness`: number of shortest paths going through a node.
+    - `closeness`: number of steps required to access every other node from a given node.
+    - `degree`: number of connections linked to a node.
+    - `eigenvector`: a measure of the influence a node has on a network.
+    - `pagerank`: calculates the PageRank for the specified vertices.
 
-    :return: By default, a data frame containing centrality statistics. Available statistics include:
-       - `betweenness`: number of shortest paths going through a node.
-       - `closeness`: number of steps required to access every other node from a given node.
-       - `degree`: number of connections linked to a node.
-       - `eigenvector`: a measure of the influence a node has on a network.
-       - `pagerank`: calculates the PageRank for the specified vertices.
+    Examples
+    --------
+    >>> graph = network_g2g(data = vi.load_g2g_data(), return_type = "network")
+    >>> network_summary(graph, hrvar = "Organization", return_type = "table")
     """ 
     #calculate summary table
     sum_tb = pd.DataFrame({

@@ -15,42 +15,64 @@ import random
 
 def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algorithm="fr", node_colour="lightblue", exc_threshold=0.1, org_count=None, subtitle="Collaboration Across Organizations", return_type="plot"):
     """
-    :param data: Data frame containing a group-to-group query.
-    :param primary: String containing the variable name for the Primary Collaborator column.
-    :param secondary: String containing the variable name for the SecondaryCollaborator column.
-    :param metric: String containing the variable name for metric. Defaults to `Meeting_Count`.
-    :param algorithm: String to specify the node placement algorithm to be used. 
+    Name
+    ----
+    network_g2g
+
+    Description
+    ------------
+    This function returns a network plot given a data frame containing a group-to-group query.
+
+    Parameters
+    ----------
+    data : data frame
+        Data frame containing a group-to-group query.
+    primary : str
+        String containing the variable name for the Primary Collaborator column.
+    secondary : str
+        String containing the variable name for the SecondaryCollaborator column.
+    metric: str
+        String containing the variable name for metric. Defaults to `Meeting_Count`.
+    algorithm : str
+        String to specify the node placement algorithm to be used. 
         - Defaults to `"fr"` for the force-directed algorithm of Fruchterman and Reingold. 
         - See <https://rdrr.io/cran/ggraph/man/layout_tbl_graph_igraph.html> for a full list of options.
-
-    :param node_colour: String or named vector to specify the colour to be used for displaying nodes. 
+    node_colour : str or dictionary
+        String or named vector to specify the colour to be used for displaying nodes. 
         - Defaults to `"lightblue"`. 
         - If `"vary"` is supplied, a different colour is shown for each node at random. 
         - If a named dictionary is supplied, the names must match the values of the variable provided for the `primary` and `secondary` columns. 
         - See example section for details.
-
-    :param exc_threshold: Numeric value between 0 and 1 specifying the exclusion threshold to apply. 
+    exc_threshold: Numeric value between 0 and 1 specifying the exclusion threshold to apply. 
         - Defaults to 0.1, which means that the plot will only display collaboration above 10% of a node's total collaboration. 
         - This argument has no impact on `"data"` or `"table"` return.
-
-    :param org_count: Optional data frame to provide the size of each organizationin the `secondary` attribute.
+    org_count : optional 
+        Optional data frame to provide the size of each organizationin the `secondary` attribute.
         - The data frame should contain only two columns: 
         - Name of the `secondary` attribute excluding any prefixes, e.g. `"Organization"`. 
         - Must be of character or factor type. `"n"`. Must be of numeric type. 
         - Defaults to `None`, where node sizes will be fixed.
-
-    :param subtitle: String to override default plot subtitle.
-    :param return_type: String specifying what to return. This must be one of the following strings:
+    subtitle : str 
+        String to override default plot subtitle.
+    return_type : str
+        String specifying what to return. This must be one of the following strings:
         - `"plot"`
         - `"table"`
         - `"network"`
         - `"data"`
+        - Defaults to `"plot"`.
 
-    :return: A different output is returned depending on the value passed to the `return` argument:
-        - `"plot"`: 'ggplot' object. A group-to-group network plot.
-        - `"table"`: data frame. An interactive matrix of the network.
-        - `"network`: 'igraph' object used for creating the network plot.
-        - `"data"`: data frame. A long table of the underlying data.
+    Returns
+    -------
+    A different output is returned depending on the value passed to the `return` argument:
+    - `"plot"`: 'ggplot' object. A group-to-group network plot.
+    - `"table"`: data frame. An interactive matrix of the network.
+    - `"network`: 'igraph' object used for creating the network plot.
+    - `"data"`: data frame. A long table of the underlying data.
+
+    Example
+    -------
+    >>> network_g2g(data = vi.load_g2g_data(), metric = "Meeting_Count")
     """ 
     if primary is None:
         #Only return first match

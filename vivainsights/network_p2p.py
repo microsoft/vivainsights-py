@@ -31,72 +31,103 @@ def network_p2p(data,
     seed = 1
 ):
     """
-    :param data: Data frame containing a person-to-person query.
-    :param hrvar: String containing the label for the HR attribute.
-    :param return_type: A different output is returned depending on the value passed to the `return_type`
-    argument:
-    - `'plot'` (default)
-    - `'plot-pdf'`
-    - `'sankey'`
-    - `'table'`
-    - `'data'`
-    - `'network'`
+    Name
+    ----
+    network_p2p
 
-    :param centrality: string to determines which centrality measure is used to scale the size of the nodes. All centrality measures are automatically calculated when it is set to one of the below values, and reflected in the `'network'` and `'data'` outputs.
-    Measures include:
-    - `betweenness`
-    - `closeness`
-    - `degree`
-    - `eigenvector`
-    - `pagerank`
-    When `centrality` is set to None, no centrality is calculated in the outputs and all the nodes would have the same size. 
+    Description
+    ------------
+    This function returns a network plot given a data frame containing a person-to-person query.
 
-    :param community: String determining which community detection algorithms to apply. Valid values include:
-    - `None` (default): compute analysis or visuals without computing communities.
-    - `"louvain"`
-    - `"leiden"`
-    - `"edge_betweenness"`
-    - `"fast_greedy"`
-    - `"fluid_communities"`
-    - `"infomap"`
-    - `"label_prop"`
-    - `"leading_eigen"`
-    - `"optimal"`
-    - `"spinglass"`
-    - `"walk_trap"`
+    Parameters
+    ----------
+    data : dataframe 
+        Data frame containing a person-to-person query.
+    hrvar : str 
+        String containing the label for the HR attribute.
+    return_type : str 
+        A different output is returned depending on the value passed to the `return_type` argument:
+        - `'plot'` (default)
+        - `'plot-pdf'`
+        - `'sankey'`
+        - `'table'`
+        - `'data'`
+        - `'network'`
 
-    :param weight: String to specify which column to use as weights for the network. To create a graph without weights, supply `None` to this argument.
-    :param comm_args: list containing the arguments to be passed through to igraph's clustering algorithms. Arguments must be named. See examples section on how to supply arguments in a named list.
-    :param layout: String to specify the node placement algorithm to be used. Defaults to `"mds"` for the deterministic multi-dimensional scaling of nodes. 
-    See <https://rdrr.io/cran/ggraph/man/layout_tbl_graph_igraph.html> for a full  list of options.
-    :param path: File path for saving the PDF output. Defaults to a timestamped path based on current parameters.
-    :param style: String to specify which plotting style to use for the network plot. Valid values include:
-    - `"igraph"`
-    - `"ggraph"`
+    centrality : str 
+        string to determines which centrality measure is used to scale the size of the nodes. All centrality measures are automatically calculated when it is set to one of the below values, and reflected in the `'network'` and `'data'` outputs. 
+        Measures include:
+        - `betweenness`
+        - `closeness`
+        - `degree`
+        - `eigenvector`
+        - `pagerank`
+        When `centrality` is set to None, no centrality is calculated in the outputs and all the nodes would have the same size. 
 
-    :param bg_fill: String to specify background fill colour.
-    :param font_col: String to specify font colour.
-    :param legend_pos: String to specify position of legend. Defaults to
-    `"right"`. See `ggplot2::theme()`. This is applicable for both the 'ggraph' and the fast plotting method. Valid inputs include:
-    - `"bottom"`
-    - `"top"`
-    - `"left"`
-    -`"right"`
+    community : str 
+        String determining which community detection algorithms to apply. Valid values include:
+        - `None` (default): compute analysis or visuals without computing communities.
+        - `"louvain"`
+        - `"leiden"`
+        - `"edge_betweenness"`
+        - `"fast_greedy"`
+        - `"fluid_communities"`
+        - `"infomap"`
+        - `"label_prop"`
+        - `"leading_eigen"`
+        - `"optimal"`
+        - `"spinglass"`
+        - `"walk_trap"`
 
-    :param palette: String specifying the function to generate a colour palette with a single argument `n`. Uses `"rainbow"` by default.
-    :param node_alpha: A numeric value between 0 and 1 to specify the transparency of the nodes. Defaults to 0.7.
-    :param edge_alpha: A numeric value between 0 and 1 to specify the transparency of the edges (only for 'ggraph' mode). Defaults to 1.
-    :param edge_col: String to specify edge link colour.
-    :param node_sizes: Numeric vector of length two to specify the range of node sizes to rescale to, when `centrality` is set to a non-null value.
-    :param seed: Seed for the random number generator passed to either `set.seed()` when the louvain or leiden community detection algorithm is used, to ensure consistency. Only applicable when `community` is set to one of the valid non-null values.
+    weight : str 
+        String to specify which column to use as weights for the network. To create a graph without weights, supply `None` to this argument.
+    comm_args : list
+        list containing the arguments to be passed through to igraph's clustering algorithms. Arguments must be named. See examples section on how to supply arguments in a named list.
+    layout : str
+        String to specify the node placement algorithm to be used. Defaults to `"mds"` for the deterministic multi-dimensional scaling of nodes. 
+        See <https://rdrr.io/cran/ggraph/man/layout_tbl_graph_igraph.html> for a full  list of options.
+    path : str (file path)
+        File path for saving the PDF output. Defaults to a timestamped path based on current parameters.
+    style: str 
+        String to specify which plotting style to use for the network plot. Valid values include:
+        - `"igraph"`
+        - `"ggraph"`
 
-    :return: A different output is returned depending on the value passed to the `return_type` argument:
+    bg_fill : str 
+        String to specify background fill colour.
+    font_col : str
+        String to specify font colour.
+    legend_pos : str
+        String to specify position of legend. Defaults to `"right"`. See `ggplot2::theme()`. This is applicable for both the 'ggraph' and the fast plotting method. Valid inputs include:
+        - `"bottom"`
+        - `"top"`
+        - `"left"`
+        -`"right"`
+
+    palette : str 
+        String specifying the function to generate a colour palette with a single argument `n`. Uses `"rainbow"` by default.
+    node_alpha : int 
+        A numeric value between 0 and 1 to specify the transparency of the nodes. Defaults to 0.7.
+    :param edge_alpha : int
+        A numeric value between 0 and 1 to specify the transparency of the edges (only for 'ggraph' mode). Defaults to 1.
+    edge_col: String to specify edge link colour.
+    node_sizes: int
+        Numeric vector of length two to specify the range of node sizes to rescale to, when `centrality` is set to a non-null value.
+    seed : int
+        Seed for the random number generator passed to either `set.seed()` when the louvain or leiden community detection algorithm is used, to ensure consistency. Only applicable when `community` is set to one of the valid non-null values.
+
+    Returns
+    -------
+    A different output is returned depending on the value passed to the `return_type` argument:
     - `'plot'`: return a network plot, interactively within R.
     - `'plot-pdf'`: save a network plot as PDF. This option is recommended when the graph is large, which make take a long time to run if `return_type = 'plot'` is selected. Use this together with `path` to control the save location.
     - `'sankey'`: return a sankey plot combining communities and HR attribute. This is only valid if a community detection method is selected at community`.
     - `'table'`: return a vertex summary table with counts in communities and HR attribute. When `centrality` is non-NULL, the average centrality values are calculated per group.
     - `'data'`: return a vertex data file that matches vertices with communities and HR attributes.
     - `'network'`: return 'igraph' object.
+
+    Examples
+    --------
     """
     path ="p2p" + ("" if community is None else '_' + community)
 
