@@ -5,10 +5,13 @@
 """
 This module performs network analysis with a person-to-person query
 """
+import vivainsights as vi
 import pandas as pd
 import igraph as ig
 import matplotlib.pyplot as plt
 import random
+from sklearn.preprocessing import minmax_scale
+import time
 
 def network_p2p(data, 
     hrvar = "Organization",
@@ -131,7 +134,7 @@ def network_p2p(data,
     """
     path ="p2p" + ("" if community is None else '_' + community)
 
-    if len(node_sizes) > 2:
+    if len(node_sizes) != 2:
         raise ValueError("`node_sizes` must be of length 2")
 
     #Set data frame for edges
@@ -141,25 +144,33 @@ def network_p2p(data,
     else:
         edges = data.loc[:, ["PrimaryCollaborator_PersonId", "SecondaryCollaborator_PersonId", weight]]
 
-    #Set variables
-    #TieOrigin = PrimaryCollabortor
-    tieOrigin = edges[["PrimaryCollaborator_PersonId"]].drop_duplicates().rename(columns={"PrimaryCollaborator_PersonId": "node"})
-    #TieDest = SecondaryCollaborator
-    tieDest = edges[["SecondaryCollaborator_PersonId"]].drop_duplicates().rename(columns={"SecondaryCollaborator_PersonId": "node"})
-    
     pc_hrvar = "PrimaryCollaborator_" + hrvar
     sc_hrvar = "SecondaryCollaborator_" + hrvar
 
-    #Vertices data frame to provide meta-data
-    vert_ft = pd.concat([tieOrigin, tieDest])
+    #TieOrigin = PrimaryCollabortor
+    tieOrigin = (
+        edges[["PrimaryCollaborator_PersonId"]].drop_duplicates()
+        .merge(data[["PrimaryCollaborator_PersonId", pc_hrvar]], on = "PrimaryCollaborator_PersonId", how = "left") #left join
+        .rename(columns = {"PrimaryCollaborator_PersonId": "node"})
+        .assign(**{hrvar: lambda row: row[pc_hrvar]}) #assign new column
+        .drop(columns = [pc_hrvar]) 
+    )
 
-    #left join to add HR variable
-    vert_ft = vert_ft.merge(data[["PrimaryCollaborator_PersonId", pc_hrvar]], left_on="node", right_on="PrimaryCollaborator_PersonId", how="left").drop_duplicates()
-    vert_ft = vert_ft.merge(data[["SecondaryCollaborator_PersonId", sc_hrvar]], left_on="node", right_on="SecondaryCollaborator_PersonId", how="left").drop_duplicates()
-    vert_ft = vert_ft.drop(columns=["PrimaryCollaborator_PersonId", "SecondaryCollaborator_PersonId"]) # Remove duplicate columns
+    #TieDest = SecondaryCollaborator
+    tieDest = (
+        edges[["SecondaryCollaborator_PersonId"]].drop_duplicates()
+        .merge(data[["SecondaryCollaborator_PersonId", sc_hrvar]], on = "SecondaryCollaborator_PersonId", how = "left")
+        .rename(columns = {"SecondaryCollaborator_PersonId": "node"})
+        .assign(**{hrvar: lambda row: row[sc_hrvar]})
+        .drop(columns = [sc_hrvar])
+    )
+
+    #Vertices data frame to provide meta-data
+    vert_ft = pd.concat([tieOrigin, tieDest]).drop_duplicates()
 
     #Create igraph object
     g_raw = ig.Graph.TupleList(edges.itertuples(index=False), directed=True, weights=True)
+    
     for vertex in vert_ft["node"]:
         g_raw.add_vertex(vertex)
 
@@ -177,18 +188,18 @@ def network_p2p(data,
     elif community in valid_comm:
         random.seed(seed)
         g_ud = g_raw.as_undirected() # Convert to undirected graph
-        alg_label = "igraph::cluster_" + community
+        alg_label = "igraph.cluster." + community
         
         #combine arguments to clustering algorithms
         c_comm_args = ["graph", g_ud] + list(comm_args)
-        comm_out = getattr(ig.clustering, community)(*c_comm_args)
+        #output communities object
+        comm_out = eval(alg_label)(*c_comm_args)
 
-        for i, vertex in enumerate(g_raw.vs): #add partition to graph object
-            vertex["cluster"] = str(comm_out.membership[i])
+        for i, vertex in enumerate(g_raw.vs): #add cluser
+            vertex["cluster"] = str(comm_out.membership[i]) #add partition to graph object
         g = g_raw.simplify()
 
-        #output communities object
-
+        #Name of vertex attribute
         v_attr = "cluster"
     else: 
         raise ValueError("Please enter a valid input for `community`.")
@@ -196,9 +207,45 @@ def network_p2p(data,
     # centrality calculations ------------------------
     # attach centrality calculations if `centrality` is not NULL
     if centrality is not None:
-        return #TODO
+        g = vi.network_summary(g, return_type="network")
+        node_sizes = (node_sizes[1] - node_sizes[0]) 
+        node_sizes *= minmax_scale(g.vs[centrality]) + node_sizes[0] #min and max values
+        g.vs["node_size"] = node_sizes
     else:
-        return #TODO
+        #all nodes with the same size if centrality is not calculated
+        #adjust for plotting formats
+        if style == "igraph":
+            g.vs["node_size"] = [3] * g.vcount()
+        elif style == "ggraph":
+            g.vs["node_size"] = [2.5] * g.vcount()
+            node_sizes = [3,3] #fix node size
 
-    # Common area -----------------------------------
-    ## Create vertex table
+    # Common area ------------------- ----------------
+    g_layout = g.layout(layout)
+    out_path = path + '_' + str(time.time()) + '.pdf'
+
+    # Return outputs ---------------------------------------
+    #use fast plotting method
+    if return_type in ["plot", "plot-pdf"]:
+        return #TODO: add fast plotting method
+    
+    elif return_type == "data":
+        vert_ft = vert_ft.rename(columns = {"node": "name"})
+        vert_ft = vert_ft.reset_index(drop = True)        
+        return vert_ft
+    
+    elif return_type == "network":
+        return g
+    
+    elif return_type == "sankey":
+        if community is None:
+            raise ValueError("Note: no sankey return option is available if `NULL` is selected at `community`. Please specify a valid community detection algorithm.")
+        elif community in valid_comm:
+            #create sankey plot
+            return #TODO: vi.create_sankey()
+    
+    elif return_type == "table":
+        return #TODO: create table output
+    
+    else:
+        raise ValueError("invalid input for `return_type`.")
