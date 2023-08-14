@@ -28,7 +28,7 @@ def identify_churn(data: pd.DataFrame,
 
   Parameters
   ---------
-  data : pandas dataframr
+  data : pandas dataframe
      The dataframe to export
   n1 : int
      First `n` weeks of data to check for the person's presence

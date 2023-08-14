@@ -24,7 +24,7 @@ def identify_inactiveweeks(data: pd.DataFrame, sd=2, return_type="text"):
     
     Parameters
     ----------
-    :data: pandas dataframe
+    data : pandas dataframe
         The `data` parameter is a pandas DataFrame that contains the following columns:
     sd : int
         The `sd` parameter stands for the number of standard deviations below the mean that is considered as inactive. In this code, it is used to identify weeks where the collaboration hours are more than `sd` standard deviations below the mean, defaults to 2 (optional)
