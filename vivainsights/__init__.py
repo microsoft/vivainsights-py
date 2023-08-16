@@ -7,6 +7,7 @@ from .extract_date_range import *
 from .create_line import *
 from .create_rank import *
 from .create_boxplot import *
+from .create_sankey import *
 from .identify_outlier import *
 from .identify_inactiveweeks import *
 from .import_query import *
