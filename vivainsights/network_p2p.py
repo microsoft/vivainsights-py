@@ -70,15 +70,14 @@ def network_p2p(data,
     community : str 
         String determining which community detection algorithms to apply. Valid values include:
         - `None` (default): compute analysis or visuals without computing communities.
-        - `"louvain"`
+        - `"multilevel (a version of louvain)"`
         - `"leiden"`
         - `"edge_betweenness"`
-        - `"fast_greedy"`
-        - `"fluid_communities"`
+        - `"fastgreedy"`
         - `"infomap"`
-        - `"label_prop"`
-        - `"leading_eigen"`
-        - `"optimal"`
+        - `"label_propagation"`
+        - `"leading_eigenvector"`
+        - `"optimal_modularity"`
         - `"spinglass"`
         - `"walk_trap"`
 
@@ -178,7 +177,7 @@ def network_p2p(data,
     g_raw.es["weight"] = edges["weight"]
 
     # allowed community values
-    valid_comm = ["leiden", "louvain", "edge_betweenness", "fast_greedy", "fluid_communities", "infomap", "label_prop", "leading_eigen", "optimal", "spinglass", "walk_trap"]
+    valid_comm = ["leiden", "multilevel", "edge_betweenness", "fastgreedy", "infomap", "label_propagation", "leading_eigenvector", "optimal_modularity", "spinglass", "walk_trap"]
 
     # Finalise `g` object
     # If community detection is selected, this is where the communities are appended
@@ -188,16 +187,17 @@ def network_p2p(data,
     elif community in valid_comm:
         random.seed(seed)
         g_ud = g_raw.as_undirected() # Convert to undirected graph
-        alg_label = "igraph.cluster." + community
         
         #combine arguments to clustering algorithms
-        c_comm_args = ["graph", g_ud] + list(comm_args)
-        #output communities object
-        comm_out = eval(alg_label)(*c_comm_args)
+        comm_func = getattr(ig.Graph, "community_" + community)
+        if comm_args is None:
+            comm_args = {}
 
-        for i, vertex in enumerate(g_raw.vs): #add cluser
-            vertex["cluster"] = str(comm_out.membership[i]) #add partition to graph object
-        g = g_raw.simplify()
+        #call community detection function
+        comm_out = comm_func(graph = g_ud, **comm_args)
+
+        g = g_ud.simplify()
+        g.vs["cluster"] = [str(member) for member in comm_out.membership]
 
         #Name of vertex attribute
         v_attr = "cluster"
@@ -222,7 +222,8 @@ def network_p2p(data,
 
     # Common area ------------------- ----------------
     g_layout = g.layout(layout)
-    out_path = path + '_' + str(time.time()) + '.pdf'
+
+    out_path = path + '_' + time.strftime("%y%m%d_%H%M%S") + '.pdf'
 
     # Return outputs ---------------------------------------
     #use fast plotting method
