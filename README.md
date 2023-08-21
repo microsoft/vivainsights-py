@@ -8,6 +8,9 @@
 This is an Python package for analyzing and visualizing data from Microsoft Viva Advanced Insights (previously Microsoft Workplace Analytics).
 Access to the Analyst Experience is required. With this library, you can generate visualizations and compute analyses in a way that adheres to the analysis best practices of the Viva Insights query outputs. This library mirrors the design of its [R library counterpart](https://microsoft.github.io/vivainsights/).
 
+Example output when running `create_rank()`:
+
+<img src="https://microsoft.github.io/vivainsights-py/_static/plots/create_rank.png" align="center" width=40% />
 
 ## Installation
 
