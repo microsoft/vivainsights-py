@@ -205,7 +205,7 @@ def network_p2p(data,
         raise ValueError("Please enter a valid input for `community`.")
     
     # centrality calculations ------------------------
-    # attach centrality calculations if `centrality` is not NULL
+    # attach centrality calculations if `centrality` is not None
     if centrality is not None:
         g = vi.network_summary(g, return_type="network")
         node_sizes = (node_sizes[1] - node_sizes[0]) 
@@ -221,6 +221,10 @@ def network_p2p(data,
             node_sizes = [3,3] #fix node size
 
     # Common area ------------------- ----------------
+    # vertex table
+    vert_ft = vert_ft.rename(columns = {"node": "name"})
+    vert_tb = pd.DataFrame({"name": g.vs["name"], "cluster": g.vs[v_attr], "node_size": g.vs["node_size"]})
+    vert_tb = vert_tb.merge(vert_ft, on = "name", how = "left") #merge hrvar to vertex table
     g_layout = g.layout(layout)
 
     out_path = path + '_' + time.strftime("%y%m%d_%H%M%S") + '.pdf'
@@ -231,7 +235,6 @@ def network_p2p(data,
         return #TODO: add fast plotting method
     
     elif return_type == "data":
-        vert_ft = vert_ft.rename(columns = {"node": "name"})
         vert_ft = vert_ft.reset_index(drop = True)        
         return vert_ft
     
@@ -240,10 +243,9 @@ def network_p2p(data,
     
     elif return_type == "sankey":
         if community is None:
-            raise ValueError("Note: no sankey return option is available if `NULL` is selected at `community`. Please specify a valid community detection algorithm.")
+            raise ValueError("Note: no sankey return option is available if `None` is selected at `community`. Please specify a valid community detection algorithm.")
         elif community in valid_comm:
-            #create sankey plot
-            return #TODO: vi.create_sankey()
+            vi.create_sankey(data = vert_tb.groupby([hrvar, 'cluster']).size().reset_index(name='n'), var1=hrvar, var2='cluster')
     
     elif return_type == "table":
         return #TODO: create table output
