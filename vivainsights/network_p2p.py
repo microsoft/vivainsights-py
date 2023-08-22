@@ -195,7 +195,6 @@ def network_p2p(data,
 
         #call community detection function
         comm_out = comm_func(graph = g_ud, **comm_args)
-
         g = g_ud.simplify()
         g.vs["cluster"] = [str(member) for member in comm_out.membership]
 
@@ -209,7 +208,7 @@ def network_p2p(data,
     if centrality is not None:
         g = vi.network_summary(g, return_type="network")
         node_sizes = (node_sizes[1] - node_sizes[0]) 
-        node_sizes *= minmax_scale(g.vs[centrality]) + node_sizes[0] #min and max values
+        node_sizes *= minmax_scale(g.vs[centrality]) + node_sizes #min and max values
         g.vs["node_size"] = node_sizes
     else:
         #all nodes with the same size if centrality is not calculated
@@ -223,7 +222,22 @@ def network_p2p(data,
     # Common area ------------------- ----------------
     # vertex table
     vert_ft = vert_ft.rename(columns = {"node": "name"})
-    vert_tb = pd.DataFrame({"name": g.vs["name"], "cluster": g.vs[v_attr], "node_size": g.vs["node_size"]})
+    if centrality is not None:
+        vert_tb = pd.DataFrame({
+            "name": g.vs["name"],
+            "cluster": g.vs[v_attr], 
+            "betweenness": g.vs["betweenness"],
+            "closeness": g.vs["closeness"],
+            "degree": g.vs["degree"],
+            "eigenvector": g.vs["eigenvector"],
+            "pagerank": g.vs["pagerank"],
+        })
+    else:
+        vert_tb = pd.DataFrame({
+            "name": g.vs["name"],
+            "cluster": g.vs[v_attr]
+        })
+
     vert_tb = vert_tb.merge(vert_ft, on = "name", how = "left") #merge hrvar to vertex table
     g_layout = g.layout(layout)
 
@@ -235,8 +249,10 @@ def network_p2p(data,
         return #TODO: add fast plotting method
     
     elif return_type == "data":
-        vert_ft = vert_ft.reset_index(drop = True)        
-        return vert_ft
+        vert_tb = vert_tb.reset_index(drop = True) 
+        if centrality is None:
+            vert_tb = vert_tb.drop(columns = "cluster")       
+        return vert_tb
     
     elif return_type == "network":
         return g
