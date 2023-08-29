@@ -14,7 +14,7 @@ This documentation provides information on how to use vivainsights, a Python pac
    :maxdepth: 2
    :caption: Contents:
 
-   README.md
+   about.md
    modules
    NEWS.md
    CONTRIBUTORS.md

@@ -34,87 +34,7 @@ To install from a specific branch, run the following command replacing branch na
 pip install -e git+https://github.com/microsoft/vivainsights-py@<remote-branch-name>#egg=vivainsights
 ```
 
-## How to use
-
-Once confirmed that the library is installed, here are some examples of what you can run from the package:
-
-```python
-import vivainsights as vi
-
-pq_data = vi.load_pq_data() # load and assign in-built person query
-mt_data = vi.load_mt_data() # load and assign in-built meeting query
-
-# visualize averaged metrics per group (using person-averaging)
-out_plot = vi.create_bar(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup=5)
-out_tab = vi.create_bar(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup=5, return_type='table')
-
-out_plot.show() # display plot interactively, using plt
-print(out_tab) # print summary table to console
-```
-
-Most functions come with an option to generate a matplotlib figure object or a summary table in the form of a Pandas DataFrame, which can be specified with the argument `return_type`. Once these output objects are generated, they can also be copied to clipboard or saved locally using the `vi.export()` function: 
-
-```python
-# export summary table results to clipboard
-vi.export(out_tab)
-
-# save plot locally as png
-vi.export(out_plot, file_format = 'png')
-```
-
-The following demonstrates several other examples of visualization outputs:
-```python
-# Calculate counts of distinct people in each sub-population
-vi.hrvar_count(data=pq_data, hrvar='Organization', return_type='plot').show()
-vi.hrvar_count(data=pq_data, hrvar='Organization', return_type='table')
-
-# Get date ranges from data frame, using 'MetricDate'
-vi.extract_date_range(data=pq_data)
-vi.extract_date_range(data=pq_data, return_type = "text")
-
-# create a line chart showing average of metrics by sub-pop group over time
-vi.create_line(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup=5, return_type='plot').show()
-vi.create_line(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup=5, return_type='table')
-
-# create a heatmap chart showing average of metrics by sub-pop group over time
-vi.create_trend(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup=5, return_type='plot').show()
-vi.create_trend(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup=5, return_type='table')
-
-# Calculate the mean value of a metric for all groups in the dataset
-vi.create_rank(
-    data=pq_data,
-    metric='Emails_sent',
-    hrvar=['Organization', 'FunctionType', 'LevelDesignation'],
-    mingroup=5,
-    return_type='table'
-    )
-
-# Visualize the top and bottom values across organizational attributes
-vi.create_rank(
-    data=pq_data,
-    metric='Emails_sent',
-    hrvar=['Organization', 'FunctionType', 'LevelDesignation'],
-    mingroup=5,
-    return_type='plot'
-    ).show()    
-```
-
-To perform analysis on a dataset from a flexible query (stored as a .csv file), there is a simple three step process:
-
-```python
-# 1. Load package
-import vivainsights as vi
-
-# 2. Load csv
-pq_df = vi.import_query(x = '/data/VI_PERSON_QUERY.Csv')
-
-# 3. Create analysis
-vi.create_rank(
-    data = pq_df,
-    metric = 'Collaboration_hours',
-    hrvar = ['Organization', 'LevelDesignation', 'FunctionType']
-)
-```
+For examples on how to create analyses and visualizations, please see the [documentation](https://micrsoft.github.io/vivainsights-py/).
 
 ## Related repositories
 
@@ -124,7 +44,6 @@ vi.create_rank(
 - [Viva Insights Zoom Integration](https://github.com/microsoft/vivainsights_zoom_int/)
 - [Viva Insights OData Query Download](https://github.com/microsoft/vivainsights-odatadl/)
 - [Viva Insights R library (legacy)](https://microsoft.github.io/wpa/)
-
 
 ## Contributing
 

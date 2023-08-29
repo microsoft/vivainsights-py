@@ -1,14 +1,17 @@
-# README
-
 <img src="https://raw.githubusercontent.com/microsoft/vivainsights-py/main/images/vivainsights-py.png" align="right" width=15% />
 
 [![vivainsights CI](https://github.com/microsoft/vivainsights-py/actions/workflows/python-package.yml/badge.svg)](https://github.com/microsoft/vivainsights-py/actions/workflows/python-package.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Overview
+## Summary
 
-This is an Python package for analyzing and visualizing data from Microsoft Viva Advanced Insights (previously Microsoft Workplace Analytics).
-Access to the Analyst Experience is required. With this library, you can generate visualizations and compute analyses in a way that adheres to the analysis best practices of the Viva Insights query outputs. This library mirrors the design of its [R library counterpart](https://microsoft.github.io/vivainsights/).
+This is an Python package for analyzing and visualizing data from Microsoft Viva Insights.
+
+Access to the Analyst Experience is required. With this library, you can generate visualizations and compute analyses in a way that adheres to the analysis best practices of the Viva Insights query outputs. 
+
+For the full package documentation, please see [here](https://microsoft.github.io/vivainsights-py/). The **vivainsights** library is published on the [Python Package Index (PyPi)](https://pypi.org/project/vivainsights/). 
+
+For users who prefer R to Python, we recommend the [R library counterpart](https://microsoft.github.io/vivainsights/) which mirrors the design of the Python package. 
 
 ## Visualization Gallery
 
