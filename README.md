@@ -14,15 +14,17 @@ Example output when running `create_rank()`:
 
 ## Installation
 
-1. Clone this repository to your local drive. 
-1. On PowerShell, change directory (`cd`) to the repository on your local drive, and run `python setup.py install`. This should install 'vivainsights' to your python package registry. To check whether it is installed, you can run `pip freeze` on your command prompt.
+You can install **vivainsights** by running this in Command Line: 
+```
+pip install vivainsights
+```
 
-To install from this GitHub repository directly using pip, you may run this in Command Line:
+Alternatively, you can install the development version of **vivainsights** from this GitHub repository:
 ```
 pip install -e git+https://github.com/microsoft/vivainsights-py#egg=vivainsights
 ```
 
-You can also install from a specific branch with the following, replacing the branch name with `<remote-branch-name>`:
+To install from a specific branch, run the following command replacing branch name with `<remote-branch-name>`:
 ```
 pip install -e git+https://github.com/microsoft/vivainsights-py@<remote-branch-name>#egg=vivainsights
 ```
