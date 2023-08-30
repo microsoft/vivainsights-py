@@ -202,7 +202,7 @@ def network_p2p(data,
         v_attr = "cluster"
     else: 
         raise ValueError("Please enter a valid input for `community`.")
-    
+        
     # centrality calculations ------------------------
     # attach centrality calculations if `centrality` is not None
     if centrality is not None:
@@ -233,12 +233,17 @@ def network_p2p(data,
             "pagerank": g.vs["pagerank"],
         })
     else:
-        vert_tb = pd.DataFrame({
-            "name": g.vs["name"],
-            "cluster": g.vs[v_attr]
-        })
+        if community is None:
+            vert_tb = pd.DataFrame({
+                "name": g.vs["name"],
+            })
+        else:
+            vert_tb = pd.DataFrame({
+                "name": g.vs["name"],
+                "cluster": g.vs[v_attr]
+            })
 
-    vert_tb = vert_tb.merge(vert_ft, on = "name", how = "left") #merge hrvar to vertex table
+    vert_tb = vert_tb.merge(vert_ft, on = "name", how = "left").drop_duplicates() #merge hrvart to vertex table
     g_layout = g.layout(layout)
 
     out_path = path + '_' + time.strftime("%y%m%d_%H%M%S") + '.pdf'
@@ -288,5 +293,8 @@ def network_p2p(data,
                     eigenvector=('eigenvector', 'mean'),
                     pagerank=('pagerank', 'mean')
             )
+                
+        return vert_tb
+            
     else:
         raise ValueError("invalid input for `return_type`.")
