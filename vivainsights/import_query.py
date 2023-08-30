@@ -14,25 +14,27 @@ import re
 import os
 
 def import_query(x, encoding: str = 'utf-8'):
-    '''The function `import_query` reads a CSV file, removes leading and trailing spaces from column names,
+    """
+    Name
+    ----
+    import_query
+
+    Description
+    ----------- 
+    The function `import_query` reads a CSV file, removes leading and trailing spaces from column names,
     and replaces spaces and special characters with underscores in column names.
     
     Parameters
     ----------
-    x
-        The parameter `x` is the input file name or path. It should be a string representing the file name
-    or path of the CSV file you want to import.
+    x : str
+        The parameter `x` is the input file name or path. It should be a string representing the file name or path of the CSV file you want to import.
     encoding : str, optional
-        The encoding parameter specifies the character encoding to be used when reading the CSV file. The
-    default value is 'utf-8', which is a widely used encoding for text files. However, you can specify a
-    different encoding if needed.
+        The encoding parameter specifies the character encoding to be used when reading the CSV file. The default value is 'utf-8', which is a widely used encoding for text files. However, you can specify a different encoding if needed.
     
     Returns
     -------
-        the variable `data` if the input file is a valid CSV file. If the input file is not a valid CSV
-    file, the function will print an error message and return `None`.
-    
-    '''
+    The variable `data` if the input file is a valid CSV file. If the input file is not a valid CSVfile, the function will print an error message and return `None`.
+    """    
     
     # in case '.csv' is not all in lower case, make it lower case
     if x[-4:].lower() == '.csv':

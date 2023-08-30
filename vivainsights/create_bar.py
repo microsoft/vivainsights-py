@@ -16,7 +16,6 @@ import matplotlib.ticker as mtick
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FixedLocator
 import matplotlib
-matplotlib.use("QtAgg")
     
 def create_bar_calc(
     data: pd.DataFrame,
@@ -141,14 +140,32 @@ def create_bar(
     plot_title = None,
     plot_subtitle = None):
     """
-    Args:
-        data (df): person query data
-        metric (str): name of the metric to be analysed
-        hrvar (str): name of the organizational attribute to be used for grouping
-        return_type (str, optional): type of output to return. Defaults to "plot".
-    Returns:
-        _type_: _description_
-    """
+    Name
+    -----
+    create_bar 
+    
+    Description
+    -----------
+    The function `create_bar` calculates and visualizes the mean of a selected metric, grouped by a selected HR variable. The metrics are first aggregated at a user-level prior to being aggregated at the level of the HR variable. The function `create_bar` returns either a plot object or a table, depending on the value passed to `return_type`.
+
+    Parameters
+    ----------
+    data : pandas dataframe
+        person query data
+    metric : str
+        name of the metric to be analysed
+    hrvar : str
+        name of the organizational attribute to be used for grouping
+
+    Returns
+    -------
+    _type_
+        the type of output to return. Defaults to "plot".
+
+    Example
+    -------
+    >>> create_bar(pq_data, metric = "Collaboration_hours", hrvar = "LevelDesignation")
+    """  
     if return_type == "plot":
         out = create_bar_viz(data=data, metric=metric, hrvar=hrvar, percent=percent, mingroup=mingroup, plot_title = plot_title, plot_subtitle = plot_subtitle)
     elif return_type == "table":

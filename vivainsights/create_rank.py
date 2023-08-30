@@ -114,13 +114,32 @@ def create_rank_viz(data: pd.DataFrame,
 
 def create_rank(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, return_type: str = "plot"):
     """
-    Args:
-        data (df): person query data
-        metric (str): name of the metric to be analysed
-        hrvar (str): name(s) of the organizational attribute(s) to be used for grouping
-        return_type (str, optional): type of output to return. Defaults to "plot".
-    Returns:
-        _type_: _description_
+    Name
+    ----
+    create_rank
+
+    Description
+    -----------
+    This function performs a rank operation on all groups across HR attributes for a specified metric.
+
+    Parameters
+    ---------
+    data : pandas dataframe
+        person query data
+    metric : str
+         name of the metric to be analysed
+    hrvar : str 
+        name(s) of the organizational attribute(s) to be used for grouping
+    return_type : str or optional 
+        type of output to return. Defaults to "plot".
+
+    Returns
+    -------
+    A plot or a table depending on the return_type argument.
+
+    Example
+    -------
+    >>> create_rank(data = pq_data_small, hrvar = "FunctionType", metric = "Emails_sent", return_type = "plot")
     """
     if return_type == "plot":
         out = create_rank_viz(data=data, metric=metric, hrvar=hrvar, mingroup=mingroup)

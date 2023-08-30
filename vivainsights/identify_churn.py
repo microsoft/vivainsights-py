@@ -18,20 +18,37 @@ def identify_churn(data: pd.DataFrame,
                    date_column: str = "MetricDate",
                    date_format = "%Y-%m-%d"):
   """
-  Args:
-    data (dataframe): The dataframe to export
-    n1: First `n` weeks of data to check for the person's presence
-    n2: Last `n` weeks of data to check for the person's presence
-    return_type: Type of return expected
-    flip: Flag to switch between identifying churned users vs new users
-    date_column: DateTime column based on which churn is calculated, defaults to MetricDate for Nova
-    date_format: DateTime format in input file, defaults to YYYY-mm-dd
+  Name
+  ----
+  identify_churn
+
+  Description
+  -----------
+  This module identifies and counts the number of employees who have churned from the dataset.
+
+  Parameters
+  ---------
+  data : pandas dataframe
+     The dataframe to export
+  n1 : int
+     First `n` weeks of data to check for the person's presence
+  n2 : int
+    Last `n` weeks of data to check for the person's presence
+  return_type : str
+     Type of return expected
+  flip : boolean
+    Flag to switch between identifying churned users vs new users
+  date_column : str
+     DateTime column based on which churn is calculated, defaults to MetricDate for Nova
+  date_format : datetime
+     DateTime format in input file, defaults to YYYY-mm-dd
     
-  Return:
-    A different output is returned depending on the value passed to the `return_type` argument:
-        `"message"`: Message on console. A diagnostic message.
-        `"text"`: String. A diagnostic message.
-        `"data"`: Character vector containing the the `PersonId` of employees who have been identified as churned.
+  Returns
+  -------
+  A different output is returned depending on the value passed to the `return_type` argument:
+  - "message"`: Message on console. A diagnostic message.
+  - "text"`: String. A diagnostic message.
+  - "data"`: Character vector containing the the `PersonId` of employees who have been identified as churned.
   """
 
   data[date_column] = pd.to_datetime(data[date_column], format = date_format) # Ensure correct format
