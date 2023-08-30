@@ -271,9 +271,9 @@ def network_p2p(data,
     elif return_type == "table":
         if community is None:
             if centrality is None:
-                vert_tb.groupby(hrvar).size().reset_index(name='n')
+                vert_tb = vert_tb.groupby(hrvar).size().reset_index(name='n')
             else:
-                vert_tb.groupby(hrvar).agg(
+                vert_tb = vert_tb.groupby(hrvar).agg(
                     n=('betweenness', 'size'),
                     betweenness=('betweenness', 'mean'),
                     closeness=('closeness', 'mean'),
@@ -283,9 +283,9 @@ def network_p2p(data,
                 )
         elif community in valid_comm:
             if centrality is None:
-                vert_tb.groupby([hrvar, 'cluster']).size().reset_index(name='n')
+                vert_tb = vert_tb.groupby([hrvar, 'cluster']).size().reset_index(name='n')
             else:
-                vert_tb.groupby([hrvar, 'cluster']).agg(
+                vert_tb = vert_tb.groupby([hrvar, 'cluster']).agg(
                     n=('betweenness', 'size'),
                     betweenness=('betweenness', 'mean'),
                     closeness=('closeness', 'mean'),
