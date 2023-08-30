@@ -9,6 +9,8 @@ import vivainsights as vi
 import pandas as pd
 import igraph as ig
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
+from matplotlib.backends.backend_pdf import PdfPages
 import random
 from sklearn.preprocessing import minmax_scale
 import time
@@ -251,7 +253,83 @@ def network_p2p(data,
     # Return outputs ---------------------------------------
     #use fast plotting method
     if return_type in ["plot", "plot-pdf"]:
-        return #TODO: add fast plotting method
+        #Set colours
+        colour_tb = (
+            pd.DataFrame({v_attr: g.vs[v_attr].unique()})
+            .assign(colour = eval(f"{palette}(nrow(g.vs[{v_attr}].unique()))"))
+        )
+
+        #Colour vector
+        colour_v = (
+            pd.DataFrame({v_attr: g.vs[v_attr]})
+            .merge(colour_tb, on = v_attr, how = "left")
+            .loc[:, "colour"]
+
+        )
+        
+        if style == "igraph":
+            #Set graph plot colours
+            g.vs["color"] = mcolors.to_rgba(colour_v, alpha=node_alpha)
+            g.vs["frame_color"] = None
+            g.es["width"] = 1
+
+            #Internal basic plotting function used inside 'network_p2p()'
+            def plot_basic_graph(lpos = legend_pos):
+                old_par = ig.plotting.get_parameters()
+                ig.plotting.oneway(par=old_par)
+                ig.plotting.set_param(bg=bg_fill)
+                layout_text = f"layout_with_{layout}"
+               
+                #Legend position
+                if lpos == "left":
+                    leg_x = -1.5
+                    leg_y = 0.5
+                elif lpos == "right":
+                    leg_x = 1.5
+                    leg_y = 0.5
+                elif lpos == "top":
+                    leg_x = 0
+                    leg_y = 1.5
+                elif lpos == "bottom":
+                    leg_x = 0
+                    leg_y = -1.0
+                else:
+                    raise ValueError("Invalid input for `legend_pos`.")
+
+                ig.plot(
+                    g,
+                    layout = eval(layout_text),
+                    vertex_label = None,
+                    vertex_size = g.vs["node_size"],
+                    edge_arrow_mode = "-",
+                    edge_color = "#adadad"
+                )
+
+                # plt.legend(
+                #     bbox_to_anchor = (leg_x, leg_y),
+                #     #legend
+                #     #handles= pch?
+                #     labelcolor = font_col,
+                #     #handlecolor = edge_col,
+                #     #pt.bg
+                #     #pt.cex
+                #     #cex
+                #     #bty
+                #     ncol = 1
+
+               # )
+
+            # Default PDF output unless None supplied to path
+            if return_type == "plot":
+                plot_basic_graph()
+            elif return_type == "plot-pdf":
+                with PdfPages(out_path) as pdf:
+                    plot_basic_graph()
+                    pdf.savefig()
+                print(f"Saved to {out_path}.")
+
+        else:
+            raise ValueError("Invalid input for `style`.")
     
     elif return_type == "data":
         vert_tb = vert_tb.reset_index(drop = True) 
