@@ -253,10 +253,18 @@ def network_p2p(data,
     # Return outputs ---------------------------------------
     #use fast plotting method
     if return_type in ["plot", "plot-pdf"]:
+        
+        def rainbow(n):
+            return [f"#{random.randint(0, 0xFFFFFF):06x}" for _ in range(n)]
+            
         #Set colours
+        
+        #GET ALL ATTRIBUTES IN VERT_TB
+        vert_tb = vert_tb.drop_duplicates()
+        print(vert_tb)
         colour_tb = (
-            pd.DataFrame({v_attr: g.vs[v_attr].unique()})
-            .assign(colour = eval(f"{palette}(nrow(g.vs[{v_attr}].unique()))"))
+            pd.DataFrame({v_attr: g.vs[v_attr]})
+             .assign(colour = eval(f"{palette}(len(vert_tb))"))
         )
 
         #Colour vector
@@ -266,20 +274,19 @@ def network_p2p(data,
             .loc[:, "colour"]
 
         )
-        
+
         if style == "igraph":
             #Set graph plot colours
-            g.vs["color"] = mcolors.to_rgba(colour_v, alpha=node_alpha)
+            color_names = list(mcolors.CSS4_COLORS.keys())
+            g.vs["color"] = [mcolors.to_rgba(color_names[i % len(color_names)], alpha=node_alpha) for i in range(len(g.vs))]
+    
             g.vs["frame_color"] = None
             g.es["width"] = 1
 
             #Internal basic plotting function used inside 'network_p2p()'
             def plot_basic_graph(lpos = legend_pos):
-                old_par = ig.plotting.get_parameters()
-                ig.plotting.oneway(par=old_par)
-                ig.plotting.set_param(bg=bg_fill)
-                layout_text = f"layout_with_{layout}"
-               
+                plt.rcParams["figure.facecolor"] = bg_fill
+                layout_func = getattr(ig.Graph, f"layout_{layout}")
                 #Legend position
                 if lpos == "left":
                     leg_x = -1.5
@@ -295,16 +302,18 @@ def network_p2p(data,
                     leg_y = -1.0
                 else:
                     raise ValueError("Invalid input for `legend_pos`.")
-
-                ig.plot(
+                
+                plot = ig.plot(
                     g,
-                    layout = eval(layout_text),
+                    layout = g.layout('kk'),
                     vertex_label = None,
                     vertex_size = g.vs["node_size"],
                     edge_arrow_mode = "-",
                     edge_color = "#adadad"
                 )
 
+                return plot.save('plot.png')
+            
                 # plt.legend(
                 #     bbox_to_anchor = (leg_x, leg_y),
                 #     #legend
