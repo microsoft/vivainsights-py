@@ -264,7 +264,29 @@ def network_p2p(data,
             vi.create_sankey(data = vert_tb.groupby([hrvar, 'cluster']).size().reset_index(name='n'), var1=hrvar, var2='cluster')
     
     elif return_type == "table":
-        return #TODO: create table output
-    
+        if community is None:
+            if centrality is None:
+                vert_tb.groupby(hrvar).size().reset_index(name='n')
+            else:
+                vert_tb.groupby(hrvar).agg(
+                    n=('betweenness', 'size'),
+                    betweenness=('betweenness', 'mean'),
+                    closeness=('closeness', 'mean'),
+                    degree=('degree', 'mean'),
+                    eigenvector=('eigenvector', 'mean'),
+                    pagerank=('pagerank', 'mean')
+                )
+        elif community in valid_comm:
+            if centrality is None:
+                vert_tb.groupby([hrvar, 'cluster']).size().reset_index(name='n')
+            else:
+                vert_tb.groupby([hrvar, 'cluster']).agg(
+                    n=('betweenness', 'size'),
+                    betweenness=('betweenness', 'mean'),
+                    closeness=('closeness', 'mean'),
+                    degree=('degree', 'mean'),
+                    eigenvector=('eigenvector', 'mean'),
+                    pagerank=('pagerank', 'mean')
+            )
     else:
         raise ValueError("invalid input for `return_type`.")
