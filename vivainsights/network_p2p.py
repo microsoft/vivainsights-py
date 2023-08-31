@@ -219,15 +219,15 @@ def network_p2p(data,
         g = vi.network_summary(g, return_type="network")
         node_sizes = (node_sizes[1] - node_sizes[0]) 
         node_sizes *= minmax_scale(g.vs[centrality]) + node_sizes #min and max values
-        g.vs["node_size"] = node_sizes
+        g.vs["node_size"] = node_sizes/100 #scale for plotting      
     elif centrality is None:
         # all nodes with the same size if centrality is not calculated
         #a djust for plotting formats
         if style == "igraph":
-            g.vs["node_size"] = [3] * g.vcount()
+            g.vs["node_size"] = [0.3] * g.vcount()
         elif style == "ggraph":
-            g.vs["node_size"] = [2.5] * g.vcount()
-            node_sizes = [3,3] #fix node size
+            g.vs["node_size"] = [0.25] * g.vcount()
+            node_sizes = [0.3,0.3] #fix node size
     else:
         raise ValueError("Please enter a valid input for `centrality`.")
 
@@ -280,11 +280,7 @@ def network_p2p(data,
             return [f"#{random.randint(0, 0xFFFFFF):06x}" for _ in range(n)]
             
         #Set colours
-        
-        # GET ALL ATTRIBUTES IN VERT_TB
         vert_tb = vert_tb.drop_duplicates()
-        print(vert_tb)
-        print(g.vertex_attributes())
         
         colour_tb = (
             pd.DataFrame({v_attr: g.vs[v_attr]})
@@ -310,7 +306,7 @@ def network_p2p(data,
             #Internal basic plotting function used inside 'network_p2p()'
             def plot_basic_graph(lpos = legend_pos):
                 
-                fig, ax = plt.subplots(figsize=(8, 8))
+                fig, ax = plt.subplots(figsize=(10, 10))
                 plt.rcParams["figure.facecolor"] = bg_fill
                 layout_func = getattr(ig.Graph, f"layout_{layout}")
                 #Legend position
@@ -329,18 +325,16 @@ def network_p2p(data,
                 else:
                     raise ValueError("Invalid input for `legend_pos`.")
                 
-                plot = ig.plot(
+                ig.plot(
                     g,
                     layout = g.layout('kk'),
+                    target=ax,
                     vertex_label = None,
                     vertex_size = g.vs["node_size"],
                     edge_arrow_mode = "-",
-                    edge_color = "#adadad"
+                    edge_color = "#adadad",
                 )
 
-                plot.save("network_p2p.png")
-                # plt.show() #return 'ggplot' object
-            
                 # plt.legend(
                 #     bbox_to_anchor = (leg_x, leg_y),
                 #     #legend
@@ -352,8 +346,9 @@ def network_p2p(data,
                 #     #cex
                 #     #bty
                 #     ncol = 1
-
                # )
+
+                return plt.show() #return 'ggplot' object
 
             # Default PDF output unless None supplied to path
             if return_type == "plot":
