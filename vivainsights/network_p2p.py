@@ -172,12 +172,6 @@ def network_p2p(data,
     # Create igraph object
     g_raw = ig.Graph.TupleList(edges.itertuples(index=False), directed=True, weights=True)
 
-    # debugging
-    if return_type == "g_raw":
-        return g_raw
-    elif return_type == "vert_ft":
-        return vert_ft
-
     # Assign vertex attributes - HR attribute and node
     g_raw.vs[hrvar] = vert_ft[hrvar].tolist()
     g_raw.vs["node"] = vert_ft["node"].tolist()
@@ -260,8 +254,6 @@ def network_p2p(data,
             })
 
     vert_tb = vert_tb.merge(vert_ft, on = "name", how = "left").drop_duplicates() #merge hrvar to vertex table
-    print("Printing merged vert_tb")
-    print(vert_tb)
     
     g_layout = g.layout(layout)
 
