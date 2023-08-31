@@ -132,6 +132,9 @@ def network_p2p(data,
 
     Examples
     --------
+    
+    # Return the vertex table with counts in communities and HR attribute
+    vi.network_p2p(data = p2p_data, community = "leiden", comm_args = {"resolution": 0.1}, return_type = "table")
     """
     path ="p2p" + ("" if community is None else '_' + community)
 
@@ -306,6 +309,8 @@ def network_p2p(data,
 
             #Internal basic plotting function used inside 'network_p2p()'
             def plot_basic_graph(lpos = legend_pos):
+                
+                fig, ax = plt.subplots(figsize=(8, 8))
                 plt.rcParams["figure.facecolor"] = bg_fill
                 layout_func = getattr(ig.Graph, f"layout_{layout}")
                 #Legend position
@@ -333,7 +338,8 @@ def network_p2p(data,
                     edge_color = "#adadad"
                 )
 
-                return plot.save('plot.png')
+                plot.save("network_p2p.png")
+                # plt.show() #return 'ggplot' object
             
                 # plt.legend(
                 #     bbox_to_anchor = (leg_x, leg_y),
@@ -351,7 +357,9 @@ def network_p2p(data,
 
             # Default PDF output unless None supplied to path
             if return_type == "plot":
+                
                 plot_basic_graph()
+                
             elif return_type == "plot-pdf":
                 with PdfPages(out_path) as pdf:
                     plot_basic_graph()
@@ -362,12 +370,13 @@ def network_p2p(data,
             raise ValueError("Invalid input for `style`.")
     
     elif return_type == "data":
+        
         vert_tb = vert_tb.reset_index(drop = True) 
-        if centrality is None:
-            vert_tb = vert_tb.drop(columns = "cluster")       
+        
         return vert_tb
     
     elif return_type == "network":
+        
         return g
     
     elif return_type == "sankey":
