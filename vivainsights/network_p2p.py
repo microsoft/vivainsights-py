@@ -178,28 +178,9 @@ def network_p2p(data,
     elif return_type == "vert_ft":
         return vert_ft
 
-    # iterate over node and hrvar simultaneously
-    # for vertex, hrvar_val in zip(vert_ft["node"], vert_ft[hrvar]):
-    #     v = g_raw.add_vertex(vertex)
-    #     v[hrvar] = hrvar_val
-    #     v["node"] = vertex
-    
-    # print("Vertex count of g_raw: ")
-    # print(g_raw.vcount())
-    # print("Vertex attributes:")
-    # print(g_raw.vertex_attributes())
-    # print("Number of rows in vert_ft: ")
-    # print(vert_ft.shape[0])
-    # print("Sample of vert_ft: ")
-    # print(vert_ft.head())
-    # 
+    # Assign vertex attributes - HR attribute and node
     g_raw.vs[hrvar] = vert_ft[hrvar].tolist()
     g_raw.vs["node"] = vert_ft["node"].tolist()
-    
-    # for n, row in vert_ft.iterrows(): # number of rows in `vert_ft`
-    #     # assume that `g` is the Graph object and `vertex_index` is the index of the desired vertex
-    #     g_raw.vs[n][hrvar] = row[hrvar]
-    #     g_raw.vs[n]["node"] = row["node"]
 
     # Assign weights
     g_raw.es["weight"] = edges["weight"]
