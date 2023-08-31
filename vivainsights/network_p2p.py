@@ -258,15 +258,25 @@ def network_p2p(data,
     vert_ft = vert_ft.rename(columns = {"node": "name"})    
     
     if centrality is not None:
-        vert_tb = pd.DataFrame({
-            "name": g.vs["name"],
-            # "cluster": g.vs[v_attr], # commented out as `cluster` does not exist without comm detection
-            "betweenness": g.vs["betweenness"],
-            "closeness": g.vs["closeness"],
-            "degree": g.vs["degree"],
-            "eigenvector": g.vs["eigenvector"],
-            "pagerank": g.vs["pagerank"],
-        })
+        if community is None:
+            vert_tb = pd.DataFrame({
+                "name": g.vs["name"],
+                "betweenness": g.vs["betweenness"],
+                "closeness": g.vs["closeness"],
+                "degree": g.vs["degree"],
+                "eigenvector": g.vs["eigenvector"],
+                "pagerank": g.vs["pagerank"],
+            })
+        else :
+            vert_tb = pd.DataFrame({
+                "name": g.vs["name"],
+                "cluster": g.vs[v_attr],
+                "betweenness": g.vs["betweenness"],
+                "closeness": g.vs["closeness"],
+                "degree": g.vs["degree"],
+                "eigenvector": g.vs["eigenvector"],
+                "pagerank": g.vs["pagerank"],
+            })
     else:
         if community is None:
             vert_tb = pd.DataFrame({
@@ -279,8 +289,6 @@ def network_p2p(data,
             })
 
     vert_tb = vert_tb.merge(vert_ft, on = "name", how = "left").drop_duplicates() #merge hrvar to vertex table
-    print("Printing merged vert_tb")
-    print(vert_tb)
     
     g_layout = g.layout(layout)
 
