@@ -335,18 +335,18 @@ def network_p2p(data,
                     edge_color = "#adadad",
                 )
 
-                # plt.legend(
-                #     bbox_to_anchor = (leg_x, leg_y),
-                #     #legend
-                #     #handles= pch?
-                #     labelcolor = font_col,
-                #     #handlecolor = edge_col,
-                #     #pt.bg
-                #     #pt.cex
-                #     #cex
-                #     #bty
-                #     ncol = 1
-               # )
+                plt.legend(
+                    bbox_to_anchor = (leg_x, leg_y),
+                    edgecolor= edge_col,
+                    marker = 'o',
+                    frameon = False,
+                    markerscale = 4,
+                    markersize = 10,
+                    fontsize= 10,
+                    handles= colour_tb[v_attr],
+                    labelcolor = font_col,
+                    ncols = 1
+                )
 
                 if pdf:
                     return fig
