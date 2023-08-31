@@ -224,10 +224,10 @@ def network_p2p(data,
         # all nodes with the same size if centrality is not calculated
         #a djust for plotting formats
         if style == "igraph":
-            g.vs["node_size"] = [0.3] * g.vcount()
+            g.vs["node_size"] = [0.03] * g.vcount()
         elif style == "ggraph":
-            g.vs["node_size"] = [0.25] * g.vcount()
-            node_sizes = [0.3,0.3] #fix node size
+            g.vs["node_size"] = [0.025] * g.vcount()
+            node_sizes = [0.03,0.03] #fix node size
     else:
         raise ValueError("Please enter a valid input for `centrality`.")
 
@@ -327,7 +327,7 @@ def network_p2p(data,
                 
                 ig.plot(
                     g,
-                    layout = g.layout('kk'),
+                    layout = layout_func(g),
                     target=ax,
                     vertex_label = None,
                     vertex_size = g.vs["node_size"],
