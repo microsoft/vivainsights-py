@@ -148,7 +148,7 @@ def network_p2p(data,
     pc_hrvar = "PrimaryCollaborator_" + hrvar
     sc_hrvar = "SecondaryCollaborator_" + hrvar
 
-    #TieOrigin = PrimaryCollabortor
+    # TieOrigin = PrimaryCollaborator
     tieOrigin = (
         edges[["PrimaryCollaborator_PersonId"]].drop_duplicates()
         .merge(data[["PrimaryCollaborator_PersonId", pc_hrvar]], on = "PrimaryCollaborator_PersonId", how = "left") #left join
@@ -157,7 +157,7 @@ def network_p2p(data,
         .drop(columns = [pc_hrvar]) 
     )
 
-    #TieDest = SecondaryCollaborator
+    # TieDest = SecondaryCollaborator
     tieDest = (
         edges[["SecondaryCollaborator_PersonId"]].drop_duplicates()
         .merge(data[["SecondaryCollaborator_PersonId", sc_hrvar]], on = "SecondaryCollaborator_PersonId", how = "left")
@@ -166,16 +166,16 @@ def network_p2p(data,
         .drop(columns = [sc_hrvar])
     )
 
-    #Vertices data frame to provide meta-data
+    # Vertices data frame to provide meta-data
     vert_ft = pd.concat([tieOrigin, tieDest]).drop_duplicates()
 
-    #Create igraph object
+    # Create igraph object
     g_raw = ig.Graph.TupleList(edges.itertuples(index=False), directed=True, weights=True)
     
     for vertex in vert_ft["node"]:
         g_raw.add_vertex(vertex)
 
-    #Assign weights
+    # Assign weights
     g_raw.es["weight"] = edges["weight"]
 
     # allowed community values
@@ -185,17 +185,18 @@ def network_p2p(data,
     # If community detection is selected, this is where the communities are appended
     if community is None:
         g = g_raw.simplify()
-        v_attr = hrvar
+        v_attr = hrvar 
+        
     elif community in valid_comm:
         random.seed(seed)
         g_ud = g_raw.as_undirected() # Convert to undirected graph
         
-        #combine arguments to clustering algorithms
+        # combine arguments to clustering algorithms
         comm_func = getattr(ig.Graph, "community_" + community)
         if comm_args is None:
             comm_args = {}
 
-        #call community detection function
+        # call community detection function
         comm_out = comm_func(graph = g_ud, **comm_args)
         g = g_ud.simplify()
         g.vs["cluster"] = [str(member) for member in comm_out.membership]
@@ -206,28 +207,34 @@ def network_p2p(data,
         raise ValueError("Please enter a valid input for `community`.")
         
     # centrality calculations ------------------------
+    # valid values of `centrality`
+    valid_cent = ['betweenness', 'closeness', 'degree', 'eigenvector', 'pagerank']  
+    
     # attach centrality calculations if `centrality` is not None
-    if centrality is not None:
+    if centrality in valid_cent:
         g = vi.network_summary(g, return_type="network")
         node_sizes = (node_sizes[1] - node_sizes[0]) 
         node_sizes *= minmax_scale(g.vs[centrality]) + node_sizes #min and max values
         g.vs["node_size"] = node_sizes
-    else:
-        #all nodes with the same size if centrality is not calculated
-        #adjust for plotting formats
+    elif centrality is None:
+        # all nodes with the same size if centrality is not calculated
+        #a djust for plotting formats
         if style == "igraph":
             g.vs["node_size"] = [3] * g.vcount()
         elif style == "ggraph":
             g.vs["node_size"] = [2.5] * g.vcount()
             node_sizes = [3,3] #fix node size
+    else:
+        raise ValueError("Please enter a valid input for `centrality`.")
 
     # Common area ------------------- ----------------
     # vertex table
-    vert_ft = vert_ft.rename(columns = {"node": "name"})
+    vert_ft = vert_ft.rename(columns = {"node": "name"})    
+    
     if centrality is not None:
         vert_tb = pd.DataFrame({
             "name": g.vs["name"],
-            "cluster": g.vs[v_attr], 
+            # "cluster": g.vs[v_attr], # commented out as `cluster` does not exist without comm detection
             "betweenness": g.vs["betweenness"],
             "closeness": g.vs["closeness"],
             "degree": g.vs["degree"],
@@ -245,7 +252,10 @@ def network_p2p(data,
                 "cluster": g.vs[v_attr]
             })
 
-    vert_tb = vert_tb.merge(vert_ft, on = "name", how = "left").drop_duplicates() #merge hrvart to vertex table
+    vert_tb = vert_tb.merge(vert_ft, on = "name", how = "left").drop_duplicates() #merge hrvar to vertex table
+    print("Printing merged vert_tb")
+    print(vert_tb)
+    
     g_layout = g.layout(layout)
 
     out_path = path + '_' + time.strftime("%y%m%d_%H%M%S") + '.pdf'
@@ -259,9 +269,11 @@ def network_p2p(data,
             
         #Set colours
         
-        #GET ALL ATTRIBUTES IN VERT_TB
+        # GET ALL ATTRIBUTES IN VERT_TB
         vert_tb = vert_tb.drop_duplicates()
         print(vert_tb)
+        print(g.vertex_attributes())
+        
         colour_tb = (
             pd.DataFrame({v_attr: g.vs[v_attr]})
              .assign(colour = eval(f"{palette}(len(vert_tb))"))
