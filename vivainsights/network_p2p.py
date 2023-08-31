@@ -171,9 +171,12 @@ def network_p2p(data,
 
     # Create igraph object
     g_raw = ig.Graph.TupleList(edges.itertuples(index=False), directed=True, weights=True)
-    
-    for vertex in vert_ft["node"]:
-        g_raw.add_vertex(vertex)
+
+    # iterate over node and hrvar simultaneously
+    for vertex, hrvar_val in zip(vert_ft["node"], vert_ft[hrvar]):
+        v = g_raw.add_vertex(vertex)
+        v[hrvar] = hrvar_val
+        v["node"] = vertex
 
     # Assign weights
     g_raw.es["weight"] = edges["weight"]
