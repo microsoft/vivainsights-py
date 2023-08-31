@@ -304,7 +304,7 @@ def network_p2p(data,
             g.es["width"] = 1
 
             #Internal basic plotting function used inside 'network_p2p()'
-            def plot_basic_graph(lpos = legend_pos):
+            def plot_basic_graph(lpos = legend_pos, pdf=False):
                 
                 fig, ax = plt.subplots(figsize=(10, 10))
                 plt.rcParams["figure.facecolor"] = bg_fill
@@ -348,6 +348,9 @@ def network_p2p(data,
                 #     ncol = 1
                # )
 
+                if pdf:
+                    return fig
+                
                 return plt.show() #return 'ggplot' object
 
             # Default PDF output unless None supplied to path
@@ -357,8 +360,7 @@ def network_p2p(data,
                 
             elif return_type == "plot-pdf":
                 with PdfPages(out_path) as pdf:
-                    plot_basic_graph()
-                    pdf.savefig()
+                    pdf.savefig(plot_basic_graph(pdf=True))
                 print(f"Saved to {out_path}.")
 
         else:
