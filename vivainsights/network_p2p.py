@@ -292,7 +292,6 @@ def network_p2p(data,
             pd.DataFrame({v_attr: g.vs[v_attr]})
             .merge(colour_tb, on = v_attr, how = "left")
             .loc[:, "colour"]
-
         )
 
         if style == "igraph":
@@ -324,7 +323,7 @@ def network_p2p(data,
                     leg_y = -1.0
                 else:
                     raise ValueError("Invalid input for `legend_pos`.")
-                
+
                 ig.plot(
                     g,
                     layout = layout_func(g),
@@ -332,6 +331,7 @@ def network_p2p(data,
                     vertex_label = None,
                     vertex_size = g.vs["node_size"],
                     edge_arrow_mode = "-",
+                    edge_arrow_size=0, 
                     edge_color = "#adadad",
                 )
 
