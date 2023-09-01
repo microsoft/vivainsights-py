@@ -10,6 +10,7 @@ import pandas as pd
 import igraph as ig
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+import matplotlib.lines as mlines
 from matplotlib.backends.backend_pdf import PdfPages
 import random
 from sklearn.preprocessing import minmax_scale
@@ -335,16 +336,23 @@ def network_p2p(data,
                     edge_color = "#adadad",
                 )
 
+                handles = []
+                labels = []
+                for i in range(len(g.vs)):
+                    color = g.vs[i]["color"]
+                    marker = mlines.Line2D([0], [0], marker='o', color='w', label=f"Node {i}", markerfacecolor=color, markersize=5)
+                    handles.append(marker)
+                    labels.append(f"Node {i}")
+                
                 plt.legend(
-                    bbox_to_anchor = (leg_x, leg_y),
+                    loc = 'upper left',
                     edgecolor= edge_col,
-                    marker = 'o',
                     frameon = False,
-                    markerscale = 4,
-                    markersize = 10,
-                    fontsize= 10,
-                    handles= colour_tb[v_attr],
-                    labelcolor = font_col,
+                    markerscale = 1,
+                    fontsize= 5,
+                    handles = handles,
+                    labels = labels,
+                    labelcolor = 'grey',
                     ncols = 1
                 )
 
