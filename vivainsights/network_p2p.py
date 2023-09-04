@@ -97,13 +97,22 @@ def network_p2p(data,
         String to specify which plotting style to use for the network plot. Valid values include:
         - `"igraph"`
         - `"ggraph"`
-
     bg_fill : str 
         String to specify background fill colour.
     font_col : str
         String to specify font colour.
     legend_pos : str
-        String to specify position of legend. 
+        String to specify position of legend. Valid values include:
+        - `"best"`
+        - `"upper right"`
+        - `"upper left"`
+        - `"lower left"`
+        - `"right"`
+        -  `"center left"`
+        - `"center right"`
+        - `"lower center"`
+        - `"upper center"`
+        - `"center"`
     palette : str 
         String specifying the function to generate a colour palette with a single argument `n`. Uses `"rainbow"` by default.
     node_alpha : int 
@@ -340,6 +349,9 @@ def network_p2p(data,
                     edge_arrow_size=0, 
                     edge_color = "#adadad",
                 )              
+                
+                # Number of legend columns
+                leg_cols = min(len(handles) / 5, 3)
                 
                 plt.legend(
                     loc = legend_pos,
