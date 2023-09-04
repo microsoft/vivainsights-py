@@ -304,22 +304,22 @@ def network_p2p(data,
             g.es["width"] = 1
 
             #Internal basic plotting function used inside 'network_p2p()'
-            def plot_basic_graph(lpos = legend_pos, pdf=False):
+            def plot_basic_graph(pdf=False):
                 
                 fig, ax = plt.subplots(figsize=(10, 10))
                 plt.rcParams["figure.facecolor"] = bg_fill
                 layout_func = getattr(ig.Graph, f"layout_{layout}")
                 #Legend position
-                if lpos == "left":
+                if legend_pos == "left":
                     leg_loc = 'center left'
                     leg_cols = 1
-                elif lpos == "right":
+                elif legend_pos == "right":
                     leg_loc = 'center right'
                     leg_cols = 1
-                elif lpos == "top":
+                elif legend_pos == "top":
                     leg_loc = 'upper center'
                     leg_cols = len(vert_tb)
-                elif lpos == "bottom":
+                elif legend_pos == "bottom":
                     leg_loc = 'lower center'
                     leg_cols = len(vert_tb)
                 else:
