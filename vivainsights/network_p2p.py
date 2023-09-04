@@ -311,17 +311,13 @@ def network_p2p(data,
                 layout_func = getattr(ig.Graph, f"layout_{layout}")
                 #Legend position
                 if lpos == "left":
-                    leg_x = -1.5
-                    leg_y = 0.5
+                    lpos_loc = 'center left'
                 elif lpos == "right":
-                    leg_x = 1.5
-                    leg_y = 0.5
+                    lpos_loc = 'center right'
                 elif lpos == "top":
-                    leg_x = 0
-                    leg_y = 1.5
+                    lpos_loc = 'upper center'
                 elif lpos == "bottom":
-                    leg_x = 0
-                    leg_y = -1.0
+                    lpos_loc = 'lower center'
                 else:
                     raise ValueError("Invalid input for `legend_pos`.")
                 
@@ -349,6 +345,7 @@ def network_p2p(data,
                     color = cmap(index)
                     g.vs[i]["color"] = color
 
+
                 ig.plot(
                     g,
                     layout = layout_func(g),
@@ -361,7 +358,7 @@ def network_p2p(data,
                 )              
                 
                 plt.legend(
-                    loc = 'upper left',
+                    loc = lpos_loc,
                     edgecolor= edge_col,
                     frameon = False,
                     markerscale = 1,
