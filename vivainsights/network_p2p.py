@@ -299,23 +299,11 @@ def network_p2p(data,
             g.es["width"] = 1
 
             #Internal basic plotting function used inside 'network_p2p()'
-            def plot_basic_graph(pdf=False):
+            def plot_basic_graph(lpos = legend_pos, pdf=False):
                 
                 fig, ax = plt.subplots(figsize=(10, 10))
                 plt.rcParams["figure.facecolor"] = bg_fill
                 layout_func = getattr(ig.Graph, f"layout_{layout}")
-                
-                # Legend position
-                # if lpos == "left":
-                #     lpos_loc = 'center left'
-                # elif lpos == "right":
-                #     lpos_loc = 'center right'
-                # elif lpos == "top":
-                #     lpos_loc = 'upper center'
-                # elif lpos == "bottom":
-                #     lpos_loc = 'lower center'
-                # else:
-                #     raise ValueError("Invalid input for `legend_pos`.")
                 
                 # Get the unique values of the vertex attribute
                 unique_values = list(set(g.vs[v_attr]))
