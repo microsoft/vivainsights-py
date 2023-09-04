@@ -311,13 +311,17 @@ def network_p2p(data,
                 layout_func = getattr(ig.Graph, f"layout_{layout}")
                 #Legend position
                 if lpos == "left":
-                    lpos_loc = 'center left'
+                    leg_loc = 'center left'
+                    leg_cols = 1
                 elif lpos == "right":
-                    lpos_loc = 'center right'
+                    leg_loc = 'center right'
+                    leg_cols = 1
                 elif lpos == "top":
-                    lpos_loc = 'upper center'
+                    leg_loc = 'upper center'
+                    leg_cols = len(vert_tb)
                 elif lpos == "bottom":
-                    lpos_loc = 'lower center'
+                    leg_loc = 'lower center'
+                    leg_cols = len(vert_tb)
                 else:
                     raise ValueError("Invalid input for `legend_pos`.")
                 
@@ -358,7 +362,7 @@ def network_p2p(data,
                 )              
                 
                 plt.legend(
-                    loc = lpos_loc,
+                    loc = leg_loc,
                     edgecolor= edge_col,
                     frameon = False,
                     markerscale = 1,
@@ -366,7 +370,7 @@ def network_p2p(data,
                     handles = handles,
                     labels = labels,
                     labelcolor = 'grey',
-                    ncols = 1
+                    ncols = leg_cols
                 )
 
                 if pdf:
