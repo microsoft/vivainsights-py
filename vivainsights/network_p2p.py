@@ -280,7 +280,7 @@ def network_p2p(data,
         def rainbow(n):
             return [f"#{random.randint(0, 0xFFFFFF):06x}" for _ in range(n)]
             
-        #Set colours
+        # Set colours
         vert_tb = vert_tb.drop_duplicates()
         
         colour_tb = (
@@ -288,7 +288,7 @@ def network_p2p(data,
              .assign(colour = eval(f"{palette}(len(vert_tb))"))
         )
 
-        #Colour vector
+        # Colour vector
         colour_v = (
             pd.DataFrame({v_attr: g.vs[v_attr]})
             .merge(colour_tb, on = v_attr, how = "left")
@@ -296,9 +296,9 @@ def network_p2p(data,
         )
 
         if style == "igraph":
-            #Set graph plot colours
-            color_names = list(mcolors.CSS4_COLORS.keys())
-            g.vs["color"] = [mcolors.to_rgba(color_names[i % len(color_names)], alpha=node_alpha) for i in range(len(g.vs))]
+            # Set graph plot colours
+            # color_names = list(mcolors.CSS4_COLORS.keys())
+            # g.vs["color"] = [mcolors.to_rgba(color_names[i % len(color_names)], alpha=node_alpha) for i in range(len(g.vs))]
     
             g.vs["frame_color"] = None
             g.es["width"] = 1
@@ -324,6 +324,30 @@ def network_p2p(data,
                     leg_y = -1.0
                 else:
                     raise ValueError("Invalid input for `legend_pos`.")
+                
+                # Get the unique values of the vertex attribute
+                unique_values = list(set(g.vs[v_attr]))
+                
+                # Create a colormap with one color for each unique value
+                cmap = mcolors.ListedColormap([plt.get_cmap('tab20')(i) for i in range(len(unique_values))])
+
+                handles = []
+                labels = []
+                
+                # Map each unique value to an index in the colormap
+                value_to_index = {value: i for i, value in enumerate(unique_values)}
+                
+                # Legend
+                for i, value in enumerate(unique_values):
+                    marker = mlines.Line2D([0], [0], marker='o', color='w', label=value, markerfacecolor=cmap(i), markersize=5)
+                    handles.append(marker)
+                    labels.append(value)
+                    
+                # Set node colours
+                for i, value in enumerate(g.vs[v_attr]):
+                    index = value_to_index[g.vs[i][v_attr]]
+                    color = cmap(index)
+                    g.vs[i]["color"] = color
 
                 ig.plot(
                     g,
@@ -334,15 +358,7 @@ def network_p2p(data,
                     edge_arrow_mode = "0",
                     edge_arrow_size=0, 
                     edge_color = "#adadad",
-                )
-
-                handles = []
-                labels = []
-                for i in range(len(g.vs)):
-                    color = g.vs[i]["color"]
-                    marker = mlines.Line2D([0], [0], marker='o', color='w', label=f"Node {i}", markerfacecolor=color, markersize=5)
-                    handles.append(marker)
-                    labels.append(f"Node {i}")
+                )              
                 
                 plt.legend(
                     loc = 'upper left',
