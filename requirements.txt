@@ -6,3 +6,4 @@ scipy
 numpy
 igraph
 plotly
+sklearn
