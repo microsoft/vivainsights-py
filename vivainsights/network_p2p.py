@@ -28,7 +28,7 @@ def network_p2p(data,
     style = "igraph",
     bg_fill = "#FFFFFF",
     font_col = "grey20",
-    legend_pos = "right",
+    legend_pos = "best",
     palette = "rainbow",
     node_alpha = 0.7,
     edge_alpha = 1,
@@ -103,12 +103,7 @@ def network_p2p(data,
     font_col : str
         String to specify font colour.
     legend_pos : str
-        String to specify position of legend. Defaults to `"right"`. See `ggplot2::theme()`. This is applicable for both the 'ggraph' and the fast plotting method. Valid inputs include:
-        - `"bottom"`
-        - `"top"`
-        - `"left"`
-        -`"right"`
-
+        String to specify position of legend. 
     palette : str 
         String specifying the function to generate a colour palette with a single argument `n`. Uses `"rainbow"` by default.
     node_alpha : int 
@@ -309,17 +304,18 @@ def network_p2p(data,
                 fig, ax = plt.subplots(figsize=(10, 10))
                 plt.rcParams["figure.facecolor"] = bg_fill
                 layout_func = getattr(ig.Graph, f"layout_{layout}")
-                #Legend position
-                if lpos == "left":
-                    lpos_loc = 'center left'
-                elif lpos == "right":
-                    lpos_loc = 'center right'
-                elif lpos == "top":
-                    lpos_loc = 'upper center'
-                elif lpos == "bottom":
-                    lpos_loc = 'lower center'
-                else:
-                    raise ValueError("Invalid input for `legend_pos`.")
+                
+                # Legend position
+                # if lpos == "left":
+                #     lpos_loc = 'center left'
+                # elif lpos == "right":
+                #     lpos_loc = 'center right'
+                # elif lpos == "top":
+                #     lpos_loc = 'upper center'
+                # elif lpos == "bottom":
+                #     lpos_loc = 'lower center'
+                # else:
+                #     raise ValueError("Invalid input for `legend_pos`.")
                 
                 # Get the unique values of the vertex attribute
                 unique_values = list(set(g.vs[v_attr]))
@@ -358,7 +354,7 @@ def network_p2p(data,
                 )              
                 
                 plt.legend(
-                    loc = lpos_loc,
+                    loc = legend_pos,
                     edgecolor= edge_col,
                     frameon = False,
                     markerscale = 1,
@@ -377,7 +373,7 @@ def network_p2p(data,
             # Default PDF output unless None supplied to path
             if return_type == "plot":
                 
-                plot_basic_graph()
+                plot_basic_graph(lpos = legend_pos)
                 
             elif return_type == "plot-pdf":
                 with PdfPages(out_path) as pdf:
