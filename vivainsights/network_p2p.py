@@ -93,10 +93,7 @@ def network_p2p(data,
         See <https://rdrr.io/cran/ggraph/man/layout_tbl_graph_igraph.html> for a full  list of options.
     path : str (file path)
         File path for saving the PDF output. Defaults to a timestamped path based on current parameters.
-    style: str 
-        String to specify which plotting style to use for the network plot. Valid values include:
-        - `"igraph"`
-        - `"ggraph"`
+        
     bg_fill : str 
         String to specify background fill colour.
     font_col : str
@@ -137,11 +134,17 @@ def network_p2p(data,
 
     Examples
     --------
+    # Return a network visual
+    vi.network_p2p(data = p2p_data, return_type = "plot")
     
     # Return the vertex table with counts in communities and HR attribute
-    vi.network_p2p(data = p2p_data, community = "leiden", comm_args = {"resolution": 0.1}, return_type = "table")
+    vi.network_p2p(data = p2p_data, community = "leiden", comm_args = {"resolution": 0.01}, return_type = "table")
     """
     path ="p2p" + ("" if community is None else '_' + community)
+    
+    # `style` is currently a placeholder as only igraph is supported
+    # legacy argument from the R implementation
+    style = "igraph"
 
     if len(node_sizes) != 2:
         raise ValueError("`node_sizes` must be of length 2")
