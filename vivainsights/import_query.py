@@ -11,6 +11,7 @@ returns the resulting data as a pandas dataframe. If there is an error reading t
 """
 import pandas as pd
 import re 
+import os
 
 def import_query(x, encoding: str = 'utf-8'):
     """
@@ -37,22 +38,24 @@ def import_query(x, encoding: str = 'utf-8'):
     
     # in case '.csv' is not all in lower case, make it lower case
     if x[-4:].lower() == '.csv':
-        x = x[:-4] + '.csv'
-    
-    try:
-        # Check if '.csv' exists in variable x.
-        if re.search('.csv', x):
-            try:
-                # Try to read in csv file, if file can not be read, exception is thrown.
-                data = pd.read_csv(x, encoding=encoding, delimiter=',')
-                # Remove leading and trailing spaces
-                # Remove spaces and special characters and replacing them with underscores within column names.
-                data.columns = [re.sub('[^a-zA-Z0-9,]', '_', c.strip()) for c in data]
-            except: 
-                print('Something went wrong when reading the file')
-                
-        return data
-            
+        in_df = x[:-4] + '.csv'
+    else:
+        in_df = x
         
-    except:
-        print('The input file must be a .csv file')
+    if not os.path.isfile(in_df):
+        raise ValueError("input file does not exist")
+    
+    elif not in_df.endswith('.csv'):
+        raise ValueError("the input must be a .csv file")
+    
+    else:
+        try:
+            # Try to read in csv file, if file can not be read, exception is thrown.
+            data = pd.read_csv(x, encoding=encoding, delimiter=',')
+            # Remove leading and trailing spaces
+            # Remove spaces and special characters and replacing them with underscores within column names.
+            data.columns = [re.sub('[^a-zA-Z0-9,]', '_', c.strip()) for c in data]
+            
+            return data
+        except: 
+            raise ValueError('something went wrong when reading the file')

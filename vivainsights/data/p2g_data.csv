@@ -1,0 +1,181 @@
+PrimaryCollaborator_PersonId,PrimaryCollaborator_LevelDesignation,SecondaryCollaborator_FunctionType,MetricDate,Meeting_Count,Mail_Count
+00ccf698-6e21-3612-a665-63ba1bb13c97,Manager,G&A East,01/03/2023,12,10
+00ccf698-6e21-3612-a665-63ba1bb13c97,Manager,G&A East,01/03/2023,9,9
+00ccf698-6e21-3612-a665-63ba1bb13c97,Manager,G&A South,01/03/2023,16,6
+01ae740a-72cc-3fa6-bad0-b1b7bc30da0f,Junior IC,G&A South,01/03/2023,14,11
+01ae740a-72cc-3fa6-bad0-b1b7bc30da0f,Junior IC,G&A South,01/03/2023,18,22
+00752bae-2bc9-3b08-ba24-c9969bd414dd,Senior IC,G&A East,01/03/2023,24,38
+0079b5e0-d453-38a8-8b42-90513e002a81,Senior IC,G&A South,01/03/2023,23,21
+008b9208-b223-3cb3-8466-0ebb82d11ff3,Senior IC,North Sales,01/03/2023,20,32
+009e554a-26bc-3dae-bb60-2e5d0d0294a1,Senior IC,South Sales,01/03/2023,42,29
+00a0119e-d0d3-3d6b-b2d1-3181eabd050d,Manager,G&A East,01/03/2023,31,38
+00a0a60d-c9f3-386a-ac7e-ac1938b8cd21,Manager,G&A South,01/03/2023,4,44
+00a0a60d-c9f3-386a-ac7e-ac1938b8cd21,Manager,North Sales,01/03/2023,13,6
+00a6c2a3-7f2a-3505-82bc-7481629ad334,Junior IC,G&A West,01/03/2023,2,28
+00ac95af-5163-31aa-9a65-9feb9a34df33,Junior IC,South Sales,01/03/2023,34,32
+00afb6d6-c4b1-34f7-bd54-8fbca715e80e,Junior IC,Payroll,01/03/2023,13,30
+00b74707-a063-3cce-8dbb-c104b0dd182c,Junior IC,Digital Marketing ,01/03/2023,13,50
+00b8df05-fc9c-326e-be0c-a05b6cd8d522,Junior IC,South Sales,01/03/2023,47,22
+00bbe221-91f2-3aa4-85cf-90fefdeae931,Junior IC,G&A North,01/03/2023,34,23
+00bbe451-cbf2-30b5-9490-b4fd0c4dd269,Junior IC,HRBP,01/03/2023,28,2
+00bc9877-edf5-3508-93b9-84f6ec615535,Senior IC,G&A East,01/03/2023,20,30
+00c1575f-a927-3f2c-aa59-c85178cc61ff,Senior IC,G&A South,01/03/2023,30,42
+00c83306-2f30-30fd-8616-0b610491d346,Senior IC,North Sales,01/03/2023,13,17
+00cc1a28-f223-3178-a4c2-10008c193aac,Senior IC,G&A West,01/03/2023,32,18
+00ccf925-3bc4-3fd9-bedd-b286e3d0b7e8,Senior IC,South Sales,01/03/2023,38,43
+00d0fdc0-779a-314e-b870-4ed40706266b,Senior IC,Payroll,01/03/2023,49,30
+00d21b13-be55-3144-bb9a-7b161444589e,Senior IC,Digital Marketing ,01/03/2023,1,22
+00d47187-44df-32d4-a43b-0abc3135b7ab,Senior IC,South Sales,01/03/2023,42,34
+00d47c5a-1a04-3096-baec-53812a3942f4,Senior IC,G&A North,01/03/2023,12,4
+00d8fc99-559a-3d61-8130-f0ea3042c180,Junior IC,HRBP,01/03/2023,15,13
+00dac19f-6f19-3fc4-91ba-f2f7cfa881d7,Junior IC,G&A East,01/03/2023,44,19
+00db37fd-a730-3b70-9240-4b975bdf92f2,Junior IC,G&A South,01/03/2023,48,38
+00dce293-d89a-3872-96b6-f05c822c1e50,Junior IC,North Sales,01/03/2023,50,35
+00dce293-d89a-3872-96b6-f05c822c1e50,Junior IC,G&A West,01/03/2023,21,14
+00dce293-d89a-3872-96b6-f05c822c1e50,Junior IC,South Sales,01/03/2023,46,19
+00dce293-d89a-3872-96b6-f05c822c1e50,Junior IC,Payroll,01/03/2023,35,40
+00de2420-33f9-34cf-ad45-3326e2d75235,Senior IC,Digital Marketing ,01/03/2023,50,0
+00f5060d-9f7d-30ce-8183-103bbcf60b04,Senior IC,South Sales,01/03/2023,47,43
+00fdbb33-4110-398a-8bc0-eabe24c00bb0,Senior IC,G&A North,01/03/2023,24,40
+00fe47dc-873d-3e4d-bb15-ca3ca22b0530,Senior IC,HRBP,01/03/2023,12,20
+01016b12-63d0-3f5b-a4e3-e5c4cd05bad5,Senior IC,G&A East,01/03/2023,11,18
+01048d7a-bd40-3775-9c1e-1e5d4d3993bc,Senior IC,G&A South,01/03/2023,7,27
+010d372d-4a5f-36ab-bd9e-f05c09befe07,Senior IC,North Sales,01/03/2023,21,45
+01108933-d879-3206-aa57-876c782116eb,Senior IC,G&A West,01/03/2023,10,26
+0115b2b1-547c-3998-ae7c-764981d72c3a,Senior IC,South Sales,01/03/2023,36,37
+011a5d53-383c-3515-8f2f-6d0f1ad42e71,Senior IC,Payroll,01/03/2023,7,46
+011a5d53-383c-3515-8f2f-6d0f1ad42e71,Senior IC,Digital Marketing ,01/03/2023,22,6
+011d935b-0dd0-3e6c-a702-4a41cab2f50f,Junior IC,South Sales,01/03/2023,3,21
+011d935b-0dd0-3e6c-a702-4a41cab2f50f,Junior IC,G&A North,01/03/2023,20,48
+011f4dc8-7c75-3c20-97ff-437eab8f1c0e,Senior IC,HRBP,01/03/2023,6,9
+01264089-9b16-3e41-a23f-1112212e1197,Senior IC,G&A East,01/03/2023,27,42
+0135f6b4-f290-3a66-9ee0-11a585aa3ee1,Junior IC,G&A South,01/03/2023,37,0
+0139a292-4f01-3737-b414-f08f95bed723,Junior IC,North Sales,01/03/2023,32,27
+013a4c46-e744-39ec-8e18-d9706d0cecfd,Senior IC,G&A West,01/03/2023,44,11
+0141d5fc-cfa5-3dff-b0bc-e2aa523716fb,Senior IC,South Sales,01/03/2023,13,11
+014ce067-0c1b-3228-9670-f5cc05a972e7,Junior IC,Payroll,01/03/2023,8,11
+0150a380-1be6-35bd-a6bf-156fed45b8e8,Manager,Digital Marketing ,01/03/2023,31,43
+0152ce99-70a4-3765-9d05-4ab270051a6b,Manager,South Sales,01/03/2023,27,11
+0152ce99-70a4-3765-9d05-4ab270051a6b,Manager,G&A North,01/03/2023,33,8
+0152ce99-70a4-3765-9d05-4ab270051a6b,Manager,HRBP,01/03/2023,38,26
+0155af7f-1b17-33ee-aa67-3144e9e07d40,Senior IC,G&A East,01/03/2023,14,33
+0164a3bf-9136-384d-9a9d-5b17bdc27e18,Senior IC,G&A South,01/03/2023,2,8
+0164a3bf-9136-384d-9a9d-5b17bdc27e18,Senior IC,North Sales,01/03/2023,22,36
+01658d37-facd-32dd-a53d-ecbd813fd2f3,Junior IC,G&A West,01/03/2023,47,49
+0169a163-69a7-315a-b2dc-175914dadb06,Junior IC,South Sales,01/03/2023,37,10
+01715f0e-4035-3ace-a020-9dfc5c320063,Junior IC,Payroll,01/03/2023,16,26
+017d1988-bcee-3b5c-8834-c3d606993faf,Manager,Digital Marketing ,01/03/2023,26,34
+01870c24-0185-3a16-81c0-ec10f234265e,Manager,South Sales,01/03/2023,22,15
+01888082-ad9f-3b91-aa97-44a8defc1961,Senior IC,G&A North,01/03/2023,19,14
+01888082-ad9f-3b91-aa97-44a8defc1961,Senior IC,HRBP,01/03/2023,28,6
+018b19dd-df91-3d63-ab15-469a7ef672ae,Senior IC,G&A East,01/03/2023,37,3
+018b3e11-86d5-30f3-8fd3-c9efea3e7101,Junior IC,G&A South,01/03/2023,37,15
+01929269-7a99-3aa9-b48a-51054526a176,Junior IC,North Sales,01/03/2023,33,26
+01964e7d-1b2e-3c6f-80cb-80884cddd76e,Junior IC,G&A West,01/03/2023,4,23
+01a01545-5d0d-365d-9b9e-1a9cc541fb4e,Manager,South Sales,01/03/2023,45,3
+01a48b07-d890-33c4-9ffa-2a65304e1f0a,Manager,Payroll,01/03/2023,38,48
+01b054cf-5ab2-3b65-b950-655165e5ac11,Senior IC,Digital Marketing ,01/03/2023,28,42
+01b0d156-c52f-3472-8679-5cd7461f4567,Senior IC,South Sales,01/03/2023,5,3
+01b123ea-8ad9-3221-8d6e-ce0103a6103c,Senior IC,G&A North,01/03/2023,29,10
+01b1e281-2ce2-3d70-98fe-1e8e9e6aeefb,Junior IC,HRBP,01/03/2023,4,10
+01b53620-b6c3-370c-9408-ef2a6f369234,Junior IC,G&A East,01/03/2023,5,37
+01b58dd7-6232-3a47-85a8-5073cf295190,Junior IC,G&A South,01/03/2023,15,45
+01b6a892-3365-3d75-8c69-cb82772280df,Manager,North Sales,01/03/2023,23,32
+01ba6660-cd16-38af-b163-89fde1bdc883,Manager,G&A West,01/03/2023,22,42
+01bc3392-5e20-3570-bf82-171fa9180cd1,Senior IC,South Sales,01/03/2023,22,35
+01bc3392-5e20-3570-bf82-171fa9180cd1,Senior IC,Payroll,01/03/2023,36,45
+01c42f3c-e730-3186-bf5c-c28801bd31db,Senior IC,Digital Marketing ,01/03/2023,1,9
+01c99fd5-00d8-3b4e-978d-a8a42c96e2ee,Junior IC,South Sales,01/03/2023,26,14
+01ca1079-4493-34ae-8ad3-a3289694bf81,Junior IC,G&A North,01/03/2023,45,48
+01ceb292-1933-32d2-a5d4-efd2f8b216cd,Junior IC,HRBP,01/03/2023,10,4
+01ceb292-1933-32d2-a5d4-efd2f8b216cd,Manager,G&A East,01/03/2023,22,0
+01cee943-5842-320b-9452-d3349f1e62ea,Manager,G&A South,01/03/2023,21,19
+01cee943-5842-320b-9452-d3349f1e62ea,Senior IC,North Sales,01/03/2023,22,27
+01cf92e7-989b-38a9-8761-1cc56cdd9571,Senior IC,G&A West,01/03/2023,1,24
+01cf92e7-989b-38a9-8761-1cc56cdd9571,Senior IC,South Sales,01/03/2023,28,6
+01d1d39f-c618-3bd6-b9ee-de899d2ab5bf,Junior IC,Payroll,01/03/2023,1,39
+01ddac8a-d859-3d3b-8f1b-0131ec0011d2,Junior IC,Digital Marketing ,01/03/2023,11,40
+01e3d675-dd96-3136-875a-6258e97e9b21,Junior IC,South Sales,01/03/2023,13,0
+01eb5053-699c-3d95-8190-bbcf4f5ea389,Manager,G&A North,01/03/2023,9,19
+01f6a2f7-5daf-3912-a7c6-8193f0d8d796,Manager,HRBP,01/03/2023,13,44
+01fdade9-98e8-3e2d-8cff-5804c025ecd0,Manager,G&A East,01/03/2023,40,15
+02082c68-991f-39d3-95af-3b8764347aaf,Manager,G&A South,01/03/2023,38,16
+02123f92-a27b-37c7-950a-0aa36bc78a5f,Senior IC,North Sales,01/03/2023,5,30
+021becd1-a241-396c-aa46-57ea0bdef11e,Senior IC,G&A West,01/03/2023,14,33
+0227a400-4b40-3877-a670-4c431cdc2fca,Senior IC,South Sales,01/03/2023,1,8
+022986dd-dad6-38ca-b618-d092d2c68e7c,Junior IC,Payroll,01/03/2023,29,1
+022e4218-2e5e-3c3c-b008-b06b498bed9f,Junior IC,Digital Marketing ,01/03/2023,16,16
+023977fd-9040-3075-88e0-1cfb8194c75f,Junior IC,South Sales,01/03/2023,23,48
+0239ca84-f1d3-37b7-aed6-b9e12f35568c,Manager,G&A North,01/03/2023,49,21
+023b87fa-139b-3d54-90ef-c1b354d18131,Manager,HRBP,01/03/2023,24,46
+0247f483-c69e-3bef-a677-4d6e7b488390,Senior IC,G&A East,01/03/2023,24,13
+024a97bc-b585-3ebe-8659-56a93a864b44,Senior IC,G&A South,01/03/2023,24,3
+024d098d-4e55-3794-9fc1-b15856482f23,Senior IC,North Sales,01/03/2023,40,35
+0253eaf0-06b0-39aa-9047-c0494f28c4d3,Junior IC,G&A West,01/03/2023,1,2
+0257519d-4107-38bb-ba50-bb8c6447e9bf,Junior IC,South Sales,01/03/2023,21,6
+0267ef81-e0ea-3f88-88ee-3aa2b64f0f10,Junior IC,Payroll,01/03/2023,20,10
+026b35e9-80a1-34f2-8d6a-0a9637c79baf,Manager,Digital Marketing ,01/03/2023,22,20
+0273f86f-19a9-3e1a-a24d-f1ff3e8bc894,Manager,South Sales,01/03/2023,37,49
+0274b29d-b623-3256-b35a-37c5e756ee52,Senior IC,G&A North,01/03/2023,20,38
+0274e5e5-bb31-34fb-aac4-8be4c8b7b7fe,Senior IC,HRBP,01/03/2023,41,22
+02764ea2-8425-343b-830b-3268fb0ff146,Senior IC,G&A East,01/03/2023,20,27
+027b1691-eb77-31e0-81b9-432d85293634,Junior IC,G&A South,01/03/2023,46,36
+027bc2af-cdee-3b62-a856-0a8080d55c35,Junior IC,North Sales,01/03/2023,27,20
+028b1289-87c7-3422-a41d-1684ea577847,Junior IC,G&A West,01/03/2023,13,32
+028dda6e-3044-33c2-b17d-6ba0a1560bea,Manager,South Sales,01/03/2023,47,0
+0292045a-6933-333b-9353-7f56445498c7,Manager,Payroll,01/03/2023,10,42
+029a2089-fb39-3b94-a93a-d85b1f059803,Senior IC,Digital Marketing ,01/03/2023,24,45
+02a6ef11-ae07-3adf-a386-4763da69c57d,Senior IC,South Sales,01/03/2023,37,7
+02ac2384-40b4-3e78-b294-3442869483bb,Senior IC,G&A North,01/03/2023,25,29
+02ae1fea-eb17-3d2c-a28e-49955942872a,Junior IC,HRBP,01/03/2023,39,21
+02af1e3b-0e07-3b81-bb23-9c59b3124055,Junior IC,G&A East,01/03/2023,19,9
+02afcb6d-a4f8-36dc-b9b9-9d05dda422e2,Junior IC,G&A South,01/03/2023,13,37
+02b380ee-2a32-3467-b58d-975f02e5656a,Junior IC,North Sales,01/03/2023,0,27
+02b5ce38-8930-36d2-8fc9-66dbc96d07d6,Junior IC,G&A West,01/03/2023,6,18
+02b5fdcb-f511-314f-8a3e-bee4fd099d3a,Junior IC,South Sales,01/03/2023,7,24
+02bb81e3-7414-33aa-8c0d-ec2381fface7,Senior IC,Payroll,01/03/2023,22,45
+02bba24c-49ce-3c40-b72e-dc707874853e,Senior IC,Digital Marketing ,01/03/2023,31,48
+02bc178f-9cd9-3950-8bfc-e9192dc1217c,Senior IC,South Sales,01/03/2023,23,22
+02bc2f27-22f6-3832-8044-06da2aeef344,Manager,G&A North,01/03/2023,23,49
+02c0a993-2109-364f-8cf9-cde1243bfdee,Manager,HRBP,01/03/2023,20,12
+02c5dd3b-5b83-385f-af60-6c5bce86e05c,Junior IC,G&A East,01/03/2023,7,9
+02c8465b-3a4e-3c76-a919-07c1c7056981,Junior IC,G&A South,01/03/2023,29,28
+02ca7d67-35b4-3558-aa6d-c604530bff59,Junior IC,North Sales,01/03/2023,28,38
+02cbb17e-e37d-3b1f-8fd2-d3862ff4ad01,Junior IC,G&A West,01/03/2023,40,36
+02cc7fd5-5fdf-3330-aac2-5d8d3e11f2c1,Senior IC,South Sales,01/03/2023,28,16
+02d4ba42-8d27-329d-a3d8-124c45156175,Senior IC,Payroll,01/03/2023,50,7
+02dbc26f-8022-314c-9020-1ed99daf48d3,Senior IC,Digital Marketing ,01/03/2023,18,27
+02e1ba79-c23b-3f04-ae89-ee7b99692cff,Manager,South Sales,01/03/2023,26,24
+02e5da93-e4d8-3e31-b51c-647465744e4a,Manager,G&A North,01/03/2023,32,37
+02eade70-ea23-39cf-8590-a20ac90ea7b5,Junior IC,HRBP,01/03/2023,50,6
+02eade70-ea23-39cf-8590-a20ac90ea7b5,Junior IC,G&A East,01/03/2023,21,31
+02ed2426-12b6-3637-95f6-82ff67d5f7bd,Junior IC,G&A South,01/03/2023,35,18
+02f0231a-40f7-38bf-a8b8-1cd56190e30c,Junior IC,North Sales,01/03/2023,2,38
+02fcf1b6-f40b-3adf-bf10-a4c394026c53,Senior IC,G&A West,01/03/2023,19,12
+03014e61-144e-3bee-bf24-979798721a41,Senior IC,South Sales,01/03/2023,5,26
+0304bb69-3cf3-34a7-badf-aaeda3748e9e,Senior IC,Payroll,01/03/2023,25,11
+03057a27-8ecf-3364-864f-2b2805c38d83,Manager,Digital Marketing ,01/03/2023,31,34
+03094fe7-bec6-30e7-8ac7-0c8ff9da3605,Manager,South Sales,01/03/2023,33,25
+030b19c4-0e31-3535-9fa0-1d1c8cc3d07e,Junior IC,G&A North,01/03/2023,19,6
+030e8013-5a71-3784-89d6-c4cd53eca37d,Junior IC,HRBP,01/03/2023,21,12
+03189d60-7649-34b5-8c23-42ec08e36897,Junior IC,G&A East,01/03/2023,9,9
+031c44d6-b795-3bcb-a2f5-0e71f3a62a94,Junior IC,G&A South,01/03/2023,21,41
+031f0aa6-4090-3371-aefd-0e58aed285b3,Senior IC,North Sales,01/03/2023,24,14
+032a0b14-8e9c-335b-a655-cc4e76a71870,Senior IC,G&A West,01/03/2023,50,1
+032b3f71-d4fe-3c69-a0c6-e69bd147ab3d,Senior IC,South Sales,01/03/2023,45,50
+032ba19d-7a62-3497-8126-338b41e4a417,Manager,Payroll,01/03/2023,14,18
+032ba19d-7a62-3497-8126-338b41e4a417,Manager,Digital Marketing ,01/03/2023,49,2
+03367287-474f-39c3-a501-5cdf42819d68,Junior IC,South Sales,01/03/2023,5,45
+03408264-9565-3f88-97aa-a6d3e1172e12,Junior IC,G&A North,01/03/2023,44,1
+0343689e-ea24-39a6-ab7e-56d59edea3c6,Junior IC,HRBP,01/03/2023,29,36
+0343689e-ea24-39a6-ab7e-56d59edea3c6,Junior IC,G&A East,01/03/2023,9,24
+034a4191-7ae8-3f8f-a80d-d5e97bc5a793,Senior IC,G&A South,01/03/2023,37,17
+034b80f7-65e4-30e3-90fc-6f0fa99c5793,Senior IC,North Sales,01/03/2023,46,37
+034b80f7-65e4-30e3-90fc-6f0fa99c5793,Senior IC,G&A West,01/03/2023,5,39
+034ea1cf-f93c-35b3-a017-6ecece88d4ea,Manager,South Sales,01/03/2023,6,38
+03552752-64f8-36ab-989e-4dbb3973c07b,Manager,Payroll,01/03/2023,22,23
+03571aa1-330e-347f-ae7f-557b4a1927e0,Junior IC,Digital Marketing ,01/03/2023,41,22
+035ed3c7-4414-3fc7-937a-b0405959b697,Junior IC,South Sales,01/03/2023,29,22
+036315f3-d92a-38ac-9f57-4964c55d32a9,Junior IC,G&A North,01/03/2023,41,21
+036315f3-d92a-38ac-9f57-4964c55d32a9,Junior IC,HRBP,01/03/2023,24,8
+03662cd6-760b-3edf-b801-71641951aca9,Senior IC,G&A East,01/03/2023,34,43
