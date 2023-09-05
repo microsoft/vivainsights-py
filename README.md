@@ -34,7 +34,7 @@ To install from a specific branch, run the following command replacing branch na
 pip install -e git+https://github.com/microsoft/vivainsights-py@<remote-branch-name>#egg=vivainsights
 ```
 
-For examples on how to create analyses and visualizations, please see the [documentation](https://micrsoft.github.io/vivainsights-py/).
+For examples on how to create analyses and visualizations, please see the [documentation](https://microsoft.github.io/vivainsights-py/).
 
 ## Related repositories
 
