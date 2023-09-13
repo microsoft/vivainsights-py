@@ -23,6 +23,10 @@ jobs:
     - name: Build distribution package
       run: |
         python setup.py sdist bdist_wheel
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 #    - name: Publish distribution package
 #      uses: pypa/gh-action-pypi-publish@v1.1.0
