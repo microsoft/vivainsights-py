@@ -50,14 +50,13 @@ def identify_holidayweeks(data: pd.DataFrame, sd = 1, return_type = "text"):
     -------
     A different output is returned depending on the value passed to return_type:
 
-    message : str
+    text : str
         A message is printed identifying holiday weeks.
-    data : pandas dataframe
-        A dataset with outlier weeks flagged in a new column is returned as a
-        dataframe.
     data_cleaned / cleaned_data : pandas dataframe
         A dataset with outlier weeks removed is returned.
     data_dirty / dirty_data / labelled_data : pandas dataframe
+        A dataset with only outlier weeks is returned.
+    holidayweeks_data : pandas dataframe
         A dataset with only outlier weeks is returned.
     plot : matplotlib plot 
         A line plot of Collaboration Hours with holiday weeks highlighted.
@@ -124,7 +123,8 @@ def identify_holidayweeks(data: pd.DataFrame, sd = 1, return_type = "text"):
             ax.text(x=ax.get_xlim()[0]-5,y=ax.get_ylim()[0]-5.5,s=cap_str, fontsize=12)
             ax.set_xticklabels(pd.to_datetime(Calc['MetricDate']).dt.strftime("%b %d, '%y"), rotation=45, ha="right")
             ax.grid(False)
-            return fig, plt.show()
+            
+            return fig
         else:
             raise ValueError("The `return_type` argument must be one of the following strings: 'text', 'labeled_data', 'cleaned_data', 'holidayweeks_data', or 'plot'.")
     except:
