@@ -8,7 +8,7 @@ The changes made in this PR are:
 
 
 # Checks
-- [ ] All checks pass (run `python -m unittest discover -s tests` locally)
+- [ ] All checks pass (run `python -m unittest discover -s tests -f` locally)
 - [ ] Versions are updated in `pyproject.toml` and `setup.py` (if applicable)
 - [ ] `NEWS.md` has been updated
 

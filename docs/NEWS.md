@@ -1,3 +1,7 @@
+# Version 0.2.1
+
+Bug fixes and improve test coverage.
+
 # Version 0.2.0
 
 The new version adds a number of organizational network analysis (ONA) functions to the library: 
