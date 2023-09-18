@@ -29,7 +29,16 @@ def identify_inactiveweeks(data: pd.DataFrame, sd=2, return_type="text"):
     sd : int
         The `sd` parameter stands for the number of standard deviations below the mean that is considered as inactive. In this code, it is used to identify weeks where the collaboration hours are more than `sd` standard deviations below the mean, defaults to 2 (optional)
     return_type : str
-         The `return_type` parameter determines the type of output that the function will return. It can have the following values:, defaults to text (optional)
+         The `return_type` parameter determines the type of output that the function will return. 
+         It can have the following values:, defaults to text (optional)
+         
+         - 'text': Returns a string with the number of inactive weeks.
+         - 'data_dirty' or 'dirty_data': Returns a Pandas DataFrame with the rows that are inactive.
+         - 'data_cleaned' or 'cleaned_data': Returns a Pandas DataFrame with the rows that are not inactive.
+         - 'plot': Returns a plot showing the number of inactive weeks for each user.
+         - 'data': Returns a Pandas DataFrame with the number of inactive weeks for each user.
+        
+        The default value is 'text'.
     
     Returns
     -------
@@ -50,9 +59,9 @@ def identify_inactiveweeks(data: pd.DataFrame, sd=2, return_type="text"):
     # Output conditions based on return_type
     if return_type == "text":
         return message
-    elif return_type == "data_dirty":
+    elif return_type == "data_dirty" or return_type == "dirty_data":
         return data[data["z_score"] <= -sd].drop(columns=["z_score"])
-    elif return_type == "data_cleaned":
+    elif return_type == "data_cleaned" or return_type == "cleaned_data":
         return data[data["z_score"] > -sd].drop(columns=["z_score"])
     elif return_type == "data":
         return data.assign(inactiveweek=(data["z_score"] <= -sd)).drop(columns=["z_score"])

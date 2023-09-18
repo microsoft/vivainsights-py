@@ -41,8 +41,8 @@ def identify_holidayweeks(data: pd.DataFrame, sd = 1, return_type = "text"):
     return_type : str
         String specifying what to return. This must be one of the following strings:
         - "text" (default)
-        - "labeled_data"
-        - "cleaned_data"
+        - "labelled_data" or "dirty_data" or "data_dirty"
+        - "cleaned_data" or "data_cleaned"
         - "holidayweeks_data"
         - "plot"
 
@@ -55,9 +55,9 @@ def identify_holidayweeks(data: pd.DataFrame, sd = 1, return_type = "text"):
     data : pandas dataframe
         A dataset with outlier weeks flagged in a new column is returned as a
         dataframe.
-    data_cleaned : pandas dataframe
+    data_cleaned / cleaned_data : pandas dataframe
         A dataset with outlier weeks removed is returned.
-    data_dirty : pandas dataframe
+    data_dirty / dirty_data / labelled_data : pandas dataframe
         A dataset with only outlier weeks is returned.
     plot : matplotlib plot 
         A line plot of Collaboration Hours with holiday weeks highlighted.
@@ -91,10 +91,10 @@ def identify_holidayweeks(data: pd.DataFrame, sd = 1, return_type = "text"):
             mean_collab_hrs = Calc["mean_collab"].mean()
             Message = 'The weeks where collaboration was ' + str(sd) + ' standard deviations below the mean (' + str(round(mean_collab_hrs, 1)) + ') are: \n' + ', '.join(Outliers.apply(lambda x: "`" + x.strftime("%m/%d/%Y") + "`"))
             return Message
-        elif return_type == "labeled_data":
-            data_labeled = data.assign(holidayweek = data["MetricDate"].isin(Outliers))
-            return data_labeled
-        elif return_type == "cleaned_data":
+        elif return_type in ["labelled_data", "dirty_data", "data_dirty"]:
+            data_labelled = data.assign(holidayweek = data["MetricDate"].isin(Outliers))
+            return data_labelled
+        elif return_type == "cleaned_data" or return_type == "data_cleaned":
             # Calculate the three dataframe outputs
             data_cleaned = data[~data["MetricDate"].isin(Outliers)]
             return data_cleaned
