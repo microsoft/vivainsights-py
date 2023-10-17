@@ -6,3 +6,5 @@ scipy
 numpy
 PyQt5
 plotly
+igraph
+scikit-learn
