@@ -1,3 +1,7 @@
+# Version 0.2.2
+
+Bug fixes and improve test coverage.
+
 # Version 0.2.1
 
 Bug fixes and improve test coverage.
