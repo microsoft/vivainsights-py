@@ -68,6 +68,10 @@ def identify_holidayweeks(data: pd.DataFrame, sd = 1, return_type = "text"):
     "The weeks where collaboration was 0.75 standard deviations below the mean (18.7) are: `05/22/2022`"
 
     >>> identify_holidayweeks(pq_data, sd = .75, return_type = "plot")
+    
+    >>> identify_holidayweeks(pq_data, sd = .75, return_type = "cleaned_data")
+    
+    >>> identify_holidayweeks(pq_data, sd = .75, return_type = "holidayweeks_data")
     """
 
     try:
