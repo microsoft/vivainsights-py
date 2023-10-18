@@ -35,9 +35,6 @@ class TestCreateIncBar(unittest.TestCase):
         with self.assertRaises(ValueError):
             create_inc_bar(self.pq_data, 'Collaboration_hours', 'LevelDesignation', threshold=20, position='invalid', return_type='table')
 
-
-
-
 class TestCreateIncGrid(unittest.TestCase):
     
     def setUp(self):
@@ -62,14 +59,14 @@ class TestCreateInc(unittest.TestCase):
     def setUp(self):
         self.data = load_pq_data()
     
-    @patch('vivainsights.create_inc.create_inc_bar')
+    @patch('vivainsights.create_inc_bar')
     def test_create_inc_1_hrvar(self, mock_create_inc_bar):
-        output = create_inc(data = self.data, metric= 'Collaboration_hours', hrvar= 'LevelDesignation' ,position= 'above')
+        output = create_inc(data = self.data, metric= 'Collaboration_hours', hrvar= 'LevelDesignation', position= 'above')
         mock_create_inc_bar.assert_called_once()
 
-    @patch('vivainsights.create_inc.create_inc_grid')
+    @patch('vivainsights.create_inc_grid')
     def test_create_inc_2_hrvar(self, mock_create_inc_grid):
-        output = create_inc(data = self.data, metric= 'Collaboration_hours', hrvar= ['Organization', 'LevelDesignation'] ,position= 'above')
+        output = create_inc(data = self.data, metric= 'Collaboration_hours', hrvar= ['Organization', 'LevelDesignation'], threshold = 10, position= 'above', return_type = "plot")
         mock_create_inc_grid.assert_called_once()
 
 if __name__ == '__main__':
