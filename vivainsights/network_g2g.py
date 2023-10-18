@@ -37,7 +37,7 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
         String to specify the node placement algorithm to be used. 
         - Defaults to `"fr"` for the force-directed algorithm of Fruchterman and Reingold. 
         - See <https://rdrr.io/cran/ggraph/man/layout_tbl_graph_igraph.html> for a full list of options.
-    node_colour : str or dictionary
+    node_colour : str or dictionary 
         String or named vector to specify the colour to be used for displaying nodes. 
         - Defaults to `"lightblue"`. 
         - If `"vary"` is supplied, a different colour is shown for each node at random. 
@@ -47,7 +47,7 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
         - Defaults to 0.1, which means that the plot will only display collaboration above 10% of a node's total collaboration. 
         - This argument has no impact on `"data"` or `"table"` return.
     org_count : optional 
-        Optional data frame to provide the size of each organizationin the `secondary` attribute.
+        Optional data frame to provide the size of each organizationin the `secondary` attribute. 
         - The data frame should contain only two columns: 
         - Name of the `secondary` attribute excluding any prefixes, e.g. `"Organization"`. 
         - Must be of character or factor type. `"n"`. Must be of numeric type. 
