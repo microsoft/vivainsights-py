@@ -82,13 +82,18 @@ def identify_holidayweeks(data: pd.DataFrame, sd = 1, return_type = "text"):
         Outliers = (Calc["MetricDate"][Calc["z_score"] < -sd])
 
         Calc = Calc.assign(Outlier = Calc["MetricDate"].isin(Outliers))
-
         
         # Return the message or the plot depending on the argument
         if return_type== "text":
             # Calculate the total return_type and the message
             mean_collab_hrs = Calc["mean_collab"].mean()
-            Message = 'The weeks where collaboration was ' + str(sd) + ' standard deviations below the mean (' + str(round(mean_collab_hrs, 1)) + ') are: \n' + ', '.join(Outliers.apply(lambda x: "`" + x.strftime("%m/%d/%Y") + "`"))
+
+            if len(Outliers) == 0:
+                Message = 'There are no weeks where collaboration was ' + str(sd) + ' standard deviations below the mean (' + str(round(mean_collab_hrs, 1)) + ').'
+            else:
+                Message = 'The weeks where collaboration was ' + str(sd) + ' standard deviations below the mean (' + str(round(mean_collab_hrs, 1)) + ') are: '
+                Message += ', '.join(Outliers.apply(lambda x: "`" + x.strftime("%m/%d/%Y") + "`"))
+            
             return Message
         elif return_type in ["labelled_data", "dirty_data", "data_dirty"]:
             data_labelled = data.assign(holidayweek = data["MetricDate"].isin(Outliers))
