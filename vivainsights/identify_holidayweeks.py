@@ -11,6 +11,7 @@ default, missing values are excluded.
 
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.ticker import FixedLocator
 
 
 def identify_holidayweeks(data: pd.DataFrame, sd = 1, return_type = "text"):
@@ -95,16 +96,21 @@ def identify_holidayweeks(data: pd.DataFrame, sd = 1, return_type = "text"):
                 Message += ', '.join(Outliers.apply(lambda x: "`" + x.strftime("%m/%d/%Y") + "`"))
             
             return Message
+        
         elif return_type in ["labelled_data", "dirty_data", "data_dirty"]:
+            
             data_labelled = data.assign(holidayweek = data["MetricDate"].isin(Outliers))
             return data_labelled
+        
         elif return_type == "cleaned_data" or return_type == "data_cleaned":
             # Calculate the three dataframe outputs
             data_cleaned = data[~data["MetricDate"].isin(Outliers)]
             return data_cleaned
+        
         elif return_type == "holidayweeks_data":
             data_hw = data[data["MetricDate"].isin(Outliers)]
             return data_hw
+        
         elif return_type == "plot":
             # Generate a line plot with matplotlib for the collaboration hours
             fig, ax = plt.subplots(figsize=(10, 6))
@@ -126,6 +132,8 @@ def identify_holidayweeks(data: pd.DataFrame, sd = 1, return_type = "text"):
             ax.text(x=ax.get_xlim()[0]-5, y=ax.get_ylim()[1]*1.10, s="Holiday Weeks", fontsize=16, fontweight="bold")
             ax.text(x=ax.get_xlim()[0]-5, y=ax.get_ylim()[1]*1.05, s=subtitle_str, fontsize=12)
             ax.text(x=ax.get_xlim()[0]-5,y=ax.get_ylim()[0]-5.5,s=cap_str, fontsize=12)
+            
+            ax.xaxis.set_major_locator(FixedLocator(range(len(Calc)))) # Set the tick positions
             ax.set_xticklabels(pd.to_datetime(Calc['MetricDate']).dt.strftime("%b %d, '%y"), rotation=45, ha="right")
             ax.grid(False)
             
