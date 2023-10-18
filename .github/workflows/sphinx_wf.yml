@@ -19,6 +19,13 @@ jobs:
           python -m pip install -U sphinx
           python -m pip install furo myst-parser
           python -m pip install -r docs/requirements.txt
+      - name: Clear cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/pip
+            ./docs/_build
+          key: ${{ runner.os }}-docs-${{ hashFiles('docs/requirements.txt') }}          
       - name: Make docs
         run: |
           cd docs/
