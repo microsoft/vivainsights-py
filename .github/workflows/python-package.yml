@@ -4,7 +4,10 @@ on:
   push:
     branches:
       - main
-
+  pull_request:
+    branches:
+      - main
+      
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,6 +26,9 @@ jobs:
     - name: Build distribution package
       run: |
         python setup.py sdist bdist_wheel
+    - name: Run tests
+      run: |
+        python -m unittest discover -s tests -p 'test_*.py'        
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
       env:

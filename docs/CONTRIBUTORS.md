@@ -11,5 +11,6 @@ We would like to thank the following people for their contributions to this proj
 - Ellen Trinklein 
 - Sachin Gaikwad (@sachinstl)
 - Imran Ahmadi (@ia404)
+- Marco Van Gelder (@MarcoVanGelder)
 
 Thank you for your hard work and dedication to this project!

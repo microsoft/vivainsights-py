@@ -15,8 +15,6 @@ class TestCreateSankey(unittest.TestCase):
             output = create_sankey(data = sum_tb, var1 = 'Organization', var2 = 'LevelDesignation')
         except Exception as e:
             self.fail(f"create_sankey raised an exception: {e}")
-
-
         
 if __name__ == '__main__':
     unittest.main()

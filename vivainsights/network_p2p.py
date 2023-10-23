@@ -52,7 +52,7 @@ def network_p2p(data,
     hrvar : str 
         String containing the label for the HR attribute.
     return_type : str 
-        A different output is returned depending on the value passed to the `return_type` argument:
+        A different output is returned depending on the value passed to the `return_type` argument: 
         - `'plot'` (default)
         - `'plot-pdf'`
         - `'sankey'`
@@ -62,7 +62,7 @@ def network_p2p(data,
 
     centrality : str 
         string to determines which centrality measure is used to scale the size of the nodes. All centrality measures are automatically calculated when it is set to one of the below values, and reflected in the `'network'` and `'data'` outputs. 
-        Measures include:
+        Measures include: 
         - `betweenness`
         - `closeness`
         - `degree`
@@ -71,9 +71,9 @@ def network_p2p(data,
         When `centrality` is set to None, no centrality is calculated in the outputs and all the nodes would have the same size. 
 
     community : str 
-        String determining which community detection algorithms to apply. Valid values include:
+        String determining which community detection algorithms to apply. Valid values include: 
         - `None` (default): compute analysis or visuals without computing communities.
-        - `"multilevel (a version of louvain)"`
+        - `"multilevel"` (a version of louvain)
         - `"leiden"`
         - `"edge_betweenness"`
         - `"fastgreedy"`
@@ -99,7 +99,7 @@ def network_p2p(data,
     font_col : str
         String to specify font colour.
     legend_pos : str
-        String to specify position of legend. Valid values include:
+        String to specify position of legend. Valid values include: 
         - `"best"`
         - `"upper right"`
         - `"upper left"`
@@ -124,7 +124,7 @@ def network_p2p(data,
 
     Returns
     -------
-    A different output is returned depending on the value passed to the `return_type` argument:
+    A different output is returned depending on the value passed to the `return_type` argument:     
     - `'plot'`: return a network plot, interactively within R.
     - `'plot-pdf'`: save a network plot as PDF. This option is recommended when the graph is large, which make take a long time to run if `return_type = 'plot'` is selected. Use this together with `path` to control the save location.
     - `'sankey'`: return a sankey plot combining communities and HR attribute. This is only valid if a community detection method is selected at community`.
@@ -135,10 +135,10 @@ def network_p2p(data,
     Examples
     --------
     # Return a network visual
-    vi.network_p2p(data = p2p_data, return_type = "plot")
+    >>> vi.network_p2p(data = p2p_data, return_type = "plot")
     
     # Return the vertex table with counts in communities and HR attribute
-    vi.network_p2p(data = p2p_data, community = "leiden", comm_args = {"resolution": 0.01}, return_type = "table")
+    >>> vi.network_p2p(data = p2p_data, community = "leiden", comm_args = {"resolution": 0.01}, return_type = "table")
     """
     path ="p2p" + ("" if community is None else '_' + community)
     
