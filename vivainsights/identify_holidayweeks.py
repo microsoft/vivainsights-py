@@ -11,6 +11,7 @@ default, missing values are excluded.
 
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.ticker import FixedLocator
 
 
 def identify_holidayweeks(data: pd.DataFrame, sd = 1, return_type = "text"):
@@ -67,6 +68,10 @@ def identify_holidayweeks(data: pd.DataFrame, sd = 1, return_type = "text"):
     "The weeks where collaboration was 0.75 standard deviations below the mean (18.7) are: `05/22/2022`"
 
     >>> identify_holidayweeks(pq_data, sd = .75, return_type = "plot")
+    
+    >>> identify_holidayweeks(pq_data, sd = .75, return_type = "cleaned_data")
+    
+    >>> identify_holidayweeks(pq_data, sd = .75, return_type = "holidayweeks_data")
     """
 
     try:
@@ -82,24 +87,34 @@ def identify_holidayweeks(data: pd.DataFrame, sd = 1, return_type = "text"):
         Outliers = (Calc["MetricDate"][Calc["z_score"] < -sd])
 
         Calc = Calc.assign(Outlier = Calc["MetricDate"].isin(Outliers))
-
         
         # Return the message or the plot depending on the argument
         if return_type== "text":
             # Calculate the total return_type and the message
             mean_collab_hrs = Calc["mean_collab"].mean()
-            Message = 'The weeks where collaboration was ' + str(sd) + ' standard deviations below the mean (' + str(round(mean_collab_hrs, 1)) + ') are: \n' + ', '.join(Outliers.apply(lambda x: "`" + x.strftime("%m/%d/%Y") + "`"))
+
+            if len(Outliers) == 0:
+                Message = 'There are no weeks where collaboration was ' + str(sd) + ' standard deviations below the mean (' + str(round(mean_collab_hrs, 1)) + ').'
+            else:
+                Message = 'The weeks where collaboration was ' + str(sd) + ' standard deviations below the mean (' + str(round(mean_collab_hrs, 1)) + ') are: '
+                Message += ', '.join(Outliers.apply(lambda x: "`" + x.strftime("%m/%d/%Y") + "`"))
+            
             return Message
+        
         elif return_type in ["labelled_data", "dirty_data", "data_dirty"]:
+            
             data_labelled = data.assign(holidayweek = data["MetricDate"].isin(Outliers))
             return data_labelled
+        
         elif return_type == "cleaned_data" or return_type == "data_cleaned":
             # Calculate the three dataframe outputs
             data_cleaned = data[~data["MetricDate"].isin(Outliers)]
             return data_cleaned
+        
         elif return_type == "holidayweeks_data":
             data_hw = data[data["MetricDate"].isin(Outliers)]
             return data_hw
+        
         elif return_type == "plot":
             # Generate a line plot with matplotlib for the collaboration hours
             fig, ax = plt.subplots(figsize=(10, 6))
@@ -121,6 +136,8 @@ def identify_holidayweeks(data: pd.DataFrame, sd = 1, return_type = "text"):
             ax.text(x=ax.get_xlim()[0]-5, y=ax.get_ylim()[1]*1.10, s="Holiday Weeks", fontsize=16, fontweight="bold")
             ax.text(x=ax.get_xlim()[0]-5, y=ax.get_ylim()[1]*1.05, s=subtitle_str, fontsize=12)
             ax.text(x=ax.get_xlim()[0]-5,y=ax.get_ylim()[0]-5.5,s=cap_str, fontsize=12)
+            
+            ax.xaxis.set_major_locator(FixedLocator(range(len(Calc)))) # Set the tick positions
             ax.set_xticklabels(pd.to_datetime(Calc['MetricDate']).dt.strftime("%b %d, '%y"), rotation=45, ha="right")
             ax.grid(False)
             
