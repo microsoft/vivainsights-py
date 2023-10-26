@@ -200,7 +200,9 @@ def network_p2p(data,
     # Finalise `g` object
     # If community detection is selected, this is where the communities are appended
     if community is None:
-        g = g_raw.simplify()
+        
+        # g = g_raw.simplify()
+        g = g_raw # Note: NOT simplified as simplification may remove too many edges
         v_attr = hrvar 
         
     elif community in valid_comm:
@@ -214,7 +216,8 @@ def network_p2p(data,
 
         # call community detection function
         comm_out = comm_func(graph = g_ud, **comm_args)
-        g = g_ud.simplify()
+        # g = g_ud.simplify()
+        g = g_ud # Note: NOT simplified as simplification may remove too many edges
         g.vs["cluster"] = [str(member) for member in comm_out.membership]
 
         #Name of vertex attribute
@@ -234,7 +237,7 @@ def network_p2p(data,
         g.vs["node_size"] = node_sizes/100 #scale for plotting      
     elif centrality is None:
         # all nodes with the same size if centrality is not calculated
-        #a djust for plotting formats
+        # adjust for plotting formats
         if style == "igraph":
             g.vs["node_size"] = [0.08] * g.vcount()
         elif style == "ggraph":

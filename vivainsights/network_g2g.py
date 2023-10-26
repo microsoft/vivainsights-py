@@ -13,7 +13,7 @@ import numpy as np
 import re
 import random
 
-def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algorithm="fr", node_colour="lightblue", exc_threshold=0.1, org_count=None, node_scale = 1, subtitle="Collaboration Across Organizations", return_type="plot"):
+def network_g2g(data, primary=None, secondary=None, metric="Group_collaboration_time_invested", algorithm="fr", node_colour="lightblue", exc_threshold=0.1, org_count=None, node_scale = 1, edge_scale = 10, subtitle="Collaboration Across Organizations", return_type="plot"):
     """
     Name
     ----
@@ -53,6 +53,7 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
         - Must be of character or factor type. `"n"`. Must be of numeric type. 
         - Defaults to `None`, where node sizes will be fixed.
     node_scale : Numeric value controlling the size of the nodes. 1 keeps the size of the nodes as is. 
+    edge_scale: Numeric value controlling the width of the edges. 1 keeps the size of the edges as is. Defaults to 10. 
     subtitle : str 
         String to override default plot subtitle.
     return_type : str
@@ -103,26 +104,31 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
 
     if return_type == "table":
 
-        #return a 'tidy' matrix
+        # return a 'tidy' matrix
         table = plot_data.pivot(index = "PrimaryOrg", columns = "SecondaryOrg", values = "metric_prop")
         return table
     
     elif return_type == "data":
 
-        #return long table
+        # return long table
         return plot_data
     
     elif return_type in ["plot", "network"]:
 
-        # network object
+        # create network object - one for export, one for plotting
+        # exclusion threshold ONLY applies in network output and plotting 
         mynet_em = plot_data[plot_data['metric_prop'] > exc_threshold]
         mynet_em.loc[:, ['PrimaryOrg', 'SecondaryOrg']] = mynet_em[['PrimaryOrg', 'SecondaryOrg']].apply(lambda func: func.str.replace(' ', '\n'))
-        mynet_em.loc[:, 'metric_prop'] = mynet_em['metric_prop'] * 10
         
-        g = ig.Graph.TupleList(mynet_em.itertuples(index=False), directed=False)
+        # a version of the graph without self-collaboration
+        mynet_em_noloops = mynet_em[mynet_em['PrimaryOrg'] != mynet_em['SecondaryOrg']]
+        mynet_em_noloops.loc[:, 'metric_prop'] = mynet_em_noloops['metric_prop'] * edge_scale # only scale width for the plotting graph
         
-        #Org count can vary by size
-
+        # Set 'metric_props' as edge attribute
+        g = ig.Graph.TupleList(mynet_em.itertuples(index=False), directed=False, edge_attrs = ['metric_prop'])
+        g_noloops = ig.Graph.TupleList(mynet_em_noloops.itertuples(index=False), directed=False, edge_attrs = ['metric_prop'])
+        
+        # Org count can vary by size
         if org_count is not None:
             g.vs["org_size"] = (
                 pd.DataFrame({"id": g.vs["name"]})
@@ -132,10 +138,27 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
                 .loc[:, "n"]
                 .tolist()
             )
+            
+            g_noloops.vs["org_size"] = (
+                pd.DataFrame({"id": g_noloops.vs["name"]})
+                .assign(id=lambda org: org["id"].str.replace("\n", " "))
+                .merge(org_count, how="left", left_on="id", right_on=hrvar_string)
+                .assign(n=lambda org: org["n"] / 100) #scale for plotting
+                .loc[:, "n"]
+                .tolist()
+            )
         else:
             #imputed size if not specified
-             g.vs['org_size'] = (
+            g.vs['org_size'] = (
                 pd.DataFrame({"id": g.vs['name']})
+                .assign(id=lambda org: org['id'].str.replace('\n', ' '))
+                .assign(n=0.4)
+                .loc[:, 'n']
+                .tolist()
+            )
+             
+            g_noloops.vs['org_size'] = (
+                pd.DataFrame({"id": g_noloops.vs['name']})
                 .assign(id=lambda org: org['id'].str.replace('\n', ' '))
                 .assign(n=0.4)
                 .loc[:, 'n']
@@ -144,12 +167,21 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
 
         # scale the size of the nodes
         g.vs["org_size"] = [x*node_scale for x in g.vs["org_size"]] 
+        g_noloops.vs["org_size"] = [x*node_scale for x in g_noloops.vs["org_size"]]
+        
+        # Add edge_colour with transparent grey
+        g_noloops.es["edge_colour"] = [(0.827, 0.827, 0.827, 0.5)] * g_noloops.ecount()
+
 
         if return_type == "network":
-            return g #return 'igraph' object
+            return g # return 'igraph' object
         else:
-            #plot object
-            g = g.simplify()
+            # Keep multiple edges, remove loops
+            # g = g.simplify(multiple = True, loops = True)
+            
+            g = g_noloops # use version of graph with no self-collaboration
+            
+            # plot object
             fig, ax = plt.subplots(figsize=(8, 8))
             ig.plot(
                 g,
@@ -159,9 +191,10 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
                 vertex_frame_width=0,
                 vertex_size=g.vs["org_size"],
                 vertex_color=setColor(node_colour, g.vs["name"]),  
-                edge_width=mynet_em["metric_prop"] * 1,
-                edge_alpha=0.5,
-                edge_color="grey",
+                edge_width= g.es["metric_prop"],                
+                # edge_width=mynet_em["metric_prop"] * 1,
+                # edge_alpha=0.2,
+                edge_color= g.es["edge_colour"]
             )
             
             plt.suptitle("Group to Group Collaboration" + '\n' + subtitle, fontsize=13)

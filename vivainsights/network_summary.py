@@ -59,7 +59,7 @@ def network_summary(graph, hrvar = None, return_type = "table"):
     if(hrvar is not None):
         sum_tb['hrvar'] = graph.vs[hrvar]
 
-    graph = graph.simplify() 
+    # graph = graph.simplify() # Note: NOT simplified as simplification may remove too many edges
 
     if return_type == "table":
         return sum_tb #return table
