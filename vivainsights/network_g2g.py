@@ -13,7 +13,7 @@ import numpy as np
 import re
 import random
 
-def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algorithm="fr", node_colour="lightblue", exc_threshold=0.1, org_count=None, subtitle="Collaboration Across Organizations", return_type="plot"):
+def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algorithm="fr", node_colour="lightblue", exc_threshold=0.1, org_count=None, node_size = 1, subtitle="Collaboration Across Organizations", return_type="plot"):
     """
     Name
     ----
@@ -52,6 +52,7 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
         - Name of the `secondary` attribute excluding any prefixes, e.g. `"Organization"`. 
         - Must be of character or factor type. `"n"`. Must be of numeric type. 
         - Defaults to `None`, where node sizes will be fixed.
+    node_size : Numeric value controlling the size of the nodes. 1 keeps the size of the nodes as is. 
     subtitle : str 
         String to override default plot subtitle.
     return_type : str
@@ -140,6 +141,9 @@ def network_g2g(data, primary=None, secondary=None, metric="Meeting_Count", algo
                 .loc[:, 'n']
                 .tolist()
             )
+
+        # scale the size of the nodes
+        g.vs["org_size"] = [x*node_size for x in g.vs["org_size"]] 
 
         if return_type == "network":
             return g #return 'igraph' object
