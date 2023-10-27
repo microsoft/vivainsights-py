@@ -143,7 +143,11 @@ def network_p2p(data,
     >>> vi.network_p2p(data = p2p_data, return_type = "plot")
     
     # Return the vertex table with counts in communities and HR attribute
+    # Resolution is set to a low value to yield fewer communities
     >>> vi.network_p2p(data = p2p_data, community = "leiden", comm_args = {"resolution": 0.01}, return_type = "table")
+    
+    # Return the vertex table with centrality calculations
+    >>> vi.network_p2p(data = p2p_data, centrality = "betweenness", return_type = "table")
     """
     path ="p2p" + ("" if community is None else '_' + community)
     
