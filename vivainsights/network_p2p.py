@@ -156,7 +156,8 @@ def network_p2p(data,
     # Set data frame for edges
     edges = data.assign(NoWeight=1).loc[:, ["PrimaryCollaborator_PersonId", "SecondaryCollaborator_PersonId", "NoWeight"]].rename(columns={"NoWeight": "weight"}) if weight is None else data.loc[:, ["PrimaryCollaborator_PersonId", "SecondaryCollaborator_PersonId", weight]]
 
-    pc_hrvar, sc_hrvar = "PrimaryCollaborator_" + hrvar, "SecondaryCollaborator_" + hrvar
+    pc_hrvar ="PrimaryCollaborator_" + hrvar
+    sc_hrvar = "SecondaryCollaborator_" + hrvar
     
     color_by="PrimaryCollaborator_" + hrvar
 
