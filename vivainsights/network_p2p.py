@@ -16,6 +16,8 @@ import igraph as ig
 from matplotlib import cm
 from sklearn.preprocessing import minmax_scale
 import random
+import warnings
+warnings.filterwarnings("ignore")
 
 
 
