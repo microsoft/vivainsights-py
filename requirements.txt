@@ -8,6 +8,6 @@ igraph
 plotly
 scikit-learn
 networkx
-community.community_louvain
+community
 igraph
 random
