@@ -21,7 +21,6 @@ import random
 
 def network_p2p(data,
                 hrvar="Organization",
-                color_by='PrimaryCollaborator_Organization',
                 return_type="plot",
                 centrality=None,
                 community=None,
@@ -31,6 +30,7 @@ def network_p2p(data,
                 style="igraph",
                 legend_pos="best",
                 palette="rainbow",
+                color_by=None,
                 edge_alpha=1,
                 edge_col="#777777",
                 comm_args = None,
@@ -156,6 +156,8 @@ def network_p2p(data,
     edges = data.assign(NoWeight=1).loc[:, ["PrimaryCollaborator_PersonId", "SecondaryCollaborator_PersonId", "NoWeight"]].rename(columns={"NoWeight": "weight"}) if weight is None else data.loc[:, ["PrimaryCollaborator_PersonId", "SecondaryCollaborator_PersonId", weight]]
 
     pc_hrvar, sc_hrvar = "PrimaryCollaborator_" + hrvar, "SecondaryCollaborator_" + hrvar
+    
+    color_by="PrimaryCollaborator_" + hrvar
 
     if return_type in ("network","data","table","sankey"):
         tieOrigin = (
