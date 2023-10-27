@@ -9,7 +9,7 @@ import networkx as nx
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
-import community.community_louvain as community_louvain
+from community import community_louvain
 from datetime import datetime
 import vivainsights as vi
 import igraph as ig
