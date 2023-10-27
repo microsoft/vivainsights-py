@@ -7,3 +7,7 @@ numpy
 igraph
 plotly
 scikit-learn
+networkx
+community
+igraph
+python-louvain
