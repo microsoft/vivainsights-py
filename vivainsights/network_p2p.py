@@ -26,7 +26,7 @@ def network_p2p(data,
                 community=None,
                 weight=None,
                 layout="mds",
-                path=None,
+                path="",
                 style="igraph",
                 legend_pos="best",
                 palette="rainbow",
@@ -35,7 +35,8 @@ def network_p2p(data,
                 edge_col="#777777",
                 comm_args = None,
                 node_sizes=(1, 10),
-                seed=1):
+                seed=1
+                ):
     """
     Name
     ----
