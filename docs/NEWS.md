@@ -1,6 +1,8 @@
 # Version 0.2.2
 
-Bug fixes and improve test coverage.
+Bug fixes and improve test coverage, incl. critical bug fixes and new parameters for the ONA functions. 
+
+See #18 for more details.
 
 # Version 0.2.1
 
