@@ -34,6 +34,7 @@ def network_p2p(data,
     edge_alpha = 1,
     edge_col = "#777777",
     node_sizes = [1, 20],
+    node_scale = 1,
     seed = 1
 ):
     """
@@ -99,6 +100,7 @@ def network_p2p(data,
     font_col : str
         String to specify font colour.
     legend_pos : str
+        String to specify position of legend. Valid values include:  
         String to specify position of legend. Valid values include: 
         - `"best"`
         - `"upper right"`
@@ -119,6 +121,9 @@ def network_p2p(data,
     edge_col: String to specify edge link colour.
     node_sizes: int
         Numeric vector of length two to specify the range of node sizes to rescale to, when `centrality` is set to a non-null value.
+    node_scale: int
+        A numeric value to multiply or divide the size of the nodes. 
+        This is applied to the 'node_size' attribute in the graph to increase or decrease the size of the nodes.
     seed : int
         Seed for the random number generator passed to either `set.seed()` when the louvain or leiden community detection algorithm is used, to ensure consistency. Only applicable when `community` is set to one of the valid non-null values.
 
@@ -138,7 +143,11 @@ def network_p2p(data,
     >>> vi.network_p2p(data = p2p_data, return_type = "plot")
     
     # Return the vertex table with counts in communities and HR attribute
+    # Resolution is set to a low value to yield fewer communities
     >>> vi.network_p2p(data = p2p_data, community = "leiden", comm_args = {"resolution": 0.01}, return_type = "table")
+    
+    # Return the vertex table with centrality calculations
+    >>> vi.network_p2p(data = p2p_data, centrality = "betweenness", return_type = "table")
     """
     path ="p2p" + ("" if community is None else '_' + community)
     
@@ -196,7 +205,9 @@ def network_p2p(data,
     # Finalise `g` object
     # If community detection is selected, this is where the communities are appended
     if community is None:
-        g = g_raw.simplify()
+        
+        # g = g_raw.simplify()
+        g = g_raw # Note: NOT simplified as simplification may remove too many edges
         v_attr = hrvar 
         
     elif community in valid_comm:
@@ -210,7 +221,8 @@ def network_p2p(data,
 
         # call community detection function
         comm_out = comm_func(graph = g_ud, **comm_args)
-        g = g_ud.simplify()
+        # g = g_ud.simplify()
+        g = g_ud # Note: NOT simplified as simplification may remove too many edges
         g.vs["cluster"] = [str(member) for member in comm_out.membership]
 
         #Name of vertex attribute
@@ -230,7 +242,7 @@ def network_p2p(data,
         g.vs["node_size"] = node_sizes/100 #scale for plotting      
     elif centrality is None:
         # all nodes with the same size if centrality is not calculated
-        #a djust for plotting formats
+        # adjust for plotting formats
         if style == "igraph":
             g.vs["node_size"] = [0.08] * g.vcount()
         elif style == "ggraph":
@@ -311,7 +323,7 @@ def network_p2p(data,
             g.es["width"] = 1
 
             #Internal basic plotting function used inside 'network_p2p()'
-            def plot_basic_graph(lpos = legend_pos, pdf=False):
+            def plot_basic_graph(lpos = legend_pos, pdf=False, node_scale=node_scale):
                 
                 fig, ax = plt.subplots(figsize=(10, 10))
                 plt.rcParams["figure.facecolor"] = bg_fill
@@ -341,7 +353,8 @@ def network_p2p(data,
                     color = cmap(index)
                     g.vs[i]["color"] = color
 
-
+                g.vs["node_size"] = [x*node_scale for x in g.vs["node_size"]] # scale the size of the nodes
+                
                 ig.plot(
                     g,
                     layout = layout_func(g),

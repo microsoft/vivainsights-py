@@ -52,6 +52,8 @@ def import_query(x, encoding: str = 'utf-8'):
         try:
             # Try to read in csv file, if file can not be read, exception is thrown.
             data = pd.read_csv(x, encoding=encoding, delimiter=',')
+            # Replace mentions of '%' with literal string 'Percent'
+            data.columns = [re.sub('%', 'Percent', c.strip()) for c in data]
             # Remove leading and trailing spaces
             # Remove spaces and special characters and replacing them with underscores within column names.
             data.columns = [re.sub('[^a-zA-Z0-9,]', '_', c.strip()) for c in data]
