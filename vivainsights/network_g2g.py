@@ -74,14 +74,15 @@ def network_g2g(data, primary=None, secondary=None, metric="Group_collaboration_
 
     Example
     -------
-    # Return a network visual
+    
     >>> network_g2g(data = vi.load_g2g_data(), metric = "Group_meeting_count")
+    # Return a network visual
     
-    # Return the interaction matrix
     >>> network_g2g(data = vi.load_g2g_data(), return_type = "table")
+    # Return the interaction matrix
     
-    # Return a network visual with no exclusion threshold
     >>> network_g2g(data = vi.load_g2g_data(), exc_threshold = 0)
+    # Return a network visual with no exclusion threshold
     
     """ 
     if primary is None:
