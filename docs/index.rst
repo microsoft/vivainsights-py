@@ -19,6 +19,7 @@ This documentation provides information on how to use vivainsights, a Python pac
    NEWS.md
    CONTRIBUTORS.md
    SECURITY.md
+   demo-vivainsights-py
 
 .. toctree::
    :maxdepth: 1
