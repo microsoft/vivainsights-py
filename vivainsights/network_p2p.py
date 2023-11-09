@@ -10,10 +10,12 @@ import pandas as pd
 import igraph as ig
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+from matplotlib.legend_handler import HandlerTuple
 import matplotlib.lines as mlines
 from matplotlib.backends.backend_pdf import PdfPages
 import random
 from sklearn.preprocessing import minmax_scale
+import warnings
 import time
 
 def network_p2p(data, 
@@ -35,7 +37,8 @@ def network_p2p(data,
     edge_col = "#777777",
     node_sizes = [1, 20],
     node_scale = 1,
-    seed = 1
+    seed = 1,
+    legend_ncols=0
 ):
     """
     Name
@@ -96,9 +99,9 @@ def network_p2p(data,
         File path for saving the PDF output. Defaults to a timestamped path based on current parameters.
         
     bg_fill : str 
-        String to specify background fill colour.
+        String to specify background fill color.
     font_col : str
-        String to specify font colour.
+        String to specify font color.
     legend_pos : str
         String to specify position of legend. Valid values include:  
         String to specify position of legend. Valid values include: 
@@ -113,12 +116,12 @@ def network_p2p(data,
         - `"upper center"`
         - `"center"`
     palette : str 
-        String specifying the function to generate a colour palette with a single argument `n`. Uses `"rainbow"` by default.
+        String specifying the function to generate a color palette with a single argument `n`. Uses `"rainbow"` by default.
     node_alpha : int 
         A numeric value between 0 and 1 to specify the transparency of the nodes. Defaults to 0.7.
     :param edge_alpha : int
         A numeric value between 0 and 1 to specify the transparency of the edges (only for 'ggraph' mode). Defaults to 1.
-    edge_col: String to specify edge link colour.
+    edge_col: String to specify edge link color.
     node_sizes: int
         Numeric vector of length two to specify the range of node sizes to rescale to, when `centrality` is set to a non-null value.
     node_scale: int
@@ -126,7 +129,8 @@ def network_p2p(data,
         This is applied to the 'node_size' attribute in the graph to increase or decrease the size of the nodes.
     seed : int
         Seed for the random number generator passed to either `set.seed()` when the louvain or leiden community detection algorithm is used, to ensure consistency. Only applicable when `community` is set to one of the valid non-null values.
-
+    legend_ncols : int
+        Value is either 0 or 1, Parameter to change the orientation horizontal to vertical of legend in the plot.
     Returns
     -------
     A different output is returned depending on the value passed to the `return_type` argument:     
@@ -142,8 +146,6 @@ def network_p2p(data,
     >>> vi.network_p2p(data = p2p_data, return_type = "plot")
     # Return a network visual
     
-    
-    
     >>> vi.network_p2p(data = p2p_data, community = "leiden", comm_args = {"resolution": 0.01}, return_type = "table")
     # Return the vertex table with counts in communities and HR attribute
     # Resolution is set to a low value to yield fewer communities
@@ -155,7 +157,24 @@ def network_p2p(data,
         data = p2p_data, # or whatever your query is stored
         node_scale = 50, # adjust this parameter to make nodes bigger/smaller
         return_type = "plot"
-        )   
+        )
+    
+    >>> vi.network_p2p(
+        data=p2p_data, # or whatever your query is stored
+        return_type = "sankey", # another return type for visualization 
+        centrality = "betweenness", # centrality can be set as per requirement
+        community = "leiden" # Adjust community 
+        )
+    # Return the sankey output based on centrality and community
+    
+    >>> vi.network_p2p(
+        data=p2p_data, # or whatever your query is stored
+        return_type = "plot",
+        font_col = "grey20", # Color change option for fonts in chart
+        legend_pos = "upper left", # Adjust the legend position using this parameter
+        legend_ncols = 1 # Adjust this parameter to 0 or 1 to change legend orientation from vertical to horizontal
+        )
+    # Return the plot output based on different color scheme, legend orientation and position, font color change
     """
     path ="p2p" + ("" if community is None else '_' + community)
     
@@ -375,16 +394,26 @@ def network_p2p(data,
                 )              
                 
                 # Number of legend columns
-                leg_cols = min(len(handles) / 5, 3)
-                
+                if legend_ncols==0:
+                    if len(handles)<=10:
+                        leg_cols=len(handles)
+                    elif 10<len(handles)<=20:
+                        leg_cols = (len(handles) // 2)
+                    else:
+                        leg_cols = (len(handles) // 4)
+                        warnings.warn("There are over 20 unique node categories. Consider changing your grouping variable, merging existing groups, or tweaking algorithm parameters (if applicable).", UserWarning)
+                else:
+                    leg_cols=1
+                    
                 plt.legend(
-                    loc = legend_pos,
-                    edgecolor= edge_col,
-                    frameon = False,
-                    markerscale = 1,
-                    fontsize= 5,
                     handles = handles,
                     labels = labels,
+                    handler_map={tuple: HandlerTuple(ndivide=20)},
+                    loc = legend_pos,
+                    edgecolor= edge_col,
+                    frameon = True,
+                    markerscale = 1,
+                    fontsize= 5,
                     labelcolor = 'grey',
                     ncols = leg_cols
                 )
