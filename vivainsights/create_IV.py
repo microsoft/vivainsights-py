@@ -72,7 +72,13 @@ def map_IV(data: pd.DataFrame, outcome: str, predictors: Union[List[str], None] 
 
 
 
-def create_IV(data: pd.DataFrame, predictors: Union[List[str], None] = None, outcome: str, bins: int = 5, siglevel: float = 0.05, exc_sig: bool = False, return_type: str = "plot"):
+def create_IV(data: pd.DataFrame,
+              outcome: str,
+              predictors: Union[List[str], None] = None,
+              bins: int = 5,
+              siglevel: float = 0.05,
+              exc_sig: bool = False,
+              return_type: str = "plot"):
     # Preserve string
     pred_chr = predictors
 
