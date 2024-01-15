@@ -1,3 +1,7 @@
+# Version 0.3.0
+
+Added information value features into the package. 
+
 # Version 0.2.3
 
 Fixed legend issues with `network_p2p()`, and improved test coverage. 
