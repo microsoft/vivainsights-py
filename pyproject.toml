@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vivainsights"
-version = "0.2.3"
+version = "0.3.0"
 authors = [
   { name="Martin Chan", email="martinchan@microsoft.com" },
   { name="Aadarsh Indurkhya", email="aindurkhya@microsoft.com" },
