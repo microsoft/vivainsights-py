@@ -38,7 +38,7 @@ def create_IV(data, predictors=None, outcome=None, bins=5, siglevel=0.05, exc_si
 
     predictors['Variable'] = predictors['Variable'].astype(str)
 
-    predictors_pval=p_test(data=train, outcome='X', behavior=["Email_hours","Chat_hours","Meeting_hours"])
+    predictors_pval=p_test(data=train, outcome='X', behavior=pred_chr)
 
     predictors_pval = predictors_pval[predictors_pval["pval"] <= siglevel]
 
