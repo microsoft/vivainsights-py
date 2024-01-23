@@ -13,9 +13,9 @@ matplotlib.use('agg')
 
 sys.path.insert(0, os.path.abspath('..'))
 project = 'vivainsights'
-copyright = '2023, Microsoft Corporation'
+copyright = '2024, Microsoft Corporation'
 author = 'Martin Chan'
-release = '0.2.3'
+release = '0.2.4'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

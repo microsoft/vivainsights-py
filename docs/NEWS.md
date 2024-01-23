@@ -1,3 +1,7 @@
+# Version 0.2.4
+
+Added stats output functionality to internal functions.
+
 # Version 0.2.3
 
 Fixed legend issues with `network_p2p()`, and improved test coverage. 
