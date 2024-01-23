@@ -1,6 +1,6 @@
-# Version 0.3.0
+# Version 0.2.4
 
-Added information value features into the package. 
+Added stats output functionality to internal functions.
 
 # Version 0.2.3
 
