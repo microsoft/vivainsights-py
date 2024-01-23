@@ -24,9 +24,15 @@ def create_rank_calc(data: pd.DataFrame,
             ind_df = create_bar_calc(data = data, metric = metric, hrvar = i, stats = True) # individual data frames per hrvar
         elif stats == False:  
             ind_df = create_bar_calc(data = data, metric = metric, hrvar = i, stats = False) # individual data frames per hrvar
+            
         ind_df = ind_df.rename(columns = {i: 'attributes'}) # rename the hrvar column to 'attributes'
         ind_df['hrvar'] = i # add a column with the name of the hrvar
-        ind_df = ind_df[['hrvar', 'attributes', 'metric', 'n']] # reorder the columns
+        
+        if stats == True:
+            ind_df = ind_df[['hrvar', 'attributes', 'metric', 'n', 'sd', 'median', 'max', 'min']] # reorder the columns
+        elif stats == False:  
+            ind_df = ind_df[['hrvar', 'attributes', 'metric', 'n']] # reorder the columns     
+        
         output_list.append(ind_df) # appending output to the list
         output = pd.concat(output_list, axis=0) # binding the data together
     output = output[output['n'] >= mingroup] # filtering out groups with less than mingroup
