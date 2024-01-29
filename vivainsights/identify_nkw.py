@@ -14,11 +14,17 @@ def identify_nkw(
     return_type = 'data_summary'
 ):
     """
-    Identifies non-knowledge workers based on their average collaboration hours.
+    Name
+    -------
+    identify_nkw
 
+    Description
+    -------
+    Identifies non-knowledge workers based on their average collaboration hours.
     This function groups the input data by 'PersonId' and 'Organization', calculates the mean collaboration hours for each group, and flags those with average collaboration hours below a specified threshold as non-knowledge workers. It then calculates the proportion of non-knowledge workers in each organization.
 
-    Args:
+    Parameters
+    -------
         data (pd.DataFrame): The input data. Must contain the columns 'PersonId', 'Organization', and 'Collaboration_hours'.
         collab_threshold (int, optional): The threshold for average collaboration hours below which a person is considered a non-knowledge worker. Defaults to 5.
         return_type (str, optional): Specifies the type of data to return. 
@@ -27,8 +33,18 @@ def identify_nkw(
         If 'text', returns a text summary of the number and proportion of non-knowledge workers in each organization.
         Defaults to 'data_summary'.
 
-    Returns:
+    Returns
+    -------
         pd.DataFrame: The output data, as specified by the 'return_type' parameter.
+        
+    Example
+    -------
+    >>> vi.identify_nkw(
+            data = pq_data,
+            collab_threshold=15,
+            return_type = 'text'
+        )
+    
     """
     summary_byPersonId = (
         data.groupby(['PersonId', 'Organization'])
