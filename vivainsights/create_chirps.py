@@ -86,6 +86,15 @@ def test_int_bm(data: pd.DataFrame,
                   metrics: list,
                   hrvar: list = ["Organization", "SupervisorIndicator"],
                   min_group: int = 5):
+    """
+    Returns a list of data frames, one for each combination of metric and HR variable, containing the results of the internal benchmark test.
+    The output data frames contain: 
+        - the mean, standard deviation, and number of employees for each group
+        - the population mean and standard deviation for each metric
+        - the p-value, indicating whether the difference between the group mean and the population mean is statistically significant
+        - a column indicating whether the result is statistically significant
+        - a column indicating the type of the test
+    """
     
     grouped_data_benchmark_list = []
     
@@ -122,6 +131,47 @@ def test_int_bm(data: pd.DataFrame,
     
     return grouped_data_benchmark_list
 
+def test_best_practice(
+    data: pd.DataFrame,
+    metrics: list,
+    hrvar: list,
+    bp: dict = {'Emails_sent': 10}
+):
+    """
+    This function takes in a DataFrame representing a Viva Insights person query and returns a list of DataFrames containing the results of the best practice test.
+    """
+    
+    grouped_data_benchmark_list = []
+    
+    for each_metric in metrics:
+        bm_data = vi.create_rank_calc(
+            data,
+            metric = each_metric,
+            hrvar = hrvar,
+            stats = True
+        )
+        
+        # Extract benchmark mean from dictionary
+        bm_mean = bp[each_metric]
+    
+        # Perform 1-sample t-test and add the p-values to the DataFrame
+        bm_data['p_value'] = bm_data.apply(lambda row: stats.ttest_1samp(
+            row['metric'],
+            bm_mean
+        )[1], axis=1)
+        
+        # Add a column indicating whether the result is statistically significant
+        alpha = 0.05  # Set your significance level
+        bm_data['is_significant'] = bm_data['p_value'] < alpha
+
+        # Add a column indicating the type of the test
+        bm_data['test_type'] = 'Two-sample t-test'
+        
+        grouped_data_benchmark_list.append(bm_data)
+        
+    return grouped_data_benchmark_list
+
+
 
 
 #TODO: NOT COMPLETE
@@ -129,7 +179,7 @@ def create_inc_bm(
     data: pd.DataFrame,
     metric: str,
     hrvar: str,
-    bm_data: pd.DataFrame
+    bm_data: pd.DataFrame = None
 ):
     """
     This function calculates the number of employees who fall above and below the population average for a given metric. 
