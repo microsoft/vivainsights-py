@@ -123,19 +123,26 @@ def test_int_bm(data: pd.DataFrame,
     return grouped_data_benchmark_list
 
 
+
 #TODO: NOT COMPLETE
 def create_inc_bm(
     data: pd.DataFrame,
     metric: str,
-    hrvar: str
+    hrvar: str,
+    bm_data: pd.DataFrame
 ):
     """
     This function calculates the number of employees who fall above and below the population average for a given metric. 
+    If `bm_data` is provided, the population represented by this data frame will be used to calculate the population average.
     """
     
     # Population average
-    pop_mean = data[metric].mean()    
-    pop_n = data['PersonId'].nunique()
+    if bm_data is not None:
+        pop_mean = bm_data['pop_mean_' + metric]
+        pop_n = bm_data['PersonId'].nunique()
+    else:
+        pop_mean = data[metric].mean()    
+        pop_n = data['PersonId'].nunique()
     
     data_trans = data.copy()  
     
@@ -181,6 +188,8 @@ def create_chirps(data: pd.DataFrame,
     list_int_bm = test_int_bm(data = data, metrics = metrics, hrvar = hrvar, min_group = min_group)
     
     # 3. Best practice test ---------------------------------------------------
+    
+    
     
     # All the headlines -------------------------------------------------------
     
