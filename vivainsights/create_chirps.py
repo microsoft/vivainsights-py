@@ -18,6 +18,27 @@ def test_ts(data: pd.DataFrame,
                   min_group: int = 5):
     """
     This function takes in a DataFrame representing a Viva Insights person query and returns a list of DataFrames containing the results of the trend test.
+    
+    The function identifies the latest date in the data, and defines two periods: the last four weeks and the last twelve weeks. It then initializes a list of exception metrics where lower values and downward trends are notable. The function also prepares a dictionary that specifies the ranking order for each metric.
+
+    Parameters
+    ----------
+    data : pd.DataFrame
+        The DataFrame containing the data to be tested. Each row represents an observation and each column represents a variable.
+
+    metrics : list
+        The list of metrics to be tested. Each metric should correspond to a column name in `data`.
+
+    hrvar : list, optional
+        A list of variables to be used in the `vi.create_rank_calc` function. By default, the variables are 'Organization' and 'SupervisorIndicator'.
+
+    min_group : int, optional
+        The minimum group size for the trend test. By default, the minimum group size is 5.
+
+    Returns
+    -------
+    list
+        A list of DataFrames. Each DataFrame contains the results of the trend test for one metric. The DataFrame includes the original data, the p-value of the trend test, and a boolean column indicating whether the result is statistically significant at the 0.05 level.
     """    
     
     # Define date windows
@@ -87,13 +108,40 @@ def test_int_bm(data: pd.DataFrame,
                   hrvar: list = ["Organization", "SupervisorIndicator"],
                   min_group: int = 5):
     """
-    Returns a list of data frames, one for each combination of metric and HR variable, containing the results of the internal benchmark test.
-    The output data frames contain: 
+        
+    Performs an internal benchmark test on each metric and HR variable combination in the provided DataFrame.
+
+    The function calculates the mean, standard deviation, and number of unique employees for each group and for the entire population. It then performs a two-sample t-test to compare the group mean to the population mean for each metric.
+    
+    A list of data frames is returned.
+
+    Parameters
+    ----------
+    data : pd.DataFrame
+        The DataFrame containing the data to be tested. Each row represents an observation and each column represents a variable.
+
+    metrics : list
+        The list of metrics to be tested. Each metric should correspond to a column name in `data`.
+
+    hrvar : list, optional
+        A list of variables to be used in the `vi.create_rank_calc` function. By default, the variables are 'Organization' and 'SupervisorIndicator'.
+
+    min_group : int, optional
+        The minimum group size for the internal benchmark test. By default, the minimum group size is 5.
+
+    Returns
+    -------
+    list
+        A list of DataFrames. Each DataFrame contains the results of the internal benchmark test for one metric. The DataFrame includes the original data, the group and population statistics, the p-value of the t-test, and a boolean column indicating whether the result is statistically significant at the 0.05 level.
         - the mean, standard deviation, and number of employees for each group
         - the population mean and standard deviation for each metric
         - the p-value, indicating whether the difference between the group mean and the population mean is statistically significant
         - a column indicating whether the result is statistically significant
         - a column indicating the type of the test
+
+    Notes
+    -----
+    The function uses the `vi.create_rank_calc` function to calculate the rank for each metric. It also appends the full population mean, standard deviation, and number of unique employees to the DataFrame. The two-sample t-test is performed using the `stats.ttest_ind_from_stats` function from the SciPy library.
     """
     
     grouped_data_benchmark_list = []
@@ -138,8 +186,32 @@ def test_best_practice(
     bp: dict = {'Emails_sent': 10}
 ):
     """
-    This function takes in a DataFrame representing a Viva Insights person query and returns a list of DataFrames containing the results of the best practice test.
+    Takes in a DataFrame representing a Viva Insights person query and returns a list of DataFrames containing the results of the best practice test.
+    
+    The function adds the results of the t-test and the benchmark mean to the DataFrame for each metric.
+
+    Parameters
+    ----------
+    data : pd.DataFrame
+        The DataFrame containing the data to be tested. Each row represents an observation and each column represents a variable.
+
+    metrics : list
+        The list of metrics to be tested. Each metric should correspond to a column name in `data`.
+
+    hrvar : list
+        A list of variables to be used in the `vi.create_rank_calc` function.
+
+    bp : dict, optional
+        A dictionary containing the benchmark mean for each metric. The keys should correspond to the metric names and the values should be the benchmark means. By default, the benchmark mean for 'Emails_sent' is set to 10.
+
+    Returns
+    -------
+    list
+        A list of DataFrames. Each DataFrame contains the results of the t-test for one metric. The DataFrame includes the original data, the benchmark mean, the p-value of the t-test, and a boolean column indicating whether the result is statistically significant at the 0.05 level.
+    
     """
+    
+    #TODO: PERFORM CHECKS IF DICTIONARY VALUES DO NOT MATCH THOSE PROVIDED IN METRICS
     
     grouped_data_benchmark_list = []
     
@@ -153,19 +225,22 @@ def test_best_practice(
         
         # Extract benchmark mean from dictionary
         bm_mean = bp[each_metric]
-    
-        # Perform 1-sample t-test and add the p-values to the DataFrame
-        bm_data['p_value'] = bm_data.apply(lambda row: stats.ttest_1samp(
-            row['metric'],
-            bm_mean
-        )[1], axis=1)
+        
+        # Attach benchmark mean to each row
+        bm_data['benchmark_mean'] = bm_mean
+        
+        # Perform 1-sample t-test on all 'metric' values
+        t_stat, p_value = stats.ttest_1samp(bm_data['metric'], bm_mean)
+        
+        # Add the p-value to the DataFrame
+        bm_data['p_value'] = p_value
         
         # Add a column indicating whether the result is statistically significant
         alpha = 0.05  # Set your significance level
         bm_data['is_significant'] = bm_data['p_value'] < alpha
 
         # Add a column indicating the type of the test
-        bm_data['test_type'] = 'Two-sample t-test'
+        bm_data['test_type'] = 'One-sample t-test'
         
         grouped_data_benchmark_list.append(bm_data)
         
@@ -181,9 +256,33 @@ def create_inc_bm(
     hrvar: str,
     bm_data: pd.DataFrame = None
 ):
-    """
-    This function calculates the number of employees who fall above and below the population average for a given metric. 
-    If `bm_data` is provided, the population represented by this data frame will be used to calculate the population average.
+    """    
+    Calculates the number of employees who fall above, below, or equal to the population average for a given metric.
+
+    If `bm_data` is provided, the population represented by this data frame will be used to calculate the population average. Otherwise, the population average is calculated from the `data` DataFrame.
+
+    Parameters
+    ----------
+    data : pd.DataFrame
+        The DataFrame containing the data to be analyzed. Each row represents an observation and each column represents a variable.
+
+    metric : str
+        The metric to be analyzed. This should correspond to a column name in `data`.
+
+    hrvar : str
+        The human resources variable to be used in the analysis. This should correspond to a column name in `data`.
+
+    bm_data : pd.DataFrame, optional
+        An optional DataFrame representing the population to be used for calculating the population average. If not provided, the population average is calculated from the `data` DataFrame.
+
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame containing the results of the analysis. The DataFrame includes the original data, a new column indicating whether each observation is above, below, or equal to the population average, and the number of unique employees in each category for each group.
+
+    Notes
+    -----
+    The function creates a copy of the `data` DataFrame to avoid modifying the original data. It then calculates the population average and the number of unique employees in the population. It adds a new column to the DataFrame indicating whether each observation is above, below, or equal to the population average. Finally, it groups the data by the `hrvar` and the new column, and calculates the number of unique employees in each category for each group.
     """
     
     # Population average
@@ -239,7 +338,7 @@ def create_chirps(data: pd.DataFrame,
     
     # 3. Best practice test ---------------------------------------------------
     
-    
+    list_bp = test_best_practice(data = data, metrics = metrics, hrvar = hrvar, bp = {'Email_hours': 10})
     
     # All the headlines -------------------------------------------------------
     
