@@ -19,7 +19,9 @@ def test_ts(data: pd.DataFrame,
     """
     This function takes in a DataFrame representing a Viva Insights person query and returns a list of DataFrames containing the results of the trend test.
     
-    The function identifies the latest date in the data, and defines two periods: the last four weeks and the last twelve weeks. It then initializes a list of exception metrics where lower values and downward trends are notable. The function also prepares a dictionary that specifies the ranking order for each metric.
+    The function identifies the latest date in the data, and defines two periods: the last four weeks and the last twelve weeks. 
+    
+    It then initializes a list of exception metrics where lower values and downward trends are notable. 
 
     Parameters
     ----------
@@ -98,7 +100,10 @@ def test_ts(data: pd.DataFrame,
             grouped_data['Rank_' + each_metric] = grouped_data.groupby('MetricDate')[each_metric].rank(ascending=not order)
             grouped_data['4_Week_Avg_Rank_' + each_metric] = grouped_data.groupby(each_hrvar)['Rank_' + each_metric].transform(lambda x: x.rolling(window=4, min_periods=1).mean()).reset_index(level=0, drop=True)
             grouped_data['12_Week_Avg_Rank_' + each_metric] = grouped_data.groupby(each_hrvar)['Rank_' + each_metric].transform(lambda x: x.rolling(window=12, min_periods=1).mean()).reset_index(level=0, drop=True)
-    
+
+            # Filter by minimum group size
+            grouped_data = grouped_data[grouped_data['n'] >= min_group]
+            
             grouped_data_list.append(grouped_data)
             
     return grouped_data_list
@@ -156,6 +161,9 @@ def test_int_bm(data: pd.DataFrame,
 
         #NOTE: Should this section be included as part of `create_rank_calc()`?        
         #NOTE: Calculations are needed to calculate n employees over threshold, potentially calling `create_inc_bar()` 
+        
+        # Filter by minimum group size
+        bm_data = bm_data[bm_data['n'] >= min_group]
         
         # Append full population mean and sd
         bm_data['pop_mean_' + each_metric] = data[each_metric].mean()
@@ -223,6 +231,9 @@ def test_best_practice(
             stats = True
         )
         
+        # Filter by minimum group size
+        bm_data = bm_data[bm_data['n'] >= 5]
+        
         # Extract benchmark mean from dictionary
         bm_mean = bp[each_metric]
         
@@ -254,7 +265,8 @@ def create_inc_bm(
     data: pd.DataFrame,
     metric: str,
     hrvar: str,
-    bm_data: pd.DataFrame = None
+    bm_data: pd.DataFrame = None,
+    min_group: int = 5
 ):
     """    
     Calculates the number of employees who fall above, below, or equal to the population average for a given metric.
@@ -274,6 +286,9 @@ def create_inc_bm(
 
     bm_data : pd.DataFrame, optional
         An optional DataFrame representing the population to be used for calculating the population average. If not provided, the population average is calculated from the `data` DataFrame.
+
+    min_group : int, optional
+        The minimum group size for the analysis. By default, the minimum group size is 5.
 
     Returns
     -------
@@ -305,6 +320,9 @@ def create_inc_bm(
     data_trans[metric + '_threshold'] = np.select(conditions, choices, default=np.nan)
     data_trans = data_trans.groupby([hrvar, metric + '_threshold'])['PersonId'].nunique().reset_index() 
     data_trans = data_trans.rename(columns={'PersonId': 'n'})
+    
+    # Filter by minimum group size
+    data_trans = data_trans[data_trans['n'] >= min_group]
     
     # data_trans['group_n'] = data_trans.groupby(hrvar)['n'].sum().reset_index() #TODO: FIX THIS TO RETURN A ROW FOR EACH GROUP
     
