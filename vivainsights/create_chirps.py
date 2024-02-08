@@ -211,7 +211,9 @@ def test_best_practice(
     
     """
     
-    #TODO: PERFORM CHECKS IF DICTIONARY VALUES DO NOT MATCH THOSE PROVIDED IN METRICS
+    # If keys in key-value pairs in `bp` dictionary do not match those in `metrics`, return an error message
+    if set(bp.keys()) != set(metrics):
+        return 'Error: keys in `bp` dictionary do not match those in `metrics`'    
     
     grouped_data_benchmark_list = []
     
