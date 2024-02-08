@@ -8,7 +8,6 @@ from datetime import timedelta
 import vivainsights as vi
 from scipy import stats
 
-#TODO: PERSON METRICS IN ADDITION TO GROUP METRICS FOR 4MA VS 12MA
 #TODO: WEIGHTS FOR INTERNAL BENCHMARKS
 
 def test_ts(data: pd.DataFrame,
@@ -233,18 +232,8 @@ def test_best_practice(
         # Attach benchmark mean to each row
         bm_data['benchmark_mean'] = bm_mean
         
-        # Perform 1-sample t-test on all 'metric' values
-        t_stat, p_value = stats.ttest_1samp(bm_data['metric'], bm_mean)
-        
-        # Add the p-value to the DataFrame
-        bm_data['p_value'] = p_value
-        
-        # Add a column indicating whether the result is statistically significant
-        alpha = 0.05  # Set your significance level
-        bm_data['is_significant'] = bm_data['p_value'] < alpha
-
-        # Add a column indicating the type of the test
-        bm_data['test_type'] = 'One-sample t-test'
+        # Calculate percentage difference from benchmark mean
+        bm_data['perc_diff'] = (bm_data['metric'] - bm_mean) / bm_mean * 100        
         
         grouped_data_benchmark_list.append(bm_data)
         
