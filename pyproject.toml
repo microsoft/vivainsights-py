@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vivainsights"
-version = "0.2.2"
+version = "0.2.4"
 authors = [
   { name="Martin Chan", email="martinchan@microsoft.com" },
   { name="Aadarsh Indurkhya", email="aindurkhya@microsoft.com" },
@@ -16,7 +16,8 @@ authors = [
   { name="Carlos Morales Torrado", email="carlos.morales@microsoft.com" },
   { name="Ellen Trinklein"},
   { name="JJ Walia", email="jjwalia@microsoft.com" },
-  { name="Kari Eifler", email="karieifler@microsoft.com" }  
+  { name="Kari Eifler", email="karieifler@microsoft.com" },
+  { name="Sachin Gaikwad", email="SachinSTL23@gmail.com"}
 ]
 description = "Python library to analyze and visualize data from Microsoft Viva Insights."
 readme = "README.md"

@@ -21,7 +21,8 @@ def create_bar_calc(
     data: pd.DataFrame,
     metric: str,
     hrvar: str, 
-    mingroup = 5
+    mingroup = 5,
+    stats = False
     ):
     """Calculate the mean of a selected metric, grouped by a selected HR variable."""
     data = data.groupby(['PersonId',hrvar])        
@@ -34,6 +35,18 @@ def create_bar_calc(
     output = output[output['n'] >= mingroup]
     output = output.rename_axis(hrvar).reset_index()
     output = output.sort_values(by = 'metric', ascending=False)
+    
+    if stats == True:
+        stats_df = data.groupby(hrvar).agg(
+            sd = (metric, 'std'),
+            median = (metric, 'median'),
+            min = (metric, 'min'),
+            max = (metric, 'max')
+            )
+        
+        # Join output with stats_df
+        output = pd.merge(output, stats_df, on=hrvar, how='outer')
+    
     return output
 
 def create_bar_viz(
