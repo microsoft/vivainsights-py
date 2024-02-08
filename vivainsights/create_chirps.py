@@ -188,7 +188,7 @@ def test_best_practice(
     """
     Takes in a DataFrame representing a Viva Insights person query and returns a list of DataFrames containing the results of the best practice test.
     
-    The function adds the results of the t-test and the benchmark mean to the DataFrame for each metric.
+    The function adds the percentage difference between the population mean and the benchmark to the DataFrame for each metric.
 
     Parameters
     ----------
@@ -207,7 +207,7 @@ def test_best_practice(
     Returns
     -------
     list
-        A list of DataFrames. Each DataFrame contains the results of the t-test for one metric. The DataFrame includes the original data, the benchmark mean, the p-value of the t-test, and a boolean column indicating whether the result is statistically significant at the 0.05 level.
+        A list of DataFrames. Each DataFrame contains the results of the best practice test for one metric. The DataFrame includes the original data, the benchmark mean, and the percentage difference between the population mean and the benchmark.
     
     """
     
