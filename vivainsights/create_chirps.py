@@ -8,7 +8,6 @@ from datetime import timedelta
 import vivainsights as vi
 from scipy import stats
 
-#TODO: EXCEPTIONS FOR FEWER THAN 12 MONTHS OF DATA
 #TODO: PERSON METRICS IN ADDITION TO GROUP METRICS FOR 4MA VS 12MA
 #TODO: WEIGHTS FOR INTERNAL BENCHMARKS
 
@@ -42,6 +41,11 @@ def test_ts(data: pd.DataFrame,
     list
         A list of DataFrames. Each DataFrame contains the results of the trend test for one metric. The DataFrame includes the original data, the p-value of the trend test, and a boolean column indicating whether the result is statistically significant at the 0.05 level.
     """    
+    
+    # Count number of unique dates in `MetricDate`
+    # If fewer than 12 unique values, return an error message
+    if data['MetricDate'].nunique() < 12:
+        return 'Error: fewer than 12 unique dates in `MetricDate`'  
     
     # Define date windows
     latest_date = data['MetricDate'].max()
