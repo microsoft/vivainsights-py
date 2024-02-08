@@ -108,6 +108,104 @@ def test_ts(data: pd.DataFrame,
             
     return grouped_data_list
 
+    # For each HR attribute and metric combination, for each group within HR attribute, calculate:
+    #  - group mean based on the latest date
+    #  - group 4MA
+    #  - group 12MA
+    #  - all the time group average
+    #  - group standard deviation
+    #  - group rank
+    #  - group count - total number of groups in HR attribute
+    #  - average 4 week rank
+    #  - average 12 week rank
+    #  - group current percentile
+    #  - group percentile change over 12 weeks
+    #  - test upper bollinger
+    #  - stdev above all time
+    #  - flip 4MA 12MA
+    #  - group 4MA exceeding benchmark 
+
+
+def test_ts_person(
+    data: pd.DataFrame,
+    metrics: list,
+    min_group: int = 5
+    ):
+    """
+    This function takes in a DataFrame representing a Viva Insights person query and returns a list of DataFrames containing the results of the trend test.
+    
+    The function identifies the latest date in the data, and defines two periods: the last four weeks and the last twelve weeks. 
+    
+    It then initializes a list of exception metrics where lower values and downward trends are notable. 
+    
+    This version does not group by HR variable groups, and returns data frames at a person-week level.   
+    """    
+    
+    # Define date windows
+    latest_date = data['MetricDate'].max()
+    four_weeks_ago = latest_date - timedelta(weeks=4)
+    twelve_weeks_ago = latest_date - timedelta(weeks=12)
+    
+    short_period = 4
+    long_period = 12
+    
+    # Identify list of exception metrics where lower values and downward trends are notable
+    exception_metrics = [
+        'Meeting_hours_with_manager_1_on_1', 
+        'Meetings_with_manager_1_on_1', 
+        'Total_focus_hours'
+    ]
+    
+    metric_columns = metrics
+    ranking_order = {metric: 'low' if metric in exception_metrics else 'high' for metric in metric_columns}
+
+    # Initialize an empty list for storing DataFrames
+    results_data_list = []
+
+    for each_metric in metrics:
+        
+        # Initialize an empty DataFrame for group metrics
+        person_metrics = data[['PersonId', 'MetricDate', each_metric]].copy()
+        
+        # Filter data for the specific time periods
+        person_metrics = person_metrics[(person_metrics['MetricDate'] >= twelve_weeks_ago) & (person_metrics['MetricDate'] <= latest_date)]      
+
+        # Calculate moving averages and standard deviation at a person-level, for each metric  
+        person_metrics[each_metric + '_mean'] = person_metrics.groupby('PersonId')[each_metric].apply(lambda x: x.mean()).reset_index(level=0, drop=True)
+        person_metrics[each_metric + '_4MA'] = person_metrics.groupby('PersonId')[each_metric].apply(lambda x: x.rolling(window=4, min_periods=1).mean()).reset_index(level=0, drop=True)
+        person_metrics[each_metric + '_12MA'] = person_metrics.groupby('PersonId')[each_metric].apply(lambda x: x.rolling(window=12, min_periods=1).mean()).reset_index(level=0, drop=True)
+        person_metrics[each_metric + '_Stdev'] = person_metrics.groupby('PersonId')[each_metric].apply(lambda x: x.rolling(window=long_period, min_periods=1).std()).reset_index(level=0, drop=True)
+        
+        # Calculate the 4MA and 12MA for the previous week
+        person_metrics['Last_Week_4MA_' + each_metric] = person_metrics.groupby('PersonId')[each_metric + '_4MA'].shift(1).reset_index(level=0, drop=True)
+        person_metrics['Last_Week_12MA_' + each_metric] = person_metrics.groupby('PersonId')[each_metric + '_12MA'].shift(1).reset_index(level=0, drop=True)
+        
+        # Determine flip condition
+        # For exceptions: if 4MA is greater than 12MA but not the case last week, True
+        # Otherwise, if 4MA is less than 12MA but not the case last week, True        
+        person_metrics['4MA_Flipped_12MA_' + each_metric] = person_metrics.apply(
+            lambda row: (row[each_metric + '_4MA'] > row[each_metric + '_12MA'] and 
+                         row['Last_Week_4MA_' + each_metric] <= row['Last_Week_12MA_' + each_metric])
+            if each_metric not in exception_metrics
+            else (row[each_metric + '_4MA'] < row[each_metric + '_12MA'] and
+                  row['Last_Week_4MA_' + each_metric] >= row['Last_Week_12MA_' + each_metric]), axis=1
+        ).reset_index(level=0, drop=True)
+       
+        # Calculate the weekly average for the metric
+        weekly_avg = person_metrics.groupby('MetricDate')[each_metric].transform('mean')
+        person_metrics['WeeklyAvg_' + each_metric] = weekly_avg
+
+        # Determine if the person's metric exceeded the weekly average, reverse logic for exception metrics
+        person_metrics[each_metric + '_Exceeds_Avg'] = (
+            person_metrics[each_metric] > weekly_avg) if each_metric not in exception_metrics else (person_metrics[each_metric] < weekly_avg)
+       
+        # `Exceeds_Threshold` omitted as this is captured in benchmark test        
+        results_data_list.append(person_metrics)
+    
+    return results_data_list
+    print('Trend test complete')
+
+
 def test_int_bm(data: pd.DataFrame,
                   metrics: list,
                   hrvar: list = ["Organization", "SupervisorIndicator"],
