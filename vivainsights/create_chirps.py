@@ -7,6 +7,7 @@ import numpy as np
 from datetime import timedelta
 import vivainsights as vi
 from scipy import stats
+import re 
 
 #TODO: WEIGHTS FOR INTERNAL BENCHMARKS
 
@@ -107,18 +108,22 @@ def test_ts(data: pd.DataFrame,
             grouped_data['4_Week_Avg_Rank_' + each_metric] = grouped_data.groupby(each_hrvar)['Rank_' + each_metric].transform(lambda x: x.rolling(window=4, min_periods=1).mean()).reset_index(level=0, drop=True)
             grouped_data['12_Week_Avg_Rank_' + each_metric] = grouped_data.groupby(each_hrvar)['Rank_' + each_metric].transform(lambda x: x.rolling(window=12, min_periods=1).mean()).reset_index(level=0, drop=True)            
             
+            #TODO: Compute Cohen's d between last 4 weeks and prior 8 weeks
+            
             grouped_data_list.append(grouped_data)
             
     return grouped_data_list
 
 def test_int_bm(data: pd.DataFrame,
-                  metrics: list,
-                  hrvar: list = ["Organization", "SupervisorIndicator"],
-                  min_group: int = 5):
+                metrics: list,
+                hrvar: list = ["Organization", "SupervisorIndicator"],
+                bm_data: pd.DataFrame = None,
+                min_group: int = 5):
     """
     Performs an internal benchmark test on each metric and HR variable combination in the provided DataFrame.
 
-    The function calculates the mean, standard deviation, and number of unique employees for each group and for the entire population. It also calculates Cohen's d, a measure of effect size.
+    The function calculates the mean, standard deviation, and number of unique employees for each group and for the entire population. 
+    It also calculates Cohen's d, a measure of effect size.
 
     A list of data frames is returned.
 
@@ -132,6 +137,9 @@ def test_int_bm(data: pd.DataFrame,
 
     hrvar : list, optional
         A list of variables to be used in the `vi.create_rank_calc` function. By default, the variables are 'Organization' and 'SupervisorIndicator'.
+        
+    bm_data : pd.DataFrame, optional
+        An optional DataFrame representing the population to be used for calculating the population average. If not provided, the population average is calculated from the `data` DataFrame.
 
     min_group : int, optional
         The minimum group size for the internal benchmark test. By default, the minimum group size is 5.
@@ -152,30 +160,46 @@ def test_int_bm(data: pd.DataFrame,
     grouped_data_benchmark_list = []
     
     for each_metric in metrics:
-        bm_data = vi.create_rank_calc(
+        ranked_data = vi.create_rank_calc(
             data,
             metric = each_metric,
             hrvar = hrvar,
             stats = True
         )
+        
+        # Population average
+        if bm_data is not None:
+            pop_mean = bm_data[each_metric].mean()  
+            pop_std = bm_data[each_metric].std()
+            pop_n = bm_data['PersonId'].nunique()
+        else:
+            pop_mean = data[each_metric].mean()    
+            pop_std = data[each_metric].std()
+            pop_n = data['PersonId'].nunique()
 
         #NOTE: Should this section be included as part of `create_rank_calc()`?        
-        #NOTE: Calculations are needed to calculate n employees over threshold, potentially calling `create_inc_bar()` 
+        #NOTE: Calculations are needed to calculate n employees over threshold, potentially calling `create_inc_bar()`
+        #NOTE: Compare against benchmark group for now 
         
         # Filter by minimum group size
-        bm_data = bm_data[bm_data['n'] >= min_group]
+        ranked_data = ranked_data[ranked_data['n'] >= min_group]
         
         # Append full population mean and sd
-        bm_data['pop_mean_' + each_metric] = data[each_metric].mean()
-        bm_data['pop_std_' + each_metric] = data[each_metric].std()
-        bm_data['pop_n'] = data['PersonId'].nunique()
+        ranked_data['pop_mean_' + each_metric] = pop_mean
+        ranked_data['pop_std_' + each_metric] = pop_std
+        ranked_data['pop_n'] = pop_n
+        
+        #TODO: Add percentage difference comparison
+        
+        # Percentage difference against benchmark
+        ranked_data['perc_diff'] = (ranked_data['metric'] - pop_mean) / ranked_data['metric']
 
         # Calculate Cohen's d between means of group and benchmark population
         # the magnitude of the difference between two means in terms of standard deviation units
         # d = (M1 - M2) / sqrt((s1^2 + s2^2) / 2)
-        bm_data['cohen_d'] = (bm_data['metric'] - bm_data['pop_mean_' + each_metric]) / np.sqrt((bm_data['sd'] ** 2 + bm_data['pop_std_' + each_metric] ** 2) / 2)
+        ranked_data['cohen_d'] = (ranked_data['metric'] - ranked_data['pop_mean_' + each_metric]) / np.sqrt((ranked_data['sd'] ** 2 + ranked_data['pop_std_' + each_metric] ** 2) / 2)
         
-        grouped_data_benchmark_list.append(bm_data)
+        grouped_data_benchmark_list.append(ranked_data)
     
     return grouped_data_benchmark_list
 
@@ -235,7 +259,10 @@ def test_best_practice(
         bm_data['benchmark_mean'] = bm_mean
         
         # Calculate percentage difference from benchmark mean
-        bm_data['perc_diff'] = (bm_data['metric'] - bm_mean) / bm_mean * 100        
+        bm_data['perc_diff'] = (bm_data['metric'] - bm_mean) / bm_data['metric']
+        
+        #TODO: Update to show % of the group is above or below the best practice mean
+        #TODO: After_hours_collaboration_hours AND Manager 1:1 (Use exception_metrics)
         
         grouped_data_benchmark_list.append(bm_data)
         
@@ -334,6 +361,14 @@ def create_chirps(data: pd.DataFrame,
     
     list_ts = test_ts(data = data, metrics = metrics, hrvar = hrvar, min_group = min_group)
     
+    list_ts_flipped = []
+    
+    for i in list_ts:
+        # Extract column name from `list_ts[i]` that matches '4MA_Flipped_12MA'        
+        match = re.match('4MA_Flipped_12MA', list_ts[i].columns)
+        filt_df = list_ts[i][list_ts[i][match] == True]
+        list_ts_flipped.append(filt_df)   
+    
     # 2. Internal benchmark test ----------------------------------------------
     
     list_int_bm = test_int_bm(data = data, metrics = metrics, hrvar = hrvar, min_group = min_group)
@@ -344,8 +379,9 @@ def create_chirps(data: pd.DataFrame,
     
     # All the headlines -------------------------------------------------------
     
-    
-    
+    #TODO: headline selection in order to build a story
+    # Interestingness: time trend > internal benchmark > best practice
+    # Then build in rules for when best practice etc. may trump time trends (e.g. What makes a strong/weak trend?)    
     
     # Interesting score -------------------------------------------------------
     
@@ -354,8 +390,9 @@ def create_chirps(data: pd.DataFrame,
     # Output - individual tables for each test 
     # Plot for each interesting headline
     
-    print(str(len(list_ts)) + ' number of data frame outputs from trend test')
-    print(str(len(list_int_bm)) + ' number of data frame outputs from internal benchmark test')
-    
-    combined_list = list_ts + list_int_bm
-    return combined_list
+    # print(str(len(list_ts)) + ' number of data frame outputs from trend test')
+    # print(str(len(list_int_bm)) + ' number of data frame outputs from internal benchmark test')
+    # 
+    # combined_list = list_ts + list_int_bm
+    # return combined_list
+    return list_ts_flipped
