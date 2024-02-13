@@ -79,7 +79,10 @@ def test_ts(data: pd.DataFrame,
             
             # Group at a date-org level
             grouped_data = group_metrics.groupby(['MetricDate', each_hrvar]).agg({each_metric: 'mean', 'PersonId': 'nunique'}).reset_index()    
-            grouped_data = grouped_data.rename(columns={'PersonId': 'n'})            
+            grouped_data = grouped_data.rename(columns={'PersonId': 'n'})      
+            
+            # Filter by minimum group size
+            grouped_data = grouped_data[grouped_data['n'] >= min_group]      
                         
             grouped_data['4_Period_MA_' + each_metric] = grouped_data.groupby(each_hrvar)[each_metric].apply(lambda x: x.rolling(window=4, min_periods=1).mean()).reset_index(level=0, drop=True)
             grouped_data['12_Period_MA_' + each_metric] = grouped_data.groupby(each_hrvar)[each_metric].apply(lambda x: x.rolling(window=12, min_periods=1).mean()).reset_index(level=0, drop=True)
@@ -102,10 +105,7 @@ def test_ts(data: pd.DataFrame,
             order = ranking_order[each_metric] == 'high'
             grouped_data['Rank_' + each_metric] = grouped_data.groupby('MetricDate')[each_metric].rank(ascending=not order)
             grouped_data['4_Week_Avg_Rank_' + each_metric] = grouped_data.groupby(each_hrvar)['Rank_' + each_metric].transform(lambda x: x.rolling(window=4, min_periods=1).mean()).reset_index(level=0, drop=True)
-            grouped_data['12_Week_Avg_Rank_' + each_metric] = grouped_data.groupby(each_hrvar)['Rank_' + each_metric].transform(lambda x: x.rolling(window=12, min_periods=1).mean()).reset_index(level=0, drop=True)
-
-            # Filter by minimum group size
-            grouped_data = grouped_data[grouped_data['n'] >= min_group]
+            grouped_data['12_Week_Avg_Rank_' + each_metric] = grouped_data.groupby(each_hrvar)['Rank_' + each_metric].transform(lambda x: x.rolling(window=12, min_periods=1).mean()).reset_index(level=0, drop=True)            
             
             grouped_data_list.append(grouped_data)
             
@@ -343,6 +343,9 @@ def create_chirps(data: pd.DataFrame,
     list_bp = test_best_practice(data = data, metrics = metrics, hrvar = hrvar, bp = {'Email_hours': 10})
     
     # All the headlines -------------------------------------------------------
+    
+    
+    
     
     # Interesting score -------------------------------------------------------
     
