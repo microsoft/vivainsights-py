@@ -9,8 +9,6 @@ import vivainsights as vi
 from scipy import stats
 import re 
 
-#TODO: WEIGHTS FOR INTERNAL BENCHMARKS
-
 def test_ts(data: pd.DataFrame,
                   metrics: list,
                   hrvar: list = ["Organization", "SupervisorIndicator"],
@@ -108,8 +106,8 @@ def test_ts(data: pd.DataFrame,
             grouped_data['4_Week_Avg_Rank_' + each_metric] = grouped_data.groupby(each_hrvar)['Rank_' + each_metric].transform(lambda x: x.rolling(window=4, min_periods=1).mean()).reset_index(level=0, drop=True)
             grouped_data['12_Week_Avg_Rank_' + each_metric] = grouped_data.groupby(each_hrvar)['Rank_' + each_metric].transform(lambda x: x.rolling(window=12, min_periods=1).mean()).reset_index(level=0, drop=True)
             
-            grouped_data_list.append(grouped_data)
-            
+            grouped_data_list.append(grouped_data)    
+    
     return grouped_data_list
 
 def test_int_bm(data: pd.DataFrame,
