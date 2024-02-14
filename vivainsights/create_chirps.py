@@ -241,30 +241,69 @@ def test_best_practice(
     
     grouped_data_benchmark_list = []
     
-    for each_metric in metrics:
-        bm_data = vi.create_rank_calc(
-            data,
-            metric = each_metric,
-            hrvar = hrvar,
-            stats = True
-        )
-        
-        # Filter by minimum group size
-        bm_data = bm_data[bm_data['n'] >= 5]
-        
-        # Extract benchmark mean from dictionary
-        bm_mean = bp[each_metric]
-        
-        # Attach benchmark mean to each row
-        bm_data['benchmark_mean'] = bm_mean
-        
-        # Calculate percentage difference from benchmark mean
-        bm_data['perc_diff'] = (bm_data['metric'] - bm_mean) / bm_data['metric']
-        
-        #TODO: Update to show % of the group is above or below the best practice mean
-        #TODO: After_hours_collaboration_hours AND Manager 1:1 (Use exception_metrics)
-        
-        grouped_data_benchmark_list.append(bm_data)
+    for each_hrvar in hrvar:
+    
+        for each_metric in metrics:
+            
+            bm_data = data.copy()
+            
+            pop_n = bm_data['PersonId'].nunique()
+            
+        #     bm_data = vi.create_rank_calc(
+        #         data,
+        #         metric = each_metric,
+        #         hrvar = hrvar,
+        #         stats = True
+        #     )
+            
+            # Extract best practice 'mean' from dictionary
+            bp_mean = bp[each_metric]
+            
+            # Calculate person averages
+            bm_data = bm_data.groupby(['PersonId', each_hrvar])[each_metric].mean().reset_index()
+            
+            # Set conditions
+            conditions = [
+                (bm_data[each_metric] > bp_mean),
+                (bm_data[each_metric] < bp_mean),
+                (bm_data[each_metric] == bp_mean)
+            ]
+            choices = ['above', 'below', 'equal']
+            
+            # Count of employees above/below threshold
+            bm_data[each_metric + '_threshold'] = np.select(conditions, choices, default=np.nan)        
+            bm_data = bm_data.groupby([each_hrvar, each_metric + '_threshold'])['PersonId'].nunique().reset_index() 
+            bm_data = bm_data.rename(columns={'PersonId': 'n'})
+            
+            # Filter by minimum group size
+            bm_data = bm_data[bm_data['n'] >= 5]
+
+            # Attach best practice 'mean' to each row
+            bm_data['best_practice'] = bp_mean
+            
+            # Calculate group means (disregarding thresholds)
+            data_trans = data.copy() 
+            group_data = data_trans.groupby([each_hrvar, 'PersonId']).agg({each_metric: 'mean'}).reset_index()
+            
+            # calculate both group mean and unique PersonId (n)
+            group_data = group_data.groupby(each_hrvar).agg({each_metric: 'mean', 'PersonId': 'nunique'}).reset_index()
+            
+            # Rename columns    
+            group_data = group_data.rename(columns={each_metric: 'group_mean_' + each_metric})
+            group_data = group_data.rename(columns={'PersonId': 'group_n'})
+            
+            # Join group averages to the benchmark data
+            bm_data = pd.merge(bm_data, group_data, on = each_hrvar, how='left')
+            
+            bm_data['percent_of_pop'] = bm_data['n'] / bm_data['group_n']
+                     
+            # Calculate percentage difference from benchmark mean
+            bm_data['perc_diff_mean'] = (bm_data['group_mean_' + each_metric] - bp_mean) / bm_data['group_mean_' + each_metric]
+            
+            #TODO: Update to show % of the group is above or below the best practice mean
+            #TODO: After_hours_collaboration_hours AND Manager 1:1 (Use exception_metrics)
+            
+            grouped_data_benchmark_list.append(bm_data)
         
     return grouped_data_benchmark_list
 
