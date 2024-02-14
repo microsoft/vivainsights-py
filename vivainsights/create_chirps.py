@@ -106,9 +106,7 @@ def test_ts(data: pd.DataFrame,
             order = ranking_order[each_metric] == 'high'
             grouped_data['Rank_' + each_metric] = grouped_data.groupby('MetricDate')[each_metric].rank(ascending=not order)
             grouped_data['4_Week_Avg_Rank_' + each_metric] = grouped_data.groupby(each_hrvar)['Rank_' + each_metric].transform(lambda x: x.rolling(window=4, min_periods=1).mean()).reset_index(level=0, drop=True)
-            grouped_data['12_Week_Avg_Rank_' + each_metric] = grouped_data.groupby(each_hrvar)['Rank_' + each_metric].transform(lambda x: x.rolling(window=12, min_periods=1).mean()).reset_index(level=0, drop=True)            
-            
-            #TODO: Compute Cohen's d between last 4 weeks and prior 8 weeks
+            grouped_data['12_Week_Avg_Rank_' + each_metric] = grouped_data.groupby(each_hrvar)['Rank_' + each_metric].transform(lambda x: x.rolling(window=12, min_periods=1).mean()).reset_index(level=0, drop=True)
             
             grouped_data_list.append(grouped_data)
             
@@ -176,10 +174,6 @@ def test_int_bm(data: pd.DataFrame,
             pop_mean = data[each_metric].mean()    
             pop_std = data[each_metric].std()
             pop_n = data['PersonId'].nunique()
-
-        #NOTE: Should this section be included as part of `create_rank_calc()`?        
-        #NOTE: Calculations are needed to calculate n employees over threshold, potentially calling `create_inc_bar()`
-        #NOTE: Compare against benchmark group for now 
         
         # Filter by minimum group size
         ranked_data = ranked_data[ranked_data['n'] >= min_group]
@@ -188,8 +182,6 @@ def test_int_bm(data: pd.DataFrame,
         ranked_data['pop_mean_' + each_metric] = pop_mean
         ranked_data['pop_std_' + each_metric] = pop_std
         ranked_data['pop_n'] = pop_n
-        
-        #TODO: Add percentage difference comparison
         
         # Percentage difference against benchmark
         ranked_data['perc_diff'] = (ranked_data['metric'] - pop_mean) / ranked_data['metric']
@@ -249,13 +241,6 @@ def test_best_practice(
             
             pop_n = bm_data['PersonId'].nunique()
             
-        #     bm_data = vi.create_rank_calc(
-        #         data,
-        #         metric = each_metric,
-        #         hrvar = hrvar,
-        #         stats = True
-        #     )
-            
             # Extract best practice 'mean' from dictionary
             bp_mean = bp[each_metric]
             
@@ -300,94 +285,9 @@ def test_best_practice(
             # Calculate percentage difference from benchmark mean
             bm_data['perc_diff_mean'] = (bm_data['group_mean_' + each_metric] - bp_mean) / bm_data['group_mean_' + each_metric]
             
-            #TODO: Update to show % of the group is above or below the best practice mean
-            #TODO: After_hours_collaboration_hours AND Manager 1:1 (Use exception_metrics)
-            
             grouped_data_benchmark_list.append(bm_data)
         
-    return grouped_data_benchmark_list
-
-
-
-
-#TODO: NOT COMPLETE
-def create_inc_bm(
-    data: pd.DataFrame,
-    metric: str,
-    hrvar: str,
-    bm_data: pd.DataFrame = None,
-    min_group: int = 5
-):
-    """    
-    Calculates the number of employees who fall above, below, or equal to the population average for a given metric.
-
-    If `bm_data` is provided, the population represented by this data frame will be used to calculate the population average. Otherwise, the population average is calculated from the `data` DataFrame.
-
-    Parameters
-    ----------
-    data : pd.DataFrame
-        The DataFrame containing the data to be analyzed. Each row represents an observation and each column represents a variable.
-
-    metric : str
-        The metric to be analyzed. This should correspond to a column name in `data`.
-
-    hrvar : str
-        The human resources variable to be used in the analysis. This should correspond to a column name in `data`.
-
-    bm_data : pd.DataFrame, optional
-        An optional DataFrame representing the population to be used for calculating the population average. If not provided, the population average is calculated from the `data` DataFrame.
-
-    min_group : int, optional
-        The minimum group size for the analysis. By default, the minimum group size is 5.
-
-    Returns
-    -------
-    pd.DataFrame
-        A DataFrame containing the results of the analysis. The DataFrame includes the original data, a new column indicating whether each observation is above, below, or equal to the population average, and the number of unique employees in each category for each group.
-
-    Notes
-    -----
-    The function creates a copy of the `data` DataFrame to avoid modifying the original data. It then calculates the population average and the number of unique employees in the population. It adds a new column to the DataFrame indicating whether each observation is above, below, or equal to the population average. Finally, it groups the data by the `hrvar` and the new column, and calculates the number of unique employees in each category for each group.
-    """
-    
-    # Population average
-    if bm_data is not None:
-        pop_mean = bm_data['pop_mean_' + metric]
-        pop_n = bm_data['PersonId'].nunique()
-    else:
-        pop_mean = data[metric].mean()    
-        pop_n = data['PersonId'].nunique()
-    
-    data_trans = data.copy()  
-    
-    conditions = [
-        (data_trans[metric] > pop_mean),
-        (data_trans[metric] < pop_mean),
-        (data_trans[metric] == pop_mean)
-    ]
-    choices = ['above', 'below', 'equal']
-
-    data_trans[metric + '_threshold'] = np.select(conditions, choices, default=np.nan)
-    data_trans = data_trans.groupby([hrvar, metric + '_threshold'])['PersonId'].nunique().reset_index() 
-    data_trans = data_trans.rename(columns={'PersonId': 'n'})
-    
-    # Filter by minimum group size
-    data_trans = data_trans[data_trans['n'] >= min_group]
-    
-    # data_trans['group_n'] = data_trans.groupby(hrvar)['n'].sum().reset_index() #TODO: FIX THIS TO RETURN A ROW FOR EACH GROUP
-    
-    group_n = data_trans.groupby(hrvar)['n'].sum().reset_index()
-    group_n.columns = [hrvar, 'group_n']
-
-    data_trans = pd.merge(data_trans, group_n, on=hrvar)
-      
-    data_trans['pop_n'] = pop_n
-    # data_trans['incidence'] = data_trans['n'] / data_trans['pop_n']
-    
-    data_trans['incidence'] = data_trans.groupby(hrvar).apply(lambda x: x['n'] / x['group_n']).reset_index(level=0, drop=True)
-    
-    return data_trans
-    
+    return grouped_data_benchmark_list    
     
 #TODO: NOT COMPLETE
 def create_chirps(data: pd.DataFrame,
