@@ -7,11 +7,31 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-import math
 
 def create_bar_asis(data, group_var, bar_var, title=None, subtitle=None, caption=None, ylab=None, xlab=None,
                     percent=False, bar_colour="default", rounding=1):
+    """
+    Create a bar chart with customizable options.
 
+    Parameters:
+        - data: DataFrame, the data to be plotted.
+        - group_var: str, the variable to be grouped by on the x-axis.
+        - bar_var: str, the variable to be plotted on the y-axis.
+        - title: str, optional, title of the plot.
+        - subtitle: str, optional, subtitle of the plot.
+        - caption: str, optional, caption of the plot.
+        - ylab: str, optional, label for the y-axis.
+        - xlab: str, optional, label for the x-axis.
+        - percent: bool, optional, whether to display values as percentages.
+        - bar_colour: str, optional, color of the bars. Available options: "default", "alert", "darkblue".
+        - rounding: int, optional, number of decimal places to round the values.
+
+    Returns:
+        - None: Displays the plot.
+
+    """
+
+    # Set default colors if not specified
     if bar_colour == "default":
         bar_colour = "#34b1e2"
     elif bar_colour == "alert":
@@ -19,11 +39,14 @@ def create_bar_asis(data, group_var, bar_var, title=None, subtitle=None, caption
     elif bar_colour == "darkblue":
         bar_colour = "#1d627e"
 
+    # Determine upper limit for text color adjustment
     up_break = data[bar_var].max() * 1.3
 
+    # Create the plot
     fig, ax = plt.subplots()
     bars = ax.bar(data[group_var], data[bar_var], color=bar_colour)
 
+    # Add text labels on the bars
     for bar in bars:
         height = bar.get_height()
         ax.text(bar.get_x() + bar.get_width() / 2,
@@ -32,35 +55,13 @@ def create_bar_asis(data, group_var, bar_var, title=None, subtitle=None, caption
                 ha='center', va='bottom',
                 color="#FFFFFF" if height > up_break else "#000000", size=10)
 
+    # Set labels and title
     ax.set_xlabel(ylab)
     ax.set_ylabel(xlab)
     ax.set_title(title)
 
+    # Rotate x-axis labels for better readability
     plt.xticks(rotation=45, ha='right')
 
-    plt.show()
-
-
-def plot_WOE(IV, predictor):
-    # Identify right table
-    plot_table = IV['Tables'][predictor]
-    
-    # Get range
-    WOE_values = [table['WOE'] for table in IV['Tables'].values()]
-    for i in range(0,len(WOE_values)):
-        WOE_range = np.min(WOE_values[i]), np.max(WOE_values[i])
-    
-    mn=math.floor(np.min(plot_table['WOE']))
-    mx=math.ceil(np.max(plot_table['WOE']))
-    tick_lst=list(range(mn,mx+1))
-    # Plot
-    plt.figure(figsize=(12, 8))
-    sns.barplot(x=predictor, y='WOE', data=plot_table, color='#8BC7E0')
-    for index, value in enumerate(plot_table['WOE']):
-        plt.text(index, value, round(value, 1), ha='right', va='top' if value < 0 else 'bottom',color='red' if value < 0 else 'green')
-    plt.title(predictor)
-    plt.xlabel(predictor)
-    plt.ylabel("Weight of Evidence (WOE)")
-    plt.ylim(WOE_range[0] * 1.1, WOE_range[1] * 1.1)
-    plt.yticks(tick_lst) 
+    # Show the plot
     plt.show()
