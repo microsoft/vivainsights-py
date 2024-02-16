@@ -8,11 +8,14 @@ from datetime import timedelta
 import vivainsights as vi
 from scipy import stats
 import re 
+import matplotlib.pyplot as plt
 
 def test_ts(data: pd.DataFrame,
                   metrics: list,
                   hrvar: list = ["Organization", "SupervisorIndicator"],
-                  min_group: int = 5):
+                  min_group: int = 5,
+                  bp: dict = {},
+                  return_type: str = 'full'):
     """
     This function takes in a DataFrame representing a Viva Insights person query and returns a list of DataFrames containing the results of the trend test.
     
@@ -45,6 +48,10 @@ def test_ts(data: pd.DataFrame,
     if data['MetricDate'].nunique() < 12:
         return 'Error: fewer than 12 unique dates in `MetricDate`'  
     
+    # If keys in key-value pairs in `bp` dictionary do not match those in `metrics`, return an error message
+    if set(bp.keys()) != set(metrics):
+        return 'Error: keys in `bp` dictionary do not match those in `metrics`'    
+    
     # Define date windows
     latest_date = data['MetricDate'].max()
     four_weeks_ago = latest_date - timedelta(weeks=4)
@@ -75,7 +82,7 @@ def test_ts(data: pd.DataFrame,
                         
             groups = data[each_hrvar].unique()
             dates = data['MetricDate'].unique()         
-            
+        
             # Group at a date-org level
             grouped_data = group_metrics.groupby(['MetricDate', each_hrvar]).agg({each_metric: 'mean', 'PersonId': 'nunique'}).reset_index()    
             grouped_data = grouped_data.rename(columns={'PersonId': 'n'})      
@@ -106,9 +113,70 @@ def test_ts(data: pd.DataFrame,
             grouped_data['4_Week_Avg_Rank_' + each_metric] = grouped_data.groupby(each_hrvar)['Rank_' + each_metric].transform(lambda x: x.rolling(window=4, min_periods=1).mean()).reset_index(level=0, drop=True)
             grouped_data['12_Week_Avg_Rank_' + each_metric] = grouped_data.groupby(each_hrvar)['Rank_' + each_metric].transform(lambda x: x.rolling(window=12, min_periods=1).mean()).reset_index(level=0, drop=True)
             
-            grouped_data_list.append(grouped_data)    
-    
-    return grouped_data_list
+            # Interest Test #1: Does 4MA exceed threshold value? 
+            if each_metric not in bp.keys():
+               grouped_data['4MA_Exceed_Threshold_' + each_metric] = False
+            else:
+                grouped_data['4MA_Exceed_Threshold_' + each_metric] = (grouped_data['4_Period_MA_' + each_metric] > bp[each_metric]).reset_index(level=0, drop=True)
+            
+            # Interest Test #2
+            # Interest Test #3
+            # Interest Test #4
+            
+            # Conditional for return type 
+            if return_type == 'full':
+                
+                grouped_data_list.append(grouped_data)
+                
+                return grouped_data_list
+                
+            elif return_type == 'consec_weeks':
+
+                # Initialize empty list for storing consecutive weeks
+                list_consec_weeks = []
+                
+                for each_group in groups:
+                    # Filter the DataFrame for the specific group
+                    each_df = grouped_data[grouped_data[each_hrvar] == each_group]
+                    # Sort the data by date in descending order
+                    each_df = each_df.sort_values('MetricDate', ascending = False)
+                    consecutive_weeks = 0
+                    for _, row in each_df.iterrows():
+                        if row[f'4MA_Flipped_12MA_{each_metric}'] == True:
+                            consecutive_weeks += 1
+                        else:
+                            break
+                    list_consec_weeks.append(consecutive_weeks)
+                
+                consec_weeks_df = pd.DataFrame({
+                    each_hrvar: groups,
+                    'Consecutive_Weeks': list_consec_weeks
+                })
+                
+                grouped_data_list.append(consec_weeks_df)
+                
+                return grouped_data_list
+            
+            elif return_type == 'plot':
+                
+                for each_group in groups:
+                
+                    grouped_data_filt = grouped_data[grouped_data[each_hrvar] == each_group]
+                
+                    plt.figure(figsize=(10, 6))
+                    plt.plot(grouped_data_filt['MetricDate'], grouped_data_filt[each_metric], label = each_metric)
+                    plt.plot(grouped_data_filt['MetricDate'], grouped_data_filt['4_Period_MA_' + each_metric], label = '4_Period_MA_' + each_metric)
+                    plt.plot(grouped_data_filt['MetricDate'], grouped_data_filt['12_Period_MA_' + each_metric], label = '12_Period_MA_' + each_metric)
+                    plt.xlabel('MetricDate')
+                    plt.ylabel(each_metric)
+                    plt.suptitle(each_metric + ' over time', fontsize=14, fontweight='bold')
+                    plt.title(str(each_hrvar) + ': ' + str(each_group), fontsize=10)
+                    plt.ylim(bottom=0)  # Set the start of y-axis to 0
+                    plt.legend()
+                    plt.show()              
+                
+            else:
+                print('Error: invalid return type')
 
 def test_int_bm(data: pd.DataFrame,
                 metrics: list,
@@ -197,7 +265,7 @@ def test_best_practice(
     data: pd.DataFrame,
     metrics: list,
     hrvar: list,
-    bp: dict = {'Emails_sent': 10}
+    bp: dict = {}
 ):
     """
     Takes in a DataFrame representing a Viva Insights person query and returns a list of DataFrames containing the results of the best practice test.
