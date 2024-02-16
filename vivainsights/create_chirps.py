@@ -48,6 +48,10 @@ def test_ts(data: pd.DataFrame,
     if data['MetricDate'].nunique() < 12:
         return 'Error: fewer than 12 unique dates in `MetricDate`'  
     
+    # Message if fewer than 52 weeks of data available
+    if data['MetricDate'].nunique() < 52:
+        print('Note: using only ' + str(data['MetricDate'].nunique()) + ' weeks of data when calculating all time average')
+    
     # If keys in key-value pairs in `bp` dictionary do not match those in `metrics`, return an error message
     if set(bp.keys()) != set(metrics):
         return 'Error: keys in `bp` dictionary do not match those in `metrics`'    
@@ -94,6 +98,14 @@ def test_ts(data: pd.DataFrame,
             grouped_data['12_Period_MA_' + each_metric] = grouped_data.groupby(each_hrvar)[each_metric].apply(lambda x: x.rolling(window=12, min_periods=1).mean()).reset_index(level=0, drop=True)
             grouped_data['All_Time_Avg_' + each_metric] = grouped_data.groupby(each_hrvar)[each_metric].apply(lambda x: x.rolling(window=52, min_periods=1).mean()).reset_index(level=0, drop=True)
         
+            # Interest Test #1: Does 4MA exceed threshold value? 
+            if each_metric not in bp.keys():
+               grouped_data['4MA_Exceed_Threshold_' + each_metric] = False
+            else:
+                grouped_data['4MA_Exceed_Threshold_' + each_metric] = (grouped_data['4_Period_MA_' + each_metric] > bp[each_metric]).reset_index(level=0, drop=True)
+        
+            
+            # Interest Test #2: does the 4MA exceed the 12MA, indicating that the metric is trending upwards?
             # 4MA flipping the 12MA
             grouped_data['Last_Week_4MA_' + each_metric] = grouped_data.groupby(each_hrvar)['4_Period_MA_' + each_metric].shift(1).reset_index(level=0, drop=True)
             grouped_data['4MA_Flipped_12MA_' + each_metric] = grouped_data.apply(
@@ -113,15 +125,16 @@ def test_ts(data: pd.DataFrame,
             grouped_data['4_Week_Avg_Rank_' + each_metric] = grouped_data.groupby(each_hrvar)['Rank_' + each_metric].transform(lambda x: x.rolling(window=4, min_periods=1).mean()).reset_index(level=0, drop=True)
             grouped_data['12_Week_Avg_Rank_' + each_metric] = grouped_data.groupby(each_hrvar)['Rank_' + each_metric].transform(lambda x: x.rolling(window=12, min_periods=1).mean()).reset_index(level=0, drop=True)
             
-            # Interest Test #1: Does 4MA exceed threshold value? 
-            if each_metric not in bp.keys():
-               grouped_data['4MA_Exceed_Threshold_' + each_metric] = False
-            else:
-                grouped_data['4MA_Exceed_Threshold_' + each_metric] = (grouped_data['4_Period_MA_' + each_metric] > bp[each_metric]).reset_index(level=0, drop=True)
+            # Interest Test #3: Current value is closer to the 4MA than the 12MA
+            grouped_data['Diff_Current_4MA' + each_metric] = abs(grouped_data[each_metric] - grouped_data['4_Period_MA_' + each_metric])
+            grouped_data['Diff_Current_12MA' + each_metric] = abs(grouped_data[each_metric] - grouped_data['12_Period_MA_' + each_metric])
+            grouped_data['Diff_Current_4MA_Over_12MA_' + each_metric] = (grouped_data['Diff_Current_4MA' + each_metric] > grouped_data['Diff_Current_12MA' + each_metric]).reset_index(level=0, drop=True)
             
-            # Interest Test #2
-            # Interest Test #3
-            # Interest Test #4
+            # Interest Test #4: Current value exceeds the 52 week average
+            if data['MetricDate'].nunique() < 52:
+                grouped_data['Current_Exceed_52Wk_Avg_' + each_metric] = False
+            else:
+                grouped_data['Current_Exceed_52Wk_Avg_' + each_metric] = (grouped_data[each_metric] > grouped_data['All_Time_Avg_' + each_metric]).reset_index(level=0, drop=True)
             
             # Conditional for return type 
             if return_type == 'full':
