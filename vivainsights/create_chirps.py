@@ -97,9 +97,19 @@ def test_ts(data: pd.DataFrame,
             # Order by MetricDate (ascending)
             grouped_data = grouped_data.sort_values('MetricDate', ascending = True)
                         
+            # Calculate moving averages                        
             grouped_data['4_Period_MA_' + each_metric] = grouped_data.groupby(each_hrvar)[each_metric].apply(lambda x: x.rolling(window=4, min_periods=1).mean()).reset_index(level=0, drop=True)
             grouped_data['12_Period_MA_' + each_metric] = grouped_data.groupby(each_hrvar)[each_metric].apply(lambda x: x.rolling(window=12, min_periods=1).mean()).reset_index(level=0, drop=True)
             grouped_data['All_Time_Avg_' + each_metric] = grouped_data.groupby(each_hrvar)[each_metric].apply(lambda x: x.rolling(window=52, min_periods=1).mean()).reset_index(level=0, drop=True)
+        
+            # Calculate cumulative increases / decreases
+            grouped_data['Diff_' + each_metric] = grouped_data[each_metric].diff() # Difference between current and previous value
+            grouped_data['SignDiff_' + each_metric] = np.sign(grouped_data['Diff_' + each_metric])
+            
+            # grouped_data['SignDiff_' + each_metric] = np.where(np.sign(grouped_data['Diff_' + each_metric].abs() > 0), grouped_data['Diff_' + each_metric], 0) # Sign of the difference
+            grouped_data['SignChange_' + each_metric] = grouped_data['SignDiff_' + each_metric].ne(grouped_data['SignDiff_' + each_metric].shift()).cumsum()
+            grouped_data['CumIncrease_' + each_metric] = grouped_data.groupby('SignChange_' + each_metric).cumcount().where(grouped_data['SignDiff_' + each_metric] == 1, 0)
+            grouped_data['CumDecrease_' + each_metric] = grouped_data.groupby('SignChange_' + each_metric).cumcount().where(grouped_data['SignDiff_' + each_metric] == -1, 0)        
         
             # Interest Test #1: Does 4MA exceed threshold value? 
             if each_metric not in bp.keys():
@@ -142,6 +152,15 @@ def test_ts(data: pd.DataFrame,
             grouped_data['Test5_Current_LessThan_4MA_2Stdev_' + each_metric] = (
                 grouped_data[each_metric] < (grouped_data['4_Period_MA_' + each_metric] + 2 * grouped_data['Stdev_' + each_metric])
                 ).reset_index(level=0, drop=True)          
+            
+            # Interest Test #6: Current value against 4MA and 12MA
+            grouped_data['DiffP_Current_4MA' + each_metric] = (grouped_data[each_metric] - grouped_data['4_Period_MA_' + each_metric]) / grouped_data['4_Period_MA_' + each_metric]
+            grouped_data['DiffP_Current_12MA' + each_metric] = (grouped_data[each_metric] - grouped_data['12_Period_MA_' + each_metric]) / grouped_data['12_Period_MA_' + each_metric]
+            grouped_data['DiffP_Total'] = abs(grouped_data['DiffP_Current_4MA' + each_metric]) + abs(grouped_data['DiffP_Current_12MA' + each_metric])
+            grouped_data['Test6_DiffP_Total_IsLarge'] = (grouped_data['DiffP_Total'] > 0.5).reset_index(level=0, drop=True)            
+            
+            # Interest Test #7: Cumulative increases and decreases            
+            grouped_data['Test7_CumChange4Weeks_' + each_metric] = ((grouped_data['CumIncrease_' + each_metric] > 4) | (grouped_data['CumDecrease_' + each_metric] > 4)).reset_index(level=0, drop=True)
             
             # Reorder columns
             cols = grouped_data.columns.tolist()
