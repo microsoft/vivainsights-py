@@ -74,8 +74,10 @@ def test_ts(data: pd.DataFrame,
     metric_columns = metrics
     ranking_order = {metric: 'low' if metric in exception_metrics else 'high' for metric in metric_columns}
 
-    # Initialize an empty list for storing DataFrames
+    # Initialize empty lists for storing DataFrames
     grouped_data_list = []
+    grouped_data_list_consec = []
+    grouped_data_list_headlines = []
     
     for each_hrvar in hrvar:
         
@@ -173,41 +175,61 @@ def test_ts(data: pd.DataFrame,
             # Sum rowwise from all columns that start with 'Test_'
             grouped_data['Interest_Score'] = grouped_data[[col for col in grouped_data.columns if re.match(r'Test[0-9]_', col)]].sum(axis=1)
             
-            # Conditional for return type 
-            if return_type == 'full':
-                
-                grouped_data_list.append(grouped_data)
-                
-                return grouped_data_list
-                
-            elif return_type == 'consec_weeks':
-
-                # Initialize empty list for storing consecutive weeks
-                list_consec_weeks = []
-                
-                for each_group in groups:
-                    # Filter the DataFrame for the specific group
-                    each_df = grouped_data[grouped_data[each_hrvar] == each_group]
-                    # Sort the data by date in descending order
-                    each_df = each_df.sort_values('MetricDate', ascending = False)
-                    consecutive_weeks = 0
-                    for _, row in each_df.iterrows():
-                        if row[f'4MA_Flipped_12MA_{each_metric}'] == True:
-                            consecutive_weeks += 1
-                        else:
-                            break
-                    list_consec_weeks.append(consecutive_weeks)
-                
-                consec_weeks_df = pd.DataFrame({
-                    each_hrvar: groups,
-                    'Consecutive_Weeks': list_consec_weeks
-                })
-                
-                grouped_data_list.append(consec_weeks_df)
-                
-                return grouped_data_list
+            grouped_data_list.append(grouped_data)
             
-            elif return_type == 'plot':
+            
+            # Consecutive weeks ------------------------------------------------
+            # Initialize empty list for storing consecutive weeks
+            list_consec_weeks = []
+            
+            for each_group in groups:
+                # Filter the DataFrame for the specific group
+                each_df = grouped_data[grouped_data[each_hrvar] == each_group]
+                # Sort the data by date in descending order
+                each_df = each_df.sort_values('MetricDate', ascending = False)
+                consecutive_weeks = 0
+                for _, row in each_df.iterrows():
+                    if row[f'Test2_4MA_Flipped_12MA_{each_metric}'] == True:
+                        consecutive_weeks += 1
+                    else:
+                        break
+                list_consec_weeks.append(consecutive_weeks)
+            
+            consec_weeks_df = pd.DataFrame({
+                each_hrvar: groups,
+                'Consecutive_Weeks': list_consec_weeks
+            })
+            
+            grouped_data_list_consec.append(consec_weeks_df)
+            
+            # Headlines -------------------------------------------------------            
+            # Filter by interesting headlines only
+            grouped_data_headlines = grouped_data[(grouped_data['Interest_Score'] >= 3) & (grouped_data['DiffP_Total'] > 0.5)]
+            
+            # Generate headlines
+            grouped_data_headlines['Headlines'] = (
+                'For ' + each_hrvar + '=' + grouped_data_headlines[each_hrvar].astype(str) +
+                '(' + grouped_data_headlines['MetricDate'].astype(str) + '), ' +
+                each_metric + '(' + grouped_data_headlines[each_metric].round(1).astype(str) + ') is ' +
+                grouped_data_headlines['DiffP_Current_4MA' + each_metric].round(1).astype(str) +
+                np.where(grouped_data_headlines['DiffP_Current_4MA' + each_metric] >= 0, 
+                        ' higher than its 4-week moving average ', 
+                        ' lower than its 4-week moving average ') +
+                '(' + grouped_data_headlines['4_Period_MA_' + each_metric].round(1).astype(str) + ') and ' +
+                grouped_data_headlines['DiffP_Current_12MA' + each_metric].round(1).astype(str) +
+                np.where(grouped_data_headlines['DiffP_Current_12MA' + each_metric] >= 0,
+                        ' higher than its 12-week moving average ',
+                        ' lower than its 12-week moving average ') +
+                '(' + grouped_data_headlines['12_Period_MA_' + each_metric].round(1).astype(str) + ').'
+            ).reset_index(level=0, drop=True)
+            
+            grouped_data_headlines = grouped_data_headlines[['MetricDate', each_hrvar, 'n', each_metric, '4_Period_MA_' + each_metric, '12_Period_MA_' + each_metric, 'Interest_Score', 'Headlines']]
+            
+            grouped_data_list_headlines.append(grouped_data_headlines)
+            
+            # Plot return -----------------------------------------------------
+            
+            if return_type == 'plot':
                 
                 for each_group in groups:
                 
@@ -223,32 +245,22 @@ def test_ts(data: pd.DataFrame,
                     plt.title(str(each_hrvar) + ': ' + str(each_group), fontsize=10)
                     plt.ylim(bottom=0)  # Set the start of y-axis to 0
                     plt.legend()
-                    plt.show()              
+                    plt.show()           
+            
+                        
+    # Conditional for return type 
+    if return_type == 'full': 
+        
+        return grouped_data_list
+            
+    elif return_type == 'consec_weeks':
+
+       return grouped_data_list_consec
                     
-            elif return_type == 'headlines':
-                
-                grouped_data_headlines = grouped_data[(grouped_data['Interest_Score'] >= 3) & (grouped_data['DiffP_Total'] > 0.5)]
-                # grouped_data_headlines['Headlines'] = 'For ' + each_hrvar + '=' + grouped_data_headlines[each_hrvar] + ', ' + each_metric + 'is' + grouped_data_headlines['DiffP_Current_4MA' + each_metric] + 'of its 4-week moving average.'
-                
-                grouped_data_headlines['Headlines'] = (
-                    'For ' + each_hrvar + '=' + grouped_data_headlines[each_hrvar].astype(str) +
-                    '(' + grouped_data_headlines['MetricDate'].astype(str) + '), ' +
-                    each_metric + '(' + grouped_data_headlines[each_metric].round(1).astype(str) + ') is ' +
-                    grouped_data_headlines['DiffP_Current_4MA' + each_metric].round(1).astype(str) +
-                    np.where(grouped_data_headlines['DiffP_Current_4MA' + each_metric] >= 0, 
-                            ' higher than its 4-week moving average ', 
-                            ' lower than its 4-week moving average ') +
-                    '(' + grouped_data_headlines['4_Period_MA_' + each_metric].round(1).astype(str) + ').'
-                )
-                
-                grouped_data_headlines = grouped_data_headlines[['MetricDate', each_hrvar, 'n', each_metric, '4_Period_MA_' + each_metric, '12_Period_MA_' + each_metric, 'Interest_Score', 'Headlines']]
-                
-                grouped_data_list.append(grouped_data_headlines)
-                
-                return grouped_data_list
-                
-            else:
-                print('Error: invalid return type')
+    elif return_type == 'headlines':
+        
+        return grouped_data_list_headlines
+
 
 def test_int_bm(data: pd.DataFrame,
                 metrics: list,
