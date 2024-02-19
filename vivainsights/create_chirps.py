@@ -36,11 +36,17 @@ def test_ts(data: pd.DataFrame,
 
     min_group : int, optional
         The minimum group size for the trend test. By default, the minimum group size is 5.
+        
+    bp: dict, optional
+        A dictionary containing the benchmark mean for each metric. The keys should correspond to the metric names and the values should be the benchmark means.
+        
+    return_type: str, optional
+        The type of output to return. By default, the output is set to 'full'. Other options include 'consec_weeks', 'headlines', and 'plot'.
 
     Returns
     -------
     list
-        A list of DataFrames. Each DataFrame contains the results of the trend test for one metric. The DataFrame includes the original data, the p-value of the trend test, and a boolean column indicating whether the result is statistically significant at the 0.05 level.
+        A list of DataFrames. Each DataFrame contains the results of the trend test for one metric.
     """    
     
     # Count number of unique dates in `MetricDate`
