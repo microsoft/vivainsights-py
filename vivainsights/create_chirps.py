@@ -100,15 +100,14 @@ def test_ts(data: pd.DataFrame,
         
             # Interest Test #1: Does 4MA exceed threshold value? 
             if each_metric not in bp.keys():
-               grouped_data['4MA_Exceed_Threshold_' + each_metric] = False
+               grouped_data['Test1_4MA_Exceed_Threshold_' + each_metric] = False
             else:
-                grouped_data['4MA_Exceed_Threshold_' + each_metric] = (grouped_data['4_Period_MA_' + each_metric] > bp[each_metric]).reset_index(level=0, drop=True)
-        
+                grouped_data['Test1_4MA_Exceed_Threshold_' + each_metric] = (grouped_data['4_Period_MA_' + each_metric] > bp[each_metric]).reset_index(level=0, drop=True)
             
             # Interest Test #2: does the 4MA exceed the 12MA, indicating that the metric is trending upwards?
             # 4MA flipping the 12MA
             grouped_data['Last_Week_4MA_' + each_metric] = grouped_data.groupby(each_hrvar)['4_Period_MA_' + each_metric].shift(1).reset_index(level=0, drop=True)
-            grouped_data['4MA_Flipped_12MA_' + each_metric] = grouped_data.apply(
+            grouped_data['Test2_4MA_Flipped_12MA_' + each_metric] = grouped_data.apply(
                 lambda row: (row['4_Period_MA_' + each_metric] > row['12_Period_MA_' + each_metric] and 
                              row['Last_Week_4MA_' + each_metric] <= row['12_Period_MA_' + each_metric])
                 if each_metric not in exception_metrics
@@ -128,19 +127,29 @@ def test_ts(data: pd.DataFrame,
             # Interest Test #3: Current value is closer to the 4MA than the 12MA
             grouped_data['Diff_Current_4MA' + each_metric] = abs(grouped_data[each_metric] - grouped_data['4_Period_MA_' + each_metric])
             grouped_data['Diff_Current_12MA' + each_metric] = abs(grouped_data[each_metric] - grouped_data['12_Period_MA_' + each_metric])
-            grouped_data['Diff_Current_4MA_Over_12MA_' + each_metric] = (grouped_data['Diff_Current_4MA' + each_metric] > grouped_data['Diff_Current_12MA' + each_metric]).reset_index(level=0, drop=True)
+            grouped_data['Test3_Diff_Current_4MA_Over_12MA_' + each_metric] = (grouped_data['Diff_Current_4MA' + each_metric] > grouped_data['Diff_Current_12MA' + each_metric]).reset_index(level=0, drop=True)
             
             # Interest Test #4: Current value exceeds the 52 week average
             if data['MetricDate'].nunique() < 52:
-                grouped_data['Current_Exceed_52Wk_Avg_' + each_metric] = False
+                grouped_data['Test4_Current_Exceed_52Wk_Avg_' + each_metric] = False
             else:
-                grouped_data['Current_Exceed_52Wk_Avg_' + each_metric] = (grouped_data[each_metric] > grouped_data['All_Time_Avg_' + each_metric]).reset_index(level=0, drop=True)
+                grouped_data['Test4_Current_Exceed_52Wk_Avg_' + each_metric] = (grouped_data[each_metric] > grouped_data['All_Time_Avg_' + each_metric]).reset_index(level=0, drop=True)
             
             # Interest Test #5: Current value does not exceed the 4MA by >2 stdev (not a spike)
-            
-            grouped_data['Current_LessThan_4MA_2Stdev_' + each_metric] = (
+            grouped_data['Test5_Current_LessThan_4MA_2Stdev_' + each_metric] = (
                 grouped_data[each_metric] < (grouped_data['4_Period_MA_' + each_metric] + 2 * grouped_data['Stdev_' + each_metric])
                 ).reset_index(level=0, drop=True)          
+            
+            # Reorder columns
+            cols = grouped_data.columns.tolist()
+            test_cols = [col for col in cols if re.match(r'Test[0-9]_', col)]
+            other_cols = [col for col in cols if not re.match(r'Test[0-9]_', col)]
+            new_order_cols = other_cols + test_cols
+            grouped_data = grouped_data[new_order_cols]
+            
+            # Calculate Interest Score from tests
+            # Sum rowwise from all columns that start with 'Test_'
+            grouped_data['Interest_Score'] = grouped_data[[col for col in grouped_data.columns if re.match(r'Test[0-9]_', col)]].sum(axis=1)
             
             # Conditional for return type 
             if return_type == 'full':
