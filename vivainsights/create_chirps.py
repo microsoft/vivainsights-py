@@ -224,6 +224,28 @@ def test_ts(data: pd.DataFrame,
                     plt.ylim(bottom=0)  # Set the start of y-axis to 0
                     plt.legend()
                     plt.show()              
+                    
+            elif return_type == 'headlines':
+                
+                grouped_data_headlines = grouped_data[(grouped_data['Interest_Score'] >= 3) & (grouped_data['DiffP_Total'] > 0.5)]
+                # grouped_data_headlines['Headlines'] = 'For ' + each_hrvar + '=' + grouped_data_headlines[each_hrvar] + ', ' + each_metric + 'is' + grouped_data_headlines['DiffP_Current_4MA' + each_metric] + 'of its 4-week moving average.'
+                
+                grouped_data_headlines['Headlines'] = (
+                    'For ' + each_hrvar + '=' + grouped_data_headlines[each_hrvar].astype(str) +
+                    '(' + grouped_data_headlines['MetricDate'].astype(str) + '), ' +
+                    each_metric + '(' + grouped_data_headlines[each_metric].round(1).astype(str) + ') is ' +
+                    grouped_data_headlines['DiffP_Current_4MA' + each_metric].round(1).astype(str) +
+                    np.where(grouped_data_headlines['DiffP_Current_4MA' + each_metric] >= 0, 
+                            ' higher than its 4-week moving average ', 
+                            ' lower than its 4-week moving average ') +
+                    '(' + grouped_data_headlines['4_Period_MA_' + each_metric].round(1).astype(str) + ').'
+                )
+                
+                grouped_data_headlines = grouped_data_headlines[['MetricDate', each_hrvar, 'n', each_metric, '4_Period_MA_' + each_metric, '12_Period_MA_' + each_metric, 'Interest_Score', 'Headlines']]
+                
+                grouped_data_list.append(grouped_data_headlines)
+                
+                return grouped_data_list
                 
             else:
                 print('Error: invalid return type')
