@@ -136,6 +136,12 @@ def test_ts(data: pd.DataFrame,
             else:
                 grouped_data['Current_Exceed_52Wk_Avg_' + each_metric] = (grouped_data[each_metric] > grouped_data['All_Time_Avg_' + each_metric]).reset_index(level=0, drop=True)
             
+            # Interest Test #5: Current value does not exceed the 4MA by >2 stdev (not a spike)
+            
+            grouped_data['Current_LessThan_4MA_2Stdev_' + each_metric] = (
+                grouped_data[each_metric] < (grouped_data['4_Period_MA_' + each_metric] + 2 * grouped_data['Stdev_' + each_metric])
+                ).reset_index(level=0, drop=True)          
+            
             # Conditional for return type 
             if return_type == 'full':
                 
