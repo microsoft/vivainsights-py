@@ -93,6 +93,9 @@ def test_ts(data: pd.DataFrame,
             
             # Filter by minimum group size
             grouped_data = grouped_data[grouped_data['n'] >= min_group]      
+            
+            # Order by MetricDate (ascending)
+            grouped_data = grouped_data.sort_values('MetricDate', ascending = True)
                         
             grouped_data['4_Period_MA_' + each_metric] = grouped_data.groupby(each_hrvar)[each_metric].apply(lambda x: x.rolling(window=4, min_periods=1).mean()).reset_index(level=0, drop=True)
             grouped_data['12_Period_MA_' + each_metric] = grouped_data.groupby(each_hrvar)[each_metric].apply(lambda x: x.rolling(window=12, min_periods=1).mean()).reset_index(level=0, drop=True)
