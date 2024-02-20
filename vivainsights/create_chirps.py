@@ -164,11 +164,11 @@ def test_ts(data: pd.DataFrame,
             # Interest Test #6: Current value against 4MA and 12MA
             grouped_data['DiffP_Current_4MA' + each_metric] = (grouped_data[each_metric] - grouped_data['4_Period_MA_' + each_metric]) / grouped_data['4_Period_MA_' + each_metric]
             grouped_data['DiffP_Current_12MA' + each_metric] = (grouped_data[each_metric] - grouped_data['12_Period_MA_' + each_metric]) / grouped_data['12_Period_MA_' + each_metric]
-            grouped_data['DiffP_Total'] = abs(grouped_data['DiffP_Current_4MA' + each_metric]) + abs(grouped_data['DiffP_Current_12MA' + each_metric])
-            grouped_data['Test6_DiffP_Total_IsLarge'] = (grouped_data['DiffP_Total'] > 0.5).reset_index(level=0, drop=True)            
+            grouped_data['DiffP_Total'] = grouped_data['DiffP_Current_4MA' + each_metric] + grouped_data['DiffP_Current_12MA' + each_metric]
+            grouped_data['Test6_DiffP_Total_IsLarge'] = (abs(grouped_data['DiffP_Total']) > 0.5).reset_index(level=0, drop=True)            
             
             # Interest Test #7: Cumulative increases and decreases            
-            grouped_data['Test7_CumChange4Weeks_' + each_metric] = ((grouped_data['CumIncrease_' + each_metric] > 4) | (grouped_data['CumDecrease_' + each_metric] > 4)).reset_index(level=0, drop=True)
+            grouped_data['Test7_CumChange4Weeks_' + each_metric] = ((grouped_data['CumIncrease_' + each_metric] >= 4) | (grouped_data['CumDecrease_' + each_metric] > 4)).reset_index(level=0, drop=True)
             
             # Reorder columns
             cols = grouped_data.columns.tolist()
@@ -214,8 +214,8 @@ def test_ts(data: pd.DataFrame,
             
             # Generate headlines
             grouped_data_headlines['Headlines'] = (
-                'For ' + each_hrvar + '=' + grouped_data_headlines[each_hrvar].astype(str) +
-                '(' + grouped_data_headlines['MetricDate'].astype(str) + '), ' +
+                'For ' + each_hrvar + '==' + grouped_data_headlines[each_hrvar].astype(str) +
+                ' (' + grouped_data_headlines['MetricDate'].astype(str) + '), ' +
                 each_metric + '(' + grouped_data_headlines[each_metric].round(1).astype(str) + ') is ' +
                 grouped_data_headlines['DiffP_Current_4MA' + each_metric].round(1).astype(str) +
                 np.where(grouped_data_headlines['DiffP_Current_4MA' + each_metric] >= 0, 
@@ -229,7 +229,12 @@ def test_ts(data: pd.DataFrame,
                 '(' + grouped_data_headlines['12_Period_MA_' + each_metric].round(1).astype(str) + ').'
             )
             
-            grouped_data_headlines = grouped_data_headlines[['MetricDate', each_hrvar, 'n', each_metric, '4_Period_MA_' + each_metric, '12_Period_MA_' + each_metric, 'Interest_Score', 'Headlines']]
+            # grouped_data_headlines = grouped_data_headlines[['MetricDate', each_hrvar, 'n', each_metric, '4_Period_MA_' + each_metric, '12_Period_MA_' + each_metric, 'Interest_Score', 'Headlines']]
+            
+            grouped_data_headlines['Attribute'] = each_hrvar
+            grouped_data_headlines['Metric'] = each_metric
+            grouped_data_headlines = grouped_data_headlines.rename(columns={each_hrvar: 'MetricValue'})
+            grouped_data_headlines = grouped_data_headlines[['MetricDate', 'Attribute', 'Metric', 'MetricValue', 'Headlines']]
             
             grouped_data_list_headlines.append(grouped_data_headlines)
             
@@ -265,7 +270,8 @@ def test_ts(data: pd.DataFrame,
                     
     elif return_type == 'headlines':
         
-        return grouped_data_list_headlines
+        # Return row-bound DataFrame from list of headlines    
+        return pd.concat(grouped_data_list_headlines)
 
 
 def test_int_bm(data: pd.DataFrame,
