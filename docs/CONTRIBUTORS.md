@@ -7,7 +7,7 @@ We would like to thank the following people for their contributions to this proj
 - Aaron Harrison (@harri252)
 - Kari Eifler (@kari-eifler)
 - JJ Walia
-- Arghya Mukherjee
+- Arghya Mukherjee (@ArghyaMukherjee)
 - Ellen Trinklein 
 - Sachin Gaikwad (@sachinstl)
 - Imran Ahmadi (@ia404)
