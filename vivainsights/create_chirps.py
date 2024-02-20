@@ -216,7 +216,7 @@ def test_ts(data: pd.DataFrame,
             grouped_data_headlines['Headlines'] = (
                 'For ' + each_hrvar + '==' + grouped_data_headlines[each_hrvar].astype(str) +
                 ' (' + grouped_data_headlines['MetricDate'].astype(str) + '), ' +
-                each_metric + '(' + grouped_data_headlines[each_metric].round(1).astype(str) + ') is ' +
+                each_metric + ' (' + grouped_data_headlines[each_metric].round(1).astype(str) + ') is ' +
                 (grouped_data_headlines['DiffP_Current_4MA' + each_metric] * 100).round(1).astype(str) + '%' +
                 np.where(grouped_data_headlines['DiffP_Current_4MA' + each_metric] >= 0, 
                         ' higher than its 4-week moving average ', 
@@ -381,11 +381,12 @@ def test_int_bm(data: pd.DataFrame,
             grouped_data_headlines['cohen_d'].round(1).astype(str) + '.'
         )
         
+        grouped_data_headlines['Metric'] = each_metric
+        
         grouped_data_headlines = grouped_data_headlines.rename(
             columns={'hrvar': 'Attribute',
                      'attributes': 'AttributeValue',
-                     'metric': 'Metric',
-                     'pop_mean_' + each_metric: 'MetricValue'}
+                     'metric': 'MetricValue'}
             )
         
         # Initialize an empty MetricDate datetime column - for key matching
@@ -496,13 +497,16 @@ def test_best_practice(
             bm_data['percent_of_pop'] = bm_data['n'] / bm_data['group_n']
                      
             # Calculate percentage difference from benchmark mean
-            bm_data['perc_diff_mean'] = (bm_data['group_mean_' + each_metric] - bp_mean) / bm_data['group_mean_' + each_metric]
+            bm_data['perc_diff_mean'] = (bm_data['group_mean_' + each_metric] - bp_mean) / bp_mean
             
             grouped_data_benchmark_list.append(bm_data)
             
             # Headlines -------------------------------------------------------            
             # Filter by interesting headlines only - at least 50% difference against best practice
             grouped_data_headlines = bm_data.loc[abs(bm_data['perc_diff_mean']) >= 0.5].copy()
+            
+            # Only show headlines for 'above'
+            grouped_data_headlines = grouped_data_headlines[grouped_data_headlines[each_metric + '_threshold'] == 'above']
             
             # Generate headlines        
             grouped_data_headlines['Headlines'] = (
@@ -511,7 +515,7 @@ def test_best_practice(
                 each_metric + ' ' + grouped_data_headlines[each_metric + '_threshold'] + ' the best practice of ' +
                 grouped_data_headlines['best_practice'].astype(str) + '. The group mean is ' +
                 grouped_data_headlines['group_mean_' + each_metric].round(1).astype(str) +  ' (' +
-                grouped_data_headlines['perc_diff_mean'].round(1).astype(str) + '% vs best practice).'                
+                (grouped_data_headlines['perc_diff_mean'] * 100).round(1).astype(str) + '% vs best practice).'                
             )
             
             grouped_data_headlines['Attribute'] = each_hrvar
