@@ -388,7 +388,7 @@ def test_int_bm(data: pd.DataFrame,
                      'pop_mean_' + each_metric: 'MetricValue'}
             )
         
-        # Initialize an empty MetricDate datetime column
+        # Initialize an empty MetricDate datetime column - for key matching
         grouped_data_headlines['MetricDate'] = pd.to_datetime('')
         
         grouped_data_headlines = grouped_data_headlines[['MetricDate', 'Attribute', 'AttributeValue', 'Metric', 'MetricValue', 'Headlines']]
@@ -401,16 +401,14 @@ def test_int_bm(data: pd.DataFrame,
     elif return_type == 'headlines':
         # Return row-bound DataFrame from list of headlines    
         return pd.concat(grouped_data_list_headlines)
-        
-    
-    
     
 
 def test_best_practice(
     data: pd.DataFrame,
     metrics: list,
     hrvar: list,
-    bp: dict = {}
+    bp: dict = {},
+    return_type: str = 'full'
 ):
     """
     Takes in a DataFrame representing a Viva Insights person query and returns a list of DataFrames containing the results of the best practice test.
@@ -431,6 +429,9 @@ def test_best_practice(
     bp : dict, optional
         A dictionary containing the benchmark mean for each metric. The keys should correspond to the metric names and the values should be the benchmark means. By default, the benchmark mean for 'Emails_sent' is set to 10.
 
+    return_type: str, optional
+        The type of output to return. By default, the output is set to 'full'.
+
     Returns
     -------
     list
@@ -443,6 +444,7 @@ def test_best_practice(
         return 'Error: keys in `bp` dictionary do not match those in `metrics`'    
     
     grouped_data_benchmark_list = []
+    grouped_data_list_headlines = []
     
     for each_hrvar in hrvar:
     
@@ -497,37 +499,75 @@ def test_best_practice(
             bm_data['perc_diff_mean'] = (bm_data['group_mean_' + each_metric] - bp_mean) / bm_data['group_mean_' + each_metric]
             
             grouped_data_benchmark_list.append(bm_data)
-        
-    return grouped_data_benchmark_list    
+            
+            # Headlines -------------------------------------------------------            
+            # Filter by interesting headlines only - at least 50% difference against best practice
+            grouped_data_headlines = bm_data.loc[abs(bm_data['perc_diff_mean']) >= 0.5].copy()
+            
+            # Generate headlines        
+            grouped_data_headlines['Headlines'] = (
+                'For ' + each_hrvar + '==' + grouped_data_headlines[each_hrvar].astype(str) + ', ' +
+                (grouped_data_headlines['percent_of_pop'] * 100).round(1).astype(str) + '% of the group has ' +
+                each_metric + ' ' + grouped_data_headlines[each_metric + '_threshold'] + ' the best practice of ' +
+                grouped_data_headlines['best_practice'].astype(str) + '. The group mean is ' +
+                grouped_data_headlines['group_mean_' + each_metric].round(1).astype(str) +  ' (' +
+                grouped_data_headlines['perc_diff_mean'].round(1).astype(str) + '% vs best practice).'                
+            )
+            
+            grouped_data_headlines['Attribute'] = each_hrvar
+            grouped_data_headlines['Metric'] = each_metric
+            grouped_data_headlines = grouped_data_headlines.rename(
+                columns={
+                    each_hrvar: 'AttributeValue',
+                    'group_mean_' + each_metric: 'MetricValue'}
+                )
+            
+            # Initialize an empty MetricDate datetime column - for key matching
+            grouped_data_headlines['MetricDate'] = pd.to_datetime('')
+            
+            grouped_data_headlines = grouped_data_headlines[['MetricDate', 'Attribute', 'AttributeValue', 'Metric', 'MetricValue', 'Headlines']]
+            
+            grouped_data_list_headlines.append(grouped_data_headlines)
+            
+    if return_type == 'full':
+        return grouped_data_benchmark_list
+    elif return_type == 'headlines':
+        # Return row-bound DataFrame from list of headlines    
+        return pd.concat(grouped_data_list_headlines)
     
 #TODO: NOT COMPLETE
 def create_chirps(data: pd.DataFrame,
                   metrics: list,
                   hrvar: list = ["Organization", "SupervisorIndicator"],
                   min_group: int = 5,
+                  bp = {},
                   return_type: str = 'table'):
     
     # 1. Trend test - 4 weeks vs 12 weeks -------------------------------------
     
-    list_ts = test_ts(data = data, metrics = metrics, hrvar = hrvar, min_group = min_group)
+    list_ts = test_ts(data = data, metrics = metrics, hrvar = hrvar, min_group = min_group, bp = bp, return_type = 'headlines')
     
-    list_ts_flipped = []
-    
-    for i in list_ts:
-        # Extract column name from `list_ts[i]` that matches '4MA_Flipped_12MA'        
-        match = re.match('4MA_Flipped_12MA', list_ts[i].columns)
-        filt_df = list_ts[i][list_ts[i][match] == True]
-        list_ts_flipped.append(filt_df)   
+    # list_ts_flipped = []
+    # 
+    # for i in list_ts:
+    #     # Extract column name from `list_ts[i]` that matches '4MA_Flipped_12MA'        
+    #     match = re.match('4MA_Flipped_12MA', list_ts[i].columns)
+    #     filt_df = list_ts[i][list_ts[i][match] == True]
+    #     list_ts_flipped.append(filt_df)   
     
     # 2. Internal benchmark test ----------------------------------------------
     
-    list_int_bm = test_int_bm(data = data, metrics = metrics, hrvar = hrvar, min_group = min_group)
+    list_int_bm = test_int_bm(data = data, metrics = metrics, hrvar = hrvar, min_group = min_group, return_type = 'headlines')
     
     # 3. Best practice test ---------------------------------------------------
     
-    list_bp = test_best_practice(data = data, metrics = metrics, hrvar = hrvar, bp = {'Email_hours': 10})
+    list_bp = test_best_practice(data = data, metrics = metrics, hrvar = hrvar, bp = bp, return_type = 'headlines')
     
     # All the headlines -------------------------------------------------------
+    
+    list_headlines = [list_ts, list_int_bm, list_bp]
+
+    all_headlines = pd.concat(list_headlines)
     
     #TODO: headline selection in order to build a story
     # Interestingness: time trend > internal benchmark > best practice
@@ -545,4 +585,4 @@ def create_chirps(data: pd.DataFrame,
     # 
     # combined_list = list_ts + list_int_bm
     # return combined_list
-    return list_ts_flipped
+    return all_headlines
