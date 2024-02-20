@@ -212,6 +212,9 @@ def test_ts(data: pd.DataFrame,
             # Filter by interesting headlines only
             grouped_data_headlines = grouped_data.loc[(grouped_data['Interest_Score'] >= 3) & (grouped_data['DiffP_Total'] > 0.5)].copy()
             
+            # Filter by latest date only
+            grouped_data_headlines = grouped_data_headlines[grouped_data_headlines['MetricDate'] == latest_date]
+            
             # Generate headlines
             grouped_data_headlines['Headlines'] = (
                 'For ' + each_hrvar + '==' + grouped_data_headlines[each_hrvar].astype(str) +
