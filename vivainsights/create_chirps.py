@@ -210,7 +210,7 @@ def test_ts(data: pd.DataFrame,
             
             # Headlines -------------------------------------------------------            
             # Filter by interesting headlines only
-            grouped_data_headlines = grouped_data[(grouped_data['Interest_Score'] >= 3) & (grouped_data['DiffP_Total'] > 0.5)]
+            grouped_data_headlines = grouped_data.loc[(grouped_data['Interest_Score'] >= 3) & (grouped_data['DiffP_Total'] > 0.5)].copy()
             
             # Generate headlines
             grouped_data_headlines['Headlines'] = (
@@ -227,7 +227,7 @@ def test_ts(data: pd.DataFrame,
                         ' higher than its 12-week moving average ',
                         ' lower than its 12-week moving average ') +
                 '(' + grouped_data_headlines['12_Period_MA_' + each_metric].round(1).astype(str) + ').'
-            ).reset_index(level=0, drop=True)
+            )
             
             grouped_data_headlines = grouped_data_headlines[['MetricDate', each_hrvar, 'n', each_metric, '4_Period_MA_' + each_metric, '12_Period_MA_' + each_metric, 'Interest_Score', 'Headlines']]
             
