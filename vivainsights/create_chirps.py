@@ -217,12 +217,12 @@ def test_ts(data: pd.DataFrame,
                 'For ' + each_hrvar + '==' + grouped_data_headlines[each_hrvar].astype(str) +
                 ' (' + grouped_data_headlines['MetricDate'].astype(str) + '), ' +
                 each_metric + '(' + grouped_data_headlines[each_metric].round(1).astype(str) + ') is ' +
-                grouped_data_headlines['DiffP_Current_4MA' + each_metric].round(1).astype(str) +
+                (grouped_data_headlines['DiffP_Current_4MA' + each_metric] * 100).round(1).astype(str) + '%' +
                 np.where(grouped_data_headlines['DiffP_Current_4MA' + each_metric] >= 0, 
                         ' higher than its 4-week moving average ', 
                         ' lower than its 4-week moving average ') +
                 '(' + grouped_data_headlines['4_Period_MA_' + each_metric].round(1).astype(str) + ') and ' +
-                grouped_data_headlines['DiffP_Current_12MA' + each_metric].round(1).astype(str) +
+                (grouped_data_headlines['DiffP_Current_12MA' + each_metric] * 100).round(1).astype(str) + '%' +
                 np.where(grouped_data_headlines['DiffP_Current_12MA' + each_metric] >= 0,
                         ' higher than its 12-week moving average ',
                         ' lower than its 12-week moving average ') +
@@ -233,8 +233,12 @@ def test_ts(data: pd.DataFrame,
             
             grouped_data_headlines['Attribute'] = each_hrvar
             grouped_data_headlines['Metric'] = each_metric
-            grouped_data_headlines = grouped_data_headlines.rename(columns={each_hrvar: 'MetricValue'})
-            grouped_data_headlines = grouped_data_headlines[['MetricDate', 'Attribute', 'Metric', 'MetricValue', 'Headlines']]
+            grouped_data_headlines = grouped_data_headlines.rename(
+                columns={
+                    each_hrvar: 'AttributeValue',
+                    each_metric: 'MetricValue'}
+                )
+            grouped_data_headlines = grouped_data_headlines[['MetricDate', 'Attribute', 'AttributeValue', 'Metric', 'MetricValue', 'Headlines']]
             
             grouped_data_list_headlines.append(grouped_data_headlines)
             
@@ -278,7 +282,9 @@ def test_int_bm(data: pd.DataFrame,
                 metrics: list,
                 hrvar: list = ["Organization", "SupervisorIndicator"],
                 bm_data: pd.DataFrame = None,
-                min_group: int = 5):
+                min_group: int = 5,
+                return_type: str = 'full'
+                ):
     """
     Performs an internal benchmark test on each metric and HR variable combination in the provided DataFrame.
 
@@ -303,7 +309,10 @@ def test_int_bm(data: pd.DataFrame,
 
     min_group : int, optional
         The minimum group size for the internal benchmark test. By default, the minimum group size is 5.
-
+        
+    return_type: str, optional
+        The type of output to return. By default, the output is set to 'full'.
+        
     Returns
     -------
     list
@@ -318,6 +327,7 @@ def test_int_bm(data: pd.DataFrame,
     """
     
     grouped_data_benchmark_list = []
+    grouped_data_list_headlines = []
     
     for each_metric in metrics:
         ranked_data = vi.create_rank_calc(
@@ -355,7 +365,46 @@ def test_int_bm(data: pd.DataFrame,
         
         grouped_data_benchmark_list.append(ranked_data)
     
-    return grouped_data_benchmark_list
+        # Headlines -------------------------------------------------------            
+        # Filter by interesting headlines only - at least a medium effect (d >= 0.5)
+        grouped_data_headlines = ranked_data.loc[ranked_data['cohen_d'] >= 0.5].copy()
+        
+        # Generate headlines        
+        grouped_data_headlines['Headlines'] = (
+            'For ' + grouped_data_headlines['hrvar'] + '==' + grouped_data_headlines['attributes'].astype(str) +
+            ', ' + each_metric + '(' + grouped_data_headlines['metric'].round(1).astype(str) + ') is ' +
+            (grouped_data_headlines['perc_diff'] * 100).round(1).astype(str) + '%' +
+            np.where(grouped_data_headlines['perc_diff'] >= 0,
+                    ' higher than the benchmark population average ',
+                    ' lower than the benchmark population average ') +
+            grouped_data_headlines['pop_mean_' + each_metric].round(1).astype(str) + ' with a Cohen\'s d of ' +
+            grouped_data_headlines['cohen_d'].round(1).astype(str) + '.'
+        )
+        
+        grouped_data_headlines = grouped_data_headlines.rename(
+            columns={'hrvar': 'Attribute',
+                     'attributes': 'AttributeValue',
+                     'metric': 'Metric',
+                     'pop_mean_' + each_metric: 'MetricValue'}
+            )
+        
+        # Initialize an empty MetricDate datetime column
+        grouped_data_headlines['MetricDate'] = pd.to_datetime('')
+        
+        grouped_data_headlines = grouped_data_headlines[['MetricDate', 'Attribute', 'AttributeValue', 'Metric', 'MetricValue', 'Headlines']]
+            
+        grouped_data_list_headlines.append(grouped_data_headlines)
+    
+    
+    if return_type == 'full':
+        return grouped_data_benchmark_list
+    elif return_type == 'headlines':
+        # Return row-bound DataFrame from list of headlines    
+        return pd.concat(grouped_data_list_headlines)
+        
+    
+    
+    
 
 def test_best_practice(
     data: pd.DataFrame,
