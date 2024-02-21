@@ -124,10 +124,10 @@ def test_ts(data: pd.DataFrame,
         
             # Interest Test #1: Does 4MA exceed threshold value? 
             if each_metric not in bp.keys():
-               grouped_data['Test1_4MA_Exceed_Threshold_' + each_metric] = False
+                grouped_data['Test1_4MA_Exceed_Threshold_' + each_metric] = False
             else:
-                grouped_data['Test1_4MA_Exceed_Threshold_' + each_metric] = (grouped_data['4_Period_MA_' + each_metric] > bp[each_metric]).reset_index(level=0, drop=True)
-            
+                grouped_data['Test1_4MA_Exceed_Threshold_' + each_metric] = grouped_data['4_Period_MA_' + each_metric] > bp[each_metric]
+
             # Interest Test #2: does the 4MA exceed the 12MA, indicating that the metric is trending upwards?
             # 4MA flipping the 12MA
             grouped_data['Test2_4MA_Flipped_12MA_' + each_metric] = grouped_data.apply(
@@ -136,41 +136,41 @@ def test_ts(data: pd.DataFrame,
                 if each_metric not in exception_metrics
                 else (row['4_Period_MA_' + each_metric] < row['12_Period_MA_' + each_metric] and
                       row['Last_Week_4MA_' + each_metric] >= row['12_Period_MA_' + each_metric]), axis=1
-            ).reset_index(level=0, drop=True)
-            
+            )
+
             # Stdev
-            grouped_data['Stdev_' + each_metric] = grouped_data.groupby(each_hrvar)[each_metric].apply(lambda x: x.rolling(window=long_period, min_periods=1).std()).reset_index(level=0, drop=True)
-            
+            grouped_data['Stdev_' + each_metric] = grouped_data.groupby(each_hrvar)[each_metric].transform(lambda x: x.rolling(window=long_period, min_periods=1).std())
+
             # Group rank
             order = ranking_order[each_metric] == 'high'
             grouped_data['Rank_' + each_metric] = grouped_data.groupby('MetricDate')[each_metric].rank(ascending=not order)
-            grouped_data['4_Week_Avg_Rank_' + each_metric] = grouped_data.groupby(each_hrvar)['Rank_' + each_metric].transform(lambda x: x.rolling(window=4, min_periods=1).mean()).reset_index(level=0, drop=True)
-            grouped_data['12_Week_Avg_Rank_' + each_metric] = grouped_data.groupby(each_hrvar)['Rank_' + each_metric].transform(lambda x: x.rolling(window=12, min_periods=1).mean()).reset_index(level=0, drop=True)
-            
+            grouped_data['4_Week_Avg_Rank_' + each_metric] = grouped_data.groupby(each_hrvar)['Rank_' + each_metric].transform(lambda x: x.rolling(window=4, min_periods=1).mean())
+            grouped_data['12_Week_Avg_Rank_' + each_metric] = grouped_data.groupby(each_hrvar)['Rank_' + each_metric].transform(lambda x: x.rolling(window=12, min_periods=1).mean())
+
             # Interest Test #3: Current value is closer to the 4MA than the 12MA
             grouped_data['Diff_Current_4MA' + each_metric] = abs(grouped_data[each_metric] - grouped_data['4_Period_MA_' + each_metric])
             grouped_data['Diff_Current_12MA' + each_metric] = abs(grouped_data[each_metric] - grouped_data['12_Period_MA_' + each_metric])
-            grouped_data['Test3_Diff_Current_4MA_Over_12MA_' + each_metric] = (grouped_data['Diff_Current_4MA' + each_metric] > grouped_data['Diff_Current_12MA' + each_metric]).reset_index(level=0, drop=True)
-            
+            grouped_data['Test3_Diff_Current_4MA_Over_12MA_' + each_metric] = grouped_data['Diff_Current_4MA' + each_metric] > grouped_data['Diff_Current_12MA' + each_metric]
+
             # Interest Test #4: Current value exceeds the 52 week average
             if data['MetricDate'].nunique() < 52:
                 grouped_data['Test4_Current_Exceed_52Wk_Avg_' + each_metric] = False
             else:
-                grouped_data['Test4_Current_Exceed_52Wk_Avg_' + each_metric] = (grouped_data[each_metric] > grouped_data['All_Time_Avg_' + each_metric]).reset_index(level=0, drop=True)
+                grouped_data['Test4_Current_Exceed_52Wk_Avg_' + each_metric] = grouped_data[each_metric] > grouped_data['All_Time_Avg_' + each_metric]
             
             # Interest Test #5: Current value does not exceed the 4MA by >2 stdev (not a spike)
             grouped_data['Test5_Current_LessThan_4MA_2Stdev_' + each_metric] = (
                 grouped_data[each_metric] < (grouped_data['4_Period_MA_' + each_metric] + 2 * grouped_data['Stdev_' + each_metric])
-                ).reset_index(level=0, drop=True)          
+                )     
             
             # Interest Test #6: Current value against 4MA and 12MA
             grouped_data['DiffP_Current_4MA' + each_metric] = (grouped_data[each_metric] - grouped_data['4_Period_MA_' + each_metric]) / grouped_data['4_Period_MA_' + each_metric]
             grouped_data['DiffP_Current_12MA' + each_metric] = (grouped_data[each_metric] - grouped_data['12_Period_MA_' + each_metric]) / grouped_data['12_Period_MA_' + each_metric]
             grouped_data['DiffP_Total'] = grouped_data['DiffP_Current_4MA' + each_metric] + grouped_data['DiffP_Current_12MA' + each_metric]
-            grouped_data['Test6_DiffP_Total_IsLarge'] = (abs(grouped_data['DiffP_Total']) > 0.5).reset_index(level=0, drop=True)            
+            grouped_data['Test6_DiffP_Total_IsLarge'] = (abs(grouped_data['DiffP_Total']) > 0.5)       
             
             # Interest Test #7: Cumulative increases and decreases            
-            grouped_data['Test7_CumChange4Weeks_' + each_metric] = ((grouped_data['CumIncrease_' + each_metric] >= 4) | (grouped_data['CumDecrease_' + each_metric] > 4)).reset_index(level=0, drop=True)
+            grouped_data['Test7_CumChange4Weeks_' + each_metric] = ((grouped_data['CumIncrease_' + each_metric] >= 4) | (grouped_data['CumDecrease_' + each_metric] > 4))
             
             # Reorder columns
             cols = grouped_data.columns.tolist()
