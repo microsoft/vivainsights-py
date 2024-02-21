@@ -112,21 +112,15 @@ def test_ts(data: pd.DataFrame,
             # Calculate moving averages                                    
             grouped_data['4_Period_MA_' + each_metric] = grouped_data.groupby(each_hrvar)[each_metric].transform(lambda x: x.rolling(window=4, min_periods=1).mean())
             grouped_data['12_Period_MA_' + each_metric] = grouped_data.groupby(each_hrvar)[each_metric].transform(lambda x: x.rolling(window=12, min_periods=1).mean())
-            grouped_data['All_Time_Avg_' + each_metric] = grouped_data.groupby(each_hrvar)[each_metric].transform(lambda x: x.rolling(window=52, min_periods=1).mean())
-            
-            # Order by MetricDate (ascending)      
-            grouped_data['Last_Week_4MA_' + each_metric] = grouped_data.groupby(each_hrvar)['4_Period_MA_' + each_metric].shift(1)
+            grouped_data['All_Time_Avg_' + each_metric] = grouped_data.groupby(each_hrvar)[each_metric].transform(lambda x: x.rolling(window=52, min_periods=1).mean())   
+            grouped_data['Last_Week_4MA_' + each_metric] = grouped_data.groupby(each_hrvar)['4_Period_MA_' + each_metric].shift(1) # Previous week's 4MA
         
             # Calculate cumulative increases / decreases
-            grouped_data['Diff_' + each_metric] = grouped_data.groupby(each_hrvar)[each_metric].diff().reset_index(drop=True) # Difference between current and previous value
-            grouped_data['SignDiff_' + each_metric] = np.sign(grouped_data['Diff_' + each_metric])
-            
-            # grouped_data['SignDiff_' + each_metric] = np.where(np.sign(grouped_data['Diff_' + each_metric].abs() > 0), grouped_data['Diff_' + each_metric], 0) # Sign of the difference
-            # grouped_data['SignChange_' + each_metric] = grouped_data['SignDiff_' + each_metric].ne(grouped_data['SignDiff_' + each_metric].shift()).cumsum()
-            
-            grouped_data['SignChange_' + each_metric] = grouped_data.groupby(each_hrvar)['SignDiff_' + each_metric].apply(lambda x: x.ne(x.shift()).cumsum()).reset_index(level=0, drop=True)
-            grouped_data['CumIncrease_' + each_metric] = grouped_data.groupby([each_hrvar, 'SignChange_' + each_metric]).cumcount().where(grouped_data['SignDiff_' + each_metric] == 1, 0).reset_index(level=0, drop=True)
-            grouped_data['CumDecrease_' + each_metric] = grouped_data.groupby([each_hrvar, 'SignChange_' + each_metric]).cumcount().where(grouped_data['SignDiff_' + each_metric] == -1, 0).reset_index(level=0, drop=True)        
+            grouped_data['Diff_' + each_metric] = grouped_data.groupby(each_hrvar)[each_metric].diff() # Difference between current and previous value
+            grouped_data['SignDiff_' + each_metric] = np.sign(grouped_data['Diff_' + each_metric]) # Sign of the difference            
+            grouped_data['SignChange_' + each_metric] = grouped_data.groupby(each_hrvar)['SignDiff_' + each_metric].transform(lambda x: x.ne(x.shift()).cumsum())
+            grouped_data['CumIncrease_' + each_metric] = grouped_data.groupby([each_hrvar, 'SignChange_' + each_metric]).cumcount().where(grouped_data['SignDiff_' + each_metric] == 1, 0)
+            grouped_data['CumDecrease_' + each_metric] = grouped_data.groupby([each_hrvar, 'SignChange_' + each_metric]).cumcount().where(grouped_data['SignDiff_' + each_metric] == -1, 0)   
         
             # Interest Test #1: Does 4MA exceed threshold value? 
             if each_metric not in bp.keys():
@@ -136,7 +130,6 @@ def test_ts(data: pd.DataFrame,
             
             # Interest Test #2: does the 4MA exceed the 12MA, indicating that the metric is trending upwards?
             # 4MA flipping the 12MA
-            
             grouped_data['Test2_4MA_Flipped_12MA_' + each_metric] = grouped_data.apply(
                 lambda row: (row['4_Period_MA_' + each_metric] > row['12_Period_MA_' + each_metric] and 
                              row['Last_Week_4MA_' + each_metric] <= row['12_Period_MA_' + each_metric])
@@ -191,7 +184,6 @@ def test_ts(data: pd.DataFrame,
             grouped_data['Interest_Score'] = grouped_data[[col for col in grouped_data.columns if re.match(r'Test[0-9]_', col)]].sum(axis=1)
             
             grouped_data_list.append(grouped_data)
-            
             
             # Consecutive weeks ------------------------------------------------
             # Initialize empty list for storing consecutive weeks
