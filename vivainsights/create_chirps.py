@@ -150,7 +150,7 @@ def test_ts(data: pd.DataFrame,
             # Interest Test #3: Current value is closer to the 4MA than the 12MA
             grouped_data['Diff_Current_4MA' + each_metric] = abs(grouped_data[each_metric] - grouped_data['4_Period_MA_' + each_metric])
             grouped_data['Diff_Current_12MA' + each_metric] = abs(grouped_data[each_metric] - grouped_data['12_Period_MA_' + each_metric])
-            grouped_data['Test3_Diff_Current_4MA_Over_12MA_' + each_metric] = grouped_data['Diff_Current_4MA' + each_metric] > grouped_data['Diff_Current_12MA' + each_metric]
+            grouped_data['Test3_Diff_Current_4MA_Over_12MA_' + each_metric] = grouped_data['Diff_Current_4MA' + each_metric] < grouped_data['Diff_Current_12MA' + each_metric]
 
             # Interest Test #4: Current value exceeds the 52 week average
             if data['MetricDate'].nunique() < 52:
@@ -167,10 +167,10 @@ def test_ts(data: pd.DataFrame,
             grouped_data['DiffP_Current_4MA' + each_metric] = (grouped_data[each_metric] - grouped_data['4_Period_MA_' + each_metric]) / grouped_data['4_Period_MA_' + each_metric]
             grouped_data['DiffP_Current_12MA' + each_metric] = (grouped_data[each_metric] - grouped_data['12_Period_MA_' + each_metric]) / grouped_data['12_Period_MA_' + each_metric]
             grouped_data['DiffP_Total'] = grouped_data['DiffP_Current_4MA' + each_metric] + grouped_data['DiffP_Current_12MA' + each_metric]
-            grouped_data['Test6_DiffP_Total_IsLarge'] = (abs(grouped_data['DiffP_Total']) > 0.5)       
+            grouped_data['Test6_DiffP_Total_IsLarge'] = (abs(grouped_data['DiffP_Total']) > 0.2)       
             
             # Interest Test #7: Cumulative increases and decreases            
-            grouped_data['Test7_CumChange4Weeks_' + each_metric] = ((grouped_data['CumIncrease_' + each_metric] >= 4) | (grouped_data['CumDecrease_' + each_metric] > 4))
+            grouped_data['Test7_CumChange4Weeks_' + each_metric] = ((grouped_data['CumIncrease_' + each_metric] >= 3) | (grouped_data['CumDecrease_' + each_metric] > 3))
             
             # Reorder columns
             cols = grouped_data.columns.tolist()
@@ -269,6 +269,10 @@ def test_ts(data: pd.DataFrame,
                         
     # Conditional for return type 
     if return_type == 'full': 
+        
+        for i in range(len(grouped_data_list)):
+            # Filter by current week only
+            grouped_data_list[i] = grouped_data_list[i][grouped_data_list[i]['MetricDate'] == max(grouped_data_list[i]['MetricDate'])]
         
         return grouped_data_list
             
