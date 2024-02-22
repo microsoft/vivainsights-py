@@ -60,7 +60,7 @@ def test_ts(data: pd.DataFrame,
     
     # If keys in key-value pairs in `bp` dictionary do not match those in `metrics`, return an error message
     if set(bp.keys()) != set(metrics):
-        return 'Error: keys in `bp` dictionary do not match those in `metrics`'    
+        print('Warning: keys in `bp` dictionary are not identicla to `metrics`. Some best practice thresholds may not be calculated.')
     
     # Define date windows
     latest_date = data['MetricDate'].max()
@@ -154,9 +154,10 @@ def test_ts(data: pd.DataFrame,
 
             # Interest Test #4: Current value exceeds the 52 week average
             if data['MetricDate'].nunique() < 52:
-                grouped_data['Test4_Current_Exceed_52Wk_Avg_' + each_metric] = False
-            else:
-                grouped_data['Test4_Current_Exceed_52Wk_Avg_' + each_metric] = grouped_data[each_metric] > grouped_data['All_Time_Avg_' + each_metric]
+                print('Computing using ' + str(data['MetricDate'].nunique()) + ' weeks of data when calculating all time average...')
+                # grouped_data['Test4_Current_Exceed_52Wk_Avg_' + each_metric] = False
+            
+            grouped_data['Test4_Current_Exceed_52Wk_Avg_' + each_metric] = grouped_data[each_metric] > grouped_data['All_Time_Avg_' + each_metric]
             
             # Interest Test #5: Current value does not exceed the 4MA by >2 stdev (not a spike)
             grouped_data['Test5_Current_LessThan_4MA_2Stdev_' + each_metric] = (
@@ -170,7 +171,7 @@ def test_ts(data: pd.DataFrame,
             grouped_data['Test6_DiffP_Total_IsLarge'] = (abs(grouped_data['DiffP_Total']) > 0.2)       
             
             # Interest Test #7: Cumulative increases and decreases            
-            grouped_data['Test7_CumChange4Weeks_' + each_metric] = ((grouped_data['CumIncrease_' + each_metric] >= 3) | (grouped_data['CumDecrease_' + each_metric] > 3))
+            grouped_data['Test7_CumChange4Weeks_' + each_metric] = ((grouped_data['CumIncrease_' + each_metric] >= 3) | (grouped_data['CumDecrease_' + each_metric] >= 3))
             
             # Reorder columns
             cols = grouped_data.columns.tolist()
@@ -211,7 +212,11 @@ def test_ts(data: pd.DataFrame,
             
             # Headlines -------------------------------------------------------            
             # Filter by interesting headlines only
-            grouped_data_headlines = grouped_data.loc[(grouped_data['Interest_Score'] >= 3) & (grouped_data['DiffP_Total'] > 0.5)].copy()
+            grouped_data_headlines = grouped_data.loc[
+                (grouped_data['Interest_Score'] >= 3) &
+                (grouped_data['Test4_Current_Exceed_52Wk_Avg_' + each_metric] == True) &
+                (grouped_data['Test2_4MA_Flipped_12MA_' + each_metric] == True)
+            ].copy()
             
             # Filter by latest date only
             grouped_data_headlines = grouped_data_headlines[grouped_data_headlines['MetricDate'] == latest_date]
@@ -220,7 +225,7 @@ def test_ts(data: pd.DataFrame,
             grouped_data_headlines['Headlines'] = (
                 'For ' + each_hrvar + '==' + grouped_data_headlines[each_hrvar].astype(str) +
                 ' (' + grouped_data_headlines['MetricDate'].astype(str) + '), ' +
-                each_metric + ' (' + grouped_data_headlines[each_metric].round(1).astype(str) + ') is ' +
+                each_metric + ' (' + grouped_data_headlines[each_metric].round(1).astype(str) + ') is on an upward trend, ' +
                 (grouped_data_headlines['DiffP_Current_4MA' + each_metric] * 100).round(1).astype(str) + '%' +
                 np.where(grouped_data_headlines['DiffP_Current_4MA' + each_metric] >= 0, 
                         ' higher than its 4-week moving average ', 
@@ -233,8 +238,12 @@ def test_ts(data: pd.DataFrame,
                 '(' + grouped_data_headlines['12_Period_MA_' + each_metric].round(1).astype(str) + ').'
             )
             
+            # InterestScore - a min-max scaled score 
+            grouped_data_headlines['Interest_Score'] = (grouped_data_headlines['Interest_Score'] - grouped_data_headlines['Interest_Score'].min()) / (grouped_data_headlines['Interest_Score'].max() - grouped_data_headlines['Interest_Score'].min())            
+            
             # grouped_data_headlines = grouped_data_headlines[['MetricDate', each_hrvar, 'n', each_metric, '4_Period_MA_' + each_metric, '12_Period_MA_' + each_metric, 'Interest_Score', 'Headlines']]
             
+            grouped_data_headlines['TestType'] = 'Time Trend'
             grouped_data_headlines['Attribute'] = each_hrvar
             grouped_data_headlines['Metric'] = each_metric
             grouped_data_headlines = grouped_data_headlines.rename(
@@ -242,7 +251,7 @@ def test_ts(data: pd.DataFrame,
                     each_hrvar: 'AttributeValue',
                     each_metric: 'MetricValue'}
                 )
-            grouped_data_headlines = grouped_data_headlines[['Attribute', 'AttributeValue', 'Metric', 'MetricValue', 'n', 'Headlines']]
+            grouped_data_headlines = grouped_data_headlines[['TestType', 'Attribute', 'AttributeValue', 'Metric', 'MetricValue', 'n', 'Headlines', 'Interest_Score']]
             
             grouped_data_list_headlines.append(grouped_data_headlines)
             
@@ -389,22 +398,22 @@ def test_int_bm(data: pd.DataFrame,
             grouped_data_headlines['cohen_d'].round(1).astype(str) + '.'
         )
         
+        grouped_data_headlines['TestType'] = 'Internal Benchmark'
         grouped_data_headlines['Metric'] = each_metric
-        
+                
         grouped_data_headlines = grouped_data_headlines.rename(
             columns={'hrvar': 'Attribute',
                      'attributes': 'AttributeValue',
                      'metric': 'MetricValue'}
             )
+
+        # Interest Score - min-max scaled
+        grouped_data_headlines['Interest_Score'] = (grouped_data_headlines['cohen_d'] - grouped_data_headlines['cohen_d'].min()) / (grouped_data_headlines['cohen_d'].max() - grouped_data_headlines['cohen_d'].min())
         
-        # Initialize an empty MetricDate datetime column - for key matching
-        grouped_data_headlines['MetricDate'] = pd.to_datetime('')
-        
-        grouped_data_headlines = grouped_data_headlines[['Attribute', 'AttributeValue', 'Metric', 'MetricValue', 'n', 'Headlines']]
+        grouped_data_headlines = grouped_data_headlines[['TestType', 'Attribute', 'AttributeValue', 'Metric', 'MetricValue', 'n', 'Headlines', 'Interest_Score']]
             
         grouped_data_list_headlines.append(grouped_data_headlines)
-    
-    
+
     if return_type == 'full':
         return grouped_data_benchmark_list
     elif return_type == 'headlines':
@@ -454,7 +463,8 @@ def test_best_practice(
     
     # If keys in key-value pairs in `bp` dictionary do not match those in `metrics`, return an error message
     if set(bp.keys()) != set(metrics):
-        return 'Error: keys in `bp` dictionary do not match those in `metrics`'    
+        print('Warning: keys in `bp` dictionary do not match those in `metrics`. Only matched metrics will be calculated.') 
+        metrics = list(bp.keys())
     
     grouped_data_benchmark_list = []
     grouped_data_list_headlines = []
@@ -538,10 +548,12 @@ def test_best_practice(
                     'group_mean_' + each_metric: 'MetricValue'}
                 )
             
-            # Initialize an empty MetricDate datetime column - for key matching
-            grouped_data_headlines['MetricDate'] = pd.to_datetime('')
+            grouped_data_headlines['TestType'] = 'Best Practice'
             
-            grouped_data_headlines = grouped_data_headlines[['Attribute', 'AttributeValue', 'Metric', 'MetricValue', 'n', 'Headlines']]
+            # Interest score - min-max scaled using `percent_of_pop`
+            grouped_data_headlines['Interest_Score'] = (grouped_data_headlines['percent_of_pop'] - grouped_data_headlines['percent_of_pop'].min()) / (grouped_data_headlines['percent_of_pop'].max() - grouped_data_headlines['percent_of_pop'].min())
+            
+            grouped_data_headlines = grouped_data_headlines[['TestType', 'Attribute', 'AttributeValue', 'Metric', 'MetricValue', 'n', 'Headlines', 'Interest_Score']]
             
             grouped_data_list_headlines.append(grouped_data_headlines)
             
@@ -577,13 +589,30 @@ def create_chirps(data: pd.DataFrame,
 
     all_headlines = pd.concat(list_headlines)
     
+    total_n = data['PersonId'].nunique()
+    all_headlines['prop_n'] = all_headlines['n'] / total_n
+    
+    # Interesting score -------------------------------------------------------
+    # Output - return all the headlines - append the interesting score
+    
+    # If `TestType == 'Internal Benchmark'`, then multiply `Interest_Score` by 0.9
+    all_headlines['Interest_Score'] = np.where(all_headlines['TestType'] == 'Internal Benchmark', all_headlines['Interest_Score'] * 0.9, all_headlines['Interest_Score'])
+    
+    # If `TestType == 'Best Practice'`, then multiply `Interest_Score` by 0.8
+    all_headlines['Interest_Score'] = np.where(all_headlines['TestType'] == 'Best Practice', all_headlines['Interest_Score'] * 0.8, all_headlines['Interest_Score'])
+    
+    all_headlines['Interest_Score2'] = all_headlines['Interest_Score'] * all_headlines['prop_n']
+    
+    # `Interest_Score2_minmax` - min-max scaled score
+    all_headlines['Interest_Score2_minmax'] = (all_headlines['Interest_Score2'] - all_headlines['Interest_Score2'].min()) / (all_headlines['Interest_Score2'].max() - all_headlines['Interest_Score2'].min())
+    
     #TODO: headline selection in order to build a story
     # Interestingness: time trend > internal benchmark > best practice
     # Then build in rules for when best practice etc. may trump time trends (e.g. What makes a strong/weak trend?)    
     
-    # Interesting score -------------------------------------------------------
     
-    # Output - return all the headlines - append the interesting score
+    
+    
     # Output - just the interesting headlines
     # Output - individual tables for each test 
     # Plot for each interesting headline
