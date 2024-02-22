@@ -52,7 +52,7 @@ def test_ts(data: pd.DataFrame,
     # Count number of unique dates in `MetricDate`
     # If fewer than 12 unique values, return an error message
     if data['MetricDate'].nunique() < 12:
-        return 'Error: fewer than 12 unique dates in `MetricDate`'  
+        print('Warning: fewer than 12 unique dates in `MetricDate`. Consider using a larger dataset for more accurate results.')
     
     # Message if fewer than 52 weeks of data available
     if data['MetricDate'].nunique() < 52:
@@ -242,7 +242,7 @@ def test_ts(data: pd.DataFrame,
                     each_hrvar: 'AttributeValue',
                     each_metric: 'MetricValue'}
                 )
-            grouped_data_headlines = grouped_data_headlines[['MetricDate', 'Attribute', 'AttributeValue', 'Metric', 'MetricValue', 'Headlines']]
+            grouped_data_headlines = grouped_data_headlines[['Attribute', 'AttributeValue', 'Metric', 'MetricValue', 'n', 'Headlines']]
             
             grouped_data_list_headlines.append(grouped_data_headlines)
             
@@ -400,7 +400,7 @@ def test_int_bm(data: pd.DataFrame,
         # Initialize an empty MetricDate datetime column - for key matching
         grouped_data_headlines['MetricDate'] = pd.to_datetime('')
         
-        grouped_data_headlines = grouped_data_headlines[['MetricDate', 'Attribute', 'AttributeValue', 'Metric', 'MetricValue', 'Headlines']]
+        grouped_data_headlines = grouped_data_headlines[['Attribute', 'AttributeValue', 'Metric', 'MetricValue', 'n', 'Headlines']]
             
         grouped_data_list_headlines.append(grouped_data_headlines)
     
@@ -417,6 +417,7 @@ def test_best_practice(
     metrics: list,
     hrvar: list,
     bp: dict = {},
+    min_group: int = 5,
     return_type: str = 'full'
 ):
     """
@@ -438,7 +439,10 @@ def test_best_practice(
     bp : dict, optional
         A dictionary containing the benchmark mean for each metric. The keys should correspond to the metric names and the values should be the benchmark means. By default, the benchmark mean for 'Emails_sent' is set to 10.
 
-    return_type: str, optional
+    min_group : int
+        The minimum group size for the best practice test. By default, the minimum group size is 5.
+
+    return_type: str
         The type of output to return. By default, the output is set to 'full'.
 
     Returns
@@ -483,7 +487,7 @@ def test_best_practice(
             bm_data = bm_data.rename(columns={'PersonId': 'n'})
             
             # Filter by minimum group size
-            bm_data = bm_data[bm_data['n'] >= 5]
+            bm_data = bm_data[bm_data['n'] >= min_group]
 
             # Attach best practice 'mean' to each row
             bm_data['best_practice'] = bp_mean
@@ -537,7 +541,7 @@ def test_best_practice(
             # Initialize an empty MetricDate datetime column - for key matching
             grouped_data_headlines['MetricDate'] = pd.to_datetime('')
             
-            grouped_data_headlines = grouped_data_headlines[['MetricDate', 'Attribute', 'AttributeValue', 'Metric', 'MetricValue', 'Headlines']]
+            grouped_data_headlines = grouped_data_headlines[['Attribute', 'AttributeValue', 'Metric', 'MetricValue', 'n', 'Headlines']]
             
             grouped_data_list_headlines.append(grouped_data_headlines)
             
@@ -558,14 +562,6 @@ def create_chirps(data: pd.DataFrame,
     # 1. Trend test - 4 weeks vs 12 weeks -------------------------------------
     
     list_ts = test_ts(data = data, metrics = metrics, hrvar = hrvar, min_group = min_group, bp = bp, return_type = 'headlines')
-    
-    # list_ts_flipped = []
-    # 
-    # for i in list_ts:
-    #     # Extract column name from `list_ts[i]` that matches '4MA_Flipped_12MA'        
-    #     match = re.match('4MA_Flipped_12MA', list_ts[i].columns)
-    #     filt_df = list_ts[i][list_ts[i][match] == True]
-    #     list_ts_flipped.append(filt_df)   
     
     # 2. Internal benchmark test ----------------------------------------------
     
