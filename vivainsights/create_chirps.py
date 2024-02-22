@@ -394,8 +394,10 @@ def test_int_bm(data: pd.DataFrame,
             np.where(grouped_data_headlines['perc_diff'] >= 0,
                     ' higher than the benchmark population average ',
                     ' lower than the benchmark population average ') +
-            grouped_data_headlines['pop_mean_' + each_metric].round(1).astype(str) + ' with a Cohen\'s d of ' +
-            grouped_data_headlines['cohen_d'].round(1).astype(str) + '.'
+            grouped_data_headlines['pop_mean_' + each_metric].round(1).astype(str) +
+            #+ ' with a Cohen\'s d of ' +
+            #grouped_data_headlines['cohen_d'].round(1).astype(str) 
+            '.'
         )
         
         grouped_data_headlines['TestType'] = 'Internal Benchmark'
@@ -605,6 +607,10 @@ def create_chirps(data: pd.DataFrame,
     
     # `Interest_Score2_minmax` - min-max scaled score
     all_headlines['Interest_Score2_minmax'] = (all_headlines['Interest_Score2'] - all_headlines['Interest_Score2'].min()) / (all_headlines['Interest_Score2'].max() - all_headlines['Interest_Score2'].min())
+    
+    # Drop and rename columns
+    all_headlines = all_headlines.drop(columns=['prop_n', 'Interest_Score', 'Interest_Score2'])
+    all_headlines.rename(columns={'Interest_Score2_minmax': 'Interest_Score'}, inplace=True)    
     
     #TODO: headline selection in order to build a story
     # Interestingness: time trend > internal benchmark > best practice
