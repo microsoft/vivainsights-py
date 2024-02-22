@@ -610,7 +610,10 @@ def create_chirps(data: pd.DataFrame,
     
     # Drop and rename columns
     all_headlines = all_headlines.drop(columns=['prop_n', 'Interest_Score', 'Interest_Score2'])
-    all_headlines.rename(columns={'Interest_Score2_minmax': 'Interest_Score'}, inplace=True)    
+    all_headlines.rename(columns={'Interest_Score2_minmax': 'Interest_Score'}, inplace=True)   
+    
+    # Sort 'Interest_Score' in descending order
+    all_headlines = all_headlines.sort_values(by='Interest_Score', ascending=False) 
     
     #TODO: headline selection in order to build a story
     # Interestingness: time trend > internal benchmark > best practice
