@@ -234,11 +234,19 @@ def test_ts(data: pd.DataFrame,
                 '(' + grouped_data_headlines['12_Period_MA_' + each_metric].round(1).astype(str) + ').'
             )
             
-            # InterestScore - a min-max scaled score 
-            grouped_data_headlines['Interest_Score'] = (grouped_data_headlines['Interest_Score'] - grouped_data_headlines['Interest_Score'].min()) / (grouped_data_headlines['Interest_Score'].max() - grouped_data_headlines['Interest_Score'].min())            
+            # InterestScore - a min-max scaled score             
+            min_score = grouped_data_headlines['Interest_Score'].min()
+            max_score = grouped_data_headlines['Interest_Score'].max()
+
+            if min_score == max_score:
+                grouped_data_headlines['Interest_Score'] = 0
+            else:
+                grouped_data_headlines['Interest_Score'] = (grouped_data_headlines['Interest_Score'] - min_score) / (max_score - min_score)
             
-            # grouped_data_headlines = grouped_data_headlines[['MetricDate', each_hrvar, 'n', each_metric, '4_Period_MA_' + each_metric, '12_Period_MA_' + each_metric, 'Interest_Score', 'Headlines']]
+            # Rank headlines by Interest Score
+            grouped_data_headlines = grouped_data_headlines.sort_values(by='Interest_Score', ascending=False)
             
+            # Add additional columns  
             grouped_data_headlines['TestType'] = 'Time Trend'
             grouped_data_headlines['Attribute'] = each_hrvar
             grouped_data_headlines['Metric'] = each_metric
@@ -247,6 +255,8 @@ def test_ts(data: pd.DataFrame,
                     each_hrvar: 'AttributeValue',
                     each_metric: 'MetricValue'}
                 )
+            
+            # Clean up and reorder columns
             grouped_data_headlines = grouped_data_headlines[['TestType', 'Attribute', 'AttributeValue', 'Metric', 'MetricValue', 'n', 'Headlines', 'Interest_Score']]
             
             grouped_data_list_headlines.append(grouped_data_headlines)
@@ -288,7 +298,12 @@ def test_ts(data: pd.DataFrame,
     elif return_type == 'headlines':
         
         # Return row-bound DataFrame from list of headlines    
-        return pd.concat(grouped_data_list_headlines)
+        headlines_df = pd.concat(grouped_data_list_headlines)
+        
+        # Sort 'Interest_Score' in descending order
+        headlines_df = headlines_df.sort_values(by='Interest_Score', ascending=False)
+        
+        return headlines_df
 
 
 def test_int_bm(data: pd.DataFrame,
@@ -385,7 +400,7 @@ def test_int_bm(data: pd.DataFrame,
         # Generate headlines        
         grouped_data_headlines['Headlines'] = (
             'For ' + grouped_data_headlines['hrvar'] + '==' + grouped_data_headlines['attributes'].astype(str) +
-            ', ' + each_metric + '(' + grouped_data_headlines['metric'].round(1).astype(str) + ') is ' +
+            ', ' + each_metric + ' (' + grouped_data_headlines['metric'].round(1).astype(str) + ') is ' +
             (grouped_data_headlines['perc_diff'] * 100).round(1).astype(str) + '%' +
             np.where(grouped_data_headlines['perc_diff'] >= 0,
                     ' higher than the benchmark population average ',
@@ -406,17 +421,32 @@ def test_int_bm(data: pd.DataFrame,
             )
 
         # Interest Score - min-max scaled
-        grouped_data_headlines['Interest_Score'] = (grouped_data_headlines['cohen_d'] - grouped_data_headlines['cohen_d'].min()) / (grouped_data_headlines['cohen_d'].max() - grouped_data_headlines['cohen_d'].min())
+        min_cohen_d = grouped_data_headlines['cohen_d'].min()
+        max_cohen_d = grouped_data_headlines['cohen_d'].max()
+
+        if min_cohen_d == max_cohen_d:
+            grouped_data_headlines['Interest_Score'] = 0
+        else:
+            grouped_data_headlines['Interest_Score'] = (grouped_data_headlines['cohen_d'] - min_cohen_d) / (max_cohen_d - min_cohen_d)
         
+        # Clean up and reorder columns
         grouped_data_headlines = grouped_data_headlines[['TestType', 'Attribute', 'AttributeValue', 'Metric', 'MetricValue', 'n', 'Headlines', 'Interest_Score']]
+            
+        # Sort 'Interest_Score' in descending order
+        grouped_data_headlines = grouped_data_headlines.sort_values(by='Interest_Score', ascending=False)    
             
         grouped_data_list_headlines.append(grouped_data_headlines)
 
     if return_type == 'full':
         return grouped_data_benchmark_list
-    elif return_type == 'headlines':
+    elif return_type == 'headlines':    
         # Return row-bound DataFrame from list of headlines    
-        return pd.concat(grouped_data_list_headlines)
+        headlines_df = pd.concat(grouped_data_list_headlines)
+        
+        # Sort 'Interest_Score' in descending order
+        headlines_df = headlines_df.sort_values(by='Interest_Score', ascending=False)
+        
+        return headlines_df
     
 
 def test_best_practice(
@@ -549,9 +579,19 @@ def test_best_practice(
             grouped_data_headlines['TestType'] = 'Best Practice'
             
             # Interest score - min-max scaled using `percent_of_pop`
-            grouped_data_headlines['Interest_Score'] = (grouped_data_headlines['percent_of_pop'] - grouped_data_headlines['percent_of_pop'].min()) / (grouped_data_headlines['percent_of_pop'].max() - grouped_data_headlines['percent_of_pop'].min())
+            min_percent_of_pop = grouped_data_headlines['percent_of_pop'].min()
+            max_percent_of_pop = grouped_data_headlines['percent_of_pop'].max()
+
+            if min_percent_of_pop == max_percent_of_pop:
+                grouped_data_headlines['Interest_Score'] = 0
+            else:
+                grouped_data_headlines['Interest_Score'] = (grouped_data_headlines['percent_of_pop'] - min_percent_of_pop) / (max_percent_of_pop - min_percent_of_pop)
             
+            # Clean up and reorder columns
             grouped_data_headlines = grouped_data_headlines[['TestType', 'Attribute', 'AttributeValue', 'Metric', 'MetricValue', 'n', 'Headlines', 'Interest_Score']]
+            
+            # Sort 'Interest_Score' in descending order
+            grouped_data_headlines = grouped_data_headlines.sort_values(by='Interest_Score', ascending=False)
             
             grouped_data_list_headlines.append(grouped_data_headlines)
             
@@ -559,7 +599,12 @@ def test_best_practice(
         return grouped_data_benchmark_list
     elif return_type == 'headlines':
         # Return row-bound DataFrame from list of headlines    
-        return pd.concat(grouped_data_list_headlines)
+        headlines_df = pd.concat(grouped_data_list_headlines)
+        
+        # Sort 'Interest_Score' in descending order
+        headlines_df = headlines_df.sort_values(by='Interest_Score', ascending=False)
+        
+        return headlines_df
     
 #TODO: NOT COMPLETE
 def create_chirps(data: pd.DataFrame,
