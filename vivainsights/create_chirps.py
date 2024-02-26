@@ -60,7 +60,7 @@ def test_ts(data: pd.DataFrame,
     
     # If keys in key-value pairs in `bp` dictionary do not match those in `metrics`, return an error message
     if set(bp.keys()) != set(metrics):
-        print('Warning: keys in `bp` dictionary are not identicla to `metrics`. Some best practice thresholds may not be calculated.')
+        print('Warning: keys in `bp` dictionary are not identical to `metrics`. Some best practice thresholds may not be calculated.')
     
     # Define date windows
     latest_date = data['MetricDate'].max()
@@ -152,11 +152,7 @@ def test_ts(data: pd.DataFrame,
             grouped_data['Diff_Current_12MA' + each_metric] = abs(grouped_data[each_metric] - grouped_data['12_Period_MA_' + each_metric])
             grouped_data['Test3_Diff_Current_4MA_Over_12MA_' + each_metric] = grouped_data['Diff_Current_4MA' + each_metric] < grouped_data['Diff_Current_12MA' + each_metric]
 
-            # Interest Test #4: Current value exceeds the 52 week average
-            if data['MetricDate'].nunique() < 52:
-                print('Computing using ' + str(data['MetricDate'].nunique()) + ' weeks of data when calculating all time average...')
-                # grouped_data['Test4_Current_Exceed_52Wk_Avg_' + each_metric] = False
-            
+            # Interest Test #4: Current value exceeds the 52 week average            
             grouped_data['Test4_Current_Exceed_52Wk_Avg_' + each_metric] = grouped_data[each_metric] > grouped_data['All_Time_Avg_' + each_metric]
             
             # Interest Test #5: Current value does not exceed the 4MA by >2 stdev (not a spike)
