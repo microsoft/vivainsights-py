@@ -8,8 +8,7 @@ import pandas as pd
 def create_int_bm(
     data: pd.DataFrame,
     metric: str,
-    hrvar: list = ['Organization', 'SupervisorIndicator'],
-    mingroup: int = 5
+    hrvar: list = ['Organization', 'SupervisorIndicator']
     ):
     """
     Compare a metric mean for each employee against the internal benchmark of like-for-like employees, using group combinations from two or more HR variables. 
@@ -24,9 +23,6 @@ def create_int_bm(
 
     hrvar : list
         The HR variables to group by. Defaults to ['Organization', 'SupervisorIndicator'].
-
-    mingroup : int
-        The minimum group size. Defaults to 5.
 
     Returns
     ----------
@@ -44,25 +40,25 @@ def create_int_bm(
     
     
     # Calculate the mean of a selected metric, grouped by two or more HR variable ----------------
-    group_columns = ['PersonId'] + hrvar    
-    grouped_df = data.groupby(group_columns)[metric].mean().reset_index()
+    group_columns = ['PersonId', 'MetricDate', metric] + hrvar
     
-    int_bm_df = data.groupby(hrvar).agg(
+    # A copy of the original data, with required columns only
+    grouped_df = data[group_columns]
+    
+    # Calculate internal benchmarks by date snapshot and HR attributes
+    int_bm_df = data.groupby(['MetricDate'] + hrvar).agg(
         metric = (metric, 'mean'),
-        n = ('PersonId', 'nunique')
-        )
-    int_bm_df = int_bm_df[int_bm_df['n'] >= mingroup]
-    int_bm_df = int_bm_df.rename_axis(hrvar).reset_index()
-    int_bm_df = int_bm_df.sort_values(by = 'metric', ascending=False)
+        IntBench_n = ('PersonId', 'nunique'),
+        IntBench_sd = (metric, 'std')
+        ).reset_index()
+    
     int_bm_df.rename(columns = {'metric': 'InternalBenchmark_' + metric}, inplace = True)    
     
-    # Drop the n column from int_bm_df 
-    int_bm_df = int_bm_df.drop(columns = 'n')
-    
     # Join internal benchmark back to grouped_df     
-    grouped_df = grouped_df.merge(int_bm_df, on = hrvar, how = 'left')   
+    grouped_df = grouped_df.merge(int_bm_df, on = ['MetricDate'] + hrvar, how = 'left')   
     
     # Calculate differences
+    grouped_df.rename(columns = {'metric' : metric}, inplace = True)
     grouped_df['DiffIntBench_' + metric] = grouped_df[metric] - grouped_df['InternalBenchmark_' + metric]
     grouped_df['PercDiffIntBench_' + metric] = grouped_df['DiffIntBench_' + metric] / grouped_df['InternalBenchmark_' + metric]
     
