@@ -19,7 +19,14 @@ def create_chirps(data: pd.DataFrame,
     
     # 2. Internal benchmark test ----------------------------------------------
     
-    list_int_bm = vi.test_int_bm(data = data, metrics = metrics, hrvar = hrvar, min_group = min_group, return_type = 'headlines')
+    list_int_bm = vi.test_int_bm_lfl(
+        data = data,
+        metrics = metrics,
+        hrvar = hrvar,
+        bm_hrvar = ["FunctionType", "SupervisorIndicator"], 
+        min_group = min_group,
+        return_type = 'headlines'
+        )
     
     # 3. Best practice test ---------------------------------------------------
     
