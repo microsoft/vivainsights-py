@@ -39,7 +39,16 @@ def test_int_bm_lfl(
         
     return_type: str, optional
         The type of output to return. By default, the output is set to 'full'. Other options include 'headlines'.
-
+        
+    Examples
+    --------
+    >>> test_int_bm_lfl(
+    data = vi.load_pq_data(),
+    metrics = ['Collaboration_hours', 'After_hours_collaboration_hours'],
+    hrvar = ['Organization'],
+    bm_hrvar = ['FunctionType', 'SupervisorIndicator'],
+    return_type = 'headlines'
+    )
     """   
     
     list_int_bm_df = []
