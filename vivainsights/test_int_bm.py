@@ -10,7 +10,7 @@ import vivainsights as vi
 def test_int_bm(data: pd.DataFrame,
                 metrics: list,
                 hrvar: list = ["Organization", "SupervisorIndicator"],
-                bm_data: pd.DataFrame = None,
+                bm_data: pd.DataFrame = None,                
                 min_group: int = 5,
                 return_type: str = 'full'
                 ):
@@ -19,8 +19,10 @@ def test_int_bm(data: pd.DataFrame,
 
     The function calculates the mean, standard deviation, and number of unique employees for each group and for the entire population. 
     It also calculates Cohen's d, a measure of effect size.
-
-    A list of data frames is returned.
+    
+    There are two options for calculating internal benchmarks:
+    1. If `bm_data` is provided, the person-level means are compared with the population average is calculated from the `bm_data` DataFrame.
+    2. If neither is provided, the person-level means are simply compared with the population average supplied in `data`. 
 
     Parameters
     ----------
@@ -64,7 +66,7 @@ def test_int_bm(data: pd.DataFrame,
             metric = each_metric,
             hrvar = hrvar,
             stats = True
-        )
+        )        
         
         # Population average
         if bm_data is not None:
