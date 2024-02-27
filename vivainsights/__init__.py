@@ -29,5 +29,10 @@ from .network_g2g import *
 from .network_p2p import *
 from .network_summary import *
 from .identify_nkw import *
+
+# CHIRPs
 from .create_chirps import *
 from .create_int_bm import *
+from .test_ts import *
+from .test_int_bm import *
+from .test_best_practice import *
