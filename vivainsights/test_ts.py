@@ -160,9 +160,12 @@ def test_ts(data: pd.DataFrame,
                 )     
             
             # Interest Test #6: Current value against 4MA and 12MA
-            grouped_data['DiffP_Current_4MA' + each_metric] = (grouped_data[each_metric] - grouped_data['4_Period_MA_' + each_metric]) / grouped_data['4_Period_MA_' + each_metric]
-            grouped_data['DiffP_Current_12MA' + each_metric] = (grouped_data[each_metric] - grouped_data['12_Period_MA_' + each_metric]) / grouped_data['12_Period_MA_' + each_metric]
-            grouped_data['DiffP_Total'] = grouped_data['DiffP_Current_4MA' + each_metric] + grouped_data['DiffP_Current_12MA' + each_metric]
+            dpc4ma_str = 'DiffP_Current_4MA' + each_metric # Percentage diff of current vs 4MA
+            dcp12ma_str = 'DiffP_Current_12MA' + each_metric # Percentage diff of current vs 12MA          
+            
+            grouped_data[dpc4ma_str] = (grouped_data[each_metric] - grouped_data['4_Period_MA_' + each_metric]) / grouped_data['4_Period_MA_' + each_metric]
+            grouped_data[dcp12ma_str] = (grouped_data[each_metric] - grouped_data['12_Period_MA_' + each_metric]) / grouped_data['12_Period_MA_' + each_metric]
+            grouped_data['DiffP_Total'] = grouped_data[dpc4ma_str] + grouped_data[dcp12ma_str]
             grouped_data['Test6_DiffP_Total_IsLarge'] = (abs(grouped_data['DiffP_Total']) > 0.2)       
             
             # Interest Test #7: Cumulative increases and decreases            
@@ -213,6 +216,19 @@ def test_ts(data: pd.DataFrame,
                 (grouped_data['Test2_4MA_Flipped_12MA_' + each_metric] == True)
             ].copy()
             
+            # Ensure both must have the same sign
+            grouped_data_headlines = grouped_data_headlines[
+                grouped_data_headlines[dpc4ma_str] * 
+                grouped_data_headlines[dcp12ma_str] > 0
+            ]
+            
+            # Extract sign if identical
+            grouped_data_headlines['TrendSign'] = np.where(
+                np.sign(grouped_data_headlines[dpc4ma_str]) == np.sign(grouped_data_headlines[dcp12ma_str]),
+                np.sign(grouped_data_headlines[dpc4ma_str]),
+                np.nan
+            )
+                        
             # Filter by latest date only
             grouped_data_headlines = grouped_data_headlines[grouped_data_headlines['MetricDate'] == latest_date]
             
@@ -220,14 +236,19 @@ def test_ts(data: pd.DataFrame,
             grouped_data_headlines['Headlines'] = (
                 'For ' + each_hrvar + '==' + grouped_data_headlines[each_hrvar].astype(str) +
                 ' (' + grouped_data_headlines['MetricDate'].astype(str) + '), ' +
-                each_metric + ' (' + grouped_data_headlines[each_metric].round(1).astype(str) + ') is on an upward trend, ' +
-                (grouped_data_headlines['DiffP_Current_4MA' + each_metric] * 100).round(1).astype(str) + '%' +
-                np.where(grouped_data_headlines['DiffP_Current_4MA' + each_metric] >= 0, 
+                each_metric + ' (' + grouped_data_headlines[each_metric].round(1).astype(str) + ') is on ' +
+                np.where(
+                    grouped_data_headlines['TrendSign'] > 0,
+                    'an upward trend, ',
+                    'a downward trend, '
+                ) +                 
+                (grouped_data_headlines[dpc4ma_str] * 100).round(1).astype(str) + '%' +
+                np.where(grouped_data_headlines[dpc4ma_str] >= 0, 
                         ' higher than its 4-week moving average ', 
                         ' lower than its 4-week moving average ') +
                 '(' + grouped_data_headlines['4_Period_MA_' + each_metric].round(1).astype(str) + ') and ' +
-                (grouped_data_headlines['DiffP_Current_12MA' + each_metric] * 100).round(1).astype(str) + '%' +
-                np.where(grouped_data_headlines['DiffP_Current_12MA' + each_metric] >= 0,
+                (grouped_data_headlines[dcp12ma_str] * 100).round(1).astype(str) + '%' +
+                np.where(grouped_data_headlines[dcp12ma_str] >= 0,
                         ' higher than its 12-week moving average ',
                         ' lower than its 12-week moving average ') +
                 '(' + grouped_data_headlines['12_Period_MA_' + each_metric].round(1).astype(str) + ').'
