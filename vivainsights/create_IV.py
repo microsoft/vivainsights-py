@@ -294,17 +294,12 @@ def create_IV(data, predictors=None, outcome=None, bins=5, siglevel=0.05, exc_si
 
     # Output loop
     if return_type == "summary":
-        print(IV_summary)
         return IV_summary
 
     elif return_type == "IV":
         output_list = {variable: IV["Tables"][variable].assign(
             ODDS=lambda df: np.exp(df["WOE"] + lnodds),
             PROB=lambda df: df["ODDS"] / (df["ODDS"] + 1)) for variable in IV_names}
-        for key, df in output_list.items():
-            print(f" {key} :\n",f"{df}\n")
-        print(f"Summary : \n {IV_summary}\n")
-        print(f"lnodds:{lnodds}")
         return output_list, IV_summary, lnodds
 
     elif return_type == "plot":
