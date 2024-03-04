@@ -28,6 +28,7 @@ from scipy.stats import wilcoxon
 from scipy.stats import mstats
 import math
 import warnings
+from vivainsights.create_bar_asis import *
 
 
 # Ignore warnings for cleaner output
