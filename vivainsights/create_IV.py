@@ -323,8 +323,6 @@ def create_IV(data, predictors=None, outcome=None, bins=5, siglevel=0.05, exc_si
         output_list = {variable: IV["Tables"][variable].assign(
             ODDS=lambda df: np.exp(df["WOE"] + lnodds),
             PROB=lambda df: df["ODDS"] / (df["ODDS"] + 1)) for variable in IV_names}
-        for key, df in output_list.items():
-            print(f" {key}\n",f"Shape of the data: {df.shape}\n",f"data:\n{df}\n")
         return output_list
     else:
         raise ValueError("Please enter a valid input for `return_type`.")
