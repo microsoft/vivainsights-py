@@ -147,7 +147,7 @@ def create_bar(
     data: pd.DataFrame,
     metric: str,
     hrvar: str,
-    mingroup = 5,
+    mingroup: int = 5,
     percent: bool = False,
     return_type: str = "plot",
     plot_title = None,
@@ -159,21 +159,35 @@ def create_bar(
     
     Description
     -----------
-    The function `create_bar` calculates and visualizes the mean of a selected metric, grouped by a selected HR variable. The metrics are first aggregated at a user-level prior to being aggregated at the level of the HR variable. The function `create_bar` returns either a plot object or a table, depending on the value passed to `return_type`.
+    The function `create_bar` calculates and visualizes the mean of a selected metric, grouped by a selected HR variable. 
+    The metrics are first aggregated at a user-level prior to being aggregated at the level of the HR variable. 
+    `create_bar` returns either a plot object or a table, depending on the value passed to `return_type`.
+    Internally, `create_bar` calls `create_bar_viz()` and `create_bar_calc()` to create the plot and calculate the mean of the selected metric, respectively.
 
     Parameters
     ----------
-    data : pandas dataframe
-        person query data
+    data : pd.DataFrame
+        Person query data.
     metric : str
-        name of the metric to be analysed
+        Name of the metric to be analysed.
     hrvar : str
-        name of the organizational attribute to be used for grouping
+        Name of the organizational attribute to be used for grouping.
+    mingroup : int, optional
+        Minimum group size. Defaults to 5.
+    percent : bool, optional
+        Whether to display values as percentages. Defaults to False.
+    return_type : str, optional
+        The type of output to return. Can be "plot" or "table". Defaults to "plot".
+    plot_title : str, optional
+        Title of the plot. Defaults to None.
+    plot_subtitle : str, optional
+        Subtitle of the plot. Defaults to None.
+    
 
     Returns
     -------
-    _type_
-        the type of output to return. Defaults to "plot".
+    Various
+        The output, either a plot or a table, depending on the value passed to `return_type`.
 
     Example
     -------
