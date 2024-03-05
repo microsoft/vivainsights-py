@@ -1,3 +1,7 @@
+# Version 0.3.0
+
+Added functionality for Information Value (IV).
+
 # Version 0.2.4
 
 Added stats output functionality to internal functions.
