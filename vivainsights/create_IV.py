@@ -3,23 +3,6 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-"""
-The code defines a function `create_IV` that calculates and visualizes the mean of a selected
-Specify an outcome variable and return IV outputs.
-
-The metrics are first aggregated at a user-level prior to being aggregated at the level of the HR variable. The function `create_bar` returns either a plot object or a table, depending on the value passed to `return_type`.
-
-return String specifying what to return. This must be one of the
-following strings:
-- "plot"
-- "summary"
-- "list"
-- "plot-WOE"
-- "IV"
-
-"""
-
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -35,19 +18,49 @@ from vivainsights.create_bar_asis import *
 warnings.filterwarnings("ignore")
 
 
-def p_test(data, outcome, behavior, paired=False):
+def p_test(
+    data: pd.DataFrame,
+    outcome: str,
+    behavior: list,
+    paired = False
+    ):
     """
+    Name
+    -----
+    p_test
+    
+    Description
+    -----------
     Performs Wilcoxon signed-rank test or rank-sum test between two groups.
 
-    Parameters:
-    - data: DataFrame containing the data
-    - outcome: Name of the outcome variable
-    - behavior: List of behavior variables to test
-    - paired: Boolean indicating if the test should be paired or not
+    Parameters
+    ----------
+    data : pd.DataFrame
+        A Pandas DataFrame.
+    outcome : str
+        Name of the outcome variable.
+    behavior : list
+        List of behavior variables to test.
+    paired : bool, optional
+        Boolean indicating if the test should be paired or not. Default is False.
 
-    Returns:
-    - DataFrame with variables and corresponding p-values
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame with variables and corresponding p-values.
     
+    Examples
+    --------    
+    >>> import vivainsights as vi
+    >>> import pandas as pd
+    >>> data = pd.DataFrame({
+    ...     'outcome': [1, 0, 1, 0, 1],
+    ...     'behavior1': [10, 20, 30, 40, 50],
+    ...     'behavior2': [5, 15, 25, 35, 45]
+    ... })
+    >>> outcome = 'outcome'
+    >>> behavior = ['behavior1', 'behavior2']
+    >>> vi.p_test(data, outcome, behavior)
     """
     
     # Filter the dataset based on the outcome variable
@@ -75,18 +88,54 @@ def p_test(data, outcome, behavior, paired=False):
     return data_frame
 
 
-def calculate_IV(data, outcome, predictor, bins):
+def calculate_IV(
+    data: pd.DataFrame,
+    outcome: str,
+    predictor: str,
+    bins: int
+    ):
     """
-    Calculates Information Value (IV) for a predictor variable.
+    Name
+    ----
+    calculate_IV
 
-    Parameters:
-    - data: DataFrame containing the data
-    - outcome: Name of the outcome variable
-    - predictor: Name of the predictor variable
-    - bins: Number of bins for binning the predictor variable
+    Description
+    -----------
+    Calculates Information Value (IV) between a single predictor variable and the outcome variable.
 
-    Returns:
-    - DataFrame with IV calculations for the predictor variable
+    Parameters
+    ----------
+    data : pd.DataFrame
+        A DataFrame containing the data.
+    outcome : str
+        Name of the outcome variable.
+    predictor : str
+        Name of the predictor variable.
+    bins : int
+        Number of bins for binning the predictor variable.
+
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame with IV calculations for the predictor variable.
+
+    Raises
+    ------
+    ValueError
+        If the outcome variable has missing values in the input training data frame.
+
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> import pandas as pd
+    >>> data = pd.DataFrame({
+    ...     'outcome': [1, 0, 1, 0, 1],
+    ...     'predictor': [10, 20, 30, 40, 50]
+    ... })
+    >>> outcome = 'outcome'
+    >>> predictor = 'predictor'
+    >>> bins = 5
+    >>> vi.calculate_IV(data, outcome, predictor, bins)
     """
     
     pred_var = data[predictor]
@@ -141,17 +190,31 @@ def calculate_IV(data, outcome, predictor, bins):
     return cut_table_2[[predictor, 'n', 'percentage', 'WOE', 'IV']]
 
 
-def map_IV(data, outcome, predictors=None, bins=5):
+def map_IV(
+    data: pd.DataFrame,
+    outcome: str,
+    predictors = None,
+    bins: int = 5
+    ):
     """
-    Maps Information Value (IV) calculations for multiple predictor variables.
+    Name
+    ----
+    map_IV
+    
+    Description
+    -----------
+    Maps Information Value (IV) calculations for multiple predictor variables. 
+    Calls `calculate_IV()` for every predictor-outcome variable pair.
 
-    Parameters:
+    Parameters
+    ----------
     - data: DataFrame containing the data
     - outcome: Name of the outcome variable
     - predictors: List of predictor variables (if None, all numeric variables except outcome are used)
     - bins: Number of bins for binning the predictor variables
 
-    Returns:
+    Returns
+    -------
     - Dictionary containing IV calculations for each predictor variable and a summary DataFrame    
     """
     
@@ -170,14 +233,38 @@ def map_IV(data, outcome, predictors=None, bins=5):
 
 def plot_WOE(IV, predictor):
     """
+    Name
+    ----
+    plot_WOE
+
+    Description
+    -----------
     Plots Weight of Evidence (WOE) for a predictor variable.
 
-    Parameters:
-    - IV: Dictionary containing IV calculations for each predictor variable
-    - predictor: Name of the predictor variable
+    Parameters
+    ----------
+    IV : dict
+        Dictionary containing IV calculations for each predictor variable.
+    predictor : str
+        Name of the predictor variable.
 
-    Returns:
-    - None (plots the WOE)    
+    Returns
+    -------
+    None
+        This function doesn't return a value; it plots the WOE.
+
+    Examples
+    --------
+    >>> import pandas as pd
+    >>> data = pd.DataFrame({
+    ...     'outcome': [1, 0, 1, 0, 1],
+    ...     'predictor': [10, 20, 30, 40, 50]
+    ... })
+    >>> outcome = 'outcome'
+    >>> predictor = 'predictor'
+    >>> bins = 5
+    >>> IV = map_IV(data, outcome, [predictor], bins)
+    >>> plot_WOE(IV, predictor)
     """
     
     # Identify right table
@@ -204,28 +291,45 @@ def plot_WOE(IV, predictor):
     plt.show()
 
 
-def create_IV(data, predictors=None, outcome=None, bins=5, siglevel=0.05, exc_sig=False, return_type="plot"):
+def create_IV(
+    data = pd.DataFrame,
+    predictors = None,
+    outcome:str = None,
+    bins: int = 5,
+    siglevel = 0.05,
+    exc_sig: bool = False,
+    return_type ="plot"
+    ):
     """
+    Name
+    ----
+    create_IV
+
+    Description
+    -----------
     Creates Information Value (IV) analysis for predictor variables.
 
-    Parameters:
-    -----------
-    - data: DataFrame containing the data
-    - predictors: List of predictor variables
-    - outcome: Name of the outcome variable
-    - bins: Number of bins for binning the predictor variables
-    - siglevel: Significance level
-    - exc_sig: Boolean indicating if non-significant predictors should be excluded
-    - return_type: Type of output to return ("plot", "summary", "list", "plot-WOE", "IV")
+    Parameters
+    ----------
+    data : pd.DataFrame
+        DataFrame containing the data.
+    predictors : list, optional
+        List of predictor variables.
+    outcome : str
+        Name of the outcome variable.
+    bins : int, optional
+        Number of bins for binning the predictor variables. Defaults to 5.
+    siglevel : float, optional
+        Significance level. Defaults to 0.05.
+    exc_sig : bool, optional
+        Boolean indicating if non-significant predictors should be excluded. Defaults to False.
+    return_type : str, optional
+        Type of output to return ("plot", "summary", "list", "plot-WOE", "IV"). Defaults to "plot".
 
-    Returns:
-    --------
-    _type_
-        the type of output to return. Defaults to "plot".
-        the type of output to return. "summary".
-        the type of output to return. "list".
-        the type of output to return. "plot-WOE".
-        the type of output to return. "IV".
+    Returns
+    -------
+    Various
+        The type of output to return. Can be "plot", "summary", "list", "plot-WOE", or "IV".
     
     Note    
     ----
