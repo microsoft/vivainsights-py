@@ -5,6 +5,7 @@
 import pandas as pd
 import numpy as np
 import vivainsights as vi
+import pkg_resources
 
 def create_chirps(data: pd.DataFrame,
                   metrics: list,
@@ -79,3 +80,19 @@ def create_chirps(data: pd.DataFrame,
     # combined_list = list_ts + list_int_bm
     # return combined_list
     return all_headlines
+
+
+def brief_to_metrics(brief):
+    
+    # Read in the briefs and metrics file
+    if(pkg_resources.resource_exists(__name__, 'data/briefs_and_metrics.csv')):
+        stream = pkg_resources.resource_stream(__name__, 'data/briefs_and_metrics.csv')
+    elif(pkg_resources.resource_exists(__name__, '../data/briefs_and_metrics.csv')):
+        stream = pkg_resources.resource_stream(__name__, '../data/briefs_and_metrics.csv')
+    else:
+        print('Error: please report issue to repo maintainer')    
+        
+    brief_metric_dict = stream.groupby('Brief')['Metric'].apply(list).to_dict()
+    
+    # If 'brief' value is not in the dictionary, it returns an empty list.    
+    return brief_metric_dict.get(brief, [])
