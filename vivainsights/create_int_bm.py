@@ -8,7 +8,8 @@ import pandas as pd
 def create_int_bm(
     data: pd.DataFrame,
     metric: str,
-    hrvar: list = ['Organization', 'SupervisorIndicator']
+    hrvar: list = ['Organization', 'SupervisorIndicator'],
+    level: str = 'personweek'
     ):
     """
     Compare a metric mean for each employee against the internal benchmark of like-for-like employees, using group combinations from two or more HR variables. 
@@ -23,6 +24,10 @@ def create_int_bm(
 
     hrvar : list
         The HR variables to group by. Defaults to ['Organization', 'SupervisorIndicator'].
+        
+    level: str, optional
+        Specify whether to return the person-level or the grouped level version of the data. 
+        By default, the level is set to 'personweek'. The other option is 'group'.
 
     Returns
     ----------
@@ -63,4 +68,9 @@ def create_int_bm(
     grouped_df['PercDiffIntBench_' + metric] = grouped_df['DiffIntBench_' + metric] / grouped_df['InternalBenchmark_' + metric]
     
     # Return output    
-    return grouped_df
+    if level == 'personweek':
+        return grouped_df
+    elif level == 'group':
+        return int_bm_df
+    else:
+        raise ValueError('level must be either "personweek" or "group".')

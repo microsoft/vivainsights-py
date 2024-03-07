@@ -8,12 +8,14 @@ from datetime import timedelta
 import matplotlib.pyplot as plt
 import numpy as np
 import re 
+from vivainsights.create_int_bm import *
 
 def test_ts(data: pd.DataFrame,
                   metrics: list,
                   hrvar: list = ["Organization", "SupervisorIndicator"],
                   min_group: int = 5,
                   bp: dict = {},
+                  bm_hrvar: list = ["FunctionType", "SupervisorIndicator"],
                   return_type: str = 'full'):
     """
     This function takes in a DataFrame representing a Viva Insights person query and returns a list of DataFrames containing the results of the trend test.
@@ -38,6 +40,11 @@ def test_ts(data: pd.DataFrame,
         
     bp: dict, optional
         A dictionary containing the benchmark mean for each metric. The keys should correspond to the metric names and the values should be the benchmark means.
+        
+    bm_hrvar: list, optional
+        A list variables to be used to create the benchmark for the like-for-like internal benchmark test. 
+        By default, the variables are 'FunctionType' and 'SupervisorIndicator'.
+        This list cannot be empty and must be of maximum length 2.
         
     return_type: str, optional
         The type of output to return. By default, the output is set to 'full'. Other options include 'consec_weeks', 'headlines', and 'plot'.
@@ -86,7 +93,7 @@ def test_ts(data: pd.DataFrame,
     
     for each_hrvar in hrvar:
         
-        for each_metric in metrics:
+        for each_metric in metrics:            
             
             # Initialize an empty DataFrame for group metrics
             group_metrics = data[['PersonId', 'MetricDate', each_hrvar, each_metric]].copy()
@@ -182,6 +189,16 @@ def test_ts(data: pd.DataFrame,
             # Sum rowwise from all columns that start with 'Test_'
             grouped_data['Interest_Score'] = grouped_data[[col for col in grouped_data.columns if re.match(r'Test[0-9]_', col)]].sum(axis=1)
             
+            # Bring in internal benchmark moving averages
+            ts_int_bm_df = create_ts_int_bm_lfl(
+                data = data,
+                metric = each_metric,
+                hrvar = each_hrvar,
+                bm_hrvar = bm_hrvar
+            )
+            
+            grouped_data = grouped_data.merge(ts_int_bm_df, on = ['MetricDate', each_hrvar], how = 'left')
+            
             grouped_data_list.append(grouped_data)
             
             # Consecutive weeks ------------------------------------------------
@@ -252,6 +269,13 @@ def test_ts(data: pd.DataFrame,
                         ' higher than its 12-week moving average ',
                         ' lower than its 12-week moving average ') +
                 '(' + grouped_data_headlines['12_Period_MA_' + each_metric].round(1).astype(str) + ').'
+            ) + (
+            # "For employees with similar [group1] and [group2], average metric (m) increased by about x%. "     
+            "For employees with similar " + bm_hrvar[0] + " and " + bm_hrvar[1] + ", average " +
+            each_metric + ' (' + grouped_data_headlines['InternalBenchmark_' + each_metric].round(1).astype(str) + ') ' +        
+            np.where(grouped_data_headlines['PercDiffIntBench_12MA'] >= 0, 'increased', 'decreased') +
+            " by about " + ' '.join((grouped_data_headlines['PercDiffIntBench_12MA'] * 100).round(1).astype(str)) +
+            '% ' + 'against its 12-week moving average.'
             )
             
             # InterestScore - a min-max scaled score             
@@ -324,3 +348,98 @@ def test_ts(data: pd.DataFrame,
         headlines_df = headlines_df.sort_values(by='Interest_Score', ascending=False)
         
         return headlines_df
+    
+    
+
+def create_ts_int_bm_lfl(
+    data: pd.DataFrame,
+    metric: str,
+    hrvar: str,
+    bm_hrvar: list
+):
+    """
+    Name 
+    ----
+    create_ts_int_bm_lfl
+    
+    Description
+    ------------
+    Creates time trend checks for the internal benchmark groups against its own longer term trends. 
+    
+    Parameters
+    ----------
+    data : pd.DataFrame
+        The DataFrame containing the Person Query data to run the data on. 
+    
+    metric : str
+        The metric in which the person-level and internal benchmark means will be calculated on. 
+        
+    hrvar : str
+        The HR variable to group by.
+        
+    bm_hrvar : list
+        The HR variables to group by for the internal benchmark. 
+        Internally, this calls the `create_int_bm` function.
+        
+    Returns
+    -------
+    pd.DataFrame
+        A grouped DataFrame in a group-week level, with the following metrics computed:
+        - InternalBenchmark_{metric}
+        - IntBench_4MA
+        - IntBench_12MA
+        - PercDiffIntBench_4MA
+        - PercDiffIntBench_12MA       
+    """
+    
+    # Get internal benchmark - return a grouped output
+    df_int_bm = create_int_bm(
+        data = data,
+        metric = metric,
+        hrvar = bm_hrvar,
+        level = 'group'
+    )
+    
+    # Column names
+    str_ibm_met = 'InternalBenchmark_' + metric
+    
+    # Narrow down to required columns
+    # df_int_bm = df_int_bm[['MetricDate', str_ibm_met, 'IntBench_n']]
+    
+    # Check that MetricDate is datetime format, otherwise coerce to datetime
+    if not pd.api.types.is_datetime64_any_dtype(df_int_bm['MetricDate']):
+        df_int_bm['MetricDate'] = pd.to_datetime(df_int_bm['MetricDate'])    
+    
+    # Order by MetricDate (ascending)
+    df_int_bm = df_int_bm.sort_values(by = 'MetricDate', ascending = True)  
+    
+    # Calculate moving averages for each group-combination                                    
+    df_int_bm['IntBench_4MA'] = df_int_bm.groupby(bm_hrvar)[str_ibm_met].transform(lambda x: x.rolling(window=4, min_periods=1).mean())
+    df_int_bm['IntBench_12MA'] = df_int_bm.groupby(bm_hrvar)[str_ibm_met].transform(lambda x: x.rolling(window=12, min_periods=1).mean())
+    df_int_bm['IntBench_AllTimeMA'] = df_int_bm.groupby(bm_hrvar)[str_ibm_met].transform(lambda x: x.rolling(window=52, min_periods=1).mean())  
+    
+    # Get original benchmark groups
+    group_columns = ['PersonId', 'MetricDate', metric] + bm_hrvar
+    bm_group_df = data[group_columns].copy()
+    
+    # Join internal benchmark back to original data
+    bm_group_df = bm_group_df.merge(df_int_bm, on = ['MetricDate'] + bm_hrvar, how = 'left')
+    
+    # Narrow down to required columns
+    bm_group_df = bm_group_df[['PersonId', 'MetricDate', str_ibm_met, 'IntBench_n' , 'IntBench_4MA', 'IntBench_12MA'] + bm_hrvar] 
+    
+    # Attach this back to group
+    group_df = data[['PersonId', 'MetricDate', hrvar, metric]].copy()
+    group_df = group_df.merge(bm_group_df, on = ['PersonId', 'MetricDate'], how = 'left')
+    group_df = group_df.groupby(['MetricDate', hrvar]).agg({
+        str_ibm_met : 'mean', # current value of internal benchmark
+        'IntBench_4MA' : 'mean',
+        'IntBench_12MA' : 'mean'
+    })    
+    
+    # Difference between internal benchmark and their own moving averages
+    group_df['PercDiffIntBench_4MA'] = (group_df[str_ibm_met] - group_df['IntBench_4MA']) / group_df['IntBench_4MA']
+    group_df['PercDiffIntBench_12MA'] = (group_df[str_ibm_met] - group_df['IntBench_12MA']) / group_df['IntBench_12MA']
+    
+    return group_df
+    
