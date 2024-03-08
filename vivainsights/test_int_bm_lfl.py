@@ -152,13 +152,21 @@ def test_int_bm_lfl(
     
     # Conditional for return type 
     if return_type == 'full':
+        
         return list_int_bm_df
+    
     elif return_type == 'headlines':
         
-        # Return row-bound DataFrame from list of headlines    
-        headlines_df = pd.concat(grouped_data_list_headlines)
+        if not grouped_data_list_headlines: # empty list
+            
+            return pd.DataFrame()  # return an empty DataFrame
         
-        # Sort 'Interest_Score' in descending order
-        headlines_df = headlines_df.sort_values(by='Interest_Score', ascending=False)
+        else:
         
-        return headlines_df
+            # Return row-bound DataFrame from list of headlines    
+            headlines_df = pd.concat(grouped_data_list_headlines)
+            
+            # Sort 'Interest_Score' in descending order
+            headlines_df = headlines_df.sort_values(by='Interest_Score', ascending=False)
+            
+            return headlines_df

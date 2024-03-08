@@ -141,12 +141,20 @@ def test_int_bm(data: pd.DataFrame,
         grouped_data_list_headlines.append(grouped_data_headlines)
 
     if return_type == 'full':
+        
         return grouped_data_benchmark_list
+    
     elif return_type == 'headlines':    
-        # Return row-bound DataFrame from list of headlines    
-        headlines_df = pd.concat(grouped_data_list_headlines)
         
-        # Sort 'Interest_Score' in descending order
-        headlines_df = headlines_df.sort_values(by='Interest_Score', ascending=False)
+        if not grouped_data_list_headlines: # empty list
+            
+            return pd.DataFrame()  # return an empty DataFrame
         
-        return headlines_df
+        else:
+            # Return row-bound DataFrame from list of headlines    
+            headlines_df = pd.concat(grouped_data_list_headlines)
+            
+            # Sort 'Interest_Score' in descending order
+            headlines_df = headlines_df.sort_values(by='Interest_Score', ascending=False)
+            
+            return headlines_df
