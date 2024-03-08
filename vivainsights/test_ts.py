@@ -401,7 +401,7 @@ def create_ts_int_bm_lfl(
     df_int_bm = create_int_bm(
         data = data,
         metric = metric,
-        hrvar = bm_hrvar,
+        hrvar = bm_hrvar, # takes a list
         level = 'group'
     )
     
@@ -430,11 +430,14 @@ def create_ts_int_bm_lfl(
     # Join internal benchmark back to original data
     bm_group_df = bm_group_df.merge(df_int_bm, on = ['MetricDate'] + bm_hrvar, how = 'left')
     
+    # Set of hrvar that exists in `bm_hrvar` but not `hrvar`
+    diff_hrvar = list(set(bm_hrvar) - set([hrvar]))    
+    
     # Narrow down to required columns
-    bm_group_df = bm_group_df[['PersonId', 'MetricDate', str_ibm_met, 'IntBench_n' , 'IntBench_4MA', 'IntBench_12MA'] + bm_hrvar] 
+    bm_group_df = bm_group_df[['PersonId', 'MetricDate', str_ibm_met, 'IntBench_n' , 'IntBench_4MA', 'IntBench_12MA'] + diff_hrvar] 
     
     # Attach this back to group
-    group_df = data[['PersonId', 'MetricDate', hrvar, metric]].copy()
+    group_df = data[['PersonId', 'MetricDate', metric, hrvar]].copy()
     group_df = group_df.merge(bm_group_df, on = ['PersonId', 'MetricDate'], how = 'left')
     group_df = group_df.groupby(['MetricDate', hrvar]).agg({
         str_ibm_met : 'mean', # current value of internal benchmark
