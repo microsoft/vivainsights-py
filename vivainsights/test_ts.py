@@ -274,7 +274,8 @@ def test_ts(data: pd.DataFrame,
             "For employees with similar " + bm_hrvar[0] + " and " + bm_hrvar[1] + ", average " +
             each_metric + ' (' + grouped_data_headlines['InternalBenchmark_' + each_metric].round(1).astype(str) + ') ' +        
             np.where(grouped_data_headlines['PercDiffIntBench_12MA'] >= 0, 'increased', 'decreased') +
-            " by about " + ' '.join((grouped_data_headlines['PercDiffIntBench_12MA'] * 100).round(1).astype(str)) +
+            " by about " +
+            (grouped_data_headlines['PercDiffIntBench_12MA'] * 100).round(1).astype(str) +
             '% ' + 'against its 12-week moving average.'
             )
             
