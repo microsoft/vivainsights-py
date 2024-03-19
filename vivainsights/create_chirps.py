@@ -242,7 +242,16 @@ def extract_best_practice():
         
     best_practice = pd.read_csv(stream, encoding='utf-8')
     
-    # Convert to dictionary
-    best_practice_dict = best_practice.set_index('Metric')['Threshold'].to_dict()
+    # Create a nested dictionary
+    best_practice_dict = {}
+    for _, row in best_practice.iterrows():
+        direction = row['Direction']
+        metric = row['Metric']
+        threshold = row['Threshold']
+        
+        if direction not in best_practice_dict:
+            best_practice_dict[direction] = {}
+        
+        best_practice_dict[direction][metric] = threshold
     
     return best_practice_dict
