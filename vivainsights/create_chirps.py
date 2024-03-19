@@ -29,6 +29,7 @@ def create_chirps(data: pd.DataFrame,
     ----------
     data : pd.DataFrame
         The DataFrame containing the Person Query data to run the data on. 
+        The Person Query should be grouped at a weekly level.
     
     brief : str, optional
         The brief for which the metrics are to be returned. Defaults to None.
@@ -213,3 +214,35 @@ def brief_to_metrics(brief: str):
     
     # If 'brief' value is not in the dictionary, it returns an empty list.    
     return brief_metric_dict.get(brief, [])
+
+def extract_best_practice():
+    """
+    Name
+    ----
+    extract_best_practice
+    
+    Description
+    ------------
+    Extract the best practice thresholds from a list of default best practices.
+    To be used in conjunction with `create_chirps()` and `test_best_practice()`. 
+    
+    Returns
+    -------
+    dict: A dictionary containing the best practice thresholds.
+    
+    """
+    
+    # Read in the best practice file
+    if(pkg_resources.resource_exists(__name__, 'data/best_practice.csv')):
+        stream = pkg_resources.resource_stream(__name__, 'data/best_practice.csv')
+    elif(pkg_resources.resource_exists(__name__, '../data/best_practice.csv')):
+        stream = pkg_resources.resource_stream(__name__, '../data/best_practice.csv')
+    else:
+        print('Error: please report issue to repo maintainer')
+        
+    best_practice = pd.read_csv(stream, encoding='utf-8')
+    
+    # Convert to dictionary
+    best_practice_dict = best_practice.set_index('Metric')['Threshold'].to_dict()
+    
+    return best_practice_dict
