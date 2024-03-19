@@ -3,6 +3,6 @@ ActiveConnectedHours,50,above
 AfterHoursCollaboration,5,above
 MeetingHoursWithManagerOneOnOne,.192,above
 MeetingHoursWithManagerOneOnOne,.115,below
-MeetingsWithManagerOneOnOne,.462, above
-MeetingsWithManagerOneOnOne,.231, below
-RecurringMeetingHours, 8, above
+MeetingsWithManagerOneOnOne,.462,above
+MeetingsWithManagerOneOnOne,.231,below
+RecurringMeetingHours, 8,above
