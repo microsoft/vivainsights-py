@@ -13,7 +13,7 @@ def create_chirps(data: pd.DataFrame,
                   hrvar: list = ["Organization", "SupervisorIndicator"],
                   bm_hrvar: list = ["FunctionType", "SupervisorIndicator"],
                   min_group: int = 5,
-                  bp = vi.extract_best_practice(),
+                  bp = {},
                   return_type: str = 'table'):
     
     """
