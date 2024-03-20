@@ -27,19 +27,27 @@ def test_ts(data: pd.DataFrame,
     Parameters
     ----------
     data : pd.DataFrame
-        The DataFrame containing the data to be tested. Each row represents an observation and each column represents a variable.
+        The DataFrame containing the Person Query data to run the data on. 
+        The Person Query should be grouped at a weekly level, and must contain the columns `PersonId` and `MetricDate`.
+    
+    metrics : list, optional
+        A list of metrics to be included in the analysis. Defaults to None.
+        Each metric should correspond to a column name in `data`.
 
-    metrics : list
-        The list of metrics to be tested. Each metric should correspond to a column name in `data`.
-
-    hrvar : list, optional
-        A list of variables to be used in the `vi.create_rank_calc` function. By default, the variables are 'Organization' and 'SupervisorIndicator'.
+    hrvar : list
+        A list of the HR or organizational variables to group by when computing headline metrics.  
+        Defaults to `['Organization', 'SupervisorIndicator']`.
 
     min_group : int, optional
-        The minimum group size for the trend test. By default, the minimum group size is 5.
+        The minimum group size set for privacy. Defaults to 5.
+        Groups with fewer people than `min_group` will not be included in the analysis.
         
-    bp: dict, optional
-        A dictionary containing the benchmark mean for each metric. The keys should correspond to the metric names and the values should be the benchmark means.
+    bp : dict
+        A dictionary containing the benchmark mean for each metric and the directionality of the threshold.  
+        `bp` requires a two-level nested dictionary where the first level consists of two explicit keys: 'above' and 'below'.
+        Each of these keys maps to a second-level dictionary, which contains its own set of key-value pairs.
+        The keys in the second-level dictionaries represent metrics, and the values represent the corresponding thresholds
+        The keys should correspond to the metric names and the values should be the benchmark means. 
         
     bm_hrvar: list, optional
         A list variables to be used to create the benchmark for the like-for-like internal benchmark test. 
@@ -64,9 +72,17 @@ def test_ts(data: pd.DataFrame,
     if data['MetricDate'].nunique() < 52:
         print('Note: using only ' + str(data['MetricDate'].nunique()) + ' weeks of data when calculating all time average')
     
+    # If `bp` hasn't got a key for 'above', or 'below', create an empty key
+    bp.setdefault('above', {})
+    bp.setdefault('below', {})
+    
+    # set of unique metrics across 'above' and 'below'
+    combined_keys = set(bp["above"].keys()) | set(bp["below"].keys())
+    
     # If keys in key-value pairs in `bp` dictionary do not match those in `metrics`, return an error message
-    if set(bp.keys()) != set(metrics):
-        print('Warning: keys in `bp` dictionary are not identical to `metrics`. Some best practice thresholds may not be calculated.')
+    if combined_keys != set(metrics):
+        print('Warning: keys in `bp` dictionary do not match those in `metrics`. Only matched metrics will be calculated.') 
+        metrics = list(combined_keys)
     
     # Define date windows
     latest_date = data['MetricDate'].max()
@@ -128,11 +144,17 @@ def test_ts(data: pd.DataFrame,
             grouped_data['CumIncrease_' + each_metric] = grouped_data.groupby([each_hrvar, 'SignChange_' + each_metric]).cumcount().where(grouped_data['SignDiff_' + each_metric] == 1, 0)
             grouped_data['CumDecrease_' + each_metric] = grouped_data.groupby([each_hrvar, 'SignChange_' + each_metric]).cumcount().where(grouped_data['SignDiff_' + each_metric] == -1, 0)   
         
-            # Interest Test #1: Does 4MA exceed threshold value? 
-            if each_metric not in bp.keys():
+            # Interest Test #1A: Does 4MA exceed threshold value? 
+            if each_metric not in bp['above'].keys():
                 grouped_data['Test1_4MA_Exceed_Threshold_' + each_metric] = False
             else:
-                grouped_data['Test1_4MA_Exceed_Threshold_' + each_metric] = grouped_data['4_Period_MA_' + each_metric] > bp[each_metric]
+                grouped_data['Test1_4MA_Exceed_Threshold_' + each_metric] = grouped_data['4_Period_MA_' + each_metric] > bp['above'][each_metric]
+                
+            # Interest Test #1B: Does 4MA fall below threshold value?
+            if each_metric not in bp['below'].keys():
+                grouped_data['Test1_4MA_Fall_Below_Threshold_' + each_metric] = False
+            else:
+                grouped_data['Test1_4MA_Fall_Below_Threshold_' + each_metric] = grouped_data['4_Period_MA_' + each_metric] < bp['below'][each_metric]     
 
             # Interest Test #2: does the 4MA exceed the 12MA, indicating that the metric is trending upwards?
             # 4MA flipping the 12MA
