@@ -27,16 +27,20 @@ def test_int_bm(data: pd.DataFrame,
     Parameters
     ----------
     data : pd.DataFrame
-        The DataFrame containing the data to be tested. Each row represents an observation and each column represents a variable.
+        The DataFrame containing the Person Query data to run the data on. 
+        The Person Query should be grouped at a weekly level, and must contain the columns `PersonId` and `MetricDate`.
 
-    metrics : list
-        The list of metrics to be tested. Each metric should correspond to a column name in `data`.
+    metrics : list, optional
+        A list of metrics to be included in the analysis. Defaults to None.
+        Each metric should correspond to a column name in `data`.
 
-    hrvar : list, optional
-        A list of variables to be used in the `vi.create_rank_calc` function. By default, the variables are 'Organization' and 'SupervisorIndicator'.
+    hrvar : list
+        A list of the HR or organizational variables to group by when computing headline metrics.  
+        Defaults to `['Organization', 'SupervisorIndicator']`.
         
     bm_data : pd.DataFrame, optional
-        An optional DataFrame representing the population to be used for calculating the population average. If not provided, the population average is calculated from the `data` DataFrame.
+        An optional DataFrame representing the population to be used for calculating the population average. 
+        If not provided, the population average is calculated from the `data` DataFrame.
 
     min_group : int, optional
         The minimum group size for the internal benchmark test. By default, the minimum group size is 5.
