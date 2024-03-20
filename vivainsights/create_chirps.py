@@ -13,7 +13,7 @@ def create_chirps(data: pd.DataFrame,
                   hrvar: list = ["Organization", "SupervisorIndicator"],
                   bm_hrvar: list = ["FunctionType", "SupervisorIndicator"],
                   min_group: int = 5,
-                  bp = {},
+                  bp = vi.extract_best_practice(),
                   return_type: str = 'table'):
     
     """
@@ -29,7 +29,7 @@ def create_chirps(data: pd.DataFrame,
     ----------
     data : pd.DataFrame
         The DataFrame containing the Person Query data to run the data on. 
-        The Person Query should be grouped at a weekly level.
+        The Person Query should be grouped at a weekly level, and must contain the columns `PersonId` and `MetricDate`.
     
     brief : str, optional
         The brief for which the metrics are to be returned. Defaults to None.
@@ -57,26 +57,42 @@ def create_chirps(data: pd.DataFrame,
         - Visibility
     
     metrics : list, optional
-        A list of metrics to be used. Defaults to None.
+        A list of metrics to be included in the analysis. Defaults to None.
+        Each metric should correspond to a column name in `data`.
 
     hrvar : list
-        The HR variables to group by. Defaults to ['Organization', 'SupervisorIndicator'].
+        A list of the HR or organizational variables to group by when computing headline metrics.  
+        Defaults to `['Organization', 'SupervisorIndicator']`.
     
     bm_hrvar : list, optional
         A list of benchmark human resource variables. Defaults to ["FunctionType", "SupervisorIndicator"].
     
     min_group : int, optional
-        The minimum group size. Defaults to 5.
+        The minimum group size set for privacy. Defaults to 5.
+        Groups with fewer people than `min_group` will not be included in the analysis.
     
-    bp : dict, optional
-        Best practice parameters. Defaults to {}.
+    bp : dict
+        A dictionary containing the benchmark mean for each metric and the directionality of the threshold.  
+        `bp` requires a two-level nested dictionary where the first level consists of two explicit keys: 'above' and 'below'.
+        Each of these keys maps to a second-level dictionary, which contains its own set of key-value pairs.
+        The keys in the second-level dictionaries represent metrics, and the values represent the corresponding thresholds
+        The keys should correspond to the metric names and the values should be the benchmark means. 
+        By default, this uses the dictionary output from `extract_best_practice()`. 
     
     return_type : str, optional
         The type of return value. Defaults to 'table'.
 
     Returns
     -------
-    pd.DataFrame: A data frame containing the chirps.
+    pd.DataFrame: A data frame containing the following columns:
+        - `TestType`: The type of test.
+        - `Attribute`: The name of the HR or organizational attribute. 
+        - `AttributeValue`: The value of the group identified by the HR or organizational attribute.
+        - `Metric`: The name of the metric.
+        - `MetricValue`: The value of the metric.
+        - `n`: The number of people in the group.
+        - `Headlines`: String containing the headline surfaced in the analysis. 
+        - `Interest_Score`: The interest score for the test.
 
     Raises
     ------
@@ -100,6 +116,10 @@ def create_chirps(data: pd.DataFrame,
         
     # If values are provided to both `brief` and 'metrics', then the final metrics will be combined. 
     all_metrics = list(set(all_metrics + metrics))
+    
+    # If 'MetricDate' is not DateTime, convert to DateTime
+    if data['MetricDate'].dtype != 'datetime64[ns]':
+        data['MetricDate'] = pd.to_datetime(data['MetricDate'])    
     
     # 1. Trend test - 4 weeks vs 12 weeks -------------------------------------
     
