@@ -10,24 +10,32 @@ import numpy as np
 def test_int_bm_lfl(
     data: pd.DataFrame,
     metrics: list,
-    hrvar: list = ["Organization"],
+    hrvar: list,
     bm_hrvar: list = ["FunctionType", "SupervisorIndicator"],            
     min_group: int = 5,
     return_type: str = 'full'
 ):
     """
+    Name
+    ----
+    test_int_bm_lfl
+    
+    Description
+    -----------   
     Person-level means are compared with the like-for-like groups identified by HR attributes specified in the `bm_hrvar` list.
     
     Parameters
     ----------
     data : pd.DataFrame
-        The DataFrame containing the data to be tested. Each row represents an observation and each column represents a variable.
+        The DataFrame containing the Person Query data to run the data on. 
+        The Person Query should be grouped at a weekly level, and must contain the columns `PersonId` and `MetricDate`.
 
-    metrics : list
-        The list of metrics to be tested. Each metric should correspond to a column name in `data`.
+    metrics : list, optional
+        A list of metrics to be included in the analysis. Defaults to None.
+        Each metric should correspond to a column name in `data`.
         
-    hrvar : list, optional
-        A list of variables to be iterated on for the like-for-like internal benchmark test. By default, the variables are 'Organization'.
+    hrvar : list
+        A list of HR or organizational attributes to be iterated on for the like-for-like internal benchmark test. 
         
     bm_hrvar : list, optional
         A list variables to be used to create the benchmark for the like-for-like internal benchmark test. 
@@ -35,7 +43,8 @@ def test_int_bm_lfl(
         This list cannot be empty and must be of maximum length 2.
     
     min_group : int, optional
-        The minimum group size for the internal benchmark test. By default, the minimum group size is 5.
+        The minimum group size set for privacy. Defaults to 5.
+        Groups with fewer people than `min_group` will not be included in the analysis.
         
     return_type: str, optional
         The type of output to return. By default, the output is set to 'full'. Other options include 'headlines'.
