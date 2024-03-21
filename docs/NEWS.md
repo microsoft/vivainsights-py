@@ -1,3 +1,7 @@
+# Version 0.4.0
+
+Added functionality for Generative Insights.
+
 # Version 0.3.0
 
 Added functionality for Information Value (IV).
