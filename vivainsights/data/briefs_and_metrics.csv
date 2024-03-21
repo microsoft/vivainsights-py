@@ -1,74 +1,74 @@
 Brief,Metric
-Collaboration patterns,Collaboration Hours
-Collaboration patterns,Meeting hours
-Collaboration patterns,Email hours
-Collaboration patterns,Chat hours
-Collaboration patterns,Unscheduled call hours
-After-hours work,After-hours collaboration hours
-After-hours work,After-hours chat hours
-After-hours work,After-hours email hours
-After-hours work,After-hours meeting hours
-After-hours work,After-hours scheduled call hours
-After-hours work,After-hours unscheduled call hours
-Working on weekends,Weekend emails sent
-Working on weekends,Weekend meetings
-Working on weekends,Weekend chats sent
-Working on weekends,Unscheduled weekend calls
-External connection,External collaboration hours
-External connection,External network size
-Inefficient meetings,Large and long meeting hours
-Inefficient meetings,Recurring meeting hours
-Inefficient meetings,Meeting hours not joined on time
-Inefficient meetings,Meeting hours not ended on time
-Inefficient meetings,Multitasking hours
-Meeting scheduling,Meeting hours with six or fewer hours of advanced notice
-Meeting scheduling,Conflicting meeting hours
-Time in meetings,Meeting hours
-Time in meetings,After hours meeting hours
-Time in meetings,Weekend meetings
-Punctuality,Meeting hours not joined on time
-Punctuality,Meeting hours not ended on time
-Advanced notice,Meeting hours with six or fewer hours of advanced notice
-Advanced notice,Meeting hours with six to 12 hours of advanced notice
-Advanced notice,Unscheduled call hours
-Advanced notice,After-hours unscheduled call hours
-Advanced notice,Unscheduled weekend calls
-Meeting size and duration,Large and long meeting hours
-Meeting size and duration,Large and short meeting hours
-Meeting size and duration,Small and long meeting hours
-Meeting size and duration,Small and short meeting hours
-Network sizes,Internal network size
-Network sizes,External network size
-Time to focus,Uninterrupted hours
-Time to focus,Available to focus hours
-Time to focus,Collaboration Hours
-Focus time adoption,Booked focus hours kept
-Focus time adoption,Booked no-meeting days
-Hybrid work,Remote days
-Hybrid work,Manager remote days
-Hybrid work,Onsite days
-Hybrid work,Manager onsite days
-Manager coaching time,Meeting and call hours with manager 1:1
-Manager coaching time,Meeting hours with manager 1:1
-Manager coaching time,Meeting hours with skip level
-Manager coaching time,Internal meeting hours without manager 1:1
-Healthy rhythms,Conflicting meeting hours
-Healthy rhythms,After-hours meeting hours
-Healthy rhythms,Available to focus hours
-Shifting directions,Meeting hours with manager
-Shifting directions,Meeting hours with skip level
-Shifting directions,Internal network size
-Confidence in leadership,Meeting hours with skip level
-Confidence in leadership,Meeting and call hours with manager
-Confidence in leadership,Meeting and call hours with manager 1:1
-Alignment with career goals,Meeting hours with manager 1:1
-Alignment with career goals,Strong ties
-Alignment with career goals,Diverse ties
-Urgency,Urgent meeting hours
-Urgency,Urgent email hours
-Visibility,Meeting hours with skip level
-Visibility,Influence score
-Visibility,Time with leadership
-Visibility,Unscheduled call hours with skip level
-Visibility,Meeting and call hours with skip level 1:1
-Visibility,Meeting and call hours with manager 1:1
+Collaboration patterns,Collaboration_hours
+Collaboration patterns,Meeting_hours
+Collaboration patterns,Email_hours
+Collaboration patterns,Chat_hours
+Collaboration patterns,Unscheduled_call_hours
+After-hours work,After-hours_collaboration_hours
+After-hours work,After-hours_chat_hours
+After-hours work,After-hours_email_hours
+After-hours work,After-hours_meeting_hours
+After-hours work,After-hours_scheduled_call_hours
+After-hours work,After-hours_unscheduled_call_hours
+Working on weekends,Weekend_emails_sent
+Working on weekends,Weekend_meetings
+Working on weekends,Weekend_chats_sent
+Working on weekends,Unscheduled_weekend_calls
+External connection,External_collaboration_hours
+External connection,External_network_size
+Inefficient meetings,Large_and_long_meeting_hours
+Inefficient meetings,Recurring_meeting_hours
+Inefficient meetings,Meeting_hours_not_joined_on_time
+Inefficient meetings,Meeting_hours_not_ended_on_time
+Inefficient meetings,Multitasking_hours
+Meeting scheduling,Meeting_hours_with_six_or_fewer_hours_of_advanced_notice
+Meeting scheduling,Conflicting_meeting_hours
+Time in meetings,Meeting_hours
+Time in meetings,After_hours_meeting_hours
+Time in meetings,Weekend_meetings
+Punctuality,Meeting_hours_not_joined_on_time
+Punctuality,Meeting_hours_not_ended_on_time
+Advanced notice,Meeting_hours_with_six_or_fewer_hours_of_advanced_notice
+Advanced notice,Meeting_hours_with_six_to_12_hours_of_advanced_notice
+Advanced notice,Unscheduled_call_hours
+Advanced notice,After-hours_unscheduled_call_hours
+Advanced notice,Unscheduled_weekend_calls
+Meeting size and duration,Large_and_long_meeting_hours
+Meeting size and duration,Large_and_short_meeting_hours
+Meeting size and duration,Small_and_long_meeting_hours
+Meeting size and duration,Small_and_short_meeting_hours
+Network sizes,Internal_network_size
+Network sizes,External_network_size
+Time to focus,Uninterrupted_hours
+Time to focus,Available_to_focus_hours
+Time to focus,Collaboration_Hours
+Focus time adoption,Booked_focus_hours_kept
+Focus time adoption,Booked_no_meeting_days
+Hybrid work,Remote_days
+Hybrid work,Manager_remote_days
+Hybrid work,Onsite_days
+Hybrid work,Manager_onsite_days
+Manager coaching time,Meeting_and_call_hours_with_manager_1_1
+Manager coaching time,Meeting_hours_with_manager_1_1
+Manager coaching time,Meeting_hours_with_skip_level
+Manager coaching time,Internal_meeting_hours_without_manager_1_1
+Healthy rhythms,Conflicting_meeting_hours
+Healthy rhythms,After-hours_meeting_hours
+Healthy rhythms,Available_to_focus_hours
+Shifting directions,Meeting_hours_with_manager
+Shifting directions,Meeting_hours_with_skip_level
+Shifting directions,Internal_network_size
+Confidence in leadership,Meeting_hours_with_skip_level
+Confidence in leadership,Meeting_and_call_hours_with_manager
+Confidence in leadership,Meeting_and_call_hours_with_manager_1_1
+Alignment with career goals,Meeting_hours_with_manager_1_1
+Alignment with career goals,Strong_ties
+Alignment with career goals,Diverse_ties
+Urgency,Urgent_meeting_hours
+Urgency,Urgent_email_hours
+Visibility,Meeting_hours_with_skip_level
+Visibility,Influence_score
+Visibility,Time_with_leadership
+Visibility,Unscheduled_call_hours_with_skip_level
+Visibility,Meeting_and_call_hours_with_skip_level_1_1
+Visibility,Meeting_and_call_hours_with_manager_1_1
