@@ -60,10 +60,17 @@ def test_best_practice(
     # set of unique metrics across 'above' and 'below'
     combined_keys = set(bp["above"].keys()) | set(bp["below"].keys())
     
-    # If keys in key-value pairs in `bp` dictionary do not match those in `metrics`, return an error message
+    # If keys in key-value pairs in `bp` dictionary do not match those in `metrics`, return a warning message
     if combined_keys != set(metrics):
         print('Warning: keys in `bp` dictionary do not match those in `metrics`. Only matched metrics will be calculated.') 
-        metrics = list(combined_keys)
+        # make metrics an intersecting set of keys in `bp` and `metrics`
+        metrics = list(combined_keys & set(metrics))
+        
+    # If 'metrics' is empty, return an empty DataFrame
+    if not metrics:
+        print('No matched metrics between `bp` and `metrics` for `test_best_practice()`. Please check the input.')
+        return pd.DataFrame()
+        
     
     grouped_data_benchmark_list = []
     grouped_data_list_headlines = []
@@ -73,7 +80,7 @@ def test_best_practice(
         for each_metric in metrics:            
             
             # Start of section where only 'above' or 'below' means are extracted
-            
+            # Empty DataFrames are returned in `calc_bp_diff()` if no matching value is found in `bp` for `metric`
             bm_data_above = calc_bp_diff(
                 data = data,
                 bp = bp,
@@ -179,6 +186,10 @@ def calc_bp_diff(
     - group_n: the number of employees in the group
     - percent_of_pop: the percentage of the population in the group
     - perc_diff_mean: the percentage difference between the group mean and the benchmark mean
+    
+    Note
+    ----
+    The function will return an empty DataFrame if the benchmark mean for the given metric does not exist.
     
     """
     

@@ -13,8 +13,8 @@ def create_chirps(data: pd.DataFrame,
                   hrvar: list = ["Organization", "SupervisorIndicator"],
                   bm_hrvar: list = ["FunctionType", "SupervisorIndicator"],
                   min_group: int = 5,
-                  bp = {},
-                  return_type: str = 'table'):
+                  bp = {}
+                  ):
     
     """
     Name
@@ -55,6 +55,8 @@ def create_chirps(data: pd.DataFrame,
         - Alignment with career goals
         - Urgency
         - Visibility
+        
+        `brief_to_metrics()` is used to extract the metrics associated with each brief.
     
     metrics : list, optional
         A list of metrics to be included in the analysis. Defaults to None.
@@ -78,9 +80,6 @@ def create_chirps(data: pd.DataFrame,
         The keys in the second-level dictionaries represent metrics, and the values represent the corresponding thresholds
         The keys should correspond to the metric names and the values should be the benchmark means. 
         By default, this uses the dictionary output from `extract_best_practice()`. 
-    
-    return_type : str, optional
-        The type of return value. Defaults to 'table'.
 
     Returns
     -------
@@ -116,6 +115,9 @@ def create_chirps(data: pd.DataFrame,
         
     # If values are provided to both `brief` and 'metrics', then the final metrics will be combined. 
     all_metrics = list(set(all_metrics + metrics))
+    
+    # Diagnostic
+    print(f'Crunching headlines for the following metrics: {all_metrics}')
     
     # If 'MetricDate' is not DateTime, convert to DateTime
     if data['MetricDate'].dtype != 'datetime64[ns]':
@@ -159,6 +161,13 @@ def create_chirps(data: pd.DataFrame,
     list_headlines = [list_ts, list_int_bm, list_bp]
 
     all_headlines = pd.concat(list_headlines)
+    
+    # If no headlines are generated, return an empty DataFrame
+    if all_headlines.empty:
+        print('There are no qualified headlines. Please try again with a different set of parameters.')
+        return all_headlines
+    
+    # Additional calculations ------------------------------------------------   
     
     total_n = data['PersonId'].nunique()
     all_headlines['prop_n'] = all_headlines['n'] / total_n

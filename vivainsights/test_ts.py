@@ -79,10 +79,9 @@ def test_ts(data: pd.DataFrame,
     # set of unique metrics across 'above' and 'below'
     combined_keys = set(bp["above"].keys()) | set(bp["below"].keys())
     
-    # If keys in key-value pairs in `bp` dictionary do not match those in `metrics`, return an error message
+    # If keys in key-value pairs in `bp` dictionary do not match those in `metrics`, return a warning message
     if combined_keys != set(metrics):
-        print('Warning: keys in `bp` dictionary do not match those in `metrics`. Only matched metrics will be calculated.') 
-        metrics = list(combined_keys)
+        print('Warning: keys in `bp` dictionary do not match those in `metrics`. Only matched metrics will be calculated.')  
     
     # Define date windows
     latest_date = data['MetricDate'].max()
