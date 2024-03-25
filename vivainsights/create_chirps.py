@@ -13,7 +13,8 @@ def create_chirps(data: pd.DataFrame,
                   hrvar: list = ["Organization", "SupervisorIndicator"],
                   bm_hrvar: list = ["FunctionType", "SupervisorIndicator"],
                   min_group: int = 5,
-                  bp = {}
+                  bp = {},
+                  return_type = 'standard'
                   ):
     
     """
@@ -80,10 +81,16 @@ def create_chirps(data: pd.DataFrame,
         The keys in the second-level dictionaries represent metrics, and the values represent the corresponding thresholds
         The keys should correspond to the metric names and the values should be the benchmark means. 
         By default, this uses the dictionary output from `extract_best_practice()`. 
+        
+    return_type : str, optional
+        The type of output to return. Defaults to 'standard'.
+        Valid options are:
+        - 'standard': Returns a DataFrame containing all the columns.
+        - 'compact': Returns a DataFrame containing only the columns `Attribute`, `AttributeValue`, and `Headlines`.
 
     Returns
     -------
-    pd.DataFrame: A data frame containing the following columns:
+    pd.DataFrame: When `return_type == 'standard'`, a data frame containing the following columns:
         - `TestType`: The type of test.
         - `Attribute`: The name of the HR or organizational attribute. 
         - `AttributeValue`: The value of the group identified by the HR or organizational attribute.
@@ -92,6 +99,11 @@ def create_chirps(data: pd.DataFrame,
         - `n`: The number of people in the group.
         - `Headlines`: String containing the headline surfaced in the analysis. 
         - `Interest_Score`: The interest score for the test.
+        
+    pd.DataFrame: When `return_type == 'compact'`, a data frame containing the following columns:
+        - `Attribute`: The name of the HR or organizational attribute. 
+        - `AttributeValue`: The value of the group identified by the HR or organizational attribute.
+        - `Headlines`: String containing the headline surfaced in the analysis.
 
     Raises
     ------
@@ -205,7 +217,16 @@ def create_chirps(data: pd.DataFrame,
     all_headlines = all_headlines.sort_values(by='Interest_Score', ascending=False) 
     
     # Return output
-    return all_headlines
+    if return_type == 'standard':
+        return all_headlines
+    elif return_type == 'compact':
+        # Only return Attribute, AttributeValue, Headlines
+        compact_headlines = all_headlines.groupby(['Attribute', 'AttributeValue']).agg(
+            {'Headlines': lambda x: ' '.join(x)}
+            ).reset_index()
+        return compact_headlines
+    else:
+        raise ValueError('Invalid `return_type`. Please select either `standard` or `compact`.')
 
 
 def brief_to_metrics(brief: str):
