@@ -19,6 +19,7 @@ from .identify_holidayweeks import *
 from .identify_tenure import *
 from .color_codes import *
 from .extract_hr import *
+from .suggest_hr import *
 from .totals_col import *
 from .check_inputs import *
 from .p2p_data import *

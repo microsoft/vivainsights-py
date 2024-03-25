@@ -39,7 +39,7 @@ def extract_hr(
     """
     try:
         if((isinstance(max_unique, int)) and (isinstance(exclude_constants, bool))\
-        and (return_type.lower() == "names") or (return_type.lower() == "vars")):
+        and (return_type.lower() == "names") or (return_type.lower() == "vars") or (return_type.lower() == "suggestion")):
             unqdf = data.loc[:,data.nunique()<=max_unique]
 
         if exclude_constants == False:
@@ -51,11 +51,15 @@ def extract_hr(
         elif not isinstance(exclude_constants, bool):
             error ="Error! var exclude_constants should be an boolean(True/False) value. Please try again."
 
-        elif (return_type.lower() != "names") or (return_type.lower() != "vars"):
+        elif (return_type.lower() != "names") or (return_type.lower() != "vars") or (return_type.lower() != "suggestion"):
             error ="Error! var return_type should be either(names/vars) value. Please try again."
 
         if return_type == "vars":
             return unqdf.select_dtypes(['object'])
+        
+        if return_type == "suggestion":
+            return unqdf.select_dtypes(['object']).columns.tolist()
+        
         #return print(*unqdf.columns+',\n')
         return print(*unqdf.select_dtypes(['object']).columns+',\n')
     
