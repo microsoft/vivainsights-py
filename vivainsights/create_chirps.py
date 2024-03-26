@@ -201,6 +201,7 @@ def create_chirps(data: pd.DataFrame,
         all_headlines['Interest_Score']
         )
     
+    # Take population size into account
     all_headlines['Interest_Score2'] = all_headlines['Interest_Score'] * all_headlines['prop_n']
     
     # `Interest_Score2_minmax` - min-max scaled score
@@ -208,8 +209,6 @@ def create_chirps(data: pd.DataFrame,
         all_headlines['Interest_Score2'] - all_headlines['Interest_Score2'].min()) / (
             all_headlines['Interest_Score2'].max() - all_headlines['Interest_Score2'].min()
             )
-    # `Interest_Score2_minmax` - min-max scaled score
-    all_headlines['Interest_Score'] = all_headlines['Interest_Score'] * all_headlines['n'] / total_n
     
     # Drop and rename columns
     all_headlines = all_headlines.drop(columns=['prop_n', 'Interest_Score', 'Interest_Score2'])
