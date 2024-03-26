@@ -274,26 +274,26 @@ def test_ts(data: pd.DataFrame,
             grouped_data_headlines['Headlines'] = (
                 'For ' + each_hrvar + '==' + grouped_data_headlines[each_hrvar].astype(str) +
                 ' (' + grouped_data_headlines['MetricDate'].astype(str) + '), ' +
-                each_metric + ' (' + grouped_data_headlines[each_metric].round(1).astype(str) + ') is on ' +
+                each_metric + ' (' + grouped_data_headlines[each_metric].round(2).astype(str) + ') is on ' +
                 np.where(
                     grouped_data_headlines['TrendSign'] > 0,
                     'an upward trend, ',
                     'a downward trend, '
                 ) +                 
-                (grouped_data_headlines[dpc4ma_str] * 100).round(1).astype(str) + '%' +
+                (grouped_data_headlines[dpc4ma_str] * 100).round(2).astype(str) + '%' +
                 np.where(grouped_data_headlines[dpc4ma_str] >= 0, 
                         ' higher than its 4-week moving average ', 
                         ' lower than its 4-week moving average ') +
                 '(' + grouped_data_headlines['4_Period_MA_' + each_metric].round(1).astype(str) + ') and ' +
-                (grouped_data_headlines[dcp12ma_str] * 100).round(1).astype(str) + '%' +
+                (grouped_data_headlines[dcp12ma_str] * 100).round(2).astype(str) + '%' +
                 np.where(grouped_data_headlines[dcp12ma_str] >= 0,
                         ' higher than its 12-week moving average ',
                         ' lower than its 12-week moving average ') +
-                '(' + grouped_data_headlines['12_Period_MA_' + each_metric].round(1).astype(str) + ').'
+                '(' + grouped_data_headlines['12_Period_MA_' + each_metric].round(2).astype(str) + '). '
             ) + (
             # "For employees with similar [group1] and [group2], average metric (m) increased by about x%. "     
             "For employees with similar " + bm_hrvar[0] + " and " + bm_hrvar[1] + ", average " +
-            each_metric + ' (' + grouped_data_headlines['InternalBenchmark_' + each_metric].round(1).astype(str) + ') ' +        
+            each_metric + ' (' + grouped_data_headlines['InternalBenchmark_' + each_metric].round(2).astype(str) + ') ' +        
             np.where(grouped_data_headlines['PercDiffIntBench_12MA'] >= 0, 'increased', 'decreased') +
             " by about " +
             (grouped_data_headlines['PercDiffIntBench_12MA'] * 100).round(1).astype(str) +
