@@ -105,8 +105,8 @@ def test_best_practice(
             grouped_data_benchmark_list.append(bm_data)
             
             # Headlines -------------------------------------------------------            
-            # Filter by interesting headlines only - at least 50% difference against best practice
-            grouped_data_headlines = bm_data.loc[abs(bm_data['perc_diff_mean']) >= 0.5].copy()
+            # Filter by interesting headlines only - at least 30% difference against best practice and at least 30% of the group
+            grouped_data_headlines = bm_data.loc[bm_data['percent_of_pop'] >= 0.3 & abs(bm_data['perc_diff_mean'])>= 0.3].copy()
             
             # Generate headlines        
             grouped_data_headlines['Headlines'] = (
