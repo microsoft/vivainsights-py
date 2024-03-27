@@ -1,6 +1,6 @@
-# Version 0.4.0
+# Version 0.3.1
 
-Added functionality for Generative Insights.
+Minor doc changes and additional return options.
 
 # Version 0.3.0
 
