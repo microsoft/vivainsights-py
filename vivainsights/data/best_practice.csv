@@ -1,6 +1,0 @@
-Metric,Threshold,Direction
-Active_connected_hours,50,above
-After_hours_collaboration_hours,5,above
-Meeting_hours_with_manager_1_1,.115,below
-Meetings_with_manager_1_1,.231,below
-Recurring_meeting_hours,8,above
