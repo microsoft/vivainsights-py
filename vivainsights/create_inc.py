@@ -60,6 +60,10 @@ def create_inc(data: pd.DataFrame, metric: str, hrvar: typing.List or str, mingr
 
     Example
     -------
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> create_inc(pq_data, metric = "Collaboration_hours", hrvar = "LevelDesignation",mingroup=5,threshold=5.3,position='above',return_type='plot')
+ 
     """
     
     if not isinstance(hrvar, list):
@@ -247,6 +251,7 @@ def create_inc_grid(data: pd.DataFrame, metric: str, hrvar: typing.List, mingrou
             right=False        # Remove ticks from the right
         )
         
+        sns.set_theme(font_scale=0.7)
         # plot heatmap
         sns.heatmap(
             myTable.pivot(index=hrvar[0], columns=hrvar[1], values='incidence'),

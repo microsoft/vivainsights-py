@@ -12,6 +12,7 @@ import pandas as pd
 import seaborn as sns
 from vivainsights.extract_date_range import extract_date_range
 from vivainsights.us_to_space import us_to_space
+from vivainsights import totals_col
 import matplotlib.ticker as mtick
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FixedLocator
@@ -193,6 +194,12 @@ def create_bar(
     -------
     >>> create_bar(pq_data, metric = "Collaboration_hours", hrvar = "LevelDesignation")
     """  
+    
+    ## Handling None value passed to hrvar
+    if(hrvar is None):
+        data = totals_col(data)
+        hrvar = "Total"
+        
     if return_type == "plot":
         out = create_bar_viz(data=data, metric=metric, hrvar=hrvar, percent=percent, mingroup=mingroup, plot_title = plot_title, plot_subtitle = plot_subtitle)
     elif return_type == "table":
