@@ -12,7 +12,7 @@ import seaborn as sns
 import numpy as np
 from vivainsights.extract_date_range import extract_date_range
 from vivainsights.color_codes import *
-from vivainsights import totals_col
+from vivainsights.totals_col import totals_col
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import warnings
@@ -184,7 +184,7 @@ def create_line(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, retur
     
     ## Handling None value passed to hrvar
     if(hrvar is None):
-        data = totals_col(data)
+        data = totals_col(data = data)
         hrvar = "Total"
         
     if return_type == "plot":
