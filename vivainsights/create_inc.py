@@ -62,8 +62,15 @@ def create_inc(data: pd.DataFrame, metric: str, hrvar: typing.List or str, mingr
     -------
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
-    >>> create_inc(pq_data, metric = "Collaboration_hours", hrvar = "LevelDesignation",mingroup=5,threshold=5.3,position='above',return_type='plot')
- 
+    >>> vi.create_inc(
+        pq_data, 
+        metric = 'Collaboration_hours',
+        hrvar = 'LevelDesignation',
+        mingroup = 5,
+        threshold = 10,
+        position = 'above',
+        return_type = 'plot'
+        ) 
     """
     
     if not isinstance(hrvar, list):

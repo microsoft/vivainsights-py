@@ -28,9 +28,9 @@ def identify_nkw(
         data (pd.DataFrame): The input data. Must contain the columns 'PersonId', 'Organization', and 'Collaboration_hours'.
         collab_threshold (int, optional): The threshold for average collaboration hours below which a person is considered a non-knowledge worker. Defaults to 5.
         return_type (str, optional): Specifies the type of data to return. 
-        If 'data_with_flag', returns the input data with an additional 'flag_nkw' column indicating whether each person is a non-knowledge worker. 
-        If 'data_summary', returns a summary of the number and proportion of non-knowledge workers in each organization. 
-        If 'text', returns a text summary of the number and proportion of non-knowledge workers in each organization.
+        - If 'data_with_flag', returns the input data with an additional 'flag_nkw' column indicating whether each person is a non-knowledge worker. 
+        - If 'data_summary', returns a summary of the number and proportion of non-knowledge workers in each organization. 
+        - If 'text', returns a text summary of the number and proportion of non-knowledge workers in each organization.
         Defaults to 'data_summary'.
 
     Returns
