@@ -60,6 +60,17 @@ def create_inc(data: pd.DataFrame, metric: str, hrvar: typing.List or str, mingr
 
     Example
     -------
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> vi.create_inc(
+        pq_data, 
+        metric = 'Collaboration_hours',
+        hrvar = 'LevelDesignation',
+        mingroup = 5,
+        threshold = 10,
+        position = 'above',
+        return_type = 'plot'
+        ) 
     """
     
     if not isinstance(hrvar, list):
@@ -115,7 +126,7 @@ def create_inc_bar(data: pd.DataFrame, metric: str, hrvar: str, mingroup: int = 
 
     Example
     -------
-    >>> create_inc_bar(data = pq_data, metric = "Collaboration_hours", hrvar = "LevelDesignation", theshold = 20, position = "below", return_type = "plot")
+    >>> create_inc_bar(data = pq_data, metric = "Collaboration_hours", hrvar = "LevelDesignation", threshold = 20, position = "below", return_type = "plot")
     """
 
     # Transform data so that metrics become proportions
@@ -131,16 +142,19 @@ def create_inc_bar(data: pd.DataFrame, metric: str, hrvar: str, mingroup: int = 
     title_text = f"Incidence of {metric} {position} {threshold}" # Set title text    
     subtitle_text = f"Percentage and number of employees by {hrvar}" # Set subtitle text
     
-    return create_bar(
-        data_t,
-        metric,
-        hrvar,
-        mingroup,
-        percent = True,
-        plot_title = title_text,
-        plot_subtitle = subtitle_text,
-        return_type = return_type
-        )
+    if return_type == 'data':
+        return data_t
+    else:    
+        return create_bar(
+            data_t,
+            metric,
+            hrvar,
+            mingroup,
+            percent = True,
+            plot_title = title_text,
+            plot_subtitle = subtitle_text,
+            return_type = return_type
+            )
 
 def create_inc_grid(data: pd.DataFrame, metric: str, hrvar: typing.List, mingroup: int=5, threshold: float=None, position: str=None, return_type: str='plot'):
     """
@@ -244,6 +258,7 @@ def create_inc_grid(data: pd.DataFrame, metric: str, hrvar: typing.List, mingrou
             right=False        # Remove ticks from the right
         )
         
+        sns.set_theme(font_scale=0.7)
         # plot heatmap
         sns.heatmap(
             myTable.pivot(index=hrvar[0], columns=hrvar[1], values='incidence'),

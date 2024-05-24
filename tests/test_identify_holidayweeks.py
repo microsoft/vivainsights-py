@@ -42,5 +42,8 @@ class TestIdentifyHolidayweeks(unittest.TestCase):
         
         # Check if the result is a Matplotlib plot
         self.assertIsInstance(result, plt.Figure)
+        
+        # Close all matplotlib windows
+        plt.close('all')        
             
             

@@ -2,6 +2,7 @@ import unittest
 import matplotlib.pyplot as plt
 from vivainsights.create_bar import create_bar_viz
 from vivainsights.create_bar import create_bar_calc
+from vivainsights.create_bar import create_bar
 from vivainsights.pq_data import load_pq_data
 import tracemalloc
 import gc
@@ -22,6 +23,24 @@ class TestCreateBarViz(unittest.TestCase):
         
         tracemalloc.stop()
         self.assertIsInstance(fig, plt.Figure)     
+        
+    def test_create_bar_no_hrvar_returns_plot(self):
+        # Test that a plot is returned when hrvar is None 
+        tracemalloc.start()
+        pq_data = load_pq_data()    
+        fig = create_bar(
+            data = pq_data,
+            metric = 'Emails_sent',
+            hrvar=None,
+            return_type='plot'
+            )
+        # garbage collection
+        del pq_data
+        gc.collect()
+        
+        tracemalloc.stop()
+        self.assertIsInstance(fig, plt.Figure)
+        
         
 class TestCreateBarCalc(unittest.TestCase):
     def test_create_bar_calc_stats(self):

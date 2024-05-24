@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import seaborn as sns
 from vivainsights.extract_date_range import extract_date_range
+from vivainsights import totals_col
 
 def create_trend(data: pd.DataFrame,
   
@@ -70,8 +71,15 @@ def create_trend(data: pd.DataFrame,
 
   Example
   -------
+  >>> import vivainsights as vi
+  >>> pq_data = vi.load_pq_data()  
   >>> create_trend(data = pq_data, metric = "Collaboration_hours", hrvar = "LevelDesignation")
   """
+  
+  if(hrvar is None):
+        data = totals_col(data)
+        hrvar = "Total"
+        
   # Return the table or the plot or raise an error
   if return_type == "table":    
     myTable = create_trend_calc(data, metric, hrvar, mingroup, date_column, date_format)
@@ -102,10 +110,6 @@ def create_trend_calc(data, metric, hrvar, mingroup, date_column, date_format):
     if var not in data.columns:
       raise ValueError(f"{var} is not in the data")
 
-  # Handling None values passed to hrvar
-  if hrvar is None:
-    data["Total"] = 1 # Create a dummy column for totals
-    hrvar = "Total"
 
   # Clean metric name
   clean_nm = metric.replace("_", " ")
@@ -157,7 +161,7 @@ def create_trend_viz(
   
   # Clean labels for plotting
   clean_nm = metric.replace("_", " ")  
-  title_text = f"{clean_nm}\nHotspots by {hrvar.lower()}"
+  title_text = f"{clean_nm} Hotspots"
   subtitle_text = f'By {hrvar}'
   caption_text = extract_date_range(data, return_type = 'text')  
   
@@ -232,6 +236,7 @@ def create_trend_viz(
       fontsize = 11,        
       alpha = .8
   )
+
 
   # Set caption
   ax.text(x=-0.08, y=-0.12, s=caption_text, transform=fig.transFigure, ha='left', fontsize=9, alpha=.7)

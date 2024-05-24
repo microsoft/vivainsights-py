@@ -1,6 +1,6 @@
 import unittest
 import matplotlib.pyplot as plt
-from vivainsights.create_rank import create_rank_viz, create_rank_calc
+from vivainsights.create_rank import create_rank_viz, create_rank_calc, create_rank
 from vivainsights.pq_data import load_pq_data
 import tracemalloc
 import gc
@@ -14,7 +14,7 @@ class TestCreateRank(unittest.TestCase):
     def test_create_rank(self):
         tracemalloc.start()        
         pq_data = load_pq_data()        
-        fig = create_rank_viz(data = pq_data,metric="Emails_sent", hrvar = ['Organization', 'FunctionType', 'LevelDesignation', 'SupervisorIndicator'],mingroup = 5)
+        fig = create_rank_viz(data = pq_data,metric="Emails_sent", hrvar = ['Organization', 'FunctionType', 'LevelDesignation', 'SupervisorIndicator'], mingroup = 5)
         
         # garbage collection
         del pq_data
@@ -22,6 +22,27 @@ class TestCreateRank(unittest.TestCase):
         
         tracemalloc.stop()
         self.assertIsInstance(fig, plt.Figure)
+        
+        # Close all matplotlib windows
+        plt.close('all')       
+        
+    def test_create_rank_str_hrvar(self):
+        """
+        Test that the create_rank function works when hrvar is passed as a string
+        """
+        tracemalloc.start()        
+        pq_data = load_pq_data()        
+        fig = create_rank(data = pq_data, metric= 'Emails_sent', hrvar = 'FunctionType', mingroup = 5)
+        
+        # garbage collection
+        del pq_data
+        gc.collect()
+        
+        tracemalloc.stop()
+        self.assertIsInstance(fig, plt.Figure)
+        
+        # Close all matplotlib windows
+        plt.close('all')
     
     def test_create_rank_table(self):
         pq_data = load_pq_data()

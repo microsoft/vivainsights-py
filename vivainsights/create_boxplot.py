@@ -83,7 +83,7 @@ def create_boxplot_viz(data: pd.DataFrame, metric, hrvar, mingroup):
         ax.spines[['top','right','left']].set_visible(False)
         
         # Generate boxplot
-        sns.boxplot(x='Organization', y='Emails_sent', data= data, ax=ax)
+        sns.boxplot(x=hrvar, y=metric, data= data, ax=ax)
         
         # Add in line and tag
         ax.plot(
@@ -185,7 +185,9 @@ def create_boxplot(data: pd.DataFrame, metric: str, hrvar: str ="Organization", 
 
     Example
     -------
-    >>> create_boxplot(data, metric = "Collaboration_hours", hrvar = "Organization", return_type = "plot")
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> create_boxplot(pq_data, metric = "Collaboration_hours", hrvar = "Organization", return_type = "plot")
     
     """
     # Check inputs

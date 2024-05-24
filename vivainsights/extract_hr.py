@@ -10,8 +10,8 @@ or a DataFrame containing only the variables themselves.
 import pandas as pd
 def extract_hr(
     data: pd.DataFrame,
-    max_unique =50,
-    exclude_constants =True,
+    max_unique: int = 50,
+    exclude_constants: bool = True,
     return_type: str = "names"):
     """    
     Name
@@ -36,10 +36,22 @@ def extract_hr(
     Returns 
     -------
     The function is not returning anything. It is printing the column names of the object columns in the filtered dataframe.
+    
+    Example
+    -------
+    >>> vi.extract_hr(
+    data = pq_data
+    )
+    
+    >>> vi.extract_hr(
+    data = pq_data,
+    return_type = "vars"
+    )
+    
     """
     try:
         if((isinstance(max_unique, int)) and (isinstance(exclude_constants, bool))\
-        and (return_type.lower() == "names") or (return_type.lower() == "vars")):
+        and (return_type.lower() == "names") or (return_type.lower() == "vars") or (return_type.lower() == "suggestion")):
             unqdf = data.loc[:,data.nunique()<=max_unique]
 
         if exclude_constants == False:
@@ -51,11 +63,15 @@ def extract_hr(
         elif not isinstance(exclude_constants, bool):
             error ="Error! var exclude_constants should be an boolean(True/False) value. Please try again."
 
-        elif (return_type.lower() != "names") or (return_type.lower() != "vars"):
-            error ="Error! var return_type should be either(names/vars) value. Please try again."
+        elif (return_type.lower() != "names") or (return_type.lower() != "vars") or (return_type.lower() != "suggestion"):
+            error = "Please check input to `return_type`."
 
         if return_type == "vars":
             return unqdf.select_dtypes(['object'])
+        
+        if return_type == "suggestion":
+            return unqdf.select_dtypes(['object']).columns.tolist()
+        
         #return print(*unqdf.columns+',\n')
         return print(*unqdf.select_dtypes(['object']).columns+',\n')
     
