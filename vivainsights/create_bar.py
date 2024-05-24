@@ -12,7 +12,7 @@ import pandas as pd
 import seaborn as sns
 from vivainsights.extract_date_range import extract_date_range
 from vivainsights.us_to_space import us_to_space
-from vivainsights import totals_col
+from vivainsights.totals_col import totals_col
 import matplotlib.ticker as mtick
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FixedLocator

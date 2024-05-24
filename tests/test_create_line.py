@@ -1,6 +1,8 @@
 import unittest
 import matplotlib.pyplot as plt
-from vivainsights.create_line import *
+from vivainsights.create_line import create_line_viz
+from vivainsights.create_line import create_line_calc
+from vivainsights.create_line import create_line
 from vivainsights.pq_data import load_pq_data
 import tracemalloc
 import gc
