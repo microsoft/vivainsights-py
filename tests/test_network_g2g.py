@@ -49,6 +49,9 @@ class TestNetworkG2G(unittest.TestCase):
         
             # Check if a plot was created
             self.assertIsNotNone(plt.gcf())
+            
+            # Close all matplotlib windows
+            plt.close('all')            
 
             # Check if any warnings were generated
             # self.assertLess(len(w), 1)
