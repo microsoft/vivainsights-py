@@ -56,7 +56,7 @@ def compute_gini(x):
     gini = (2 * np.sum((np.arange(1, n + 1)) * x) - (n + 1) * np.sum(x)) / (n * np.sum(x))
     return gini
 
-def create_lorenz(data, metric, return_type="gini"):
+def create_lorenz(data, metric, return_type="plot"):
     """
     Calculate and return the Lorenz curve and Gini coefficient for a given metric.
 
@@ -64,15 +64,15 @@ def create_lorenz(data, metric, return_type="gini"):
     data (pd.DataFrame): DataFrame containing the data to analyze.
     metric (str): The column name in the DataFrame representing the values to analyze.
     return_type (str): The type of output to return: 
-                       - "gini" (default): returns the Gini coefficient.
+                       - "gini": returns the Gini coefficient.
                        - "table": returns a DataFrame of cumulative population and value shares.
-                       - "plot": displays a Lorenz curve plot with the Gini coefficient.
+                       - "plot" (default): displays a Lorenz curve plot with the Gini coefficient.
 
     Returns:
     float/pd.DataFrame/None: Depending on return_type:
                              - "gini": returns the Gini coefficient.
                              - "table": returns a DataFrame of population and value shares.
-                             - "plot": displays the Lorenz curve plot (default)
+                             - "plot": displays the Lorenz curve plot
 
     Raises:
     ValueError: If the metric is not found in the DataFrame, or if an invalid return_type is specified.
