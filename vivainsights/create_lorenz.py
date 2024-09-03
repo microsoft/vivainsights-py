@@ -72,7 +72,7 @@ def create_lorenz(data, metric, return_type="gini"):
     float/pd.DataFrame/None: Depending on return_type:
                              - "gini": returns the Gini coefficient.
                              - "table": returns a DataFrame of population and value shares.
-                             - "plot": displays the Lorenz curve plot.
+                             - "plot": displays the Lorenz curve plot (default)
 
     Raises:
     ValueError: If the metric is not found in the DataFrame, or if an invalid return_type is specified.
@@ -80,16 +80,16 @@ def create_lorenz(data, metric, return_type="gini"):
     
     Example
     --------
-    Assuming `pq_data` is a DataFrame with an "Emails_sent" column.
+    Using `pq_data` from `vi.load_pq_data()`, which returns a DataFrame with an "Emails_sent" column.
     
     Compute the Gini coefficient:
-    >>> vi.create_lorenz(data=pq_data, metric="Emails_sent", return_type="gini")
+    >>> vi.create_lorenz(data=vi.load_pq_data(), metric="Emails_sent", return_type="gini")
     
     Compute the underlying table for the Lorenz curve:
-    >>> vi.create_lorenz(data=pq_data, metric="Emails_sent", return_type="table")
+    >>> vi.create_lorenz(data=vi.load_pq_data(), metric="Emails_sent", return_type="table")
     
     Plot the Lorenz curve
-    >>> vi.create_lorenz(data=pq_data, metric="Emails_sent", return_type="plot")
+    >>> vi.create_lorenz(data=vi.load_pq_data(), metric="Emails_sent", return_type="plot")
     
     """
     if metric not in data.columns:
@@ -107,17 +107,7 @@ def create_lorenz(data, metric, return_type="gini"):
     lorenz_df['cum_population'] = np.cumsum(np.ones(len(lorenz_df))) / len(lorenz_df)
     lorenz_df['cum_values_prop'] = lorenz_df['cum_values'] / lorenz_df['n'].sum()
 
-    if return_type == "gini":
-        # Return the Gini coefficient
-        return compute_gini(n)
-    elif return_type == "table":
-        # Create and return a table of cumulative population and value shares
-        population_shares = np.arange(0, 1.1, 0.1)
-        return pd.DataFrame({
-            'population_share': population_shares,
-            'value_share': [get_value_proportion(lorenz_df, x) for x in population_shares]
-        })
-    elif return_type == "plot":
+    if return_type == "plot":
         # Plot the Lorenz curve and display the Gini coefficient
         gini_coef = compute_gini(n)
         fig, ax = plt.subplots(figsize=(8, 6))
@@ -134,5 +124,16 @@ def create_lorenz(data, metric, return_type="gini"):
 
         # Return the figure object
         return fig
+      
+    elif return_type == "gini":
+        # Return the Gini coefficient
+        return compute_gini(n)
+    elif return_type == "table":
+        # Create and return a table of cumulative population and value shares
+        population_shares = np.arange(0, 1.1, 0.1)
+        return pd.DataFrame({
+            'population_share': population_shares,
+            'value_share': [get_value_proportion(lorenz_df, x) for x in population_shares]
+        })
     else:
         raise ValueError("Invalid return type. Choose 'gini', 'table', or 'plot'.")
