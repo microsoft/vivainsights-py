@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module generates Gini coefficient calculation, Lorenz curve generation, and plotting
+This module calculates the Gini coefficient and plots the Lorenz curve for a given metric.
 """
 
 import pandas as pd
@@ -34,8 +34,7 @@ def get_value_proportion(df, population_share):
 
 def compute_gini(x):
     """
-    Compute the Gini coefficient, a measure of statistical dispersion 
-    representing income or wealth inequality.
+    Compute the Gini coefficient, a measure of statistical dispersion to represent inequality.
 
     Parameters:
     x (list, np.ndarray, pd.Series): A numeric vector representing values (e.g., income, emails sent).
@@ -82,11 +81,15 @@ def create_lorenz(data, metric, return_type="gini"):
     Example
     --------
     Assuming `pq_data` is a DataFrame with an "Emails_sent" column.
-    >>> gini = create_lorenz(data=pq_data, metric="Emails_sent", return_type="gini")
     
-    >>> lorenz_table = create_lorenz(data=pq_data, metric="Emails_sent", return_type="table")
+    Compute the Gini coefficient:
+    >>> vi.create_lorenz(data=pq_data, metric="Emails_sent", return_type="gini")
     
-    >>> create_lorenz(data=pq_data, metric="Emails_sent", return_type="plot")
+    Compute the underlying table for the Lorenz curve:
+    >>> vi.create_lorenz(data=pq_data, metric="Emails_sent", return_type="table")
+    
+    Plot the Lorenz curve
+    >>> vi.create_lorenz(data=pq_data, metric="Emails_sent", return_type="plot")
     
     """
     if metric not in data.columns:
