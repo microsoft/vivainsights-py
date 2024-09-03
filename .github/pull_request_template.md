@@ -8,7 +8,7 @@ The changes made in this PR are:
 
 
 # Checks
-- [ ] All checks pass (run `python -m unittest discover -s tests -f` locally)
+- [ ] All checks pass (run `python -m unittest discover -s tests -f` or `python run_tests_and_cleanup.py` locally)
 - [ ] Versions are updated in `pyproject.toml`, `setup.py`, and `docs/conf.py` (if applicable)
 - [ ] `NEWS.md` has been updated
 - [ ] If a new module has been added, a corresponding test has been created
