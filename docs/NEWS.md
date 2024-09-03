@@ -1,3 +1,6 @@
+# Version 0.3.2
+Added functionality for calculating Gini coefficient and plotting the Lorenz curve.
+
 # Version 0.3.1
 
 Minor doc changes and additional return options. 
