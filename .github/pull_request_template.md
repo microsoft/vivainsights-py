@@ -11,6 +11,8 @@ The changes made in this PR are:
 - [ ] All checks pass (run `python -m unittest discover -s tests -f` locally)
 - [ ] Versions are updated in `pyproject.toml`, `setup.py`, and `docs/conf.py` (if applicable)
 - [ ] `NEWS.md` has been updated
+- [ ] If a new module has been added, a corresponding test has been created
+- [ ] If a new module has been created, `vivainsights/__init__.py` is updated accordingly
 
 # Notes
 This fixes #<issue_number>
