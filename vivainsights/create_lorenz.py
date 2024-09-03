@@ -117,17 +117,19 @@ def create_lorenz(data, metric, return_type="gini"):
     elif return_type == "plot":
         # Plot the Lorenz curve and display the Gini coefficient
         gini_coef = compute_gini(n)
-        plt.figure(figsize=(8, 6))
-        plt.plot(lorenz_df['cum_population'], lorenz_df['cum_values_prop'], color='#C75B7A')
-        plt.plot([0, 1], [0, 1], linestyle='dashed', color='darkgrey')
-        plt.title(f"% of population sharing % of {metric}")
-        plt.suptitle(f"Lorenz curve for {metric}")
-        plt.xlabel("Cumulative Share of Population")
-        plt.ylabel("Cumulative Share of Values")
-        plt.xlim([0, 1])
-        plt.ylim([0, 1])
-        plt.grid(True)
-        plt.annotate(f"Gini coefficient: {round(gini_coef, 2)}", xy=(0.5, 0.1), xycoords='axes fraction')
-        plt.show()
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ax.plot(lorenz_df['cum_population'], lorenz_df['cum_values_prop'], color='#C75B7A')
+        ax.plot([0, 1], [0, 1], linestyle='dashed', color='darkgrey')
+        ax.set_title(f"% of population sharing % of {metric}")
+        fig.suptitle(f"Lorenz curve for {metric}")
+        ax.set_xlabel("Cumulative Share of Population")
+        ax.set_ylabel("Cumulative Share of Values")
+        ax.set_xlim([0, 1])
+        ax.set_ylim([0, 1])
+        ax.grid(True)
+        ax.annotate(f"Gini coefficient: {round(gini_coef, 2)}", xy=(0.5, 0.1), xycoords='axes fraction')
+
+        # Return the figure object
+        return fig
     else:
         raise ValueError("Invalid return type. Choose 'gini', 'table', or 'plot'.")
