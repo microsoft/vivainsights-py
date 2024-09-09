@@ -8,7 +8,7 @@ vivainsights
 
 Welcome to the documentation for vivainsights!
 
-This documentation provides information on how to use vivainsights, a Python package for analyzing and visualizing data from Microsoft Viva Insights. 
+This documentation provides information on how to use **vivainsights**, a Python package for analyzing and visualizing data from Microsoft Viva Insights. 
 
 * For the GitHub repository, see `here <https://github.com/microsoft/vivainsights-py/>`_. 
 * For the Microsoft Viva Insights product page, see `here <https://www.microsoft.com/en-us/microsoft-viva/insights>`_. 
@@ -19,17 +19,22 @@ This documentation provides information on how to use vivainsights, a Python pac
    :caption: Contents:
 
    about.md
-   modules
-   NEWS.md
+   modules   
    CONTRIBUTORS.md
    SECURITY.md
    demo-vivainsights-py
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Module Index
 
    modindex
+
+..toctree::
+   :maxdepth: 1
+   :caption: Versions
+   NEWS.md
+ 
 
 Indices and tables
 ==================
