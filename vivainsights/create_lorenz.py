@@ -58,9 +58,16 @@ def compute_gini(x):
 
 def create_lorenz(data, metric, return_type="plot"):
     """
+    Name
+    ----
+    create_lorenz
+    
+    Description
+    -----------
     Calculate and return the Lorenz curve and Gini coefficient for a given metric.
 
-    Parameters:
+    Parameters
+    ----------
     data (pd.DataFrame): DataFrame containing the data to analyze.
     metric (str): The column name in the DataFrame representing the values to analyze.
     return_type (str): The type of output to return: 
@@ -68,27 +75,29 @@ def create_lorenz(data, metric, return_type="plot"):
                        - "table": returns a DataFrame of cumulative population and value shares.
                        - "plot" (default): displays a Lorenz curve plot with the Gini coefficient.
 
-    Returns:
+    Returns
+    -------
     float/pd.DataFrame/None: Depending on return_type:
                              - "gini": returns the Gini coefficient.
                              - "table": returns a DataFrame of population and value shares.
                              - "plot": displays the Lorenz curve plot
 
-    Raises:
+    Raises
+    ------
     ValueError: If the metric is not found in the DataFrame, or if an invalid return_type is specified.
     
     
-    Example
+    Examples
     --------
     Using `pq_data` from `vi.load_pq_data()`, which returns a DataFrame with an "Emails_sent" column.
     
-    Compute the Gini coefficient:
+    >>> # Compute the Gini coefficient:
     >>> vi.create_lorenz(data=vi.load_pq_data(), metric="Emails_sent", return_type="gini")
-    
-    Compute the underlying table for the Lorenz curve:
+     
+    >>> # Compute the underlying table for the Lorenz curve:
     >>> vi.create_lorenz(data=vi.load_pq_data(), metric="Emails_sent", return_type="table")
     
-    Plot the Lorenz curve
+    >>> # Plot the Lorenz curve
     >>> vi.create_lorenz(data=vi.load_pq_data(), metric="Emails_sent", return_type="plot")
     
     """

@@ -14,14 +14,14 @@ This documentation provides information on how to use **vivainsights**, a Python
 * For the Microsoft Viva Insights product page, see `here <https://www.microsoft.com/en-us/microsoft-viva/insights>`_. 
 * For the R counterpart of this package, see `here <https://microsoft.github.io/vivainsights/>`_.
 
+---
+
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Contents
 
    about.md
    modules   
-   CONTRIBUTORS.md
-   SECURITY.md
    demo-vivainsights-py
 
 .. toctree::
@@ -30,10 +30,18 @@ This documentation provides information on how to use **vivainsights**, a Python
 
    modindex
 
-..toctree::
+.. toctree::
    :maxdepth: 1
    :caption: Versions
+
    NEWS.md
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Details
+
+   CONTRIBUTORS.md
+   SECURITY.md
  
 
 Indices and tables
