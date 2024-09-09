@@ -40,6 +40,6 @@ jobs:
       - name: run ghp-import
         run: |
           python -m pip install ghp-import
-          ghp-import -n -p -f -c $GH_PAT ./docs/_build/html
+          ghp-import -n -p -f -c CNAME ./docs/_build/html
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
