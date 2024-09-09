@@ -44,6 +44,14 @@ vivainsights.create\_inc module
    :undoc-members:
    :show-inheritance:
 
+vivainsights.create\_IV module
+-------------------------------
+
+.. automodule:: vivainsights.create_IV
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 vivainsights.create\_line module
 --------------------------------
 
@@ -52,10 +60,26 @@ vivainsights.create\_line module
    :undoc-members:
    :show-inheritance:
 
+vivainsights.create\_lorenz module
+--------------------------------
+
+.. automodule:: vivainsights.create_lorenz
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 vivainsights.create\_rank module
 --------------------------------
 
 .. automodule:: vivainsights.create_rank
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+vivainsights.create\_sankey module
+--------------------------------
+
+.. automodule:: vivainsights.create_sankey
    :members:
    :undoc-members:
    :show-inheritance:
@@ -136,6 +160,14 @@ vivainsights.identify\_inactiveweeks module
 -------------------------------------------
 
 .. automodule:: vivainsights.identify_inactiveweeks
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+vivainsights.identify\_nkw module
+-------------------------------------------
+
+.. automodule:: vivainsights.identify_nkw
    :members:
    :undoc-members:
    :show-inheritance:
