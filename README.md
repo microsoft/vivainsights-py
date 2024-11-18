@@ -36,6 +36,12 @@ pip install -e git+https://github.com/microsoft/vivainsights-py@<remote-branch-n
 
 For examples on how to create analyses and visualizations, please see the [documentation](https://microsoft.github.io/vivainsights-py/).
 
+---
+
+Also check out our package cheat sheet for a quick glimpse of what **vivainsights** offers:
+
+<a href="https://raw.githubusercontent.com/martinctc/cheatsheets/add-vivainsights-r-and-py/vivainsights_py.pdf"><img src="https://raw.githubusercontent.com/martinctc/cheatsheets/add-vivainsights-r-and-py/pngs/vivainsights_py.png" align="center" width=50% /></a>
+
 ## Related repositories
 
 - [Viva Insights R library](https://microsoft.github.io/vivainsights/)
