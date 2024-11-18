@@ -2,6 +2,8 @@
 
 [![vivainsights CI](https://github.com/microsoft/vivainsights-py/actions/workflows/python-package.yml/badge.svg)](https://github.com/microsoft/vivainsights-py/actions/workflows/python-package.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/vivainsights)
+![PyPI - Version](https://img.shields.io/pypi/v/vivainsights)
 
 ## Overview
 
