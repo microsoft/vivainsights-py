@@ -2,6 +2,8 @@
 
 [![vivainsights CI](https://github.com/microsoft/vivainsights-py/actions/workflows/python-package.yml/badge.svg)](https://github.com/microsoft/vivainsights-py/actions/workflows/python-package.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/vivainsights)
+![PyPI - Version](https://img.shields.io/pypi/v/vivainsights)
 
 ## Overview
 
@@ -35,6 +37,12 @@ pip install -e git+https://github.com/microsoft/vivainsights-py@<remote-branch-n
 ```
 
 For examples on how to create analyses and visualizations, please see the [documentation](https://microsoft.github.io/vivainsights-py/).
+
+---
+
+Also check out our package cheat sheet for a quick glimpse of what **vivainsights** offers:
+
+<a href="https://raw.githubusercontent.com/martinctc/cheatsheets/add-vivainsights-r-and-py/vivainsights_py.pdf"><img src="https://raw.githubusercontent.com/martinctc/cheatsheets/add-vivainsights-r-and-py/pngs/vivainsights_py.png" align="center" width=50% /></a>
 
 ## Related repositories
 
