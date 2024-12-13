@@ -14,6 +14,13 @@ This documentation provides information on how to use **vivainsights**, a Python
 * For the Microsoft Viva Insights product page, see `here <https://www.microsoft.com/en-us/microsoft-viva/insights>`_. 
 * For the R counterpart of this package, see `here <https://microsoft.github.io/vivainsights/>`_.
 
+Also check out our package cheat sheet for a quick glimpse of what **vivainsights** offers:
+
+.. image:: https://raw.githubusercontent.com/martinctc/cheatsheets/add-vivainsights-r-and-py/pngs/vivainsights_py.png
+   :target: https://raw.githubusercontent.com/martinctc/cheatsheets/add-vivainsights-r-and-py/vivainsights_py.pdf
+   :align: center
+   :width: 50%
+
 ---
 
 .. toctree::
