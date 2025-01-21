@@ -138,13 +138,15 @@ def keymetrics_scan(data,
 
     Examples
     --------
-    >>> keymetrics_scan(data=my_data, hrvar="Team", mingroup=10, return_type="table")
-    # Returns a summary table grouped by "Team" with a minimum group size of 10.
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> vi.keymetrics_scan(data=pq_data, hrvar="Organization", mingroup=10, return_type="table")
+    # Returns a summary table grouped by "Organization" with a minimum group size of 10.
 
-    >>> keymetrics_scan(data=my_data, hrvar="Department", metrics=["Workweek_span", "Meeting_hours"], return_type="plot")
-    # Displays a heatmap of the rescaled "Workweek_span" and "Meeting_hours" metrics grouped by "Department".
+    >>> vi.keymetrics_scan(data=pq_data, hrvar="Organization", metrics=["Workweek_span", "Meeting_hours"], return_type="plot")
+    # Displays a heatmap of the rescaled "Workweek_span" and "Meeting_hours" metrics grouped by "Organization".
 
-    >>> keymetrics_scan(data=my_data, color_palette="coolwarm", textsize=12)
+    >>> vi.keymetrics_scan(data=pq_data, color_palette="coolwarm", textsize=12)
     # Generates a heatmap using the "coolwarm" color palette with font size 12.
 
     """    
