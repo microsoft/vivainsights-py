@@ -12,23 +12,34 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.colors import Normalize
 
 def keymetrics_scan(data,
                     hrvar="Organization",
                     mingroup=5,
-                    metrics=[
-                        "Workweek_span", "Collaboration_hours", "After_hours_collaboration_hours", "Meetings",
-                        "Meeting_hours", "After_hours_meeting_hours", "Low_quality_meeting_hours",
-                        "Meeting_hours_with_manager_1_on_1", "Meeting_hours_with_manager", "Emails_sent",
-                        "Email_hours", "After_hours_email_hours", "Generated_workload_email_hours",
-                        "Total_focus_hours", "Internal_network_size", "Networking_outside_organization",
-                        "External_network_size", "Networking_outside_company"
-                    ],
+                    metrics=["Workweek_span",
+                             "Collaboration_hours",
+                             "After_hours_collaboration_hours",
+                             "Meetings",
+                             "Meeting_hours",
+                             "After_hours_meeting_hours",
+                             "Low_quality_meeting_hours",
+                             "Meeting_hours_with_manager_1_on_1",
+                             "Meeting_hours_with_manager",
+                             "Emails_sent",
+                             "Email_hours",
+                             "After_hours_email_hours",
+                             "Generated_workload_email_hours",
+                             "Total_focus_hours",
+                             "Internal_network_size",
+                             "Networking_outside_organization",
+                             "External_network_size",
+                             "Networking_outside_company"],
                     return_type="plot",
-                    low_color="#4169E1",
-                    mid_color="#F1CC9E",
-                    high_color="#D8182A",
-                    textsize=10):    
+                    low="#0770A1",
+                    high="#D8182A",
+                    textsize=10,
+                    row_scaling_factor=0.8):    
     
     """
     Generate a summary of key metrics with options to return a heatmap or a summary table.
@@ -185,63 +196,89 @@ def keymetrics_scan(data,
     """    
     # Default group handling
     if hrvar is None:
-        data['Total'] = "Total"
-        hrvar = "Total"
+        data['Total'] = 'Total'
+        hrvar = 'Total'
 
-    # Filter metrics available in the data
+    # Filter metrics present in the data
     metrics = [metric for metric in metrics if metric in data.columns]
-    if not metrics:
-        raise ValueError("None of the specified metrics are available in the data.")
 
-    # Group and summarize the data
-    grouped = (data.groupby([hrvar, "PersonId"])[metrics]
-               .mean()
-               .groupby(hrvar)
-               .mean()
-               .reset_index())
+    # Compute summary table
+    summary_table = (
+        data.groupby([hrvar, 'PersonId'])[metrics]
+        .mean()
+        .groupby(hrvar)
+        .mean()
+        .reset_index()
+    )
 
-    employee_count = data.groupby(hrvar)['PersonId'].count().reset_index(name="Employee_Count")
-    summary_table = pd.merge(grouped, employee_count, on=hrvar)
-    summary_table = summary_table[summary_table["Employee_Count"] >= mingroup]
+    # Add employee count
+    employee_count = (
+        data.groupby(hrvar)['PersonId']
+        .nunique()
+        .reset_index()
+        .rename(columns={"PersonId": "Employee_Count"})
+    )
 
-    if summary_table.empty:
-        raise ValueError(f"No data available after applying `mingroup` filter of {mingroup}.")
+    summary_table = summary_table.merge(employee_count, on=hrvar)
+    summary_table = summary_table[summary_table['Employee_Count'] >= mingroup]
 
-    # Rescale values for visualization
-    summary_long = summary_table.melt(id_vars=[hrvar], var_name="Metric", value_name="Value")
-    summary_long["Value_Rescaled"] = (
-        summary_long.groupby("Metric")["Value"]
-        .transform(lambda x: (x - x.min()) / (x.max() - x.min()) if x.max() > x.min() else 0))
+    # Melt the summary table for visualization
+    summary_long = (
+        summary_table.melt(id_vars=[hrvar], var_name="variable", value_name="value")
+    )
 
-    if return_type == "table":
-        return summary_table
-
-    elif return_type == "plot":
+    # Prepare the heatmap with row-wise normalization
+    if return_type == "plot":
         plt.figure(figsize=(12, 8))
+        variables = summary_long['variable'].unique()
+        num_vars = len(variables)
+        hrvar_categories = summary_long[hrvar].unique()
 
-        # Custom colormap
-        custom_cmap = LinearSegmentedColormap.from_list(
-            "custom_cmap", [low_color, mid_color, high_color]
-        )
+        # Use dynamic scaling factor for figure height
+        fig, axes = plt.subplots(num_vars, 1, figsize=(10, row_scaling_factor * num_vars), sharex=True)
 
-        heatmap_data = summary_long[summary_long["Metric"] != "Employee_Count"]
-        heatmap_pivot = heatmap_data.pivot(index="Metric", columns=hrvar, values="Value_Rescaled")
+        for i, variable in enumerate(variables):
+            ax = axes[i] if num_vars > 1 else axes
+            subset = summary_long[summary_long['variable'] == variable]
+            row_min = subset['value'].min()
+            row_max = subset['value'].max()
 
-        sns.heatmap(
-            heatmap_pivot,
-            cmap=custom_cmap,
-            annot=True,
-            cbar=True,
-            cbar_kws={"label": "Rescaled Value"},
-            fmt=".1f"
-        )
+            # Normalize the values for this row
+            normalized_values = (subset['value'] - row_min) / (row_max - row_min)
+            heatmap_data = pd.DataFrame([normalized_values.values], columns=hrvar_categories)
 
-        plt.title(f"Key Metrics\nWeekly average by {hrvar}", fontsize=16)
-        plt.ylabel("")
-        plt.xlabel("")
-        plt.xticks(rotation=90, fontsize=textsize)
-        plt.yticks(fontsize=textsize)
+            # Create heatmap for this row
+            sns.heatmap(heatmap_data,
+                        annot=subset['value'].values.reshape(1, -1),
+                        fmt=".1f",
+                        cmap=sns.diverging_palette(250, 10, as_cmap=True),
+                        cbar=False,
+                        linewidths=0.5,
+                        vmin=0,
+                        vmax=1,
+                        yticklabels=False,
+                        ax=ax)
+
+            # Move x-axis labels to the top
+            if i == 0:
+                ax.xaxis.tick_top()
+                ax.tick_params(axis='x', labeltop=True, labelbottom=False, labelrotation=45, pad=10)
+            else:
+                ax.tick_params(axis='x', bottom=False, labelbottom=False)
+
+            
+            ax.set_ylabel(variable, fontsize=textsize, rotation=0, labelpad=5, ha="right")
+            ax.tick_params(left=False)
+
+
+        plt.suptitle(f"Key Metrics - Weekly Average by {hrvar}",
+                     fontsize=16, x=0.5, y=1.02, ha='center')
+
+        plt.tight_layout(rect=[0, 0, 1, 0.95])
         plt.show()
 
+    elif return_type == "table":
+        return summary_table
+
     else:
-        raise ValueError("Invalid value for `return_type`. Choose 'plot' or 'table'.")
+        raise ValueError("Invalid value for `return_type`. Choose either 'plot' or 'table'.")
