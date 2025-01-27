@@ -36,10 +36,11 @@ def keymetrics_scan(data,
                              "External_network_size",
                              "Networking_outside_company"],
                     return_type="plot",
-                    low="#0770A1",
-                    high="#D8182A",
+                    low_color="#4169E1",
+                    mid_color="#F1CC9E",
+                    high_color="#D8182A",
                     textsize=10,
-                    row_scaling_factor=0.8):    
+                    plot_row_scaling_factor=0.8):    
     
     """
     Generate a summary of key metrics with options to return a heatmap or a summary table.
@@ -235,9 +236,11 @@ def keymetrics_scan(data,
         hrvar_categories = summary_long[hrvar].unique()
 
         # Use dynamic scaling factor for figure height
-        fig, axes = plt.subplots(num_vars, 1, figsize=(10, row_scaling_factor * num_vars), sharex=True)
+        fig, axes = plt.subplots(num_vars, 1, figsize=(10, plot_row_scaling_factor * num_vars), sharex=True)
 
         for i, variable in enumerate(variables):
+            custom_cmap = LinearSegmentedColormap.from_list(
+            "custom_cmap", [low_color, mid_color, high_color])
             ax = axes[i] if num_vars > 1 else axes
             subset = summary_long[summary_long['variable'] == variable]
             row_min = subset['value'].min()
@@ -251,7 +254,7 @@ def keymetrics_scan(data,
             sns.heatmap(heatmap_data,
                         annot=subset['value'].values.reshape(1, -1),
                         fmt=".1f",
-                        cmap=sns.diverging_palette(250, 10, as_cmap=True),
+                        cmap=custom_cmap,
                         cbar=False,
                         linewidths=0.5,
                         vmin=0,
