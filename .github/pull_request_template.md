@@ -13,6 +13,8 @@ The changes made in this PR are:
 - [ ] `NEWS.md` has been updated
 - [ ] If a new module has been added, a corresponding test has been created
 - [ ] If a new module has been created, `vivainsights/__init__.py` is updated accordingly
+- [ ] Everything under `dist` has been cleared prior to running `python setup.py sdist bdist_wheel`
+- [ ] Run `sphinx-apidoc -o docs vivainsights` to ensure all modules are included for the documentation site
 
 # Notes
 This fixes #<issue_number>
