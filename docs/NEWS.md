@@ -1,3 +1,7 @@
+# Version 0.3.4
+
+Added `keymetrics_scan()` for visualizing multiple metrics across an organizational attribute.
+
 # Version 0.3.3
 
 Added function for calculating Chatterjee coefficient.
