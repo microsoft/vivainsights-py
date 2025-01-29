@@ -143,24 +143,26 @@ def network_p2p(data,
 
     Examples
     --------
-    >>> vi.network_p2p(data = p2p_data, return_type = "plot")
+    >>> import vivainsights as vi
+    >>> sample_data = vi.p2p_data_sim()
+    >>> vi.network_p2p(data = sample_data, return_type = "plot")
     # Return a network visual
     
-    >>> vi.network_p2p(data = p2p_data, community = "leiden", comm_args = {"resolution": 0.01}, return_type = "table")
+    >>> vi.network_p2p(data = sample_data, community = "leiden", comm_args = {"resolution": 0.01}, return_type = "table")
     # Return the vertex table with counts in communities and HR attribute
     # Resolution is set to a low value to yield fewer communities
     
-    >>> vi.network_p2p(data = p2p_data, centrality = "betweenness", return_type = "table")
+    >>> vi.network_p2p(data = sample_data, centrality = "betweenness", return_type = "table")
     # Return the vertex table with centrality calculations
     
     >>> vi.network_p2p(
-        data = p2p_data, # or whatever your query is stored
+        data = sample_data, # or whatever your query is stored
         node_scale = 50, # adjust this parameter to make nodes bigger/smaller
         return_type = "plot"
         )
     
     >>> vi.network_p2p(
-        data=p2p_data, # or whatever your query is stored
+        data = sample_data, # or whatever your query is stored
         return_type = "sankey", # another return type for visualization 
         centrality = "betweenness", # centrality can be set as per requirement
         community = "leiden" # Adjust community 
@@ -168,7 +170,7 @@ def network_p2p(data,
     # Return the sankey output based on centrality and community
     
     >>> vi.network_p2p(
-        data=p2p_data, # or whatever your query is stored
+        data = sample_data, # or whatever your query is stored
         return_type = "plot",
         font_col = "grey20", # Color change option for fonts in chart
         legend_pos = "upper left", # Adjust the legend position using this parameter
