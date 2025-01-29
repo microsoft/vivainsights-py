@@ -14,6 +14,7 @@ from datetime import datetime
 def export(x,
            file_format='clipboard',
            path='insights export',
+           dpi=300,
            timestamp=True):
            
         """
@@ -34,6 +35,8 @@ def export(x,
             Character string specifying the method of export.
         path : str or optional 
             If exporting a file, enter the path and the desired file name. Defaults to "insights export". 
+        dpi : int or optional
+            Integer specifying the dots per inch for the image. Defaults to 300.
         timestamp : bool or optional 
             Logical vector specifying whether to include a timestamp in the file name. Defaults to True.
         
@@ -48,6 +51,11 @@ def export(x,
         - `"jpeg"`: JPEG file containing '' object is saved to specified path.
         - `"pdf"`: PDF file containing '' object is saved to specified path.
 
+        Example
+        -------
+        >>> import vivainsights as vi
+        >>> km_plot = vi.keymetrics_scan(data = vi.load_pq_data(), hrvar='Organization', return_type = "plot")
+        >>> vi.export(km_plot, file_format = 'png', path = 'keymetrics_scan', timestamp = False)
         """
     
         # Create timestamped path (if applicable)
@@ -70,7 +78,7 @@ def export(x,
             print(f"Exporting to {newpath}...")
             x.savefig( # matplotlib.savefig
                 newpath,
-                dpi = 300, # Set dots per inch
+                dpi = dpi, # Set dots per inch
                 bbox_inches="tight", # Remove extra whitespace around plot
                 facecolor='white' # Set background color to white   
                 ) 
