@@ -196,6 +196,14 @@ vivainsights.import\_query module
    :undoc-members:
    :show-inheritance:
 
+vivainsights.key\_metrics\_scan module
+---------------------------------
+
+.. automodule:: vivainsights.keymetrics_scan
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 vivainsights.mt\_data module
 ----------------------------
 
@@ -272,6 +280,14 @@ vivainsights.us\_to\_space module
 ---------------------------------
 
 .. automodule:: vivainsights.us_to_space
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+vivainsights.xicor module
+---------------------------------
+
+.. automodule:: vivainsights.xicor
    :members:
    :undoc-members:
    :show-inheritance:

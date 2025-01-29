@@ -6,7 +6,7 @@ with open('requirements.txt', encoding='utf-8') as f:
     requirements = f.read().splitlines()
 
 setup(name='vivainsights',
-      version='0.3.3',
+      version='0.3.4',
       url='https://github.com/microsoft/vivainsights',
       license= 'MIT',
       author='Martin Chan',
