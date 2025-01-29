@@ -11,6 +11,7 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+from vivainsights.extract_date_range import extract_date_range
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.colors import Normalize
 
@@ -230,10 +231,13 @@ def keymetrics_scan(data,
 
     # Prepare the heatmap with row-wise normalization
     if return_type == "plot":
-        plt.figure(figsize=(12, 8))
+        plt.figure(figsize=(7, 4))
         variables = summary_long['variable'].unique()
         num_vars = len(variables)
         hrvar_categories = summary_long[hrvar].unique()
+        
+        # Clean labels for plotting
+        cap_str = extract_date_range(data, return_type = 'text')
 
         # Use dynamic scaling factor for figure height
         fig, axes = plt.subplots(num_vars, 1, figsize=(10, plot_row_scaling_factor * num_vars), sharex=True)
@@ -276,9 +280,13 @@ def keymetrics_scan(data,
 
         plt.suptitle(f"Key Metrics - Weekly Average by {hrvar}",
                      fontsize=16, x=0.5, y=1.02, ha='center')
+        
+        # Set source text
+        ax.text(x=0.12, y=-0.08, s=cap_str, transform=fig.transFigure, ha='left', fontsize=9, alpha=.7)
 
         plt.tight_layout(rect=[0, 0, 1, 0.95])
-        plt.show()
+        # return the plot object
+        return fig
 
     elif return_type == "table":
         return summary_table
