@@ -30,6 +30,7 @@ Also check out our package cheat sheet for a quick glimpse of what **vivainsight
    about.md
    modules   
    demo-vivainsights-py
+   faq.md
 
 .. toctree::
    :maxdepth: 2
