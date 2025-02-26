@@ -39,14 +39,16 @@ def extract_hr(
     
     Example
     -------
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
     >>> vi.extract_hr(
-    data = pq_data
-    )
+    >>>   data = pq_data
+    >>> )
     
     >>> vi.extract_hr(
-    data = pq_data,
-    return_type = "vars"
-    )
+    >>>   data = pq_data,
+    >>>   return_type = "vars"
+    >>> )
     
     """
     try:

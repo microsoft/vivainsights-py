@@ -34,15 +34,20 @@ def get_value_proportion(df, population_share):
 
 def compute_gini(x):
     """
+    Description
+    -----------
     Compute the Gini coefficient, a measure of statistical dispersion to represent inequality.
 
-    Parameters:
+    Parameters
+    ----------
     x (list, np.ndarray, pd.Series): A numeric vector representing values (e.g., income, emails sent).
 
-    Returns:
+    Returns
+    -------
     float: The Gini coefficient for the given vector of values.
 
-    Raises:
+    Raises
+    ------
     ValueError: If input is not a numeric vector.
     """
     if not isinstance(x, (list, np.ndarray, pd.Series)):
@@ -91,9 +96,10 @@ def create_lorenz(data, metric, return_type="plot"):
     --------
     Using `pq_data` from `vi.load_pq_data()`, which returns a DataFrame with an "Emails_sent" column.
     
+    >>> import vivainsights as vi
     >>> # Compute the Gini coefficient:
     >>> vi.create_lorenz(data=vi.load_pq_data(), metric="Emails_sent", return_type="gini")
-     
+
     >>> # Compute the underlying table for the Lorenz curve:
     >>> vi.create_lorenz(data=vi.load_pq_data(), metric="Emails_sent", return_type="table")
     

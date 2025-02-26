@@ -111,7 +111,9 @@ def hrvar_count(data: pd.DataFrame, hrvar: str = 'Organization', return_type: st
 
     Example
     -------
-    >>> hrvar_count(pq_data, hrvar = "LevelDesignation")
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> vi.hrvar_count(pq_data, hrvar = "LevelDesignation")
     """
     if return_type == "plot":
         out = hrvar_count_viz(data=data, hrvar=hrvar)
