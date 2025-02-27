@@ -62,16 +62,18 @@ def create_bubble(data, metric_x, metric_y, hrvar="Organization", mingroup=5, re
 
     # Plotting
     if return_type == "plot":
-        plt.figure(figsize=(10, 6))
-        sns.scatterplot(data=myTable, x=metric_x, y=metric_y, size='n', sizes=bubble_size, alpha=0.5, color=to_hex((0, 120/255, 212/255)))
-        texts = [plt.text(row[metric_x], row[metric_y], row[hrvar], size=8) for idx, row in myTable.iterrows()]
-        adjust_text(texts)
-        plt.title(f"{clean_x} and {clean_y} By {hrvar.replace('_', ' ')}")
-        plt.xlabel(clean_x)
-        plt.ylabel(clean_y)
-        # plt.suptitle(f"By {hrvar.replace('_', ' ')}", y=0.95, fontsize=10)
-        plt.figtext(0.1, -0.1, f"Total employees = {myTable['n'].sum()} | {pd.to_datetime(data['Date']).min().strftime('%Y-%m-%d')} to {pd.to_datetime(data['Date']).max().strftime('%Y-%m-%d')}", fontsize=8)
-        plt.show()
+        fig, ax = plt.subplots(figsize=(10, 6))
+        sns.scatterplot(data=myTable, x=metric_x, y=metric_y, size='n', sizes=bubble_size, alpha=0.5, 
+                        color=to_hex((0, 120/255, 212/255)), ax=ax)
+        texts = [ax.text(row[metric_x], row[metric_y], row[hrvar], size=8) for _, row in myTable.iterrows()]
+        adjust_text(texts, ax=ax)
+        ax.set_title(f"{clean_x} and {clean_y} By {hrvar.replace('_', ' ')}")
+        ax.set_xlabel(clean_x)
+        ax.set_ylabel(clean_y)
+        fig.text(0.1, -0.1, f"Total employees = {myTable['n'].sum()} | {pd.to_datetime(data['MetricDate']).min().strftime('%Y-%m-%d')} to {pd.to_datetime(data['MetricDate']).max().strftime('%Y-%m-%d')}", fontsize=8)
+
+        return fig
+
     elif return_type == "table":
         return myTable
     else:
