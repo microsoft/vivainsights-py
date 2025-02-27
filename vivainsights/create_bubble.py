@@ -17,7 +17,8 @@ def create_bubble(data, metric_x, metric_y, hrvar="Organization", mingroup=5, re
     """
     Generates a bubble plot or a summary table based on two selected metrics.
 
-    Parameters:
+    Parameters
+    ----------
     - data (pd.DataFrame): The dataset containing the metrics and employee details.
     - metric_x (str): Column name representing the x-axis metric.
     - metric_y (str): Column name representing the y-axis metric.
@@ -26,13 +27,16 @@ def create_bubble(data, metric_x, metric_y, hrvar="Organization", mingroup=5, re
     - return_type (str): "plot" to return a bubble plot, "table" to return a summary table.
     - bubble_size (tuple): Size range for the bubbles in the plot.
 
-    Returns:
+    Returns
+    -------
     - If return_type == "plot", returns a seaborn scatter plot with bubble sizes.
     - If return_type == "table", returns a pandas DataFrame with the summarized metrics.
 
     Example
     -------
-    create_bubble (pq_data, metric = "Collaboration_hours", hrvar = "LevelDesignation")
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> vi.create_bubble(pq_data, metric = "Collaboration_hours", hrvar = "LevelDesignation")
     """
 
     # Input checks
