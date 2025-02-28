@@ -12,6 +12,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib.colors import to_hex
 from adjustText import adjust_text
+from vivainsights.totals_col import totals_col
+
 
 def create_bubble(data, metric_x, metric_y, hrvar="Organization", mingroup=5, return_type="plot", bubble_size=(1, 100)):
     """
@@ -36,19 +38,18 @@ def create_bubble(data, metric_x, metric_y, hrvar="Organization", mingroup=5, re
     -------
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
-    >>> vi.create_bubble(pq_data, metric = "Collaboration_hours", hrvar = "LevelDesignation")
+    >>> vi.create_bubble(data=pq_data, metric_x="Collaboration_hours", metric_y="Multitasking_hours", hrvar="Organization")
     """
-
+    # Handling NULL values passed to hrvar
+    if(hrvar is None):
+        data = totals_col(data)
+        hrvar = "Total"
+        
     # Input checks
     required_variables = [hrvar, metric_x, metric_y, "PersonId"]
     for var in required_variables:
         if var not in data.columns:
             raise ValueError(f"Missing required variable: {var}")
-
-    # Handling NULL values passed to hrvar
-    if hrvar is None:
-        data['Total'] = 'Total'
-        hrvar = 'Total'
 
     # Clean metric names
     clean_x = metric_x.replace('_', ' ')
