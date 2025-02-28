@@ -34,3 +34,4 @@ from .create_bar_asis import *
 from .create_lorenz import *
 from .xicor import *
 from .keymetrics_scan import *
+from .create_bubble import *
