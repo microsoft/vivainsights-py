@@ -132,22 +132,26 @@ def copilot_usage_glint_sentiment(file_name, survey_close_date, item_options = 5
 
     weekly_usage['UserCategory'] = weekly_usage.apply(assign_user_category, axis=1)
 
+    # CATEGORIZE POWER-HABITUAL-NOVICE-LOW-NON
+    weekly_usage['UserCategory_Group'] = weekly_usage['UserCategory'].apply(lambda x: 'HIGH' if x in('PowerUser', 'HabitualUser') else ('MED' if x in('NoviceUser','LowUser')  else 'NonUser')))
+
     # Merge the user categories back into the original DataFrame
     df_past_12_weeks_usage = df_past_12_weeks.merge(
-        weekly_usage[['Employee_ID', 'UserCategory']],
+        weekly_usage[['Employee_ID', 'UserCategory_Group']],
         on='Employee_ID',
         how='left'
     )
 
     # MERGE USERCATEGORY BACK INTO GLINT DATA
     df_glint_usage = df_glint.merge(
-        df_past_12_weeks_usage[['Employee_ID', 'UserCategory']],
+        df_past_12_weeks_usage[['Employee_ID', 'UserCategory_Group']],
         on='Employee_ID',
         how='left'
-    ) [['Employee_ID', 'Glint_Item', 'Score', 'UserCategory']]
+    ) [['Employee_ID', 'Glint_Item', 'Score', 'UserCategory_Group']]
+
 
     # OUTPUT THE COUNT OF EACH USER CATEGORY AND PERCENT OF TOTAL FORMATTED IN A TABLE
-    user_category_counts = weekly_usage['UserCategory'].value_counts()
+    user_category_counts = weekly_usage['UserCategory_Group'].value_counts()
     user_category_percent = user_category_counts / user_category_counts.sum() * 100
     user_category_table = pd.concat([user_category_counts, user_category_percent], axis=1)
     user_category_table.columns = ['Count', 'Percent']
@@ -164,9 +168,6 @@ def copilot_usage_glint_sentiment(file_name, survey_close_date, item_options = 5
     # ADD FAVORABILITY COLUMN
     df_glint_usage['favorability'] = df_glint_usage['Score'].apply(lambda x: 'fav' if x >= 4 else ('unfav' if x <= 2 else 'neu'))
     df_glint_usage = df_glint_usage[df_glint_usage['favorability'] != 'neu']
-
-    # CATEGORIZE POWER-HABITUAL-NOVICE-LOW-NON
-    df_glint_usage['UserCategory_Group'] = df_glint_usage['UserCategory'].apply(lambda x: 'HIGH' if x in('PowerUser', 'HabitualUser') else ('MED' if x in('NoviceUser','LowUser')  else 'LOW'))
 
     # GET COUNTS FOR EACH USER CATEGORY GROUPED BY GLINT ITEM AND FAVORABILITY
     df_glint_usage_grouped = df_glint_usage.groupby(['Glint_Item', 'favorability', 'UserCategory_Group'])['Employee_ID'].nunique().reset_index(name='user_count')
@@ -212,7 +213,6 @@ def copilot_usage_glint_sentiment(file_name, survey_close_date, item_options = 5
 
     # DROP USERCATEGORY_GROUP COLUMN AND PIVOT MAX_MIN INTO COLUMNS
     df_glint_usage_grouped_pivot_odds = df_glint_usage_grouped_pivot_odds.drop(columns='UserCategory_Group').drop_duplicates()
-    print(df_glint_usage_grouped_pivot_odds)
     df_glint_usage_grouped_pivot_odds = df_glint_usage_grouped_pivot_odds.pivot(index='Glint_Item', columns='MAX_MIN', values='odds').reset_index()
 
     # TRY TO DIVIDE THE MAX ODDS BY THE MIN ODDS FOR EACH GLINT ITEM. IF THERE IS NO MIN COLUMN, PRINT ('NOT ENOUGH DATA')
@@ -239,8 +239,6 @@ def copilot_usage_glint_sentiment(file_name, survey_close_date, item_options = 5
 
     # PRINT FINAL ODDS RATIO TABLE SORTED BY ODDS RATIO
     df_glint_usage_grouped_pivot_odds_final = df_glint_usage_grouped_pivot_odds_final.sort_values('odds_ratio', ascending=False).reset_index(drop=True)
-    print(df_glint_usage_grouped_pivot_odds_final)
-
     return df_glint_usage_grouped_pivot_odds_final
 
 
@@ -257,5 +255,7 @@ survey_close_date = datetime.datetime.strptime('2024-09-29', '%Y-%m-%d')
 file_name = 'C:/Users/bentankus/OneDrive - Microsoft/Projects/Copilot Support/glint_demodata_singlesource.csv'
 copilot_usage = copilot_usage_glint_sentiment(file_name, survey_close_date, 5)
 
+# NEW LINE FOR READABILITY
+print('')
 
 print(copilot_usage)
