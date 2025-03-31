@@ -203,12 +203,16 @@ def copilot_usage_glint_sentiment(file_name, survey_close_date, item_options = 5
     # Identify the MAX and MIN odds for each Glint_Item and UserCategory_Group
     df_glint_usage_grouped_pivot_odds['MAX_MIN'] = df_glint_usage_grouped_pivot_odds.groupby('Glint_Item')['odds'].transform(
         lambda x: ['MAX' if val == x.max() else 'MIN' if val == x.min() else None for val in x])
+    
+    # DROP NONE VALUES FROM MAX_MIN COLUMN
+    df_glint_usage_grouped_pivot_odds = df_glint_usage_grouped_pivot_odds.dropna(subset=['MAX_MIN'])
 
     # PREPARE df_max_min FOR LATER JOIN
     df_max_min = df_glint_usage_grouped_pivot_odds[['Glint_Item', 'UserCategory_Group','MAX_MIN']]
 
     # DROP USERCATEGORY_GROUP COLUMN AND PIVOT MAX_MIN INTO COLUMNS
-    df_glint_usage_grouped_pivot_odds = df_glint_usage_grouped_pivot_odds.drop(columns='UserCategory_Group')
+    df_glint_usage_grouped_pivot_odds = df_glint_usage_grouped_pivot_odds.drop(columns='UserCategory_Group').drop_duplicates()
+    print(df_glint_usage_grouped_pivot_odds)
     df_glint_usage_grouped_pivot_odds = df_glint_usage_grouped_pivot_odds.pivot(index='Glint_Item', columns='MAX_MIN', values='odds').reset_index()
 
     # TRY TO DIVIDE THE MAX ODDS BY THE MIN ODDS FOR EACH GLINT ITEM. IF THERE IS NO MIN COLUMN, PRINT ('NOT ENOUGH DATA')
@@ -240,6 +244,8 @@ def copilot_usage_glint_sentiment(file_name, survey_close_date, item_options = 5
     return df_glint_usage_grouped_pivot_odds_final
 
 
+
+# Example usage of the function
 import chardet
 import re
 from scipy.stats import percentileofscore
@@ -249,6 +255,7 @@ import pandas as pd
 
 survey_close_date = datetime.datetime.strptime('2024-09-29', '%Y-%m-%d')
 file_name = 'C:/Users/bentankus/OneDrive - Microsoft/Projects/Copilot Support/glint_demodata_singlesource.csv'
-copilot_usage = copilot_usage_glint_sentiment(file_name, survey_close_date, 5,)
+copilot_usage = copilot_usage_glint_sentiment(file_name, survey_close_date, 5)
+
 
 print(copilot_usage)
