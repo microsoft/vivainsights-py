@@ -133,7 +133,7 @@ def copilot_usage_glint_sentiment(file_name, survey_close_date, item_options = 5
     weekly_usage['UserCategory'] = weekly_usage.apply(assign_user_category, axis=1)
 
     # CATEGORIZE POWER-HABITUAL-NOVICE-LOW-NON
-    weekly_usage['UserCategory_Group'] = weekly_usage['UserCategory'].apply(lambda x: 'HIGH' if x in('PowerUser', 'HabitualUser') else ('MED' if x in('NoviceUser','LowUser')  else 'NonUser')))
+    weekly_usage['UserCategory_Group'] = weekly_usage['UserCategory'].apply(lambda x: 'HIGH' if x in('PowerUser', 'HabitualUser') else ('MED' if x in('NoviceUser','LowUser')  else 'NonUser'))
 
     # Merge the user categories back into the original DataFrame
     df_past_12_weeks_usage = df_past_12_weeks.merge(
@@ -162,8 +162,7 @@ def copilot_usage_glint_sentiment(file_name, survey_close_date, item_options = 5
 
 
 
-
-    ###### Convert to Favorability and begin the Odds Ratio calculation #####
+    ###### CONVERT TO FAVORABILITY AND BEGIN THE ODDS RATIO CALCULATION #######
 
     # ADD FAVORABILITY COLUMN
     df_glint_usage['favorability'] = df_glint_usage['Score'].apply(lambda x: 'fav' if x >= 4 else ('unfav' if x <= 2 else 'neu'))
