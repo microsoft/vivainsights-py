@@ -40,7 +40,9 @@ def identify_outlier(data: pd.DataFrame, group_var = "MetricDate", metric = "Col
 
     Example
     -------
-    >>> identify_outlier(data, group_var = "MetricDate", metric = "Collaboration_hours")
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> vi.identify_outlier(pq_data, group_var = "MetricDate", metric = "Collaboration_hours")
     """ 
 
     try:

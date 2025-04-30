@@ -43,6 +43,8 @@ def network_summary(graph, hrvar = None, return_type = "table"):
 
     Examples
     --------
+    >>> import vivainsights as vi
+    >>> # Assign igraph object to `graph`
     >>> graph = network_g2g(data = vi.load_g2g_data(), return_type = "network")
     >>> network_summary(graph, hrvar = "Organization", return_type = "table")
     """ 

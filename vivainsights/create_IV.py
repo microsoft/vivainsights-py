@@ -333,8 +333,8 @@ def create_IV(
     
     Note    
     ----
-    >>> create_IV function return_type 'list' and 'summary' has output format as a dictionary, kindly use for loop to access the key and values.
-    >>> create_IV function return_type 'IV' has output format as a tuple, tuple element 'output_list'format is dictionary hence kindly use for loop to access the key and values.
+      * create_IV function return_type 'list' and 'summary' has output format as a dictionary, please use for loop to access the key and values.
+      * create_IV function return_type 'IV' has output format as a tuple, tuple element 'output_list'format is dictionary hence please use for loop to access the key and values.
 
     Example
     -------

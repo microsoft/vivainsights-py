@@ -42,22 +42,6 @@ def keymetrics_scan(data,
                     high_color="#D8182A",
                     textsize=10,
                     plot_row_scaling_factor=0.8):    
-    
-    """
-    Generate a summary of key metrics with options to return a heatmap or a summary table.
-
-    Parameters:
-    - data: pandas DataFrame containing the input data.
-    - hrvar: Column name to group by, defaults to "Organization".
-    - mingroup: Minimum number of employees required to include a group.
-    - metrics: List of metric column names to calculate averages for.
-    - return_type: "plot" for heatmap or "table" for summary table.
-    - low, mid, high: Color codes for low, mid, and high values in the heatmap.
-    - textsize: Font size for the text in the plot.
-
-    Returns:
-    - A seaborn heatmap (plot) or a summary table (DataFrame).
-    """
     """
     Name
     ----
@@ -65,12 +49,12 @@ def keymetrics_scan(data,
 
     Description
     ------------
-    This function generates a summary of key metrics from a given dataset with options to return a heatmap visualization or a summary table.
+    Generate a summary of key metrics with options to return a heatmap or a summary table.
 
     Parameters
     ----------
     data : pandas.DataFrame
-        The input data containing the metrics to analyze.
+        A Person Query dataset in the form of a pandas dataframe.
     hrvar : str, optional
         The column name to group the data by. Defaults to `"Organization"`.
     mingroup : int, optional

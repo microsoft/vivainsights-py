@@ -4,6 +4,11 @@
 # --------------------------------------------------------------------------------------------
 """
 This module returns a data frame containing a group-to-group query.
+
+Example
+-------
+>>> import vivainsights as vi
+>>> g2g_data = vi.load_g2g_data()
 """
 import pkg_resources
 import pandas as pd

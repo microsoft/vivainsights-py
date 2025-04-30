@@ -37,17 +37,9 @@ For users who prefer R to Python, we recommend the [R library counterpart](https
 
 ## Installation
 
-1. Clone this repository to your local drive. 
-1. On PowerShell, change directory (`cd`) to the repository on your local drive, and run `python setup.py install`. This should install 'vivainsights' to your python package registry. To check whether it is installed, you can run `pip freeze` on your command prompt.
-
-To install from this GitHub repository directly using pip, you may run this in Command Line:
-```
-pip install -e git+https://github.com/microsoft/vivainsights-py#egg=vivainsights
-```
-
-You can also install from a specific branch with the following, replacing the branch name with `<remote-branch-name>`:
-```
-pip install -e git+https://github.com/microsoft/vivainsights-py@<remote-branch-name>#egg=vivainsights
+You can install this package directly from PyPI by running the following in command prompt: 
+```cmd
+pip install vivainsights
 ```
 
 ## How to use

@@ -40,10 +40,10 @@ def identify_nkw(
     Example
     -------
     >>> vi.identify_nkw(
-            data = pq_data,
-            collab_threshold=15,
-            return_type = 'text'
-        )
+    >>>        data = pq_data,
+    >>>        collab_threshold=15,
+    >>>        return_type = 'text'
+    >>>    )
     
     """
     summary_byPersonId = (
