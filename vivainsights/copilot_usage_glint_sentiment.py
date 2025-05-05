@@ -63,7 +63,8 @@ def copilot_usage_glint_sentiment(file_name, survey_close_date, item_options = 5
     # DROP NEUTRAL FAVORABILITY
     df_glint = df_glint[df_glint['favorability'] != 'neu']
 
-
+    # CREATE FULL DF FOR LATER USE
+    df_glint_full = df_glint
 
 
 
@@ -73,35 +74,46 @@ def copilot_usage_glint_sentiment(file_name, survey_close_date, item_options = 5
 
     #Calculate "Copilot Usage" based on 12 week habit building literature and Odds Ratio methods comparing differing user types
 
-
-
+    
+    
+    #Calculate "Copilot Usage" based on 12 week habit building literature and Odds Ratio methods comparing differing user types
+    
+    
     # CALCULATE COPILOT USAGE
     columns_to_include = ['Employee_ID', 'MetricDate']
-    copilot_columns = df_glint.filter(regex='(?i)copilot', axis=1).columns
-
+    # Dynamically filter columns based on conditions
+    copilot_columns = df_glint.filter(
+        regex='(?i)copilot', axis=1
+    ).columns
+    
+    # Additional filtering logic can be added here
+    # Example: Exclude columns containing specific keywords
+    exclude_keywords = ['Test', 'day']
+    copilot_columns = copilot_columns[~copilot_columns.str.contains('|'.join(exclude_keywords), case=False)]
+    
     # Select employee_id, date, and copilot-related columns
     df_glintscore_copilot = df_glint[columns_to_include + copilot_columns.tolist()].drop_duplicates()
     df_glintscore_copilot['MetricDate'] = pd.to_datetime(df_glintscore_copilot['MetricDate'], format='%m/%d/%Y', errors='coerce')
-
+    
     # Define the start date for the past 12 weeks based on the survey close date
     start_date = survey_close_date - datetime.timedelta(weeks=12)
-
+    
     # Filter data for the past 12 weeks
     df_past_12_weeks = df_glintscore_copilot[
         (df_glintscore_copilot['MetricDate'] >= start_date) & 
         (df_glintscore_copilot['MetricDate'] < survey_close_date)
     ]
-
+    
     # COUNT ALL NON-ZERO COPILOT ACTIVITIES FOR EACH EMPLOYEE_ID AND DATE
     df_past_12_weeks['NonZero_Copilot_Activities'] = df_past_12_weeks.iloc[:, 2:].apply(lambda row: (row > 0).sum(), axis=1)
-
+    
     # Group by Employee_ID and calculate weekly usage
     weekly_usage = df_past_12_weeks.groupby('Employee_ID')['NonZero_Copilot_Activities'].agg(
         total_usage='sum',
         avg_usage='mean'
     ).reset_index()
-
-
+    
+    
     # JOIN IN df_past_12_weeks_usage NonZero_Copilot_Activities FOR EACH USER TO weekly_usage SO WE HAVE HABIT BUILDING
     weekly_usage = weekly_usage.merge(df_past_12_weeks[['Employee_ID', 'NonZero_Copilot_Activities']].drop_duplicates(), on='Employee_ID', how='left')
 
@@ -119,12 +131,12 @@ def copilot_usage_glint_sentiment(file_name, survey_close_date, item_options = 5
                 else:
                     return 'HabitualUser'
         
-            elif row['total_usage'] > 1:
+            elif row['avg_usage'] >= 1:
                 return 'NoviceUser'
             
             elif row['total_usage'] == 1:
                 return 'LowUser'
-
+    
             else:
                 return 'NonUser'
         
@@ -157,8 +169,17 @@ def copilot_usage_glint_sentiment(file_name, survey_close_date, item_options = 5
     user_category_table.columns = ['Count', 'Percent']
     user_category_table = user_category_table.round(2)
     print(user_category_table)
-
-
+    
+    
+    # ADD A USER CATEGORY FLAG ALERT THAT READS user_category_table AND PRINTS ALERT IF ANY PERCENT IS LESS THAN 5%
+    def check_user_category_alerts(user_category_table):
+        for category, row in user_category_table.iterrows():
+            if row['Percent'] < 5:
+                print('')
+                print(f"WARNING: {category} is below 5% with {row['Count']} users ({row['Percent']:.2f}%)")
+                print("Consider redefining user categories to ensure each group has a minimum of 5% of the total user base.")
+    
+    check_user_category_alerts(user_category_table)
 
 
 
@@ -238,23 +259,24 @@ def copilot_usage_glint_sentiment(file_name, survey_close_date, item_options = 5
 
     # PRINT FINAL ODDS RATIO TABLE SORTED BY ODDS RATIO
     df_glint_usage_grouped_pivot_odds_final = df_glint_usage_grouped_pivot_odds_final.sort_values('odds_ratio', ascending=False).reset_index(drop=True)
+
+
+    print(df_glint_usage_grouped_pivot_odds_final)
+
+    ### Calculate Glint Score for each user group and item
+    df_glint_agg = df_glint_full[['Employee_ID','Glint_Item','score100']].drop_duplicates()
+
+    
+    # JOIN IN USERCATEGORY GROUP TO df_glint_agg
+    df_glint_agg = df_glint_agg.merge(
+        df_glint_usage[['Employee_ID', 'UserCategory_Group']].drop_duplicates(),
+        on='Employee_ID',
+        how='left'
+    )
+    
+    # GROUPED BY GLINT ITEM AND USERCATEGORY GROUP AND CALCULATE THE MEAN SCORE FROM SCORE100
+    df_glint_agg = round(df_glint_agg.groupby(['Glint_Item', 'UserCategory_Group'])['score100'].mean().reset_index(),1)
+    
+    print(df_glint_agg)
+
     return df_glint_usage_grouped_pivot_odds_final
-
-
-
-# Example usage of the function
-import chardet
-import re
-from scipy.stats import percentileofscore
-import datetime
-import pandas as pd
-
-
-survey_close_date = datetime.datetime.strptime('2024-09-29', '%Y-%m-%d')
-file_name = 'C:/Users/bentankus/OneDrive - Microsoft/Projects/Copilot Support/glint_demodata_singlesource.csv'
-copilot_usage = copilot_usage_glint_sentiment(file_name, survey_close_date, 5)
-
-# NEW LINE FOR READABILITY
-print('')
-
-print(copilot_usage)
