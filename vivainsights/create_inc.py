@@ -14,7 +14,7 @@ from vivainsights.color_codes import COLOR_PALLET_ALT_2
 from vivainsights.create_bar import create_bar
 from vivainsights.extract_date_range import extract_date_range
 
-def create_inc(data: pd.DataFrame, metric: str, hrvar: typing.List or str, mingroup: int = 5, threshold: float = None, position: str = None, return_type: str = 'plot'):
+def create_inc(data: pd.DataFrame, metric: str, hrvar: typing.List | str, mingroup: int = 5, threshold: float = None, position: str = None, return_type: str = 'plot'):
     """
     Name
     ----
