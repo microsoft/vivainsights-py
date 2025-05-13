@@ -35,3 +35,4 @@ from .create_lorenz import *
 from .xicor import *
 from .keymetrics_scan import *
 from .create_bubble import *
+from .identify_habit import *
