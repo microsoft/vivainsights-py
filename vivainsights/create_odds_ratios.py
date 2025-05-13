@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def create_odds_ratios(data: pd.DataFrame, ord_metrics: list, metric: str, ord_item_options: int, return_type: str = 'table'):
+def create_odds_ratios(data: pd.DataFrame, ord_metrics: list, metric: str, return_type: str = 'table'):
     """
     Name
     ----
@@ -29,8 +29,6 @@ def create_odds_ratios(data: pd.DataFrame, ord_metrics: list, metric: str, ord_i
         List of strings referring to the column names of the ordinal variables.
     metric : str
         Name of the variable to calculate proportional odds against the `ord_metrics`.
-    ord_item_options : int
-        Number of options in the ordinal metrics.
     return_type : str, optional
         Specifies what to return. Defaults to 'table'. 
         - 'table': Returns a data frame with the final odds ratio table sorted by odds ratio.
@@ -45,7 +43,7 @@ def create_odds_ratios(data: pd.DataFrame, ord_metrics: list, metric: str, ord_i
     -------
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
-    >>> vi.create_odds_ratios(data=pq_data, ord_metrics=["Engagement_Score", "Satisfaction_Score"], metric="Copilot_Usage", ord_item_options=5, return_type="table")
+    >>> vi.create_odds_ratios(data=pq_data, ord_metrics=["Engagement_Score", "Satisfaction_Score"], metric="Copilot_Usage", return_type="table")
     """
     # Validate inputs
     if not isinstance(ord_metrics, list):
@@ -70,24 +68,27 @@ def create_odds_ratios(data: pd.DataFrame, ord_metrics: list, metric: str, ord_i
         # Calculate odds for each level of the ordinal metric
         odds = contingency_table.div(contingency_table.sum(axis=1), axis=0)
 
-        # Calculate odds ratios
-        odds_ratio = odds.iloc[:, -1] / odds.iloc[:, 0]
-        odds_ratios.append({
-            "Ordinal_Metric": ord_metric,
-            "Odds_Ratio": odds_ratio.max(),
-            "Max_Level": odds.columns[-1],
-            "Min_Level": odds.columns[0]
-        })
+        # Calculate odds ratios for all levels
+        odds_ratios_all_levels = odds.div(odds.iloc[:, 0], axis=0)
 
-    # Convert results to a DataFrame
-    odds_ratios_df = pd.DataFrame(odds_ratios).sort_values(by="Odds_Ratio", ascending=False)
+        # Reshape odds_ratios_all_levels for inclusion in the output
+        odds_ratios_all_levels = odds_ratios_all_levels.reset_index().melt(
+            id_vars=[metric], var_name="Level", value_name="Odds_Ratio"
+        )
+        odds_ratios_all_levels["Ordinal_Metric"] = ord_metric
+
+        # Append to the results
+        odds_ratios.append(odds_ratios_all_levels)
+
+    # Combine all results into a single DataFrame
+    odds_ratios_df = pd.concat(odds_ratios, ignore_index=True)
 
     if return_type == "table":
         return odds_ratios_df
     elif return_type == "plot":
         # Create a bar plot for visualizing odds ratios
         fig, ax = plt.subplots(figsize=(8, 6))
-        sns.barplot(data=odds_ratios_df, x="Odds_Ratio", y="Ordinal_Metric", ax=ax, palette="Blues_d")
+        sns.barplot(data=odds_ratios_df, x="Odds_Ratio", y="Ordinal_Metric", hue="Level", ax=ax, palette="Blues_d")
         ax.set_title("Odds Ratios for Ordinal Metrics")
         ax.set_xlabel("Odds Ratio")
         ax.set_ylabel("Ordinal Metric")
