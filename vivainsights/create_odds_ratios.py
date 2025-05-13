@@ -60,7 +60,7 @@ def create_odds_ratios(data: pd.DataFrame, ord_metrics: list, metric: str, retur
     # Calculate odds ratios for each ordinal metric
     for ord_metric in ord_metrics:
         # Create a contingency table
-        contingency_table = pd.crosstab(data[metric], data[f"{ord_metric}_100"])
+        contingency_table = pd.crosstab(data[metric], data[ord_metric])
         
         # Add 0.5 to each cell to avoid division by zero
         contingency_table += 0.5
