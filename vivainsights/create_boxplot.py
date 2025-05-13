@@ -229,7 +229,7 @@ def create_boxplot(data: pd.DataFrame, metric: str, hrvar: str ="Organization", 
         group_ord = summary_table.sort_values(by="mean", ascending=True)["group"].tolist()
     
         # Create a new column in plot_data with the same name as the group variable
-        plot_data.assign(group=pd.Categorical(plot_data.group, categories=group_ord)).sort_values(by="group", ascending=False)
+        plot_data = plot_data.assign(group=pd.Categorical(plot_data.group, categories=group_ord)).sort_values(by="group", ascending=False)
         
         return plot_data
     else:
