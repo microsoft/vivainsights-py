@@ -60,12 +60,15 @@ def create_boxplot_summary(data: pd.DataFrame, metric, hrvar, mingroup):
 
 def create_boxplot_viz(data: pd.DataFrame, metric, hrvar, mingroup):    
         
-        # Get max value
-        max_point = data[metric].max() * 1.2
-        
         # Clean labels for plotting
         clean_nm = metric.replace("_", " ")
         cap_str = extract_date_range(data, return_type = 'text')
+        
+        # Calculate 'plot data'
+        data = create_boxplot_calc(data, metric, hrvar, mingroup)
+        
+        # Get max value
+        max_point = data[metric].max() * 1.2
         
         # Boxplot Vizualization
         col_highlight = Colors.HIGHLIGHT_NEGATIVE.value
@@ -83,7 +86,7 @@ def create_boxplot_viz(data: pd.DataFrame, metric, hrvar, mingroup):
         ax.spines[['top','right','left']].set_visible(False)
         
         # Generate boxplot
-        sns.boxplot(x=hrvar, y=metric, data= data, ax=ax)
+        sns.boxplot(x='group', y=metric, data= data, ax=ax)
         
         # Add in line and tag
         ax.plot(
@@ -187,7 +190,7 @@ def create_boxplot(data: pd.DataFrame, metric: str, hrvar: str ="Organization", 
     -------
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
-    >>> create_boxplot(pq_data, metric = "Collaboration_hours", hrvar = "Organization", return_type = "plot")
+    >>> vi.create_boxplot(pq_data, metric = "Collaboration_hours", hrvar = "Organization", return_type = "plot")
     
     """
     # Check inputs
@@ -199,17 +202,18 @@ def create_boxplot(data: pd.DataFrame, metric: str, hrvar: str ="Organization", 
     # Handling NULL values passed to hrvar
     if hrvar is None:
         data = totals_col(data)
-        hrvar = "Total"    
-
-    # Summary table
-    summary_table = create_boxplot_summary(data, metric, hrvar, mingroup)
-        
-    # Group order
-    group_ord = summary_table.sort_values(by="mean", ascending=True)["group"].tolist()
+        hrvar = "Total"          
     
     # Main output
-    if return_type == "table":        
+    if return_type == "table":  
+        # Data calculations
+        plot_data = create_boxplot_calc(data, metric, hrvar, mingroup)      
+        
+        # Summary table
+        summary_table = create_boxplot_summary(plot_data, metric, hrvar, mingroup)
+        
         return pd.DataFrame(summary_table).reset_index()
+    
     elif return_type == "plot":
         # Boxplot vizualization    
         plot_object = create_boxplot_viz(data, metric, hrvar, mingroup)
@@ -217,6 +221,16 @@ def create_boxplot(data: pd.DataFrame, metric: str, hrvar: str ="Organization", 
     elif return_type == "data":
         # Data calculations
         plot_data = create_boxplot_calc(data, metric, hrvar, mingroup)
-        return plot_data.assign(group=pd.Categorical(plot_data.group, categories=group_ord)).sort_values(by="group", ascending=False)
+        
+        # Summary table
+        summary_table = create_boxplot_summary(plot_data, metric, hrvar, mingroup)
+        
+        # Group order
+        group_ord = summary_table.sort_values(by="mean", ascending=True)["group"].tolist()
+    
+        # Create a new column in plot_data with the same name as the group variable
+        plot_data.assign(group=pd.Categorical(plot_data.group, categories=group_ord)).sort_values(by="group", ascending=False)
+        
+        return plot_data
     else:
         raise ValueError("Please enter a valid input for `return`.")
