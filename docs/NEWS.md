@@ -1,3 +1,8 @@
+# Version 0.4.0
+
+- Added `create_odds_ratios()`, `identify_habit()`, and `identify_usage_segments()` as additional tools to analyse Copilot usage.
+- Improved documentation and Markdown narrative in example notebooks.
+
 # Version 0.3.4
 
 Added `keymetrics_scan()` for visualizing multiple metrics across an organizational attribute.
@@ -58,4 +63,4 @@ This is the first release of vivainsights. It includes the following features:
 - Data visualization
 - Data validation
 
-The first version has been released to PyPi. 
+The first version has been released to PyPi.
