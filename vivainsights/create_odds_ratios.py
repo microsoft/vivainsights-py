@@ -75,7 +75,24 @@ def create_odds_ratios(data: pd.DataFrame, ord_metrics: list, metric: str, retur
         odds_ratios_all_levels = odds_ratios_all_levels.reset_index().melt(
             id_vars=[metric], var_name="Level", value_name="Odds_Ratio"
         )
+        
         odds_ratios_all_levels["Ordinal_Metric"] = ord_metric
+
+        # --- Add n: count of distinct PersonId for each (metric, Level, Ordinal_Metric) ---
+        # Determine PersonId column
+        person_id_col = "PersonId" if "PersonId" in data.columns else data.columns[0]
+        # Compute counts
+        n_counts = (
+            data
+            .assign(Level=data[ord_metric], Ordinal_Metric=ord_metric)
+            .groupby([metric, "Level", "Ordinal_Metric"])[person_id_col]
+            .nunique()
+            .reset_index(name="n")
+        )
+        # Merge counts into odds_ratios_all_levels
+        odds_ratios_all_levels = odds_ratios_all_levels.merge(
+            n_counts, how="left", on=[metric, "Level", "Ordinal_Metric"]
+        )
 
         # Append to the results
         odds_ratios.append(odds_ratios_all_levels)
@@ -124,7 +141,10 @@ def compute_fav(data: pd.DataFrame, ord_metrics: list, item_options: int = 5, fa
     Returns
     -------
     pandas DataFrame
-        A DataFrame with the ordinal variables converted into categorical variables.
+        The returned DataFrame includes all original columns, plus for each ordinal metric:
+        - '<metric>_100': the metric rescaled to a 100-point scale
+        - '<metric>_fav': the favorability category ('fav', 'unfav', or 'neu')
+        If `drop_neutral` is True, rows with neutral scores are removed.
 
     Example
     -------
