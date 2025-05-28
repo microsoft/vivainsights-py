@@ -108,10 +108,18 @@ def identify_holidayweeks(data: pd.DataFrame, sd = 1, return_type = "text"):
             data_labelled = data.assign(holidayweek = data["MetricDate"].isin(Outliers))
             return data_labelled
         
-        elif return_type == "cleaned_data" or return_type == "data_cleaned":
-            # Calculate the three dataframe outputs
+        elif return_type in ["cleaned_data", "data_cleaned"]:
             data_cleaned = data[~data["MetricDate"].isin(Outliers)]
+            
+            if len(Outliers) == 0:
+                print(f"No holiday weeks were removed. Standard deviation threshold was {sd}.")
+            else:
+                outlier_dates = ', '.join(Outliers.dt.strftime("%Y-%m-%d"))
+                print(f"The weeks {outlier_dates} have been flagged as holiday weeks and removed from the data.")
+                print(f"This is based on a standard deviation of {sd} below the mean collaboration hours.")
+            
             return data_cleaned
+
         
         elif return_type == "holidayweeks_data":
             data_hw = data[data["MetricDate"].isin(Outliers)]
