@@ -1,6 +1,10 @@
 # Version 0.4.0
 
 - Added `create_odds_ratios()`, `identify_habit()`, and `identify_usage_segments()` as additional tools to analyse Copilot usage.
+- Updated the dataset loaded with `load_pq_data()` to include metrics on Copilot.
+- Added `create_bubble()` for bubble visualizations.
+- Added or updated tests for `create_bubble()`, `create_line()`, `create_trend()` etc. 
+- Improved diagnostic messages in `identify_holidayweeks()`. (#33)
 - Improved documentation and Markdown narrative in example notebooks.
 
 # Version 0.3.4
