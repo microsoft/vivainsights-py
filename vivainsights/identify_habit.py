@@ -82,6 +82,10 @@ def identify_habit(
     if not isinstance(max_window, int) or max_window <= 0:
         raise ValueError("`max_window` must be a positive integer.")
 
+    # Validate width
+    if not isinstance(width, int) or width <= 0:
+        raise ValueError("`width` must be a positive integer.")
+
     # Calculate cumulative sums and habit classification
     data = data.sort_values(by=['PersonId', 'MetricDate'])
     data['cumsum_value'] = data.groupby('PersonId')[metric].transform(lambda x: (x >= threshold).cumsum())
