@@ -113,6 +113,27 @@ def create_line_viz(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5):
         # Set source text
         facet_grid_plot.figure.text(x=0.1, y=-0.08, s=cap_str, ha='left', fontsize=9, alpha=.7)
 
+        # Add orange line and rectangle at the top (matches other visuals)
+        facet_grid_plot.figure.plot(
+            [0, .9],  # width of line
+            [1.08, 1.08],  # height of line (above title/subtitle)
+            transform=facet_grid_plot.figure.transFigure,
+            clip_on=False,
+            color='#fe7f4f',
+            linewidth=.6
+        )
+        facet_grid_plot.figure.add_artist(
+            plt.Rectangle(
+                (0, 1.08),  # left, bottom
+                0.05,       # width
+                -0.025,     # height (negative to go up)
+                facecolor='#fe7f4f',
+                transform=facet_grid_plot.figure.transFigure,
+                clip_on=False,
+                linewidth=0
+            )
+        )
+
         #setting labels
         for ax in facet_grid_plot.axes:
             ax.set_ylabel(clean_nm)
