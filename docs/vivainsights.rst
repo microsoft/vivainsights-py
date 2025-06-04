@@ -28,10 +28,26 @@ vivainsights.create\_bar module
    :undoc-members:
    :show-inheritance:
 
+vivainsights.create\_bar\_asis module
+-------------------------------------
+
+.. automodule:: vivainsights.create_bar_asis
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 vivainsights.create\_boxplot module
 -----------------------------------
 
 .. automodule:: vivainsights.create_boxplot
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+vivainsights.create\_bubble module
+----------------------------------
+
+.. automodule:: vivainsights.create_bubble
    :members:
    :undoc-members:
    :show-inheritance:
@@ -61,9 +77,17 @@ vivainsights.create\_line module
    :show-inheritance:
 
 vivainsights.create\_lorenz module
---------------------------------
+----------------------------------
 
 .. automodule:: vivainsights.create_lorenz
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+vivainsights.create\_odds\_ratios module
+----------------------------------------
+
+.. automodule:: vivainsights.create_odds_ratios
    :members:
    :undoc-members:
    :show-inheritance:
@@ -77,7 +101,7 @@ vivainsights.create\_rank module
    :show-inheritance:
 
 vivainsights.create\_sankey module
---------------------------------
+----------------------------------
 
 .. automodule:: vivainsights.create_sankey
    :members:
@@ -148,6 +172,14 @@ vivainsights.identify\_daterange module
    :undoc-members:
    :show-inheritance:
 
+vivainsights.identify\_habit module
+-----------------------------------
+
+.. automodule:: vivainsights.identify_habit
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 vivainsights.identify\_holidayweeks module
 ------------------------------------------
 
@@ -165,7 +197,7 @@ vivainsights.identify\_inactiveweeks module
    :show-inheritance:
 
 vivainsights.identify\_nkw module
--------------------------------------------
+---------------------------------
 
 .. automodule:: vivainsights.identify_nkw
    :members:
@@ -188,6 +220,14 @@ vivainsights.identify\_tenure module
    :undoc-members:
    :show-inheritance:
 
+vivainsights.identify\_usage\_segments module
+---------------------------------------------
+
+.. automodule:: vivainsights.identify_usage_segments
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 vivainsights.import\_query module
 ---------------------------------
 
@@ -197,7 +237,7 @@ vivainsights.import\_query module
    :show-inheritance:
 
 vivainsights.key\_metrics\_scan module
----------------------------------
+--------------------------------------
 
 .. automodule:: vivainsights.keymetrics_scan
    :members:
@@ -205,7 +245,7 @@ vivainsights.key\_metrics\_scan module
    :show-inheritance:
 
 vivainsights.mt\_data module
-----------------------------
+---------------------------
 
 .. automodule:: vivainsights.mt_data
    :members:
@@ -285,7 +325,7 @@ vivainsights.us\_to\_space module
    :show-inheritance:
 
 vivainsights.xicor module
----------------------------------
+-------------------------
 
 .. automodule:: vivainsights.xicor
    :members:
