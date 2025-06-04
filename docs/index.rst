@@ -30,27 +30,11 @@ Also check out our package cheat sheet for a quick glimpse of what **vivainsight
    about.md
    modules   
    demo-vivainsights-py
+   demo-create_odds_ratios
    faq.md
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Module Index
-
-   modindex
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Versions
-
    NEWS.md
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Details
-
    CONTRIBUTORS.md
    SECURITY.md
- 
 
 Indices and tables
 ==================
