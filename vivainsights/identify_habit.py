@@ -122,7 +122,7 @@ def identify_habit(
             ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f"{int(y * 100)}%"))  # Format y-axis as percentages
             ax.legend(title="Is Habit", labels=["No Habit", "Habit"], fontsize=10)
             ax.set_xticks(range(len(habit_pivot.index)))
-            ax.set_xticklabels(habit_pivot.index.strftime("%b %d, '%y"), rotation=45, ha="right")  # Format x-axis dates
+            ax.set_xticklabels(habit_pivot.index.strftime("%b %d, %y"), rotation=45, ha="right")  # Format x-axis dates
             plt.tight_layout()
             return fig  # Return the figure object
 
