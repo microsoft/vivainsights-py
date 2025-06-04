@@ -24,8 +24,9 @@ Also check out our package cheat sheet for a quick glimpse of what **vivainsight
 ---
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents
+   :hidden:
 
    about.md
    modules   
