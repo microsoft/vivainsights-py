@@ -68,10 +68,34 @@ def create_bubble(data, metric_x, metric_y, hrvar="Organization", mingroup=5, re
                         color=to_hex((0, 120/255, 212/255)), ax=ax)
         texts = [ax.text(row[metric_x], row[metric_y], row[hrvar], size=8) for _, row in myTable.iterrows()]
         adjust_text(texts, ax=ax)
-        ax.set_title(f"{clean_x} and {clean_y} By {hrvar.replace('_', ' ')}")
+        # --- Title/subtitle split ---
+        ax.set_title(f"{clean_x} and {clean_y}", fontsize=14, weight='bold', alpha=0.85, loc='left', pad=18)
+        ax.text(0, 1.02, f"By {hrvar.replace('_', ' ')}", transform=ax.transAxes, fontsize=12, alpha=0.85, ha='left')
         ax.set_xlabel(clean_x)
         ax.set_ylabel(clean_y)
         fig.text(0.1, -0.1, f"Total employees = {myTable['n'].sum()} | {pd.to_datetime(data['MetricDate']).min().strftime('%Y-%m-%d')} to {pd.to_datetime(data['MetricDate']).max().strftime('%Y-%m-%d')}", fontsize=8)
+
+        # --- Add orange line and rectangle at the top ---
+        # Orange color: #fe7f4f
+        ax.plot(
+            [0, .9],  # width of line
+            [1.00, 1.00],  # height of line (above title/subtitle)
+            transform=fig.transFigure,
+            clip_on=False,
+            color='#fe7f4f',
+            linewidth=.6
+        )
+        ax.add_patch(
+            plt.Rectangle(
+                (0, 1.00),  # left, bottom
+                0.05,       # width
+                -0.025,     # height (negative to go up)
+                facecolor='#fe7f4f',
+                transform=fig.transFigure,
+                clip_on=False,
+                linewidth=0
+            )
+        )
 
         return fig
 
