@@ -13,7 +13,7 @@ def identify_habit(
     data,
     metric,
     threshold=1,
-    width=None,
+    width=1,
     max_window=4,  # Set a default value for max_window
     hrvar=None,
     return_type="plot",
