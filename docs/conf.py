@@ -30,6 +30,11 @@ extensions = [
   "nbsphinx"
 ]
 
+# Enable MyST extensions for mdinclude
+myst_enable_extensions = [
+    "md_includes"
+]
+
 # Generate the autosummary pages
 autosummary_generate = True
 
