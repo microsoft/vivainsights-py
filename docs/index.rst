@@ -6,7 +6,8 @@
 vivainsights
 ========================================
 
-.. mdinclude:: about.md
+.. include:: about.md
+   :parser: myst_parser.sphinx_
 
 Also check out our package cheat sheet for a quick glimpse of what **vivainsights** offers:
 
