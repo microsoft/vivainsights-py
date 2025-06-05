@@ -1,17 +1,22 @@
-<img src="https://raw.githubusercontent.com/microsoft/vivainsights-py/main/images/vivainsights-py.png" align="right" width=15% />
-
-[![vivainsights CI](https://github.com/microsoft/vivainsights-py/actions/workflows/python-package.yml/badge.svg)](https://github.com/microsoft/vivainsights-py/actions/workflows/python-package.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Summary
 
-This is an Python package for analyzing and visualizing data from Microsoft Viva Insights.
+**vivainsights** is a Python package for analyzing and visualizing data from Microsoft Viva Insights.
 
-Access to the Analyst Experience is required. With this library, you can generate visualizations and compute analyses in a way that adheres to the analysis best practices of the Viva Insights query outputs. 
+Access to the Viva Insights Analyst Experience is required. With this library, you can generate visualizations and compute analyses in a way that adheres to the analysis best practices of the Viva Insights query outputs. 
 
-For the full package documentation, please see [here](https://microsoft.github.io/vivainsights-py/). The **vivainsights** library is published on the [Python Package Index (PyPi)](https://pypi.org/project/vivainsights/). 
+The **vivainsights** library is available on the [Python Package Index (PyPi)](https://pypi.org/project/vivainsights/). For users who prefer R to Python, we recommend the [R library counterpart](https://microsoft.github.io/vivainsights/) which mirrors the design of the Python package. 
 
-For users who prefer R to Python, we recommend the [R library counterpart](https://microsoft.github.io/vivainsights/) which mirrors the design of the Python package. 
+* For the GitHub repository, see `here <https://github.com/microsoft/vivainsights-py/>`_. 
+* For the Microsoft Viva Insights product page, see `here <https://www.microsoft.com/en-us/microsoft-viva/insights>`_. 
+* For the R counterpart of this package, see `here <https://microsoft.github.io/vivainsights/>`_.
+
+## Installation
+
+You can install this package directly from PyPI by running the following in command prompt: 
+```cmd
+pip install vivainsights
+```
 
 ## Visualization Gallery
 
@@ -35,12 +40,6 @@ For users who prefer R to Python, we recommend the [R library counterpart](https
 
 <img src="https://microsoft.github.io/vivainsights-py/_static/plots/create_trend.png" align="center" width=40% />
 
-## Installation
-
-You can install this package directly from PyPI by running the following in command prompt: 
-```cmd
-pip install vivainsights
-```
 
 ## How to use
 
