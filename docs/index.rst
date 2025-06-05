@@ -6,7 +6,7 @@
 vivainsights
 ========================================
 
-.. include:: about.md
+.. mdinclude:: about.md
 
 Also check out our package cheat sheet for a quick glimpse of what **vivainsights** offers:
 
