@@ -50,3 +50,9 @@ html_favicon = '_static/favicon.svg'
 
 html_theme = 'furo'
 html_static_path = ['_static']
+
+# Recognize both .rst and .md files as source files
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
+}
