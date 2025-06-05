@@ -1,10 +1,8 @@
-## Summary
-
 **vivainsights** is a Python package for analyzing and visualizing data from Microsoft Viva Insights.
 
 Access to the Viva Insights Analyst Experience is required. With this library, you can generate visualizations and compute analyses in a way that adheres to the analysis best practices of the Viva Insights query outputs. 
 
-The **vivainsights** library is available on the [Python Package Index (PyPi)](https://pypi.org/project/vivainsights/). For users who prefer R to Python, we recommend the [R library counterpart](https://microsoft.github.io/vivainsights/) which mirrors the design of the Python package. 
+This library is available on the [Python Package Index (PyPi)](https://pypi.org/project/vivainsights/). For users who prefer R to Python, we recommend the [R library counterpart](https://microsoft.github.io/vivainsights/) which mirrors the design of the Python package. 
 
 * [GitHub repository](https://github.com/microsoft/vivainsights-py/)
 * [Microsoft Viva Insights product page](https://www.microsoft.com/en-us/microsoft-viva/insights)
@@ -12,10 +10,25 @@ The **vivainsights** library is available on the [Python Package Index (PyPi)](h
 
 ## Installation
 
-You can install this package directly from PyPI by running the following in command prompt: 
-```cmd
+You can install **vivainsights** from [PyPI](https://pypi.org/project/vivainsights/) using pip:
+
+```bash
 pip install vivainsights
 ```
+
+To upgrade to the latest version:
+
+```bash
+pip install --upgrade vivainsights
+```
+
+If you want to install with optional dependencies for development or documentation, you can use:
+
+```bash
+pip install vivainsights[dev]
+```
+
+For more details, see the [vivainsights PyPI page](https://pypi.org/project/vivainsights/) or the [GitHub repository](https://github.com/microsoft/vivainsights-py/).
 
 ## Visualization Gallery
 
