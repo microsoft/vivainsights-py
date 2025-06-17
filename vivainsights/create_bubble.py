@@ -13,7 +13,7 @@ import seaborn as sns
 from matplotlib.colors import to_hex
 from adjustText import adjust_text
 from vivainsights.totals_col import totals_col
-
+from matplotlib.lines import Line2D  # Add at the top if not already
 
 def create_bubble(data, metric_x, metric_y, hrvar="Organization", mingroup=5, return_type="plot", bubble_size=(1, 100)):
     """
@@ -44,7 +44,7 @@ def create_bubble(data, metric_x, metric_y, hrvar="Organization", mingroup=5, re
     if(hrvar is None):
         data = totals_col(data)
         hrvar = "Total"
-        
+    col_highlight = Colors.HIGHLIGHT_NEGATIVE.value        
     # Input checks
     required_variables = [hrvar, metric_x, metric_y, "PersonId"]
     for var in required_variables:
@@ -63,39 +63,51 @@ def create_bubble(data, metric_x, metric_y, hrvar="Organization", mingroup=5, re
 
     # Plotting
     if return_type == "plot":
-        fig, ax = plt.subplots(figsize=(10, 6))
-        sns.scatterplot(data=myTable, x=metric_x, y=metric_y, size='n', sizes=bubble_size, alpha=0.5, 
-                        color=to_hex((0, 120/255, 212/255)), ax=ax)
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # Reserve more space for title/subtitle/orange line
+        plt.subplots_adjust(top=0.82)
+        
+        # Scatterplot
+        sns.scatterplot(data=myTable, x=metric_x, y=metric_y, size='n', sizes=bubble_size,
+                        alpha=0.5, color=to_hex((0, 120/255, 212/255)), ax=ax)
+        
+        # Bubble labels
         texts = [ax.text(row[metric_x], row[metric_y], row[hrvar], size=8) for _, row in myTable.iterrows()]
         adjust_text(texts, ax=ax)
-        # --- Title/subtitle split ---
-        ax.set_title(f"{clean_x} and {clean_y}", fontsize=14, weight='bold', alpha=0.85, loc='left', pad=18)
-        ax.text(0, 1.02, f"By {hrvar.replace('_', ' ')}", transform=ax.transAxes, fontsize=12, alpha=0.85, ha='left')
-        ax.set_xlabel(clean_x)
-        ax.set_ylabel(clean_y)
-        fig.text(0.1, -0.1, f"Total employees = {myTable['n'].sum()} | {pd.to_datetime(data['MetricDate']).min().strftime('%Y-%m-%d')} to {pd.to_datetime(data['MetricDate']).max().strftime('%Y-%m-%d')}", fontsize=8)
-
-        # --- Add orange line and rectangle at the top ---
-        # Orange color: #fe7f4f
-        ax.plot(
-            [0, .9],  # width of line
-            [1.00, 1.00],  # height of line (above title/subtitle)
-            transform=fig.transFigure,
-            clip_on=False,
-            color='#fe7f4f',
-            linewidth=.6
+        
+        # Title and subtitle using fig.text (not ax.text) for exact positioning
+        fig.text(0.1, 0.95, f"{clean_x} and {clean_y}", ha='left', fontsize=14, weight='bold', alpha=0.9)
+        fig.text(0.1, 0.91, f"By {hrvar.replace('_', ' ')}", ha='left', fontsize=12, alpha=0.85)
+        
+        # Orange decorative line (below subtitle)
+        fig.lines.append(
+            Line2D(
+                [0.1, 0.9], [0.89, 0.89],  # y = just below subtitle
+                transform=fig.transFigure,
+                color=col_highlight,
+                linewidth=0.6,
+                clip_on=False
+            )
         )
-        ax.add_patch(
+        
+        # Orange rectangle block
+        fig.patches.extend([
             plt.Rectangle(
-                (0, 1.00),  # left, bottom
-                0.05,       # width
-                -0.025,     # height (negative to go up)
-                facecolor='#fe7f4f',
+                (0.1, 0.89), 0.05, -0.015,
+                facecolor=col_highlight,
                 transform=fig.transFigure,
                 clip_on=False,
                 linewidth=0
             )
-        )
+        ])
+        
+        # Axes labels
+        ax.set_xlabel(clean_x)
+        ax.set_ylabel(clean_y)
+        
+        # Caption
+        fig.text(0.1, 0.02, f"Total employees = {myTable['n'].sum()} | {pd.to_datetime(data['MetricDate']).min().strftime('%Y-%m-%d')} to {pd.to_datetime(data['MetricDate']).max().strftime('%Y-%m-%d')}", fontsize=8)
 
         return fig
 
