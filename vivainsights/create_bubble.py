@@ -44,7 +44,8 @@ def create_bubble(data, metric_x, metric_y, hrvar="Organization", mingroup=5, re
     if(hrvar is None):
         data = totals_col(data)
         hrvar = "Total"
-    col_highlight = Colors.HIGHLIGHT_NEGATIVE.value        
+    # col_highlight = Colors.HIGHLIGHT_NEGATIVE.value        
+    col_highlight = "#fe7f4f"
     # Input checks
     required_variables = [hrvar, metric_x, metric_y, "PersonId"]
     for var in required_variables:
