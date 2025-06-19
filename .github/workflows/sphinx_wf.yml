@@ -18,7 +18,8 @@ jobs:
           python-version: 3.9
       - name: Install Pandoc 
         run: |
-            sudo apt-get install -y pandoc      - name: Install dependencies
+            sudo apt-get install -y pandoc
+      - name: Install dependencies
         run: |
           python -m pip install -U sphinx
           python -m pip install -U nbsphinx
@@ -32,7 +33,7 @@ jobs:
           path: |
             ~/.cache/pip
             ./docs/_build
-          key: ${{ runner.os }}-docs-${{ hashFiles('docs/requirements.txt') }}          
+          key: ${{ runner.os }}-docs-${{ hashFiles('docs/requirements.txt') }}
       - name: Make docs
         run: |
           cd docs/
