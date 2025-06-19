@@ -6,9 +6,6 @@ Setup
    :undoc-members:
    :show-inheritance:
 
-.. include:: 
-   :doc:`../setup.py`   
-
 Installation
 ------------
 

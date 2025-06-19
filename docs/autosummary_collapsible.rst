@@ -8,7 +8,6 @@ Alternative: Autosummary Tables with Collapsible Details
 
 .. autosummary::
    :toctree: generated/
-   :template: function_with_dropdown.rst
 
    create_bar
    create_boxplot 

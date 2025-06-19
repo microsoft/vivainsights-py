@@ -10,3 +10,5 @@ igraph
 scikit-learn
 sphinx-design
 setuptools
+adjustText
+igraph

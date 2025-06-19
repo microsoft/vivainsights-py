@@ -18,14 +18,14 @@ jobs:
           python-version: 3.9
       - name: Install Pandoc 
         run: |
-            sudo apt-get install -y pandoc
-      - name: Install dependencies
+            sudo apt-get install -y pandoc      - name: Install dependencies
         run: |
           python -m pip install -U sphinx
           python -m pip install -U nbsphinx
           python -m pip install -U pandoc
           python -m pip install furo myst-parser sphinx-design
           python -m pip install -r docs/requirements.txt
+          python -m pip install -e .
       - name: Clear cache
         uses: actions/cache@v4
         with:

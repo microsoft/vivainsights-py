@@ -11,7 +11,18 @@ import sys
 import matplotlib
 matplotlib.use('agg')
 
+# Add the parent directory to sys.path to make vivainsights importable
 sys.path.insert(0, os.path.abspath('..'))
+
+# Try to import vivainsights to check if it's available
+try:
+    import vivainsights
+except ImportError as e:
+    print(f"Warning: Could not import vivainsights: {e}")
+
+# Mock imports for autodoc in case some dependencies are missing
+autodoc_mock_imports = ["adjustText", "PyQt5", "igraph"]
+    
 project = 'vivainsights'
 copyright = '2024, Microsoft Corporation'
 author = 'Martin Chan'
@@ -31,9 +42,10 @@ extensions = [
   "sphinx_design"
 ]
 
-# Enable MyST extensions for mdinclude
+# Enable MyST extensions
 myst_enable_extensions = [
-    "md_includes"
+    "colon_fence",
+    "deflist"
 ]
 
 # Generate the autosummary pages
@@ -53,7 +65,7 @@ autodoc_typehints = "description"
 autodoc_typehints_description_target = "documented"
 
 templates_path = ['_templates']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'autosummary_collapsible.rst', 'setup.rst']
 
 # Add path to logo and favicon
 html_logo = '_static/vivainsights-py.png'
