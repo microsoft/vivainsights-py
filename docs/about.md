@@ -7,6 +7,7 @@ This library is available on the [Python Package Index (PyPi)](https://pypi.org/
 * [GitHub repository](https://github.com/microsoft/vivainsights-py/)
 * [Microsoft Viva Insights product page](https://www.microsoft.com/en-us/microsoft-viva/insights)
 * [R counterpart of this package](https://microsoft.github.io/vivainsights/)
+* [Module reference](https://microsoft.github.io/vivainsights-py/modules.html)
 
 ## Installation
 
