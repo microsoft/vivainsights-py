@@ -17,22 +17,40 @@ from matplotlib.lines import Line2D
 
 def create_bubble(data, metric_x, metric_y, hrvar="Organization", mingroup=5, return_type="plot", bubble_size=(1, 100)):
     """
-    Generates a bubble plot or a summary table based on two selected metrics.
+    Name
+    -----
+    create_bubble
+    
+    Description
+    -----------
+    The function `create_bubble` creates a bubble plot visualization or summary table based on two selected metrics. 
+    The metrics are first aggregated at a user-level prior to being aggregated at the level of the HR variable. 
+    The bubble size represents the group size (number of employees) for each HR variable group. 
+    `create_bubble` returns either a plot object or a table, depending on the value passed to `return_type`.
 
     Parameters
     ----------
-    - data (pd.DataFrame): The dataset containing the metrics and employee details.
-    - metric_x (str): Column name representing the x-axis metric.
-    - metric_y (str): Column name representing the y-axis metric.
-    - hrvar (str): HR variable to group by. Defaults to "Organization".
-    - mingroup (int): Minimum group size threshold. Defaults to 5.
-    - return_type (str): "plot" to return a bubble plot, "table" to return a summary table.
-    - bubble_size (tuple): Size range for the bubbles in the plot.
+    data : pd.DataFrame
+        Person query data containing the metrics and employee details.
+    metric_x : str
+        Column name representing the x-axis metric. This variable should be present in the input data DataFrame.
+    metric_y : str
+        Column name representing the y-axis metric. This variable should be present in the input data DataFrame.
+    hrvar : str, optional
+        Name of the organizational attribute to be used for grouping. Defaults to "Organization".
+    mingroup : int, optional
+        Minimum group size threshold. Groups with fewer employees than this threshold will be excluded from the analysis. Defaults to 5.
+    return_type : str, optional
+        The type of output to return. Can be "plot" to return a bubble plot visualization, or "table" to return a summary table. Defaults to "plot".
+    bubble_size : tuple, optional
+        Size range for the bubbles in the plot as a tuple (min_size, max_size). Defaults to (1, 100).
 
     Returns
     -------
-    - If return_type == "plot", returns a seaborn scatter plot with bubble sizes.
-    - If return_type == "table", returns a pandas DataFrame with the summarized metrics.
+    Various
+        The output, either a plot or a table, depending on the value passed to `return_type`.
+        - If return_type == "plot", returns a matplotlib Figure object with bubble plot visualization.
+        - If return_type == "table", returns a pandas DataFrame with the summarized metrics by HR variable.
 
     Example
     -------
