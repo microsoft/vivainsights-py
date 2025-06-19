@@ -8,8 +8,5 @@ PyQt5
 plotly
 igraph
 scikit-learn
-<<<<<<< HEAD
 sphinx-design
-=======
 setuptools
->>>>>>> 52e7c21c32a3cc162e569a3e0bca061992561c3f
