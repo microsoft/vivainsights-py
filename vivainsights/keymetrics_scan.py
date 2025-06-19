@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 from vivainsights.extract_date_range import extract_date_range
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.colors import Normalize
+from matplotlib.lines import Line2D
 
 def keymetrics_scan(data,
                     hrvar="Organization",
@@ -215,30 +216,26 @@ def keymetrics_scan(data,
 
     # Prepare the heatmap with row-wise normalization
     if return_type == "plot":
-        plt.figure(figsize=(7, 4))
         variables = summary_long['variable'].unique()
         num_vars = len(variables)
         hrvar_categories = summary_long[hrvar].unique()
-        
-        # Clean labels for plotting
-        cap_str = extract_date_range(data, return_type = 'text')
+        cap_str = extract_date_range(data, return_type='text')
 
-        # Use dynamic scaling factor for figure height
+        title_text = "Key Metrics - Weekly Average"
+        subtitle_text = f"By {hrvar.replace('_', ' ')}"
+
         fig, axes = plt.subplots(num_vars, 1, figsize=(10, plot_row_scaling_factor * num_vars), sharex=True)
 
         for i, variable in enumerate(variables):
-            custom_cmap = LinearSegmentedColormap.from_list(
-            "custom_cmap", [low_color, mid_color, high_color])
+            custom_cmap = LinearSegmentedColormap.from_list("custom_cmap", [low_color, mid_color, high_color])
             ax = axes[i] if num_vars > 1 else axes
             subset = summary_long[summary_long['variable'] == variable]
             row_min = subset['value'].min()
             row_max = subset['value'].max()
 
-            # Normalize the values for this row
             normalized_values = (subset['value'] - row_min) / (row_max - row_min)
             heatmap_data = pd.DataFrame([normalized_values.values], columns=hrvar_categories)
 
-            # Create heatmap for this row
             sns.heatmap(heatmap_data,
                         annot=subset['value'].values.reshape(1, -1),
                         fmt=".1f",
@@ -250,26 +247,33 @@ def keymetrics_scan(data,
                         yticklabels=False,
                         ax=ax)
 
-            # Move x-axis labels to the top
             if i == 0:
                 ax.xaxis.tick_top()
                 ax.tick_params(axis='x', labeltop=True, labelbottom=False, labelrotation=45, pad=10)
             else:
                 ax.tick_params(axis='x', bottom=False, labelbottom=False)
 
-            
             ax.set_ylabel(variable, fontsize=textsize, rotation=0, labelpad=5, ha="right")
             ax.tick_params(left=False)
 
+        fig.text(0.01, 0.995, title_text, fontsize=16, weight='bold', ha='left', va='top')
+        fig.text(0.01, 0.965, subtitle_text, fontsize=12, ha='left', va='top', alpha=0.85)
 
-        plt.suptitle(f"Key Metrics - Weekly Average by {hrvar}",
-                     fontsize=16, x=0.5, y=1.02, ha='center')
-        
-        # Set source text
-        ax.text(x=0.12, y=-0.08, s=cap_str, transform=fig.transFigure, ha='left', fontsize=9, alpha=.7)
+        line = Line2D([0.01, 1.0], [0.910, 0.910], transform=fig.transFigure,
+              color='#fe7f4f', linewidth=1.2, clip_on=False)
+        fig.add_artist(line)
 
-        plt.tight_layout(rect=[0, 0, 1, 0.95])
-        # return the plot object
+
+        rect = plt.Rectangle((0.01, 0.910), 0.03, -0.015,
+                             transform=fig.transFigure,
+                             facecolor='#fe7f4f',
+                             clip_on=False,
+                             linewidth=0)
+        fig.add_artist(rect)
+
+        fig.text(0.01, 0.01, cap_str, ha='left', fontsize=9, alpha=0.7)
+
+        plt.tight_layout(rect=[0, 0.03, 1, 0.93])
         return fig
 
     elif return_type == "table":

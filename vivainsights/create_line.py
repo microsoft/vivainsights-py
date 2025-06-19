@@ -16,6 +16,7 @@ from vivainsights.totals_col import totals_col
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import warnings
+from matplotlib.lines import Line2D
 
 # Ignore warnings for cleaner output
 warnings.filterwarnings("ignore")
@@ -113,6 +114,27 @@ def create_line_viz(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5):
         # Set source text
         facet_grid_plot.figure.text(x=0.1, y=-0.08, s=cap_str, ha='left', fontsize=9, alpha=.7)
 
+        # Add orange line and rectangle at the top (matches other visuals)
+        facet_grid_plot.figure.lines.append(
+            Line2D(
+                [0, 0.9], [0.970, 0.970], 
+                transform=facet_grid_plot.figure.transFigure,
+                color=col_highlight,
+                linewidth=0.6,
+                clip_on=False
+            )
+        )
+
+        facet_grid_plot.figure.patches.extend([
+                plt.Rectangle(
+                    (0, 0.970), 0.05, -0.005, 
+                    facecolor=col_highlight,
+                    transform=facet_grid_plot.figure.transFigure,
+                    clip_on=False,
+                    linewidth=0
+            )
+        ])
+
         #setting labels
         for ax in facet_grid_plot.axes:
             ax.set_ylabel(clean_nm)
@@ -125,26 +147,6 @@ def create_line_viz(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5):
         
         return facet_grid_plot
 
-    
-    """ Legacy ggplot 
-    plot = (
-        ggplot(sum_df,
-               aes(
-                   x='MetricDate', y='metric', group=hrvar)
-               ) +
-        geom_line() +
-        facet_wrap(f'~{hrvar}', ncol = 2) +
-        labs(
-            title = f'{metric}\n\n{cap_str}',
-            caption = cap_str,
-            y=metric
-        ) +
-        scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y") +
-        theme(axis_text_x=element_text(angle=60, hjust=1))
-    )
-    
-    return plot
-    """
 
 def create_line(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, return_type: str = 'plot'):
     """

@@ -6,13 +6,8 @@
 vivainsights
 ========================================
 
-Welcome to the documentation for vivainsights!
-
-This documentation provides information on how to use **vivainsights**, a Python package for analyzing and visualizing data from Microsoft Viva Insights. 
-
-* For the GitHub repository, see `here <https://github.com/microsoft/vivainsights-py/>`_. 
-* For the Microsoft Viva Insights product page, see `here <https://www.microsoft.com/en-us/microsoft-viva/insights>`_. 
-* For the R counterpart of this package, see `here <https://microsoft.github.io/vivainsights/>`_.
+.. include:: about.md
+   :parser: myst_parser.sphinx_
 
 Also check out our package cheat sheet for a quick glimpse of what **vivainsights** offers:
 
@@ -24,33 +19,18 @@ Also check out our package cheat sheet for a quick glimpse of what **vivainsight
 ---
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents
+   :hidden:
 
    about.md
    modules   
    demo-vivainsights-py
+   demo-create_odds_ratios
    faq.md
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Module Index
-
-   modindex
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Versions
-
    NEWS.md
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Details
-
    CONTRIBUTORS.md
    SECURITY.md
- 
 
 Indices and tables
 ==================
