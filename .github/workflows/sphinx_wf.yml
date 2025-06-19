@@ -24,7 +24,7 @@ jobs:
           python -m pip install -U sphinx
           python -m pip install -U nbsphinx
           python -m pip install -U pandoc
-          python -m pip install furo myst-parser
+          python -m pip install furo myst-parser sphinx-design
           python -m pip install -r docs/requirements.txt
       - name: Clear cache
         uses: actions/cache@v4
@@ -42,4 +42,4 @@ jobs:
           python -m pip install ghp-import
           ghp-import -n -p -f ./docs/_build/html
         env:
-          GH_PAT: ${{ secrets.GH_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

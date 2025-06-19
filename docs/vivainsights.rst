@@ -9,83 +9,92 @@ This documentation provides a comprehensive reference for all vivainsights funct
 Core Visualization
 ------------------
 
-vivainsights.create\_bar module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. dropdown:: create_bar - Bar Chart Visualization
+   :color: primary
+   :icon: chart-bar
 
-.. automodule:: vivainsights.create_bar
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. automodule:: vivainsights.create_bar
+      :members:
+      :undoc-members:
+      :show-inheritance:
 
-vivainsights.create\_boxplot module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. dropdown:: create_boxplot - Distribution Analysis
+   :color: primary
+   :icon: chart-area
 
-.. automodule:: vivainsights.create_boxplot
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. automodule:: vivainsights.create_boxplot
+      :members:
+      :undoc-members:
+      :show-inheritance:
 
-vivainsights.create\_bubble module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. dropdown:: create_bubble - Dual-Metric Bubble Plot
+   :color: primary
+   :icon: circle-dot
 
-.. automodule:: vivainsights.create_bubble
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. automodule:: vivainsights.create_bubble
+      :members:
+      :undoc-members:
+      :show-inheritance:
 
-vivainsights.create\_line module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. dropdown:: create_line - Time Series Visualization
+   :color: primary
+   :icon: chart-line
 
-.. automodule:: vivainsights.create_line
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. automodule:: vivainsights.create_line
+      :members:
+      :undoc-members:
+      :show-inheritance:
 
-vivainsights.create\_rank module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. dropdown:: create_rank - Ranking Visualization
+   :color: primary
+   :icon: list-ol
 
-.. automodule:: vivainsights.create_rank
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. automodule:: vivainsights.create_rank
+      :members:
+      :undoc-members:
+      :show-inheritance:
 
 Time Series & Trends
 --------------------
 
-vivainsights.create\_trend module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. dropdown:: create_trend - Trend Analysis Over Time
+   :color: secondary
+   :icon: trending-up
 
-.. automodule:: vivainsights.create_trend
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. automodule:: vivainsights.create_trend
+      :members:
+      :undoc-members:
+      :show-inheritance:
 
 Specialized Visualizations
 --------------------------
 
-vivainsights.create\_sankey module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. dropdown:: create_sankey - Flow Diagrams
+   :color: info
+   :icon: diagram-project
 
-.. automodule:: vivainsights.create_sankey
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. automodule:: vivainsights.create_sankey
+      :members:
+      :undoc-members:
+      :show-inheritance:
 
-vivainsights.create\_lorenz module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. dropdown:: create_lorenz - Inequality Distribution Analysis
+   :color: info
+   :icon: chart-pie
 
-.. automodule:: vivainsights.create_lorenz
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. automodule:: vivainsights.create_lorenz
+      :members:
+      :undoc-members:
+      :show-inheritance:
 
-vivainsights.create\_inc module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. dropdown:: create_inc - Meeting Count Analysis
+   :color: info
+   :icon: calendar-days
 
-.. automodule:: vivainsights.create_inc
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. automodule:: vivainsights.create_inc
+      :members:
+      :undoc-members:
+      :show-inheritance:
 
 Advanced Analytics Visualizations
 ---------------------------------

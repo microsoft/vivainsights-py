@@ -27,7 +27,8 @@ extensions = [
   "sphinx.ext.viewcode",
   "sphinx.ext.autosummary",
   "sphinx.ext.todo",
-  "nbsphinx"
+  "nbsphinx",
+  "sphinx_design"
 ]
 
 # Enable MyST extensions for mdinclude
@@ -37,6 +38,19 @@ myst_enable_extensions = [
 
 # Generate the autosummary pages
 autosummary_generate = True
+
+# Autodoc configuration for better presentation
+autodoc_default_options = {
+    'members': True,
+    'undoc-members': True,
+    'show-inheritance': True,
+    'member-order': 'bysource',
+    'class-doc-from': 'both'
+}
+
+# Make autodoc more compact
+autodoc_typehints = "description"
+autodoc_typehints_description_target = "documented"
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
@@ -50,6 +64,11 @@ html_favicon = '_static/favicon.svg'
 
 html_theme = 'furo'
 html_static_path = ['_static']
+
+# Custom CSS files
+html_css_files = [
+    'custom.css',
+]
 
 # Recognize both .rst and .md files as source files
 source_suffix = {
