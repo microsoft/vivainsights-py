@@ -9,3 +9,4 @@ html
 *.pyc
 .vscode
 .pypirc
+test_env/
