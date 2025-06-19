@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.abspath('..'))
 project = 'vivainsights'
 copyright = '2024, Microsoft Corporation'
 author = 'Martin Chan'
-release = '0.3.4'
+release = '0.4.1'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -28,6 +28,11 @@ extensions = [
   "sphinx.ext.autosummary",
   "sphinx.ext.todo",
   "nbsphinx"
+]
+
+# Enable MyST extensions for mdinclude
+myst_enable_extensions = [
+    "md_includes"
 ]
 
 # Generate the autosummary pages
@@ -45,3 +50,9 @@ html_favicon = '_static/favicon.svg'
 
 html_theme = 'furo'
 html_static_path = ['_static']
+
+# Recognize both .rst and .md files as source files
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
+}

@@ -1,17 +1,34 @@
-<img src="https://raw.githubusercontent.com/microsoft/vivainsights-py/main/images/vivainsights-py.png" align="right" width=15% />
+**vivainsights** is a Python package for analyzing and visualizing data from Microsoft Viva Insights.
 
-[![vivainsights CI](https://github.com/microsoft/vivainsights-py/actions/workflows/python-package.yml/badge.svg)](https://github.com/microsoft/vivainsights-py/actions/workflows/python-package.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+Access to the Viva Insights Analyst Experience is required. With this library, you can generate visualizations and compute analyses in a way that adheres to the analysis best practices of the Viva Insights query outputs. 
 
-## Summary
+This library is available on the [Python Package Index (PyPi)](https://pypi.org/project/vivainsights/). For users who prefer R to Python, we recommend the [R library counterpart](https://microsoft.github.io/vivainsights/) which mirrors the design of the Python package. 
 
-This is an Python package for analyzing and visualizing data from Microsoft Viva Insights.
+* [GitHub repository](https://github.com/microsoft/vivainsights-py/)
+* [Microsoft Viva Insights product page](https://www.microsoft.com/en-us/microsoft-viva/insights)
+* [R counterpart of this package](https://microsoft.github.io/vivainsights/)
 
-Access to the Analyst Experience is required. With this library, you can generate visualizations and compute analyses in a way that adheres to the analysis best practices of the Viva Insights query outputs. 
+## Installation
 
-For the full package documentation, please see [here](https://microsoft.github.io/vivainsights-py/). The **vivainsights** library is published on the [Python Package Index (PyPi)](https://pypi.org/project/vivainsights/). 
+You can install **vivainsights** from [PyPI](https://pypi.org/project/vivainsights/) using pip:
 
-For users who prefer R to Python, we recommend the [R library counterpart](https://microsoft.github.io/vivainsights/) which mirrors the design of the Python package. 
+```bash
+pip install vivainsights
+```
+
+To upgrade to the latest version:
+
+```bash
+pip install --upgrade vivainsights
+```
+
+If you want to install with optional dependencies for development or documentation, you can use:
+
+```bash
+pip install vivainsights[dev]
+```
+
+For more details, see the [vivainsights PyPI page](https://pypi.org/project/vivainsights/) or the [GitHub repository](https://github.com/microsoft/vivainsights-py/).
 
 ## Visualization Gallery
 
@@ -35,12 +52,6 @@ For users who prefer R to Python, we recommend the [R library counterpart](https
 
 <img src="https://microsoft.github.io/vivainsights-py/_static/plots/create_trend.png" align="center" width=40% />
 
-## Installation
-
-You can install this package directly from PyPI by running the following in command prompt: 
-```cmd
-pip install vivainsights
-```
 
 ## How to use
 
