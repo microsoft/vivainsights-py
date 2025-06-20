@@ -10,3 +10,6 @@ html
 .vscode
 .pypirc
 test_env/
+
+# Test output files
+test_files.*
