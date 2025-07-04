@@ -1,5 +1,5 @@
 Reference - Functions
-====================
+======================
 
 This documentation provides a comprehensive reference for all vivainsights functions, organized by functionality to help you quickly find the tools you need.
 
@@ -9,92 +9,83 @@ This documentation provides a comprehensive reference for all vivainsights funct
 Core Visualization
 ------------------
 
-.. dropdown:: create_bar - Bar Chart Visualization
-   :color: primary
-   :icon: chart-bar
+vivainsights.create\_bar module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-   .. automodule:: vivainsights.create_bar
-      :members:
-      :undoc-members:
-      :show-inheritance:
+.. automodule:: vivainsights.create_bar
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-.. dropdown:: create_boxplot - Distribution Analysis
-   :color: primary
-   :icon: chart-area
+vivainsights.create\_boxplot module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-   .. automodule:: vivainsights.create_boxplot
-      :members:
-      :undoc-members:
-      :show-inheritance:
+.. automodule:: vivainsights.create_boxplot
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-.. dropdown:: create_bubble - Dual-Metric Bubble Plot
-   :color: primary
-   :icon: circle-dot
+vivainsights.create\_bubble module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-   .. automodule:: vivainsights.create_bubble
-      :members:
-      :undoc-members:
-      :show-inheritance:
+.. automodule:: vivainsights.create_bubble
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-.. dropdown:: create_line - Time Series Visualization
-   :color: primary
-   :icon: chart-line
+vivainsights.create\_line module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-   .. automodule:: vivainsights.create_line
-      :members:
-      :undoc-members:
-      :show-inheritance:
+.. automodule:: vivainsights.create_line
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-.. dropdown:: create_rank - Ranking Visualization
-   :color: primary
-   :icon: list-ol
+vivainsights.create\_rank module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-   .. automodule:: vivainsights.create_rank
-      :members:
-      :undoc-members:
-      :show-inheritance:
+.. automodule:: vivainsights.create_rank
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Time Series & Trends
 --------------------
 
-.. dropdown:: create_trend - Trend Analysis Over Time
-   :color: secondary
-   :icon: trending-up
+vivainsights.create\_trend module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-   .. automodule:: vivainsights.create_trend
-      :members:
-      :undoc-members:
-      :show-inheritance:
+.. automodule:: vivainsights.create_trend
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Specialized Visualizations
 --------------------------
 
-.. dropdown:: create_sankey - Flow Diagrams
-   :color: info
-   :icon: diagram-project
+vivainsights.create\_sankey module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-   .. automodule:: vivainsights.create_sankey
-      :members:
-      :undoc-members:
-      :show-inheritance:
+.. automodule:: vivainsights.create_sankey
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-.. dropdown:: create_lorenz - Inequality Distribution Analysis
-   :color: info
-   :icon: chart-pie
+vivainsights.create\_lorenz module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-   .. automodule:: vivainsights.create_lorenz
-      :members:
-      :undoc-members:
-      :show-inheritance:
+.. automodule:: vivainsights.create_lorenz
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-.. dropdown:: create_inc - Meeting Count Analysis
-   :color: info
-   :icon: calendar-days
+vivainsights.create\_inc module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-   .. automodule:: vivainsights.create_inc
-      :members:
-      :undoc-members:
-      :show-inheritance:
+.. automodule:: vivainsights.create_inc
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Advanced Analytics Visualizations
 ---------------------------------
@@ -197,7 +188,7 @@ vivainsights.identify\_nkw module
    :show-inheritance:
 
 Time & Date Analysis
--------------------
+---------------------
 
 vivainsights.identify\_daterange module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
