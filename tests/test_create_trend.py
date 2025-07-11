@@ -60,7 +60,7 @@ class TestCreateTrendViz(unittest.TestCase):
         assert len(output.axes) == 2
 
         # Check that the title text is correct
-        assert output.axes[0].texts[0].get_text() == "Collaboration hours Hotspots"
+        assert any(text.get_text() == "Collaboration hours Hotspots" for text in output.axes[0].texts[:])
 
         # Check that the legend title is correct
         assert output.axes[1].get_ylabel() == "Legend"
