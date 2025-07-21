@@ -15,6 +15,7 @@ from vivainsights.extract_date_range import extract_date_range
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.colors import Normalize
 from matplotlib.lines import Line2D
+from vivainsights.us_to_space import us_to_space
 
 def keymetrics_scan(data,
                     hrvar="Organization",
@@ -269,7 +270,7 @@ def keymetrics_scan(data,
             else:
                 ax.tick_params(axis='x', bottom=False, labelbottom=False)
 
-            ax.set_ylabel(variable, fontsize=textsize, rotation=0, labelpad=5, ha="right")
+            ax.set_ylabel(us_to_space(variable), fontsize=textsize, rotation=0, labelpad=5, ha="right")
             ax.tick_params(left=False)
 
         fig.text(0.01, 0.995, title_text, fontsize=16, weight='bold', ha='left', va='top')
