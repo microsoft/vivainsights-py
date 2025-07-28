@@ -274,7 +274,7 @@ def keymetrics_scan(data,
             ax.tick_params(left=False)
 
         fig.text(0.01, 0.995, title_text, fontsize=16, weight='bold', ha='left', va='top')
-        fig.text(0.01, 0.905, subtitle_text, fontsize=12, ha='left', va='top', alpha=0.85)        
+        fig.text(0.01, 0.905, subtitle_text, fontsize=12, ha='left', va='top', alpha=0.85)
 
         line = Line2D([0.01, 1.0], [0.85, 0.85], transform=fig.transFigure,
               color='#fe7f4f', linewidth=1.2, clip_on=False)
