@@ -322,7 +322,9 @@ def create_IV(
     siglevel : float, optional
         Significance level. Defaults to 0.05.
     exc_sig : bool, optional
-        Boolean indicating if non-significant predictors should be excluded. Defaults to False.
+        Boolean indicating if non-significant predictors should be excluded. 
+        If True, only predictors with p-value <= siglevel are included in the analysis.
+        If False, all predictors are included regardless of significance. Defaults to False.
     return_type : str, optional
         Type of output to return ("plot", "summary", "list", "plot-WOE", "IV"). Defaults to "plot".
 
@@ -381,19 +383,33 @@ def create_IV(
     predictors = predictors[predictors['Variable'] != outcome].reset_index(drop=True)
     predictors['Variable'] = predictors['Variable'].astype(str)
 
-    # Perform statistical test and filter significant predictors
+    # Perform statistical test
     predictors_pval = p_test(data=train, outcome=outcome, behavior=predictors["Variable"].tolist())
-    predictors_pval = predictors_pval[predictors_pval["pval"] <= siglevel]
-
-    if predictors_pval.shape[0] == 0:
-        raise ValueError("No predictors where the p-value lies below the significance level.")
-
-    train = train[predictors_pval["Variable"].tolist() + [outcome]]
+    
+    # Filter significant predictors only if exc_sig is True
+    if exc_sig:
+        predictors_pval_filtered = predictors_pval[predictors_pval["pval"] <= siglevel]
+        
+        if predictors_pval_filtered.shape[0] == 0:
+            raise ValueError("No predictors where the p-value lies below the significance level.")
+        
+        train = train[predictors_pval_filtered["Variable"].tolist() + [outcome]]
+        predictors_to_use = predictors_pval_filtered["Variable"].tolist()
+    else:
+        # Use all predictors regardless of significance
+        train = train[predictors_pval["Variable"].tolist() + [outcome]]
+        predictors_to_use = predictors_pval["Variable"].tolist()
 
     # IV Analysis
-    IV = map_IV(train, outcome, bins=bins, predictors=predictors_pval["Variable"].tolist())
+    IV = map_IV(train, outcome, bins=bins, predictors=predictors_to_use)
     IV_names = list(IV["Tables"].keys())
-    IV_summary = pd.merge(IV["Summary"], predictors_pval, on="Variable")
+    
+    # Merge with p-values for final output (use appropriate filtered/unfiltered version)
+    if exc_sig:
+        IV_summary = pd.merge(IV["Summary"], predictors_pval_filtered, on="Variable")
+    else:
+        IV_summary = pd.merge(IV["Summary"], predictors_pval, on="Variable")
+    
     IV_summary["pval"] = IV_summary["pval"].round(10)
 
     # Output loop
