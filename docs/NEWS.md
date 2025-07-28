@@ -1,3 +1,9 @@
+# Version 0.4.1
+
+- Improve visualizations
+- Various bugfixes
+
+
 # Version 0.4.0
 
 - Added `create_odds_ratios()`, `identify_habit()`, and `identify_usage_segments()` as additional tools to analyse Copilot usage.
