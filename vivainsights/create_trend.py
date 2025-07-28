@@ -35,7 +35,7 @@ def create_trend(data: pd.DataFrame,
                  legend_title: str = "Hours",
                  date_column: str = "MetricDate",
                  date_format: str = "%Y-%m-%d",
-                 size_x_axis_label=5
+                 size_x_axis_label: int = 5
                  ):  
   """
   Name
