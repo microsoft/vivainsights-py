@@ -239,9 +239,6 @@ def create_trend_viz(
   plt.subplots_adjust(bottom=0.12)
 
   # Set x-tick labels
-  # ax.set_xticklabels(tick_labels, rotation=45, ha='right', fontsize=9)
-
-
   # Reformat x-axis tick labels
   ax.xaxis.set_tick_params(labelsize = 9, rotation=45)
   ax.yaxis.set_tick_params(labelsize = 9)
