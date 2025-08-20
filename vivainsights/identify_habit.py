@@ -109,7 +109,7 @@ def identify_habit(
             habit_pivot = habit_pivot.div(habit_pivot.sum(axis=1), axis=0)  # Convert to percentages
 
             # Plot with improved formatting
-            fig, ax = plt.subplots(figsize=(10, 6))
+            fig, ax = plt.subplots(figsize=(8, 6))
             habit_pivot.plot(
                 kind='bar',
                 stacked=True,

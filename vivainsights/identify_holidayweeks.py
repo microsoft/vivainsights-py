@@ -127,7 +127,7 @@ def identify_holidayweeks(data: pd.DataFrame, sd = 1, return_type = "text"):
         
         elif return_type == "plot":
             # Generate a line plot with matplotlib for the collaboration hours
-            fig, ax = plt.subplots(figsize=(10, 6))
+            fig, ax = plt.subplots(figsize=(8, 6))
 
             # Plot the collaboration hours
             ax.plot(Calc["MetricDate"], Calc["mean_collab"].round(0), color="#1d627e", linewidth=3)

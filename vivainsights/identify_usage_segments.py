@@ -162,7 +162,7 @@ def plot_ts_us(data, cus, caption):
     pivot_data = pivot_data[category_order]
 
     # Plot the stacked bar chart
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(8, 6))
     pivot_data.plot(kind="bar", stacked=True, color=colors, ax=ax)
 
     # Customize the plot

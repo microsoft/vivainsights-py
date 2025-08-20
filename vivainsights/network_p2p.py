@@ -355,7 +355,7 @@ def network_p2p(data,
             #Internal basic plotting function used inside 'network_p2p()'
             def plot_basic_graph(lpos = legend_pos, pdf=False, node_scale=node_scale):
                 
-                fig, ax = plt.subplots(figsize=(10, 10))
+                fig, ax = plt.subplots(figsize=(8, 6))
                 plt.rcParams["figure.facecolor"] = bg_fill
                 layout_func = getattr(ig.Graph, f"layout_{layout}")
                 

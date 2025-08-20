@@ -191,7 +191,7 @@ def network_g2g(data, primary=None, secondary=None, metric="Group_collaboration_
             g = g_noloops # use version of graph with no self-collaboration
             
             # plot object
-            fig, ax = plt.subplots(figsize=(8, 8))
+            fig, ax = plt.subplots(figsize=(8, 6))
             ig.plot(
                 g,
                 layout=g.layout(algorithm),

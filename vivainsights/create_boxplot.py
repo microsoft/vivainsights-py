@@ -75,7 +75,7 @@ def create_boxplot_viz(data: pd.DataFrame, metric, hrvar, mingroup):
         col_main = Colors.PRIMARY.value
         
         # Setup plot size.
-        fig, ax = plt.subplots(figsize=(7,4))
+        fig, ax = plt.subplots(figsize=(8,6))
         
         # Create grid 
         # Zorder tells it which layer to put it on. We are setting this to 1 and our data to 2 so the grid is behind the data.

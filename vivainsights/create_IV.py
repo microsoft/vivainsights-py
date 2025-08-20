@@ -279,7 +279,7 @@ def plot_WOE(IV, predictor):
     tick_lst=list(range(mn,mx+1))
     
     # Plot
-    plt.figure(figsize=(12, 8))
+    plt.figure(figsize=(8, 6))
     sns.barplot(x=predictor, y='WOE', data=plot_table, color='#8BC7E0')
     for index, value in enumerate(plot_table['WOE']):
         plt.text(index, value, round(value, 1), ha='right', va='top' if value < 0 else 'bottom',color='red' if value < 0 else 'green')

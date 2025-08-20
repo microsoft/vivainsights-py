@@ -167,7 +167,7 @@ def create_trend_viz(
   caption_text = extract_date_range(data, return_type = 'text')  
   
   # Creating the plot object
-  fig, ax = plt.subplots(figsize=(7, 4))
+  fig, ax = plt.subplots(figsize=(8, 6))
     
   # Removing tick marks
   ax.tick_params(

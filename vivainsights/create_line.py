@@ -47,7 +47,7 @@ def create_line_viz(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5):
 
     if(len(data[hrvar].unique()) <=4 ): #if hrvar column has 4 or less distinct values
         # Setup plot size.
-        fig, ax = plt.subplots(figsize=(7,4))
+        fig, ax = plt.subplots(figsize=(8,6))
 
         sns.lineplot(
             data = sum_df,    
