@@ -35,6 +35,7 @@ def create_trend(data: pd.DataFrame,
                  legend_title: str = "Hours",
                  date_column: str = "MetricDate",
                  date_format: str = "%Y-%m-%d",
+                 figsize: tuple = None,
                  size_x_axis_label: int = 5
                  ):  
   """
@@ -66,6 +67,8 @@ def create_trend(data: pd.DataFrame,
       The name of the column in the DataFrame that contains the dates for the trend analysis. Defaults to MetricDate
   date_format : str
       The `date_format` parameter is used to specify the format of the dates in the `date_column` of the input data. It should be a string that follows the syntax of the Python `datetime` module's `strftime` function. This allows you to specify how the dates are formatted in the. Defaults to %Y-%m-%d
+  figsize : tuple, optional
+      The `figsize` parameter is used to specify the size of the figure in inches. If not provided, it defaults to (8, 6). This parameter is used when creating the plot to determine the dimensions of the figure.
 
   Returns
   ------
@@ -88,7 +91,7 @@ def create_trend(data: pd.DataFrame,
     myTable_return = myTable.pivot(index="group", columns=date_column, values=metric)
     return myTable_return    
   elif return_type == "plot":
-    return create_trend_viz(data, metric, palette, hrvar, mingroup, legend_title, date_column, date_format, size_x_axis_label)
+    return create_trend_viz(data, metric, palette, hrvar, mingroup, legend_title, date_column, date_format, size_x_axis_label, figsize)
   else:
     raise ValueError("Please enter a valid input for return_type.")
   
@@ -144,7 +147,8 @@ def create_trend_viz(
   legend_title: str,
   date_column: str,
   date_format: str,
-  size_x_axis_label
+  size_x_axis_label,
+  figsize: tuple = None
 ):
   """
   Name
@@ -167,7 +171,7 @@ def create_trend_viz(
   caption_text = extract_date_range(data, return_type = 'text')  
   
   # Creating the plot object
-  fig, ax = plt.subplots(figsize=(8, 6))
+  fig, ax = plt.subplots(figsize=figsize if figsize else (8, 6))
     
   # Removing tick marks
   ax.tick_params(

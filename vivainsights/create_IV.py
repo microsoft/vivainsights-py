@@ -231,7 +231,7 @@ def map_IV(
     return {'Tables': Tables, 'Summary': Summary}
 
 
-def plot_WOE(IV, predictor):
+def plot_WOE(IV, predictor, figsize: tuple = None):
     """
     Name
     ----
@@ -247,6 +247,9 @@ def plot_WOE(IV, predictor):
         Dictionary containing IV calculations for each predictor variable.
     predictor : str
         Name of the predictor variable.
+    figsize : tuple, optional
+        The `figsize` parameter is an optional tuple that specifies the size of the figure for the WOE plot visualization.
+        It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.
 
     Returns
     -------
@@ -279,7 +282,7 @@ def plot_WOE(IV, predictor):
     tick_lst=list(range(mn,mx+1))
     
     # Plot
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=figsize if figsize else (8, 6))
     sns.barplot(x=predictor, y='WOE', data=plot_table, color='#8BC7E0')
     for index, value in enumerate(plot_table['WOE']):
         plt.text(index, value, round(value, 1), ha='right', va='top' if value < 0 else 'bottom',color='red' if value < 0 else 'green')

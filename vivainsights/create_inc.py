@@ -83,7 +83,7 @@ def create_inc(data: pd.DataFrame, metric: str, hrvar: typing.Union[typing.List,
     else:
         return create_inc_grid(data, metric, hrvar, mingroup, threshold, position, return_type)
     
-def create_inc_bar(data: pd.DataFrame, metric: str, hrvar: str, mingroup: int = 5, threshold: float = None, position: str = None, return_type: str='plot'):
+def create_inc_bar(data: pd.DataFrame, metric: str, hrvar: str, mingroup: int = 5, threshold: float = None, position: str = None, return_type: str='plot',figsize: tuple = None):
     """
     Name
     -----
@@ -109,6 +109,8 @@ def create_inc_bar(data: pd.DataFrame, metric: str, hrvar: str, mingroup: int = 
         One of the below valid values:
         - "above": show incidence of those equal to or above the threshold
         - "below": show incidence of those equal to or below the threshold
+    figsize : tuple, optional
+        The `figsize` parameter is an optional tuple that specifies the size of the figure for the bar chart visualization. It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.
     return_type : str 
         What to return. This must be one of the following strings:
         - "plot"
@@ -153,10 +155,11 @@ def create_inc_bar(data: pd.DataFrame, metric: str, hrvar: str, mingroup: int = 
             percent = True,
             plot_title = title_text,
             plot_subtitle = subtitle_text,
-            return_type = return_type
+            return_type = return_type,
+            figsize=figsize
             )
 
-def create_inc_grid(data: pd.DataFrame, metric: str, hrvar: typing.List, mingroup: int=5, threshold: float=None, position: str=None, return_type: str='plot'):
+def create_inc_grid(data: pd.DataFrame, metric: str, hrvar: typing.List, mingroup: int=5, threshold: float=None, position: str=None, return_type: str='plot', figsize: tuple = None):
     """
     Name
     -----
@@ -183,6 +186,8 @@ def create_inc_grid(data: pd.DataFrame, metric: str, hrvar: typing.List, mingrou
         One of the below valid values:
         - "above": show incidence of those equal to or above the threshold
         - "below": show incidence of those equal to or below the threshold
+    figsize : tuple, optional
+        The `figsize` parameter is an optional tuple that specifies the size of the figure for the heatmap visualization. It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.
     return_type : str
         What to return. This must be one of the following strings:
         - "plot"
@@ -242,7 +247,7 @@ def create_inc_grid(data: pd.DataFrame, metric: str, hrvar: typing.List, mingrou
         annot_df = myTable.pivot(index=hrvar[0], columns=hrvar[1], values='metric_text')
         
         # Setup plot size.
-        fig, ax = plt.subplots(figsize=(8, 6))
+        fig, ax = plt.subplots(figsize=figsize if figsize else (8, 6))
         
         # Create grid 
         # Zorder tells it which layer to put it on. We are setting this to 1 and our data to 2 so the grid is behind the data.

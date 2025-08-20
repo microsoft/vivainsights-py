@@ -42,8 +42,9 @@ def create_rank_calc(data: pd.DataFrame,
 def create_rank_viz(data: pd.DataFrame,
                     metric,
                     hrvar = ['Organization', 'FunctionType', 'LevelDesignation', 'SupervisorIndicator'],
-                    mingroup = 5):
-    
+                    mingroup = 5,
+                    figsize: tuple = None):
+
     cap_str = extract_date_range(data, return_type = 'text')
     col_highlight = '#fe7f4f'
     col_main = '#1d627e'
@@ -64,7 +65,7 @@ def create_rank_viz(data: pd.DataFrame,
     result_pivot = result_pivot.reset_index()
     
     # Setup plot size.
-    fig, ax = plt.subplots(figsize=(8,6))
+    fig, ax = plt.subplots(figsize=figsize if figsize else (8, 6))
     
     # Create grid 
     # Zorder tells it which layer to put it on. We are setting this to 1 and our data to 2 so the grid is behind the data.
@@ -121,8 +122,7 @@ def create_rank_viz(data: pd.DataFrame,
     # return the plot object
     return fig
 
-
-def create_rank(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, return_type: str = "plot"):
+def create_rank(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, return_type: str = "plot", figsize: tuple = None):
     """
     Name
     ----
@@ -140,6 +140,8 @@ def create_rank(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, retur
          name of the metric to be analysed
     hrvar : str 
         name(s) of the organizational attribute(s) to be used for grouping
+    figsize : tuple, optional
+        size of the plot to be generated. Defaults to (8, 6).
     return_type : str or optional 
         type of output to return. Defaults to "plot".
 
@@ -156,7 +158,7 @@ def create_rank(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, retur
     if type(hrvar)==str:
         hrvar = [hrvar]
     if return_type == "plot":
-        out = create_rank_viz(data=data, metric=metric, hrvar=hrvar, mingroup=mingroup)
+        out = create_rank_viz(data=data, metric=metric, hrvar=hrvar, mingroup=mingroup, figsize=figsize)
     elif return_type == "table":
         out = create_rank_calc(data=data, metric=metric, hrvar=hrvar, mingroup=mingroup)
     else:

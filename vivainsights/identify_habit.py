@@ -18,6 +18,7 @@ def identify_habit(
     hrvar=None,
     return_type="plot",
     plot_mode="time",
+    figsize: tuple = None,
     fill_col=("#E5E5E5", "#0078D4")):
     """
     Name
@@ -57,6 +58,8 @@ def identify_habit(
         - "time": Time series plot of habitual behavior.
         - "boxplot": Boxplot of habitual behavior by group.
         Default is "time".
+    figsize : tuple, optional
+        The `figsize` parameter is an optional tuple that specifies the size of the figure for the boxplot visualization. It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.
     fill_col : tuple, optional
         Colors for the plot. Default is ("#E5E5E5", "#0078D4").
 
@@ -109,7 +112,7 @@ def identify_habit(
             habit_pivot = habit_pivot.div(habit_pivot.sum(axis=1), axis=0)  # Convert to percentages
 
             # Plot with improved formatting
-            fig, ax = plt.subplots(figsize=(8, 6))
+            fig, ax = plt.subplots(figsize=figsize if figsize else (8, 6))
             habit_pivot.plot(
                 kind='bar',
                 stacked=True,

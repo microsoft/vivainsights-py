@@ -57,7 +57,8 @@ def create_bar_viz(
     mingroup = 5,
     percent: bool = False,
     plot_title = None,
-    plot_subtitle = None):
+    plot_subtitle = None,
+    figsize: tuple = None):
     """Visualise the mean of a selected metric, grouped by a selected HR variable."""
     sum_df = create_bar_calc(data, metric, hrvar, mingroup)
     caption_text = extract_date_range(data, return_type='text')
@@ -75,7 +76,7 @@ def create_bar_viz(
         subtitle_text = plot_subtitle
 
     # fig = plt.figure()
-    fig, ax = plt.subplots(figsize=(8, 6))
+    fig, ax = plt.subplots(figsize=figsize if figsize else (8, 6))
 
     # Create grid
     # Zorder tells it which layer to put it on. We are setting this to 1 and our data to 2 so the grid is behind the data.
@@ -152,7 +153,9 @@ def create_bar(
     percent: bool = False,
     return_type: str = "plot",
     plot_title = None,
-    plot_subtitle = None):
+    plot_subtitle = None,
+    figsize: tuple = None
+    ):
     """
     Name
     -----
@@ -183,7 +186,8 @@ def create_bar(
         Title of the plot. Defaults to None.
     plot_subtitle : str, optional
         Subtitle of the plot. Defaults to None.
-    
+    figsize : tuple, optional
+        The `figsize` parameter is an optional tuple that specifies the size of the figure for the boxplot visualization. It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.
 
     Returns
     -------
@@ -201,7 +205,7 @@ def create_bar(
         hrvar = "Total"
         
     if return_type == "plot":
-        out = create_bar_viz(data=data, metric=metric, hrvar=hrvar, percent=percent, mingroup=mingroup, plot_title = plot_title, plot_subtitle = plot_subtitle)
+        out = create_bar_viz(data=data, metric=metric, hrvar=hrvar, percent=percent, mingroup=mingroup, plot_title = plot_title, plot_subtitle = plot_subtitle,figsize=figsize)
     elif return_type == "table":
         out = create_bar_calc(data=data, metric=metric, hrvar=hrvar, mingroup=mingroup)
     else:

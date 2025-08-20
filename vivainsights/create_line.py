@@ -31,7 +31,7 @@ def create_line_calc(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5):
     output = output.reset_index()
     return output
 
-def create_line_viz(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5):
+def create_line_viz(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, figsize: tuple = None):
     # summarised output
     sum_df = create_line_calc(data, metric, hrvar, mingroup)
     sum_df['MetricDate'] = pd.to_datetime(sum_df['MetricDate'], format='%Y-%m-%d')
@@ -47,7 +47,7 @@ def create_line_viz(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5):
 
     if(len(data[hrvar].unique()) <=4 ): #if hrvar column has 4 or less distinct values
         # Setup plot size.
-        fig, ax = plt.subplots(figsize=(8,6))
+        fig, ax = plt.subplots(figsize=figsize if figsize else (8, 6))
 
         sns.lineplot(
             data = sum_df,    
@@ -148,7 +148,7 @@ def create_line_viz(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5):
         return facet_grid_plot
 
 
-def create_line(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, return_type: str = 'plot'):
+def create_line(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, return_type: str = 'plot', figsize: tuple = None):
     """
     Name
     ----
@@ -168,6 +168,8 @@ def create_line(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, retur
         name of the organizational attribute to be used for grouping
     mingroup : int, optional
         Numeric value setting the privacy threshold / minimum group size, by default 5
+    figsize : tuple, optional
+        Size of the figure to be plotted, by default None which sets it to (8, 6)
     return_type : str, optional
         type of output to return. Defaults to "plot".
      
@@ -190,7 +192,7 @@ def create_line(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, retur
         hrvar = "Total"
         
     if return_type == "plot":
-        out = create_line_viz(data=data, metric=metric, hrvar=hrvar, mingroup=mingroup)
+        out = create_line_viz(data=data, metric=metric, hrvar=hrvar, mingroup=mingroup, figsize=figsize)
     elif return_type == "table":
         out = create_line_calc(data=data, metric=metric, hrvar=hrvar, mingroup=mingroup)
     else:
