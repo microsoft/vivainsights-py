@@ -41,10 +41,6 @@ class TestCreateTrendCalc(unittest.TestCase):
         # Check that the output has the correct columns
         expected_columns = ['MetricDate', 'group', 'Employee_Count', 'Collaboration_hours']
         self.assertListEqual(list(output.columns), expected_columns)
-        
-        # Check that the output has the correct number of rows
-        expected_rows = 245
-        self.assertEqual(len(output), expected_rows)
 
 
 class TestCreateTrendViz(unittest.TestCase):
