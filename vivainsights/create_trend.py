@@ -118,24 +118,35 @@ def create_trend_calc(data, metric, hrvar, mingroup, date_column, date_format):
 
   # Clean metric name
   clean_nm = metric.replace("_", " ")
-
   # Convert Date to datetime and rename hrvar to group
+  data = data.copy()
   data[date_column] = pd.to_datetime(data[date_column], format=date_format)
   data = data.rename(columns={hrvar: "group"})
 
-  # Select relevant columns and group by group
-  myTable = data[["PersonId", date_column, "group", metric]]
-  myTable = myTable.groupby("group")
+  # Select relevant columns
+  myTable = data[["PersonId", date_column, "group", metric]].copy()
 
-  # Calculate employee count and filter by mingroup
-  myTable = myTable.apply(lambda x: x.assign(Employee_Count = x["PersonId"].nunique()))
-  myTable = myTable[myTable["Employee_Count"] >= mingroup]
+  # Determine eligible groups based on overall group size across the dataset
+  group_sizes = (
+      myTable.groupby("group")["PersonId"].nunique().reset_index(name="Group_Count")
+  )
+  eligible_groups = set(group_sizes.loc[group_sizes["Group_Count"] >= mingroup, "group"])
 
-  # Group by date and group and calculate mean metric and employee count
-  myTable.reset_index(drop = True, inplace = True)
-  myTable = myTable.groupby([date_column, "group"]).agg({"Employee_Count": "mean", metric: "mean"}).reset_index()
+  # Filter table to only eligible groups (based on overall size)
+  myTable = myTable[myTable["group"].isin(eligible_groups)]
 
-  return myTable
+  # Compute Employee_Count per date and group (unique people that week in that group)
+  agg = (
+      myTable
+      .groupby(["group", date_column])
+      .agg(Employee_Count=("PersonId", "nunique"), **{metric: (metric, "mean")})
+      .reset_index()
+  )
+
+  # Reorder columns to match expected output
+  agg = agg[[date_column, "group", "Employee_Count", metric]]
+
+  return agg
   
   
 def create_trend_viz(
