@@ -12,6 +12,7 @@ Option 1: Simple Dropdowns
    :color: primary
 
    .. autofunction:: vivainsights.create_bar
+      :no-index:
 
 .. dropdown:: Function with Description
    :color: secondary
@@ -20,13 +21,14 @@ Option 1: Simple Dropdowns
    **create_bubble** - Creates bubble plots for dual-metric analysis
    
    .. autofunction:: vivainsights.create_bubble
+      :no-index:
 
 Option 2: Grouped Dropdowns
 ---------------------------
 
 .. dropdown:: Core Visualization Functions
    :color: info
-   :icon: chart-bar
+   :icon: graph
 
    Functions for creating basic visualizations:
 
@@ -34,16 +36,19 @@ Option 2: Grouped Dropdowns
       :color: light
 
       .. autofunction:: vivainsights.create_bar
+         :no-index:
 
    .. dropdown:: create_boxplot
       :color: light
 
       .. autofunction:: vivainsights.create_boxplot
+         :no-index:
 
    .. dropdown:: create_bubble
       :color: light
 
       .. autofunction:: vivainsights.create_bubble
+         :no-index:
 
 Option 3: Tabs for Categories
 -----------------------------
@@ -51,17 +56,17 @@ Option 3: Tabs for Categories
 .. tab-set::
 
     .. tab-item:: Visualization
-        :class-label: sd-font-weight-bold
-
-        .. dropdown:: create_bar
+        :class-label: sd-font-weight-bold        .. dropdown:: create_bar
            :color: primary
 
            .. autofunction:: vivainsights.create_bar
+              :no-index:
 
         .. dropdown:: create_boxplot
            :color: primary
 
            .. autofunction:: vivainsights.create_boxplot
+              :no-index:
 
     .. tab-item:: Analysis
         :class-label: sd-font-weight-bold
@@ -70,11 +75,13 @@ Option 3: Tabs for Categories
            :color: warning
 
            .. autofunction:: vivainsights.identify_churn
+              :no-index:
 
         .. dropdown:: identify_outlier
            :color: warning
 
            .. autofunction:: vivainsights.identify_outlier
+              :no-index:
 
 Option 4: Cards with Dropdowns
 ------------------------------
@@ -112,14 +119,15 @@ Option 5: Summary Tables with Dropdowns
    :header-rows: 1
 
    * - Function
-     - Details
-   * - ``create_bar()``
+     - Details   * - ``create_bar()``
      - .. dropdown:: View Documentation
           :color: primary
 
           .. autofunction:: vivainsights.create_bar
+             :no-index:
    * - ``create_bubble()``
      - .. dropdown:: View Documentation
           :color: primary
 
           .. autofunction:: vivainsights.create_bubble
+             :no-index:

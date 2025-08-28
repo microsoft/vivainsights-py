@@ -13,3 +13,5 @@ test_env/
 
 # Sphinx documentation build output
 docs/_build/
+# Test output files
+test_files.*
