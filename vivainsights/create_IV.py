@@ -17,6 +17,95 @@ from vivainsights.create_bar_asis import *
 # Ignore warnings for cleaner output
 warnings.filterwarnings("ignore")
 
+from matplotlib.lines import Line2D
+
+# Optional: reuse vivainsights colors if present
+try:
+    from vivainsights.color_codes import Colors
+    _HIGHLIGHT = Colors.HIGHLIGHT_NEGATIVE.value  # orange
+except Exception:
+    _HIGHLIGHT = "#fe7f4f"
+
+from matplotlib.figure import Figure  # add this import at the top
+
+# def _add_header_decoration(fig, color=_HIGHLIGHT):
+#     """
+#     Orange rule + box just BELOW the title.
+#     Uses a topmost overlay Axes so it's never hidden by subplots/tight_layout.
+#     """
+#     # Transparent overlay that spans the whole figure, drawn on top
+#     overlay = fig.add_axes([0, 0, 1, 1], frameon=False, zorder=10)
+#     overlay.set_axis_off()
+
+#     # Use overlay axes coordinates (0..1 in both directions)
+#     overlay.add_line(Line2D([0.01, 1.0], [0.85, 0.85],
+#                             transform=overlay.transAxes,
+#                             color=color, linewidth=1.2))
+
+#     overlay.add_patch(plt.Rectangle((0.01, 0.85), 0.03, -0.015,
+#                                     transform=overlay.transAxes,
+#                                     facecolor=color, linewidth=0))
+
+# def _add_header_decoration(fig, color=_HIGHLIGHT, y=0.865):
+#     """Orange rule + small box below the (figure-level) title."""
+#     overlay = fig.add_axes([0, 0, 1, 1], frameon=False, zorder=10)
+#     overlay.set_axis_off()
+#     overlay.add_line(Line2D([0.01, 1.0], [y, y], transform=overlay.transAxes,
+#                             color=color, linewidth=1.2))
+#     overlay.add_patch(plt.Rectangle((0.01, y), 0.03, -0.015,
+#                                     transform=overlay.transAxes,
+#                                     facecolor=color, linewidth=0))
+
+
+from contextlib import contextmanager
+
+@contextmanager
+def _suppress_matplotlib_show():
+    orig_show = plt.show
+    try:
+        plt.show = lambda *a, **k: None  # no-op
+        yield
+    finally:
+        plt.show = orig_show
+
+# Header positions (tweak here if you like)
+_TITLE_Y   = 0.955
+_SUB_Y     = 0.915
+_RULE_Y    = 0.900
+_TOP_LIMIT = 0.84   # top of the Axes area (leave space for header above)
+
+def _retitle_left(fig, title_text, subtitle_text=None, left=0.01):
+    """Left-aligned figure-level title/subtitle; hide axis/suptitle."""
+    for ax in fig.get_axes():
+        try: ax.set_title("")
+        except Exception: pass
+    if getattr(fig, "_suptitle", None) is not None:
+        fig._suptitle.set_visible(False)
+
+    fig.text(left, _TITLE_Y, title_text, ha="left", fontsize=13, weight="bold", alpha=.8)
+    if subtitle_text:
+        fig.text(left, _SUB_Y, subtitle_text, ha="left", fontsize=11, alpha=.8)
+
+def _add_header_decoration(fig, color=_HIGHLIGHT, y=_RULE_Y):
+    """Orange rule + box under the subtitle, on an overlay so it's always on top."""
+    overlay = fig.add_axes([0, 0, 1, 1], frameon=False, zorder=10)
+    overlay.set_axis_off()
+    overlay.add_line(Line2D([0.01, 1.0], [y, y], transform=overlay.transAxes,
+                            color=color, linewidth=1.2))
+    overlay.add_patch(plt.Rectangle((0.01, y), 0.03, -0.015,
+                                    transform=overlay.transAxes,
+                                    facecolor=color, linewidth=0))
+
+def _reserve_header_space(fig, top=_TOP_LIMIT):
+    """Push the plot area down so it doesn't overlap the header."""
+    try:
+        # If constrained layout was enabled by create_bar_asis, disable so we can adjust
+        if hasattr(fig, "get_constrained_layout") and fig.get_constrained_layout():
+            fig.set_constrained_layout(False)
+    except Exception:
+        pass
+    fig.subplots_adjust(top=top)
+
 
 def p_test(
     data: pd.DataFrame,
@@ -269,29 +358,43 @@ def plot_WOE(IV, predictor, figsize: tuple = None):
     >>> IV = map_IV(data, outcome, [predictor], bins)
     >>> plot_WOE(IV, predictor)
     """
-    
     # Identify right table
     plot_table = IV['Tables'][predictor]
-    
+
     # Get range
     WOE_values = [table['WOE'] for table in IV['Tables'].values()]
-    for i in range(0,len(WOE_values)):
+    for i in range(0, len(WOE_values)):
         WOE_range = np.min(WOE_values[i]), np.max(WOE_values[i])
-    mn=math.floor(np.min(plot_table['WOE']))
-    mx=math.ceil(np.max(plot_table['WOE']))
-    tick_lst=list(range(mn,mx+1))
-    
+    mn = math.floor(np.min(plot_table['WOE']))
+    mx = math.ceil(np.max(plot_table['WOE']))
+    tick_lst = list(range(mn, mx + 1))
+
     # Plot
-    plt.figure(figsize=figsize if figsize else (8, 6))
-    sns.barplot(x=predictor, y='WOE', data=plot_table, color='#8BC7E0')
+    fig, ax = plt.subplots(figsize=figsize if figsize else (8, 6))
+    sns.barplot(x=predictor, y='WOE', data=plot_table, color='#8BC7E0', ax=ax)
+
     for index, value in enumerate(plot_table['WOE']):
-        plt.text(index, value, round(value, 1), ha='right', va='top' if value < 0 else 'bottom',color='red' if value < 0 else 'green')
-    plt.title(predictor)
-    plt.xlabel(predictor)
-    plt.ylabel("Weight of Evidence (WOE)")
-    plt.ylim(WOE_range[0] * 1.1, WOE_range[1] * 1.1)
-    plt.yticks(tick_lst) 
-    plt.show()
+        ax.text(index, value, round(value, 1),
+                ha='right',
+                va='top' if value < 0 else 'bottom',
+                color='red' if value < 0 else 'green')
+
+    # Use figure-level title to match our header motif, clear Axes title
+    ax.set_title("")
+    fig.text(0.12, 0.91, predictor, ha='left', fontsize=13, weight='bold', alpha=.8)
+    fig.text(0.12, 0.86, "Weight of Evidence by bin", ha='left', fontsize=11, alpha=.8)
+
+    ax.set_xlabel(predictor)
+    ax.set_ylabel("Weight of Evidence (WOE)")
+    ax.set_ylim(WOE_range[0] * 1.1, WOE_range[1] * 1.1)
+    ax.set_yticks(tick_lst)
+    ax.grid(axis='y', alpha=0.15)
+
+    # Orange header motif + sensible layout
+    _add_header_decoration(fig)
+    fig.subplots_adjust(top=0.80, right=0.95, bottom=0.12, left=0.01)
+
+    plt.show()   # preserve original behavior (returns None)
 
 
 def create_IV(
@@ -301,6 +404,7 @@ def create_IV(
     bins: int = 5,
     siglevel = 0.05,
     exc_sig: bool = False,
+    figsize: tuple = None,
     return_type ="plot"
     ):
     """
@@ -385,7 +489,22 @@ def create_IV(
     predictors['Variable'] = predictors['Variable'].astype(str)
 
     # Perform statistical test
+    # Perform statistical test
     predictors_pval = p_test(data=train, outcome=outcome, behavior=predictors["Variable"].tolist())
+    
+    # Filter significant predictors only if exc_sig is True
+    if exc_sig:
+        predictors_pval_filtered = predictors_pval[predictors_pval["pval"] <= siglevel]
+        
+        if predictors_pval_filtered.shape[0] == 0:
+            raise ValueError("No predictors where the p-value lies below the significance level.")
+        
+        train = train[predictors_pval_filtered["Variable"].tolist() + [outcome]]
+        predictors_to_use = predictors_pval_filtered["Variable"].tolist()
+    else:
+        # Use all predictors regardless of significance
+        train = train[predictors_pval["Variable"].tolist() + [outcome]]
+        predictors_to_use = predictors_pval["Variable"].tolist()
     
     # Filter significant predictors only if exc_sig is True
     if exc_sig:
@@ -425,20 +544,66 @@ def create_IV(
 
     elif return_type == "plot":
         top_n = min(12, IV_summary.shape[0])
-        create_bar_asis(IV_summary,
-                        group_var="Variable",
-                        bar_var="IV",
-                        title="Information Value (IV)",
-                        subtitle=("Showing top", top_n, "predictors"),
-                        caption=None,
-                        ylab=None,
-                        xlab=None,
-                        percent=False,
-                        bar_colour="default",
-                        rounding=1)
+    
+        # Track existing figures so we can detect the new one
+        before = set(plt.get_fignums())
+    
+        # Suppress any internal plt.show() inside create_bar_asis
+        with _suppress_matplotlib_show():
+            bar_obj = create_bar_asis(
+                IV_summary,
+                group_var="Variable",
+                bar_var="IV",
+                title="Information Value (IV)",
+                subtitle=("Showing top", top_n, "predictors"),
+                caption=None,
+                ylab=None,
+                xlab=None,
+                percent=False,
+                bar_colour="default",
+                rounding=1
+            )
+        
+        # Resolve the actual figure to decorate
+        fig = None
+        try:
+            # Prefer explicit return (Axes or Figure)
+            from matplotlib.figure import Figure
+            if hasattr(bar_obj, "figure"):           # Axes-like
+                fig = bar_obj.figure
+            elif isinstance(bar_obj, Figure):        # Figure
+                fig = bar_obj
+            else:
+                # Fallback: pick the newly created figure
+                after = set(plt.get_fignums())
+                new_ids = list(after - before)
+                if new_ids:
+                    fig = plt.figure(new_ids[-1])
+                else:
+                    # last resort
+                    fig = plt.gcf()
+        except Exception:
+            fig = plt.gcf()
+    
+        # Apply dynamic size + orange header motif
+        # after resolving `fig` and optional figsize
+        if fig is not None:
+            if figsize:
+                fig.set_size_inches(*figsize, forward=True)
+        
+            subtitle_txt = f"Showing top {top_n} predictors"
+            _retitle_left(fig, "Information Value (IV)", subtitle_txt, left=0.01)
+            _add_header_decoration(fig)       # draws at _RULE_Y just below subtitle
+            _reserve_header_space(fig)        # moves Axes down so nothing overlaps
+        
+        plt.show()
+
+        return
+
 
     elif return_type == "plot-WOE":
-        return [plot_WOE(IV, variable) for variable in IV["Summary"]["Variable"]]
+        # Preserve original behavior: returns list of Nones (each plot_WOE shows a figure)
+        return [plot_WOE(IV, variable, figsize=figsize) for variable in IV["Summary"]["Variable"]]
 
     elif return_type == "list":
         output_list = {variable: IV["Tables"][variable].assign(
