@@ -213,8 +213,10 @@ def create_line(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, retur
     -------
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
-    >>> create_line(pq_data, metric = "Collaboration_hours", hrvar = "LevelDesignation")       
- 
+    >>> # Return plot
+    >>> create_line(pq_data, metric = "Collaboration_hours", hrvar = "LevelDesignation")
+    >>> # Return table
+    >>> create_line(pq_data, metric = "Collaboration_hours", hrvar = "LevelDesignation", return_type = "table")
     """    
     
     ## Handling None value passed to hrvar

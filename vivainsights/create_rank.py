@@ -152,8 +152,14 @@ def create_rank(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, retur
     Example
     -------
     >>> import vivainsights as vi
-    >>> pq_data = vi.load_pq_data()   
-    >>> create_rank(data = pq_data_small, hrvar = "FunctionType", metric = "Emails_sent", return_type = "plot")
+    >>> pq_data = vi.load_pq_data() 
+      
+    >>> # Return plot
+    >>> rank_plot = vi.create_rank(data = pq_data, hrvar = ["FunctionType", "Organization"], metric = "Emails_sent", return_type = "plot")
+    >>> vi.export(rank_plot)
+    
+    >>> # Return table
+    >>> vi.create_rank(data = pq_data, hrvar = ["FunctionType", "Organization"], metric = "Emails_sent", return_type = "table")
     """
     if type(hrvar)==str:
         hrvar = [hrvar]

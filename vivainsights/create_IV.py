@@ -27,36 +27,6 @@ except Exception:
     _HIGHLIGHT = "#fe7f4f"
 
 from matplotlib.figure import Figure  # add this import at the top
-
-# def _add_header_decoration(fig, color=_HIGHLIGHT):
-#     """
-#     Orange rule + box just BELOW the title.
-#     Uses a topmost overlay Axes so it's never hidden by subplots/tight_layout.
-#     """
-#     # Transparent overlay that spans the whole figure, drawn on top
-#     overlay = fig.add_axes([0, 0, 1, 1], frameon=False, zorder=10)
-#     overlay.set_axis_off()
-
-#     # Use overlay axes coordinates (0..1 in both directions)
-#     overlay.add_line(Line2D([0.01, 1.0], [0.85, 0.85],
-#                             transform=overlay.transAxes,
-#                             color=color, linewidth=1.2))
-
-#     overlay.add_patch(plt.Rectangle((0.01, 0.85), 0.03, -0.015,
-#                                     transform=overlay.transAxes,
-#                                     facecolor=color, linewidth=0))
-
-# def _add_header_decoration(fig, color=_HIGHLIGHT, y=0.865):
-#     """Orange rule + small box below the (figure-level) title."""
-#     overlay = fig.add_axes([0, 0, 1, 1], frameon=False, zorder=10)
-#     overlay.set_axis_off()
-#     overlay.add_line(Line2D([0.01, 1.0], [y, y], transform=overlay.transAxes,
-#                             color=color, linewidth=1.2))
-#     overlay.add_patch(plt.Rectangle((0.01, y), 0.03, -0.015,
-#                                     transform=overlay.transAxes,
-#                                     facecolor=color, linewidth=0))
-
-
 from contextlib import contextmanager
 
 @contextmanager
