@@ -344,24 +344,22 @@ def create_IV(
     Example
     -------
     >>> import numpy as np
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> pred_vars = ["Email_hours", "Meeting_hours", "Chat_hours"]
+    >>> pq_data["outcome_sim"] = np.where(pq_data["Internal_network_size"] > 40, 1, 0)
 
-    >>> 1. df["X"] = np.where(df["Internal_network_size"] > 40, 1, 0)
-    >>>    result = create_IV(df, predictors=["Email_hours",
-    >>>                            "Meeting_hours",
-    >>>                            "Chat_hours"
-    >>>                         ], outcome="X",exc_sig=False, return_type="IV")
+    >>> # Example 1: Return IV tables for all predictors without excluding non-significant ones
+    >>> vi.create_IV(pq_data, predictors=pred_vars, outcome="outcome_sim", exc_sig=False, return_type="IV")
 
-    >>> 2. df["X"] = np.where(df["Internal_network_size"] > 40, 1, 0)
-    >>>   result = create_IV(df, predictors=["Email_hours",
-    >>>                            "Meeting_hours",
-    >>>                            "Chat_hours"
-    >>>                         ], outcome="X",exc_sig=False, return_type="summary")
+    >>> # Example 2: Exclude non-significant predictors and return summary
+    >>> vi.create_IV(pq_data, predictors=pred_vars, outcome="outcome_sim", exc_sig=True, return_type="summary")
 
-    >>> 3. df["X"] = np.where(df["Internal_network_size"] > 40, 1, 0)
-    >>>   result = create_IV(df, predictors=["Email_hours",
-    >>>                            "Meeting_hours",
-    >>>                            "Chat_hours"
-    >>>                         ], outcome="X",exc_sig=False, return_type="plot")    
+    >>> # Example 3: Return IV for all predictors (single plot)
+    >>> vi.create_IV(pq_data, predictors=pred_vars, outcome="outcome_sim", exc_sig=False, return_type="plot")
+    
+    >>> # Example 4: Return WOE plots for all predictors
+    >>> vi.create_IV(pq_data, predictors=pred_vars, outcome="outcome_sim", exc_sig=False, return_type="plot-WOE")
     """
     
     # Preserve string
