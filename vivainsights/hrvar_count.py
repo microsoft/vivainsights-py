@@ -17,12 +17,12 @@ def hrvar_count_calc(data: pd.DataFrame, hrvar: str):
     output = data.sort_values(by = 'n', ascending=False)
     return output
 
-def hrvar_count_viz(data: pd.DataFrame, hrvar: str):
+def hrvar_count_viz(data: pd.DataFrame, hrvar: str, figsize: tuple = None):
     """Visualise the number of distinct persons in the data population, grouped by a selected HR variable."""
     sum_df = hrvar_count_calc(data = data, hrvar = hrvar)
     cap_str = extract_date_range(data, return_type = 'text')
     
-    fig, ax = plt.subplots(figsize=(4, 6))
+    fig, ax = plt.subplots(figsize=figsize if figsize else (8, 6))
     
     # Create grid 
     # Zorder tells it which layer to put it on. We are setting this to 1 and our data to 2 so the grid is behind the data.
@@ -90,7 +90,7 @@ def hrvar_count_viz(data: pd.DataFrame, hrvar: str):
     # return the plot object
     return fig
 
-def hrvar_count(data: pd.DataFrame, hrvar: str = 'Organization', return_type: str = "plot"):
+def hrvar_count(data: pd.DataFrame, hrvar: str = 'Organization', figsize: tuple = None, return_type: str = "plot"):
     """
     Name
     ----
@@ -106,7 +106,9 @@ def hrvar_count(data: pd.DataFrame, hrvar: str = 'Organization', return_type: st
         person query data
     hrvar : str
          name of the organizational attribute to be used for grouping
-    return_type : str or optional 
+    figsize : tuple, optional
+         The `figsize` parameter is an optional tuple that specifies the size of the figure for the boxplot visualization. It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of `(8, 6)` will be used.
+    return_type : str or optional
         type of output to return. Defaults to "plot".
 
     Example
@@ -116,7 +118,7 @@ def hrvar_count(data: pd.DataFrame, hrvar: str = 'Organization', return_type: st
     >>> vi.hrvar_count(pq_data, hrvar = "LevelDesignation")
     """
     if return_type == "plot":
-        out = hrvar_count_viz(data=data, hrvar=hrvar)
+        out = hrvar_count_viz(data=data, hrvar=hrvar, figsize=figsize)
     elif return_type == "table":
         out = hrvar_count_calc(data=data, hrvar=hrvar)
     else:

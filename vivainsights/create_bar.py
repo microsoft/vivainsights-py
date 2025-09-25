@@ -17,6 +17,9 @@ import matplotlib.ticker as mtick
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FixedLocator
 import matplotlib
+from matplotlib.lines import Line2D
+from vivainsights.color_codes import Colors  # optional, for the orange highlight
+
     
 def create_bar_calc(
     data: pd.DataFrame,
@@ -50,6 +53,19 @@ def create_bar_calc(
     
     return output
 
+def _add_header_decoration(fig, color=Colors.HIGHLIGHT_NEGATIVE.value):
+    """Orange rule + box just BELOW the title."""
+    line = Line2D([0.01, 1.0], [0.85, 0.85],
+                  transform=fig.transFigure, color=color,
+                  linewidth=1.2, clip_on=False)
+    fig.add_artist(line)
+
+    rect = plt.Rectangle((0.01, 0.85), 0.03, -0.015,
+                         transform=fig.transFigure, facecolor=color,
+                         clip_on=False, linewidth=0)
+    fig.add_artist(rect)
+
+
 def create_bar_viz(
     data: pd.DataFrame,
     metric: str,
@@ -57,7 +73,8 @@ def create_bar_viz(
     mingroup = 5,
     percent: bool = False,
     plot_title = None,
-    plot_subtitle = None):
+    plot_subtitle = None,
+    figsize: tuple = None):
     """Visualise the mean of a selected metric, grouped by a selected HR variable."""
     sum_df = create_bar_calc(data, metric, hrvar, mingroup)
     caption_text = extract_date_range(data, return_type='text')
@@ -75,7 +92,7 @@ def create_bar_viz(
         subtitle_text = plot_subtitle
 
     # fig = plt.figure()
-    fig, ax = plt.subplots(figsize=(4, 6))
+    fig, ax = plt.subplots(figsize=figsize if figsize else (8, 6))
 
     # Create grid
     # Zorder tells it which layer to put it on. We are setting this to 1 and our data to 2 so the grid is behind the data.
@@ -112,26 +129,16 @@ def create_bar_viz(
     ax.set_yticks(range(len(sum_df)))
     ax.set_yticklabels(sum_df[hrvar], ha='right')
 
-    # Add in line and tag
-    ax.plot([-.35, .87],  # Set width of line
-            [1.02, 1.02],  # Set height of line
-            transform=fig.transFigure,  # Set location relative to plot
-            clip_on=False,
-            color='#fe7f4f',
-            linewidth=.6)
+    # Titles & caption (figure-level, consistent with create_line)
+    fig.text(0.02, 0.91, title_text,   ha='left', fontsize=13, weight='bold', alpha=.8)
+    fig.text(0.02, 0.86, subtitle_text,ha='left', fontsize=11, alpha=.8)
+    fig.text(0.12, 0.02, caption_text,ha='left', va='bottom', fontsize=9,  alpha=.7)
 
-    ax.add_patch(plt.Rectangle((-.35, 1.02),  # Set location of rectangle by lower left corder
-                               0.12,  # Width of rectangle
-                               -0.02,  # Height of rectangle. Negative so it goes down.
-                               facecolor='#fe7f4f',
-                               transform=fig.transFigure,
-                               clip_on=False,
-                               linewidth=0))
+    # Orange rule + box (below title), consistent with create_line
+    _add_header_decoration(fig)
+    # Layout: reserve top for title/rule and bottom for caption
+    fig.subplots_adjust(top=0.80, right=0.95, bottom=0.12, left=0.10)
 
-    # Add in title, subtitle, and caption
-    ax.text(x=-.35, y=.96, s=title_text, transform=fig.transFigure, ha='left', fontsize=13, weight='bold', alpha=.8)
-    ax.text(x=-.35, y=.925, s=subtitle_text, transform=fig.transFigure, ha='left', fontsize=11, alpha=.8)
-    ax.text(x=-.35, y=.08, s=caption_text, transform=fig.transFigure, ha='left', fontsize=9, alpha=.7)
 
     if percent == True:
         ax.bar_label(ax.containers[0], labels=[f"{100 * value:.0f}%" for value in sum_df['metric']], label_type="edge",
@@ -139,7 +146,7 @@ def create_bar_viz(
     else:
         ax.bar_label(ax.containers[0], fmt='%.0f', label_type='edge', padding=3)  # annotate
 
-    ax.margins(y=0.3)  # pad the spacing between the number and the edge of the figure
+    ax.margins(y=0.05)  # pad the spacing between the number and the edge of the figure
 
     # return the plot object
     return fig    
@@ -152,7 +159,9 @@ def create_bar(
     percent: bool = False,
     return_type: str = "plot",
     plot_title = None,
-    plot_subtitle = None):
+    plot_subtitle = None,
+    figsize: tuple = None
+    ):
     """
     Name
     -----
@@ -183,7 +192,8 @@ def create_bar(
         Title of the plot. Defaults to None.
     plot_subtitle : str, optional
         Subtitle of the plot. Defaults to None.
-    
+    figsize : tuple, optional
+        The `figsize` parameter is an optional tuple that specifies the size of the figure for the boxplot visualization. It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.
 
     Returns
     -------
@@ -201,7 +211,7 @@ def create_bar(
         hrvar = "Total"
         
     if return_type == "plot":
-        out = create_bar_viz(data=data, metric=metric, hrvar=hrvar, percent=percent, mingroup=mingroup, plot_title = plot_title, plot_subtitle = plot_subtitle)
+        out = create_bar_viz(data=data, metric=metric, hrvar=hrvar, percent=percent, mingroup=mingroup, plot_title = plot_title, plot_subtitle = plot_subtitle,figsize=figsize)
     elif return_type == "table":
         out = create_bar_calc(data=data, metric=metric, hrvar=hrvar, mingroup=mingroup)
     else:

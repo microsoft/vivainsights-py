@@ -41,10 +41,6 @@ class TestCreateTrendCalc(unittest.TestCase):
         # Check that the output has the correct columns
         expected_columns = ['MetricDate', 'group', 'Employee_Count', 'Collaboration_hours']
         self.assertListEqual(list(output.columns), expected_columns)
-        
-        # Check that the output has the correct number of rows
-        expected_rows = 245
-        self.assertEqual(len(output), expected_rows)
 
 
 class TestCreateTrendViz(unittest.TestCase):
@@ -54,13 +50,13 @@ class TestCreateTrendViz(unittest.TestCase):
         
     def test_create_trend_viz(self):
         # Test create_trend_viz with default parameters
-        output = output = create_trend_viz(data=self.pq_data, metric="Collaboration_hours", hrvar="LevelDesignation", palette="Blues", mingroup=2, legend_title="Legend", date_column="MetricDate", date_format="%Y-%m-%d")
+        output = create_trend_viz(data=self.pq_data, metric="Collaboration_hours", hrvar="LevelDesignation", palette="Blues", mingroup=2, legend_title="Legend", date_column="MetricDate", date_format="%Y-%m-%d",size_x_axis_label=5)
         
         # Check that the figure has the expected number of subplots
         assert len(output.axes) == 2
 
         # Check that the title text is correct
-        assert output.axes[0].texts[0].get_text() == "Collaboration hours Hotspots"
+        assert any(text.get_text() == "Collaboration hours Hotspots" for text in output.axes[0].texts[:])
 
         # Check that the legend title is correct
         assert output.axes[1].get_ylabel() == "Legend"

@@ -15,6 +15,7 @@ from vivainsights.extract_date_range import extract_date_range
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.colors import Normalize
 from matplotlib.lines import Line2D
+from vivainsights.us_to_space import us_to_space
 
 def keymetrics_scan(data,
                     hrvar="Organization",
@@ -210,9 +211,10 @@ def keymetrics_scan(data,
     summary_table = summary_table[summary_table['Employee_Count'] >= mingroup]
 
     # Melt the summary table for visualization
-    summary_long = (
-        summary_table.melt(id_vars=[hrvar], var_name="variable", value_name="value")
-    )
+    # Add Employee_Count to metrics used in plotting
+    summary_table_columns = [col for col in summary_table.columns if col != hrvar]
+    summary_long = summary_table.melt(id_vars=[hrvar], var_name="variable", value_name="value")
+
 
     # Prepare the heatmap with row-wise normalization
     if return_type == "plot":
@@ -227,25 +229,40 @@ def keymetrics_scan(data,
         fig, axes = plt.subplots(num_vars, 1, figsize=(10, plot_row_scaling_factor * num_vars), sharex=True)
 
         for i, variable in enumerate(variables):
-            custom_cmap = LinearSegmentedColormap.from_list("custom_cmap", [low_color, mid_color, high_color])
             ax = axes[i] if num_vars > 1 else axes
             subset = summary_long[summary_long['variable'] == variable]
-            row_min = subset['value'].min()
-            row_max = subset['value'].max()
+            values = subset['value'].values
+            row_data = pd.DataFrame([values], columns=hrvar_categories)
 
-            normalized_values = (subset['value'] - row_min) / (row_max - row_min)
-            heatmap_data = pd.DataFrame([normalized_values.values], columns=hrvar_categories)
+            if variable == "Employee_Count":
+                light_gray_cmap = LinearSegmentedColormap.from_list("gray_cmap", ["#FFFFFF", "#FFFFFF"])
+                sns.heatmap(row_data,
+                            annot=values.reshape(1, -1),
+                            fmt=".0f",
+                            cmap=light_gray_cmap,
+                            cbar=False,
+                            linewidths=0.5,
+                            vmin=0,
+                            vmax=1,
+                            yticklabels=False,
+                            ax=ax)
+            else:
+                row_min = subset['value'].min()
+                row_max = subset['value'].max()
+                normalized_values = (values - row_min) / (row_max - row_min)
+                norm_data = pd.DataFrame([normalized_values], columns=hrvar_categories)
 
-            sns.heatmap(heatmap_data,
-                        annot=subset['value'].values.reshape(1, -1),
-                        fmt=".1f",
-                        cmap=custom_cmap,
-                        cbar=False,
-                        linewidths=0.5,
-                        vmin=0,
-                        vmax=1,
-                        yticklabels=False,
-                        ax=ax)
+                custom_cmap = LinearSegmentedColormap.from_list("custom_cmap", [low_color, mid_color, high_color])
+                sns.heatmap(norm_data,
+                            annot=values.reshape(1, -1),
+                            fmt=".1f",
+                            cmap=custom_cmap,
+                            cbar=False,
+                            linewidths=0.5,
+                            vmin=0,
+                            vmax=1,
+                            yticklabels=False,
+                            ax=ax)
 
             if i == 0:
                 ax.xaxis.tick_top()
@@ -253,18 +270,17 @@ def keymetrics_scan(data,
             else:
                 ax.tick_params(axis='x', bottom=False, labelbottom=False)
 
-            ax.set_ylabel(variable, fontsize=textsize, rotation=0, labelpad=5, ha="right")
+            ax.set_ylabel(us_to_space(variable), fontsize=textsize, rotation=0, labelpad=5, ha="right")
             ax.tick_params(left=False)
 
         fig.text(0.01, 0.995, title_text, fontsize=16, weight='bold', ha='left', va='top')
-        fig.text(0.01, 0.965, subtitle_text, fontsize=12, ha='left', va='top', alpha=0.85)
+        fig.text(0.01, 0.905, subtitle_text, fontsize=12, ha='left', va='top', alpha=0.85)
 
-        line = Line2D([0.01, 1.0], [0.910, 0.910], transform=fig.transFigure,
+        line = Line2D([0.01, 1.0], [0.85, 0.85], transform=fig.transFigure,
               color='#fe7f4f', linewidth=1.2, clip_on=False)
         fig.add_artist(line)
 
-
-        rect = plt.Rectangle((0.01, 0.910), 0.03, -0.015,
+        rect = plt.Rectangle((0.01, 0.85), 0.03, -0.015,
                              transform=fig.transFigure,
                              facecolor='#fe7f4f',
                              clip_on=False,
@@ -273,7 +289,7 @@ def keymetrics_scan(data,
 
         fig.text(0.01, 0.01, cap_str, ha='left', fontsize=9, alpha=0.7)
 
-        plt.tight_layout(rect=[0, 0.03, 1, 0.93])
+        plt.tight_layout(rect=[0, 0.03, 1, 0.85])
         return fig
 
     elif return_type == "table":

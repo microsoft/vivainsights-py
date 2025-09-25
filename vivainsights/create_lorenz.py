@@ -9,6 +9,55 @@ This module calculates the Gini coefficient and plots the Lorenz curve for a giv
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from typing import Optional, Tuple
+
+from matplotlib.lines import Line2D
+
+# Try vivainsights color, fall back to the hex
+try:
+    from vivainsights.color_codes import Colors
+    _HIGHLIGHT = Colors.HIGHLIGHT_NEGATIVE.value
+except Exception:
+    _HIGHLIGHT = "#fe7f4f"
+
+# Header layout constants
+_TITLE_Y   = 0.955
+_SUB_Y     = 0.915
+_RULE_Y    = 0.900
+_TOP_LIMIT = 0.84   # push axes down to leave room for header
+
+def _retitle_left(fig, title_text, subtitle_text=None, left=0.01):
+    """Left-aligned figure-level title/subtitle; hide any axes/supertitle."""
+    # Remove any axes titles and a prior suptitle
+    for ax in fig.get_axes():
+        try: ax.set_title("")
+        except Exception: pass
+    if getattr(fig, "_suptitle", None) is not None:
+        fig._suptitle.set_visible(False)
+
+    fig.text(left, _TITLE_Y, title_text, ha="left", fontsize=13, weight="bold", alpha=.8)
+    if subtitle_text:
+        fig.text(left, _SUB_Y, subtitle_text, ha="left", fontsize=11, alpha=.8)
+
+def _add_header_decoration(fig, color=_HIGHLIGHT, y=_RULE_Y):
+    """Orange rule + small box under the subtitle, drawn on a top overlay."""
+    overlay = fig.add_axes([0, 0, 1, 1], frameon=False, zorder=10)
+    overlay.set_axis_off()
+    overlay.add_line(Line2D([0.01, 1.0], [y, y], transform=overlay.transAxes,
+                            color=color, linewidth=1.2))
+    overlay.add_patch(plt.Rectangle((0.01, y), 0.03, -0.015,
+                                    transform=overlay.transAxes,
+                                    facecolor=color, linewidth=0))
+
+def _reserve_header_space(fig, top=_TOP_LIMIT):
+    """Move the plot area down so it doesn't overlap the header."""
+    try:
+        if hasattr(fig, "get_constrained_layout") and fig.get_constrained_layout():
+            fig.set_constrained_layout(False)
+    except Exception:
+        pass
+    fig.subplots_adjust(top=top)
+
 
 def get_value_proportion(df, population_share):
     """
@@ -61,7 +110,7 @@ def compute_gini(x):
     gini = (2 * np.sum((np.arange(1, n + 1)) * x) - (n + 1) * np.sum(x)) / (n * np.sum(x))
     return gini
 
-def create_lorenz(data, metric, return_type="plot"):
+def create_lorenz(data, metric, return_type="plot",figsize: Optional[Tuple[float, float]] = None ):
     """
     Name
     ----
@@ -123,21 +172,30 @@ def create_lorenz(data, metric, return_type="plot"):
     lorenz_df['cum_values_prop'] = lorenz_df['cum_values'] / lorenz_df['n'].sum()
 
     if return_type == "plot":
-        # Plot the Lorenz curve and display the Gini coefficient
         gini_coef = compute_gini(n)
-        fig, ax = plt.subplots(figsize=(8, 6))
+        fig, ax = plt.subplots(figsize=figsize if figsize else (8, 6))
+
+        # Lorenz curve + equality line
         ax.plot(lorenz_df['cum_population'], lorenz_df['cum_values_prop'], color='#C75B7A')
         ax.plot([0, 1], [0, 1], linestyle='dashed', color='darkgrey')
-        ax.set_title(f"% of population sharing % of {metric}")
-        fig.suptitle(f"Lorenz curve for {metric}")
+
+        # Axes labels and limits
         ax.set_xlabel("Cumulative Share of Population")
         ax.set_ylabel("Cumulative Share of Values")
-        ax.set_xlim([0, 1])
-        ax.set_ylim([0, 1])
+        ax.set_xlim([0, 1]); ax.set_ylim([0, 1])
         ax.grid(True)
-        ax.annotate(f"Gini coefficient: {round(gini_coef, 2)}", xy=(0.5, 0.1), xycoords='axes fraction')
 
-        # Return the figure object
+        # Gini annotation inside axes
+        ax.annotate(f"Gini coefficient: {round(gini_coef, 2)}",
+                    xy=(0.5, 0.1), xycoords='axes fraction')
+
+        # --- Header (figure-level, left-aligned) + orange rule/box ---
+        title    = f"Lorenz curve for {metric}"
+        subtitle = f"% of population sharing % of {metric}"
+        _retitle_left(fig, title, subtitle, left=0.01)
+        _add_header_decoration(fig)     # draws at _RULE_Y below subtitle
+        _reserve_header_space(fig)      # shifts Axes down; avoids overlap
+
         return fig
       
     elif return_type == "gini":

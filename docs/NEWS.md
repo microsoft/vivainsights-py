@@ -1,3 +1,9 @@
+# Version 0.4.1
+
+- Improve visualization aesthetics and standardize plot sizes
+- Added display behaviour for plots in `export()`
+- Various bugfixes and documentation enhancements
+
 # Version 0.4.0
 
 - Added `create_odds_ratios()`, `identify_habit()`, and `identify_usage_segments()` as additional tools to analyse Copilot usage.

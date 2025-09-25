@@ -17,6 +17,8 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import warnings
 from matplotlib.lines import Line2D
+from matplotlib.ticker import FixedLocator
+from matplotlib.ticker import MaxNLocator, FuncFormatter
 
 # Ignore warnings for cleaner output
 warnings.filterwarnings("ignore")
@@ -31,10 +33,25 @@ def create_line_calc(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5):
     output = output.reset_index()
     return output
 
-def create_line_viz(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5):
+
+def _add_header_decoration(fig, color='#fe7f4f'):
+    """Orange rule + box just BELOW the title (your exact geometry)."""
+    line = Line2D([0.01, 1.0], [0.85, 0.85],
+                  transform=fig.transFigure, color=color,
+                  linewidth=1.2, clip_on=False)
+    fig.add_artist(line)
+
+    rect = plt.Rectangle((0.01, 0.85), 0.03, -0.015,
+                         transform=fig.transFigure, facecolor=color,
+                         clip_on=False, linewidth=0)
+    fig.add_artist(rect)
+
+
+def create_line_viz(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, figsize: tuple = None):
     # summarised output
     sum_df = create_line_calc(data, metric, hrvar, mingroup)
-    sum_df['MetricDate'] = pd.to_datetime(sum_df['MetricDate'], format='%Y-%m-%d')
+    sum_df['MetricDate'] = pd.to_datetime(sum_df['MetricDate'], format='%Y-%m-%d', errors='coerce')
+    sum_df = sum_df.dropna(subset=['MetricDate'])
     
     # Set colours for the plot
     col_highlight = Colors.HIGHLIGHT_NEGATIVE.value
@@ -42,54 +59,68 @@ def create_line_viz(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5):
 
     # Clean labels for plotting
     clean_nm = metric.replace("_", " ")
-    cap_str = extract_date_range(sum_df, return_type = 'text')
+    cap_str = extract_date_range(sum_df, return_type='text')
     sub_str = f'By {hrvar}'
 
-    if(len(data[hrvar].unique()) <=4 ): #if hrvar column has 4 or less distinct values
-        # Setup plot size.
-        fig, ax = plt.subplots(figsize=(7,4))
+    if (len(data[hrvar].unique()) <= 4):
+        fig, ax = plt.subplots(figsize=figsize if figsize else (8, 6))
 
         sns.lineplot(
-            data = sum_df,    
-            x = 'MetricDate',
-            y = 'metric',
-            hue = hrvar,
-            ax = ax,
-            palette = COLOR_PALLET_ALT_2[0:sum_df[hrvar].nunique()] # count distinct values of hrvar
+            data=sum_df,
+            x='MetricDate',
+            y='metric',
+            hue=hrvar,
+            ax=ax,
+            palette=COLOR_PALLET_ALT_2[0:sum_df[hrvar].nunique()]
         )
 
         # Remove splines. Can be done one at a time or can slice with a list.
         ax.spines[['top','right','left']].set_visible(False)
+        ax.grid(axis='y', alpha=0.15)
 
-        # Shrink y-lim to make plot a bit tighter
-        ax.set_ylim(0)
+        ymin = 0 if sum_df['metric'].min() >= 0 else sum_df['metric'].min()
+        ymax = sum_df['metric'].max()
+        pad = (ymax - ymin) * 0.10 if ymax > ymin else 1.0
+        ax.set_ylim(ymin, ymax + pad)
 
-        # Reformat x-axis tick labels
-        ax.xaxis.set_tick_params(labelsize = 9, rotation=45) # Set tick label size and rotation
+        ax.xaxis.set_major_locator(mdates.MonthLocator(interval=1))
         ax.xaxis.set_major_formatter(mdates.DateFormatter('%d %b %y'))
-        ax.set_xlabel('') # Remove x-axis label
+        ax.tick_params(axis='x', rotation=45, labelsize=9, bottom=True, top=False,
+                       labelbottom=True, labeltop=False)
+        ax.set_xlabel('')
 
-        # Reformat y-axis tick labels
-        ax.yaxis.set_major_locator(plt.FixedLocator(np.arange(0, 25, 5)))
-        ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{x:.0f}'))
+        ax.yaxis.set_major_locator(MaxNLocator(nbins=6))
+        ax.yaxis.set_major_formatter(FuncFormatter(lambda x, _: f'{x:.0f}'))
+        ax.tick_params(axis='y', left=True, right=False, labelleft=True, labelright=False,
+                       pad=2, labelsize=11)
+        ax.set_ylabel(clean_nm)
 
-        ax.yaxis.set_tick_params(pad=-2,             # Pad tick labels so they don't go over y-axis
-                                labeltop=True,      # Put x-axis labels on top
-                                labelbottom=False,  # Set no x-axis labels on bottom
-                                bottom=False,       # Set no ticks on bottom
-                                labelsize=11)
-        # Set title
-        ax.text(x=0.12, y=.91, s= clean_nm, transform=fig.transFigure, ha='left', fontsize=13, weight='bold', alpha=.8)
+        # -------- LEGEND: move OUTSIDE on the right (no overlap) --------
+        n_groups = int(sum_df[hrvar].nunique())
+        ax.legend(
+            title=hrvar,
+            frameon=False,
+            loc='upper left',
+            bbox_to_anchor=(1.02, 1.0),   # outside, to the right
+            borderaxespad=0.0,
+            ncol=1 if n_groups <= 6 else 2,
+            handlelength=2.0,
+            columnspacing=1.0,
+            labelspacing=0.4
+        )
 
-        # Set subtitle
-        ax.text(x=0.12, y=.86, s=sub_str, transform=fig.transFigure, ha='left', fontsize=11, alpha=.8)
+        # Titles & caption
+        fig.text(0.02, 0.91, clean_nm, ha='left', fontsize=13, weight='bold', alpha=.8)
+        fig.text(0.02, 0.86, sub_str,   ha='left', fontsize=11, alpha=.8)
+        fig.text(0.12, -0.08, cap_str,  ha='left', fontsize=9,  alpha=.7)
 
-        # Set source text
-        ax.text(x=0.12, y=-0.08, s=cap_str, transform=fig.transFigure, ha='left', fontsize=9, alpha=.7)
+        # Orange rule + box (below the title)
+        _add_header_decoration(fig, color=col_highlight)
 
-        # return the plot object
+        # Layout: reserve top for title + rule and right for legend
+        fig.subplots_adjust(top=0.80, right=0.80, bottom=0.22, left=0.10)
         return fig
-        # fig.show()
+
     else: #hrvar has more than 4 distinct values, so we use facet grid
 
         facet_grid_plot = sns.FacetGrid(data = sum_df,
@@ -148,7 +179,7 @@ def create_line_viz(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5):
         return facet_grid_plot
 
 
-def create_line(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, return_type: str = 'plot'):
+def create_line(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, return_type: str = 'plot', figsize: tuple = None):
     """
     Name
     ----
@@ -168,6 +199,8 @@ def create_line(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, retur
         name of the organizational attribute to be used for grouping
     mingroup : int, optional
         Numeric value setting the privacy threshold / minimum group size, by default 5
+    figsize : tuple, optional
+        Size of the figure to be plotted, by default None which sets it to (8, 6)
     return_type : str, optional
         type of output to return. Defaults to "plot".
      
@@ -180,8 +213,10 @@ def create_line(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, retur
     -------
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
-    >>> create_line(pq_data, metric = "Collaboration_hours", hrvar = "LevelDesignation")       
- 
+    >>> # Return plot
+    >>> create_line(pq_data, metric = "Collaboration_hours", hrvar = "LevelDesignation")
+    >>> # Return table
+    >>> create_line(pq_data, metric = "Collaboration_hours", hrvar = "LevelDesignation", return_type = "table")
     """    
     
     ## Handling None value passed to hrvar
@@ -190,7 +225,7 @@ def create_line(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, retur
         hrvar = "Total"
         
     if return_type == "plot":
-        out = create_line_viz(data=data, metric=metric, hrvar=hrvar, mingroup=mingroup)
+        out = create_line_viz(data=data, metric=metric, hrvar=hrvar, mingroup=mingroup, figsize=figsize)
     elif return_type == "table":
         out = create_line_calc(data=data, metric=metric, hrvar=hrvar, mingroup=mingroup)
     else:

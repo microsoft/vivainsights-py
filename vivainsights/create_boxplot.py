@@ -58,7 +58,7 @@ def create_boxplot_summary(data: pd.DataFrame, metric, hrvar, mingroup):
         return(summary_table)
 
 
-def create_boxplot_viz(data: pd.DataFrame, metric, hrvar, mingroup):    
+def create_boxplot_viz(data: pd.DataFrame, metric, hrvar, mingroup,figsize: tuple = None):    
         
         # Clean labels for plotting
         clean_nm = metric.replace("_", " ")
@@ -75,7 +75,7 @@ def create_boxplot_viz(data: pd.DataFrame, metric, hrvar, mingroup):
         col_main = Colors.PRIMARY.value
         
         # Setup plot size.
-        fig, ax = plt.subplots(figsize=(7,4))
+        fig, ax = plt.subplots(figsize=figsize if figsize else (8, 6))
         
         # Create grid 
         # Zorder tells it which layer to put it on. We are setting this to 1 and our data to 2 so the grid is behind the data.
@@ -158,7 +158,7 @@ def create_boxplot_viz(data: pd.DataFrame, metric, hrvar, mingroup):
         return(plot_object)
         """
     
-def create_boxplot(data: pd.DataFrame, metric: str, hrvar: str ="Organization", mingroup=5, return_type: str = "plot"):
+def create_boxplot(data: pd.DataFrame, metric: str, hrvar: str ="Organization", mingroup=5, return_type: str = "plot", figsize: tuple = None):
     """
     Name
     -----
@@ -179,6 +179,8 @@ def create_boxplot(data: pd.DataFrame, metric: str, hrvar: str ="Organization", 
         The `hrvar` parameter is the HR variable that you want to use for grouping the data. By default, it is set to "Organization", but you can pass a different HR variable if needed.
     mingroup: int, optional
         The `mingroup` parameter is an optional parameter that specifies the minimum number of observations required in each group for the boxplot to be created. If a group has fewer observations than the `mingroup` value, it will be excluded from the boxplot. The default value is 5.
+    figsize : tuple, optional
+        The `figsize` parameter is an optional tuple that specifies the size of the figure for the boxplot visualization. It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.
     return_type : str, optional
         The `return_type` parameter determines the type of output that the function will return. It can take one of three values:
     
@@ -216,7 +218,7 @@ def create_boxplot(data: pd.DataFrame, metric: str, hrvar: str ="Organization", 
     
     elif return_type == "plot":
         # Boxplot vizualization    
-        plot_object = create_boxplot_viz(data, metric, hrvar, mingroup)
+        plot_object = create_boxplot_viz(data, metric, hrvar, mingroup,figsize)
         return plot_object
     elif return_type == "data":
         # Data calculations
