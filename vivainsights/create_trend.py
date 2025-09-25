@@ -124,7 +124,7 @@ def create_trend_calc(data, metric, hrvar, mingroup, date_column, date_format):
   data = data.rename(columns={hrvar: "group"})
 
   # Select relevant columns
-  myTable = data[["PersonId", date_column, "group", metric]].copy()
+  myTable = data[["PersonId", date_column, "group", metric]]
 
   # Determine eligible groups based on overall group size across the dataset
   group_sizes = (
