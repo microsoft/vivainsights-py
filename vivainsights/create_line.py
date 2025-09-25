@@ -47,7 +47,7 @@ def _add_header_decoration(fig, color='#fe7f4f'):
     fig.add_artist(rect)
 
 
-def create_line_viz(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, figsize: tuple = None, figsize: tuple = None):
+def create_line_viz(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, figsize: tuple = None):
     # summarised output
     sum_df = create_line_calc(data, metric, hrvar, mingroup)
     sum_df['MetricDate'] = pd.to_datetime(sum_df['MetricDate'], format='%Y-%m-%d', errors='coerce')
