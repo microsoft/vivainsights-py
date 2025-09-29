@@ -183,7 +183,9 @@ def network_p2p(data,
     >>>    )
     
     """
-    path ="p2p" + ("" if community is None else '_' + community)
+    # Only set default path if user didn't provide one
+    if path == "":
+        path = "p2p" + ("" if community is None else '_' + community)
     
     # `style` is currently a placeholder as only igraph is supported
     # legacy argument from the R implementation
