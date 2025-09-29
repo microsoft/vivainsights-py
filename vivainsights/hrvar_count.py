@@ -90,6 +90,75 @@ def hrvar_count_viz(data: pd.DataFrame, hrvar: str, figsize: tuple = None):
     # return the plot object
     return fig
 
+def hrvar_count_all(data: pd.DataFrame, hrvar_list: list = None):
+    """
+    Name
+    ----
+    hrvar_count_all
+
+    Description
+    -----------
+    This function creates a summary table to validate organizational data. 
+    This table provides a summary of the data found in the Viva Insights Data sources page. 
+    This function returns a summary table with the count of distinct fields per HR attribute 
+    and the percentage of employees with missing values for that attribute.
+
+    Parameters
+    ---------
+    data : pandas dataframe
+        person query data
+    hrvar_list : list, optional
+        list of HR variables to analyze. If None, defaults to common organizational attributes:
+        ['Organization', 'LevelDesignation', 'FunctionType', 'SupervisorIndicator', 'Level']
+
+    Returns
+    -------
+    pandas.DataFrame
+        A summary table containing:
+        - hrvar: name of the HR variable
+        - distinct_values: count of distinct values in the HR variable
+        - missing_count: count of missing/null values 
+        - missing_percentage: percentage of employees with missing values
+
+    Example
+    -------
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> vi.hrvar_count_all(pq_data)
+    """
+    # Default HR variables if none provided
+    if hrvar_list is None:
+        # Focus on common organizational attributes that are available in most datasets
+        hrvar_list = ['Organization', 'LevelDesignation', 'FunctionType', 'SupervisorIndicator', 'Level']
+    
+    # Filter to only include columns that exist in the data
+    available_hrvars = [var for var in hrvar_list if var in data.columns]
+    
+    if not available_hrvars:
+        raise ValueError("None of the specified HR variables exist in the data. Available columns: " + str(list(data.columns)))
+    
+    # Calculate summary statistics for each HR variable
+    summary_data = []
+    total_rows = len(data)
+    
+    for hrvar in available_hrvars:
+        distinct_count = data[hrvar].nunique()
+        missing_count = data[hrvar].isna().sum()
+        missing_percentage = (missing_count / total_rows) * 100
+        
+        summary_data.append({
+            'hrvar': hrvar,
+            'distinct_values': distinct_count,
+            'missing_count': missing_count,
+            'missing_percentage': round(missing_percentage, 1)
+        })
+    
+    # Create DataFrame and sort by missing percentage (descending) to highlight problematic variables first
+    summary_df = pd.DataFrame(summary_data)
+    summary_df = summary_df.sort_values('missing_percentage', ascending=False).reset_index(drop=True)
+    
+    return summary_df
+
 def hrvar_count(data: pd.DataFrame, hrvar: str = 'Organization', figsize: tuple = None, return_type: str = "plot"):
     """
     Name
