@@ -28,47 +28,29 @@ If you want to install with optional dependencies for development or documentati
 ```bash
 pip install vivainsights[dev]
 ```
-
-For more details, see the [vivainsights PyPI page](https://pypi.org/project/vivainsights/) or the [GitHub repository](https://github.com/microsoft/vivainsights-py/).
-
-## Visualization Gallery
-
-`create_rank()`:
-
-<img src="https://microsoft.github.io/vivainsights-py/_static/plots/create_rank.png" align="center" width=40% />
-
-`create_bar()`:
-
-<img src="https://microsoft.github.io/vivainsights-py/_static/plots/create_bar.png" align="center" width=40% />
-
-`create_boxplot()`:
-
-<img src="https://microsoft.github.io/vivainsights-py/_static/plots/create_boxplot.png" align="center" width=40% />
-
-`create_line()`:
-
-<img src="https://microsoft.github.io/vivainsights-py/_static/plots/create_line.png" align="center" width=40% />
-
-`create_trend()`:
-
-<img src="https://microsoft.github.io/vivainsights-py/_static/plots/create_trend.png" align="center" width=40% />
-
+To get started, we recommend checking out the [demo Jupyter notebook](https://microsoft.github.io/vivainsights-py/demo-vivainsights-py.html) and the code examples below. You can also find more details in our [GitHub repository](https://github.com/microsoft/vivainsights-py/).
 
 ## How to use
 
-Once confirmed that the library is installed, here are some examples of what you can run from the package:
-
+Once confirmed that the library is installed, you can load the package with: 
 ```python
 import vivainsights as vi
+```
 
+Typically, you will require **Analyst** access to Microsoft Viva Insights that will enable you to download a Person Query as a .csv file, configured to your specific needs. For ease of testing and exploring the package, we will have some demo datasets in **vivainsights** that you can load to test out our functions: 
+
+```python
 pq_data = vi.load_pq_data() # load and assign in-built person query
 mt_data = vi.load_mt_data() # load and assign in-built meeting query
+```
 
+Functions like `create_bar()` make exploring population averages easy: 
+```python
 # visualize averaged metrics per group (using person-averaging)
 out_plot = vi.create_bar(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup=5)
-out_tab = vi.create_bar(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup=5, return_type='table')
+vi.export(out_plot) # display plot interactively
 
-out_plot.show() # display plot interactively, using plt
+out_tab = vi.create_bar(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup=5, return_type='table')
 print(out_tab) # print summary table to console
 ```
 
@@ -135,6 +117,28 @@ vi.create_rank(
     hrvar = ['Organization', 'LevelDesignation', 'FunctionType']
 )
 ```
+
+## Visualization Gallery
+
+`create_rank()`:
+
+<img src="https://microsoft.github.io/vivainsights-py/_static/plots/create_rank.png" align="center" width=40% />
+
+`create_bar()`:
+
+<img src="https://microsoft.github.io/vivainsights-py/_static/plots/create_bar.png" align="center" width=40% />
+
+`create_boxplot()`:
+
+<img src="https://microsoft.github.io/vivainsights-py/_static/plots/create_boxplot.png" align="center" width=40% />
+
+`create_line()`:
+
+<img src="https://microsoft.github.io/vivainsights-py/_static/plots/create_line.png" align="center" width=40% />
+
+`create_trend()`:
+
+<img src="https://microsoft.github.io/vivainsights-py/_static/plots/create_trend.png" align="center" width=40% />
 
 ## Related repositories
 
