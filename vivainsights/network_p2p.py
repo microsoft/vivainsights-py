@@ -427,13 +427,14 @@ def network_p2p(data,
 
                 if pdf:
                     return fig
-                
-                return plt.show() #return 'ggplot' object
+                else:
+                    plt.show()
+                    return fig
 
             # Default PDF output unless None supplied to path
             if return_type == "plot":
                 
-                plot_basic_graph(lpos = legend_pos)
+                return plot_basic_graph(lpos = legend_pos)
                 
             elif return_type == "plot-pdf":
                 with PdfPages(out_path) as pdf:

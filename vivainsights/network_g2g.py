@@ -210,7 +210,8 @@ def network_g2g(data, primary=None, secondary=None, metric="Group_collaboration_
             
             plt.suptitle("Group to Group Collaboration" + '\n' + subtitle, fontsize=13)
             plt.figtext(0.95, 0.05, "Displays only collaboration above {}% of node's total collaboration".format(int(exc_threshold * 100)), ha="right", va="bottom", fontsize=8)     
-            return plt.show() #return 'ggplot' object
+            plt.show()
+            return fig
     else:
         raise ValueError("Please enter a valid input for 'return'.")
     
