@@ -1,1 +1,2 @@
 include data/*.csv
+recursive-include vivainsights/templates *.html
