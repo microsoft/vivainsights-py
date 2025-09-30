@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            color: #1d627e;
+            border-bottom: 3px solid #fe7f4f;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #1d627e;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        h3 {
+            color: #505050;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .message {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #1d627e;
+        }
+        .message.pass {
+            background-color: #d4edda;
+            border-left-color: #28a745;
+            color: #155724;
+        }
+        .message.warning {
+            background-color: #fff3cd;
+            border-left-color: #ffc107;
+            color: #856404;
+        }
+        .message.info {
+            background-color: #d1ecf1;
+            border-left-color: #17a2b8;
+            color: #0c5460;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        table th {
+            background-color: #1d627e;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        table tr:hover {
+            background-color: #f8f9fa;
+        }
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .plot-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .plot-container img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .metadata {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        .metadata strong {
+            color: #333;
+        }
+        footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ title }}</h1>
+        
+        {% if metadata %}
+        <div class="metadata">
+            {% for key, value in metadata.items() %}
+            <strong>{{ key }}:</strong> {{ value }}<br>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if holiday_weeks_section %}
+        <div class="section">
+            <h2>Holiday Weeks Identification</h2>
+            <div class="message {{ holiday_weeks_section.message_type }}">
+                {{ holiday_weeks_section.message }}
+            </div>
+            {% if holiday_weeks_section.plot %}
+            <div class="plot-container">
+                <img src="{{ holiday_weeks_section.plot }}" alt="Holiday Weeks Plot">
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if nkw_section %}
+        <div class="section">
+            <h2>Non-Knowledge Workers Identification</h2>
+            <div class="message {{ nkw_section.message_type }}">
+                {{ nkw_section.message }}
+            </div>
+            {% if nkw_section.table %}
+            <h3>Summary by Organization</h3>
+            {{ nkw_section.table | safe }}
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if outliers_section %}
+        <div class="section">
+            <h2>Collaboration Outliers</h2>
+            {% if outliers_section.message %}
+            <div class="message {{ outliers_section.message_type }}">
+                {{ outliers_section.message }}
+            </div>
+            {% endif %}
+            {% if outliers_section.table %}
+            <h3>Outlier Analysis</h3>
+            {{ outliers_section.table | safe }}
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if hrvar_sections %}
+        <div class="section">
+            <h2>HR Attributes Review</h2>
+            {% for hrvar_section in hrvar_sections %}
+            <h3>{{ hrvar_section.title }}</h3>
+            {% if hrvar_section.table %}
+            {{ hrvar_section.table | safe }}
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <footer>
+            <p>Generated by vivainsights-py validation_report() | {{ generation_time }}</p>
+        </footer>
+    </div>
+</body>
+</html>
