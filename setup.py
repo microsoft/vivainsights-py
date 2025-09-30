@@ -16,7 +16,7 @@ setup(name='vivainsights',
       long_description=open('README.md').read(),
       zip_safe=False,
       include_package_data=True,
-      package_data={'vivainsights': ['data/*.csv']},
+      package_data={'vivainsights': ['data/*.csv', 'templates/*.html']},
       install_requires=requirements,
       dependencies='dynamic'      
       )
