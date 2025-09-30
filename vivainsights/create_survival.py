@@ -54,7 +54,6 @@ except Exception:
 
 # ---------- vivainsights helpers ----------
 try:
-    import vivainsights as vi
     from vivainsights.extract_date_range import extract_date_range
 except Exception:
     vi = None
@@ -482,11 +481,7 @@ def create_survival(
             metric=identify_metric,
             metric_str=identify_metric_str,
             version=identify_version,
-            return_type="data",
-            # threshold=threshold,
-            # width=width,
-            # max_window=max_window,
-            # power_thres=power_thres,
+            return_type="data"
         )
         df = vi.identify_usage_segments(**idus_kwargs)
 

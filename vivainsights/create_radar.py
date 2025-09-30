@@ -91,6 +91,8 @@ from typing import List, Optional, Tuple, Literal
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
+from typing import Dict
 
 try:
     import vivainsights as vi
@@ -114,10 +116,6 @@ DEFAULT_SYNONYMS: Dict[str, str] = {
     "Non user": "Non-user",
     "Non Users": "Non-user",
 }
-
-
-from matplotlib.lines import Line2D
-from typing import Dict  # needed for DEFAULT_SYNONYMS annotations
 
 # Try vivainsights highlight color; fall back to hex
 try:
@@ -533,7 +531,7 @@ def create_radar(
         Indexing/scaling mode applied to segment values prior to plotting.
     index_ref_group : Optional[str], default None
         Required when `index_mode="ref_group"`. The name of the segment that will be fixed at 100.
-    dropna : bool, default True
+    dropna : bool, default False
         Drop rows with NA in required columns prior to aggregation.
     return_type : {"plot","table"}, default "plot"
         - "plot": return a matplotlib Figure.
