@@ -219,21 +219,22 @@ class TestNetworkP2P(unittest.TestCase):
     # ---------------------------
     @unittest.skipUnless(HAS_PLOTLY, "plotly not installed - skipping sankey test")
     def test_return_type_sankey(self):
-        # Force a renderer that does not require nbformat / Jupyter
-        pio.renderers.default = "json"
-        result, w = self.call_with_warnings(
-            vi.network_p2p,
-            data=self.p2p_data,
-            return_type="sankey",
-            community="multilevel",
-            seed=123
-        )
-        # Implementation calls create_sankey(...).show() and returns None.
+        from unittest.mock import patch
+        # Prevent Plotly from invoking any renderer that needs nbformat/ipykernel
+        with patch("plotly.graph_objects.Figure.show", return_value=None) as mocked_show:
+            result, w = self.call_with_warnings(
+                vi.network_p2p,
+                data=self.p2p_data,
+                return_type="sankey",
+                community="multilevel",
+                seed=123
+            )
         self.assertIsNone(
             result,
-            "Expected no return value for return_type='sankey' based on current implementation."
+            "Expected None since network_p2p currently does not return the Sankey figure."
         )
-        self.assert_no_unexpected_warnings(w, allow_any=True)  # allow user warnings if any
+        mocked_show.assert_called_once()
+        self.assert_no_unexpected_warnings(w, allow_any=True)
 
     # ---------------------------
     # Invalid return_type
