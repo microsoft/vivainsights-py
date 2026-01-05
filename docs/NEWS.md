@@ -1,3 +1,8 @@
+# Version 0.4.2
+
+- Add `check_query()` and `hrvar_count_all()` for validating loaded queries
+- Minor bug fixes
+
 # Version 0.4.1
 
 - Improve visualization aesthetics and standardize plot sizes
