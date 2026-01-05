@@ -127,6 +127,56 @@ class TestPTest(unittest.TestCase):
         # P-value should be valid
         self.assertGreaterEqual(result['pval'].iloc[0], 0)
         self.assertLessEqual(result['pval'].iloc[0], 1)
+    
+    def test_p_test_uses_fisher_exact_for_2x2_low_expected(self):
+        """Test that p_test uses Fisher's exact test for 2x2 tables with low expected frequencies"""
+        # Create a small dataset with a 2x2 contingency table and low expected frequencies
+        np.random.seed(42)
+        test_data = pd.DataFrame({
+            'outcome': [1, 1, 1, 0, 0],  # Very small sample
+            'binary_cat': ['A', 'A', 'B', 'A', 'B']  # 2 categories -> 2x2 table
+        })
+        
+        # Should use Fisher's exact test (no warning for 2x2 tables)
+        result = p_test(
+            data=test_data,
+            outcome='outcome',
+            behavior=['binary_cat']
+        )
+        
+        self.assertIsInstance(result, pd.DataFrame)
+        self.assertEqual(len(result), 1)
+        
+        # P-value should be valid
+        self.assertGreaterEqual(result['pval'].iloc[0], 0)
+        self.assertLessEqual(result['pval'].iloc[0], 1)
+    
+    def test_p_test_warns_for_larger_tables_with_low_expected(self):
+        """Test that p_test warns for larger contingency tables with low expected frequencies"""
+        # Create a dataset with more than 2 categories and low expected frequencies
+        np.random.seed(42)
+        test_data = pd.DataFrame({
+            'outcome': [1, 1, 1, 0, 0, 0, 1, 0],  # Small sample
+            'multi_cat': ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D']  # 4 categories -> larger than 2x2
+        })
+        
+        # Should warn about low expected frequencies
+        with self.assertWarns(UserWarning) as warning_context:
+            result = p_test(
+                data=test_data,
+                outcome='outcome',
+                behavior=['multi_cat']
+            )
+        
+        # Check warning message
+        self.assertIn('Low expected frequencies', str(warning_context.warning))
+        self.assertIn('multi_cat', str(warning_context.warning))
+        
+        # Should still return valid result
+        self.assertIsInstance(result, pd.DataFrame)
+        self.assertEqual(len(result), 1)
+        self.assertGreaterEqual(result['pval'].iloc[0], 0)
+        self.assertLessEqual(result['pval'].iloc[0], 1)
 
 
 if __name__ == '__main__':

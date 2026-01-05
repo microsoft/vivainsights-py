@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.stats import mannwhitneyu
 from scipy.stats import chi2_contingency
+from scipy.stats import fisher_exact
 from scipy.stats import mstats
 import math
 import warnings
@@ -98,6 +99,11 @@ def p_test(
     Note: The test compares two independent groups (outcome=0 vs outcome=1),
     so the Mann-Whitney U test is always used for numeric variables as these
     are inherently unpaired/independent samples.
+    
+    For categorical variables with low expected frequencies (< 5 in any cell),
+    following Cochran's guideline (1954) for Chi-square test validity:
+    - 2x2 contingency tables: Fisher's exact test is used instead
+    - Larger tables: Chi-square test is used with a warning about reliability
 
     Parameters
     ----------
@@ -149,7 +155,23 @@ def p_test(
                 # Explicitly drop rows with missing values in the predictor for consistency
                 valid_mask = train[i].notna()
                 contingency_table = pd.crosstab(train.loc[valid_mask, i], train.loc[valid_mask, outcome])
+                
+                # Calculate expected frequencies to check Chi-square assumptions
                 chi2, p_value, dof, expected = chi2_contingency(contingency_table)
+                
+                # Check for low expected frequencies (< 5)
+                if (expected < 5).any():
+                    # For 2x2 tables, use Fisher's exact test (more accurate for small samples)
+                    if contingency_table.shape == (2, 2):
+                        _, p_value = fisher_exact(contingency_table)
+                    else:
+                        # For larger tables, warn about unreliable results
+                        warnings.warn(
+                            f"Low expected frequencies (< 5) in contingency table for '{i}'. "
+                            f"Chi-square test results may be unreliable.",
+                            UserWarning
+                        )
+                        # p_value already calculated above from chi2_contingency
         except Exception:
             # Fallback for edge cases (e.g., constant variables, insufficient data)
             p_value = 1.0
