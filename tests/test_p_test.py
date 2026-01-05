@@ -177,6 +177,31 @@ class TestPTest(unittest.TestCase):
         self.assertEqual(len(result), 1)
         self.assertGreaterEqual(result['pval'].iloc[0], 0)
         self.assertLessEqual(result['pval'].iloc[0], 1)
+    
+    def test_p_test_returns_nan_and_warns_on_failure(self):
+        """Test that p_test returns NaN and warns when statistical test fails"""
+        # Create a dataset where the test will fail (constant predictor values)
+        test_data = pd.DataFrame({
+            'outcome': [1, 1, 0, 0, 1, 0],
+            'constant_var': [5, 5, 5, 5, 5, 5]  # Constant - will cause Mann-Whitney U to fail
+        })
+        
+        # Should warn about the failure and return NaN
+        with self.assertWarns(UserWarning) as warning_context:
+            result = p_test(
+                data=test_data,
+                outcome='outcome',
+                behavior=['constant_var']
+            )
+        
+        # Check warning message mentions the variable and failure
+        self.assertIn('constant_var', str(warning_context.warning))
+        self.assertIn('failed', str(warning_context.warning).lower())
+        
+        # Should return NaN, not 1.0
+        self.assertIsInstance(result, pd.DataFrame)
+        self.assertEqual(len(result), 1)
+        self.assertTrue(pd.isna(result['pval'].iloc[0]))
 
 
 if __name__ == '__main__':

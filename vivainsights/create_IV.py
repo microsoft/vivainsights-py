@@ -104,6 +104,9 @@ def p_test(
     following Cochran's guideline (1954) for Chi-square test validity:
     - 2x2 contingency tables: Fisher's exact test is used instead
     - Larger tables: Chi-square test is used with a warning about reliability
+    
+    If a statistical test fails for a variable (e.g., constant values, insufficient data),
+    the p-value will be NaN and a warning will be issued.
 
     Parameters
     ----------
@@ -172,9 +175,14 @@ def p_test(
                             UserWarning
                         )
                         # p_value already calculated above from chi2_contingency
-        except Exception:
-            # Fallback for edge cases (e.g., constant variables, insufficient data)
-            p_value = 1.0
+        except Exception as e:
+            # Return NaN and warn user instead of silently returning 1.0
+            warnings.warn(
+                f"Statistical test failed for variable '{i}': {str(e)}. "
+                f"P-value set to NaN.",
+                UserWarning
+            )
+            p_value = np.nan
         
         p_value_dict.update({i: p_value})
 
