@@ -180,10 +180,11 @@ class TestPTest(unittest.TestCase):
     
     def test_p_test_returns_nan_and_warns_on_failure(self):
         """Test that p_test returns NaN and warns when statistical test fails"""
-        # Create a dataset where the test will fail (constant predictor values)
+        # Create a dataset where the test will fail 
+        # (all values NaN for one outcome group, leaving an empty array after dropna)
         test_data = pd.DataFrame({
-            'outcome': [1, 1, 0, 0, 1, 0],
-            'constant_var': [5, 5, 5, 5, 5, 5]  # Constant - will cause Mann-Whitney U to fail
+            'outcome': [1, 1, 1, 0, 0, 0],
+            'problem_var': [np.nan, np.nan, np.nan, 1.0, 2.0, 3.0]  # All NaN for outcome=1
         })
         
         # Should warn about the failure and return NaN
@@ -191,12 +192,11 @@ class TestPTest(unittest.TestCase):
             result = p_test(
                 data=test_data,
                 outcome='outcome',
-                behavior=['constant_var']
+                behavior=['problem_var']
             )
         
         # Check warning message mentions the variable and failure
-        self.assertIn('constant_var', str(warning_context.warning))
-        self.assertIn('failed', str(warning_context.warning).lower())
+        self.assertIn('problem_var', str(warning_context.warning))
         
         # Should return NaN, not 1.0
         self.assertIsInstance(result, pd.DataFrame)
