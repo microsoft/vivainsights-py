@@ -24,9 +24,9 @@ except ImportError as e:
 autodoc_mock_imports = ["adjustText", "PyQt5", "igraph"]
     
 project = 'vivainsights'
-copyright = '2024, Microsoft Corporation'
+copyright = '2026, Microsoft Corporation'
 author = 'Martin Chan'
-release = '0.4.1'
+release = '0.4.2'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
