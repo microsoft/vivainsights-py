@@ -405,7 +405,7 @@ def plot_WOE(IV, predictor, figsize: tuple = None):
     _add_header_decoration(fig)
     fig.subplots_adjust(top=0.80, right=0.95, bottom=0.12, left=0.01)
 
-    plt.show()   # preserve original behavior (returns None)
+    return fig
 
 
 def create_IV(
@@ -607,9 +607,7 @@ def create_IV(
             _add_header_decoration(fig)       # draws at _RULE_Y just below subtitle
             _reserve_header_space(fig)        # moves Axes down so nothing overlaps
         
-        plt.show()
-
-        return
+        return fig
 
 
     elif return_type == "plot-WOE":
