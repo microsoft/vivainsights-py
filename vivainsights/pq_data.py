@@ -5,21 +5,25 @@
 """
 This module returns a data frame containing a person query.
 """
-import pkg_resources
+import importlib.resources
 import pandas as pd
 import os
 
 def load_pq_data():
-    if(pkg_resources.resource_exists(__name__, 'data/pq_data.csv')):
-        stream = pkg_resources.resource_stream(__name__, 'data/pq_data.csv')
-    elif(pkg_resources.resource_exists(__name__, '../data/pq_data.csv')):
-        stream = pkg_resources.resource_stream(__name__, '../data/pq_data.csv')
-    else:
-        print('Error: please report issue to repo maintainer')    
-    
-    # Address `ResourceWarning unclosed file` issue
-    out = pd.read_csv(stream, encoding='utf-8')
-    stream.close()
+    try:
+        # Python 3.9+ with importlib.resources.files
+        files = importlib.resources.files(__package__).joinpath('data', 'pq_data.csv')
+        with importlib.resources.as_file(files) as csv_path:
+            out = pd.read_csv(csv_path, encoding='utf-8')
+    except (TypeError, FileNotFoundError):
+        # Fallback for older Python or different package structure
+        try:
+            files = importlib.resources.files(__package__.rsplit('.', 1)[0]).joinpath('data', 'pq_data.csv')
+            with importlib.resources.as_file(files) as csv_path:
+                out = pd.read_csv(csv_path, encoding='utf-8')
+        except Exception:
+            print('Error: please report issue to repo maintainer')
+            return None
     
     # ------------------------------------------------------------------
     # Compatibility shims for tests and downstream functions
