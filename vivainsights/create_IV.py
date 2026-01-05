@@ -138,6 +138,7 @@ def p_test(
             # Check if variable is numeric/continuous
             if pd.api.types.is_numeric_dtype(train[i]):
                 # For continuous variables: use Mann-Whitney U test (rank-sum test)
+                # Explicitly drop missing values
                 pos = train[train[outcome] == '1'][i].dropna()
                 neg = train[train[outcome] == '0'][i].dropna()
 
@@ -145,7 +146,9 @@ def p_test(
                 _, p_value = mannwhitneyu(pos, neg, alternative='two-sided')
             else:
                 # For categorical variables: use Chi-square test
-                contingency_table = pd.crosstab(train[i], train[outcome])
+                # Explicitly drop rows with missing values in the predictor for consistency
+                valid_mask = train[i].notna()
+                contingency_table = pd.crosstab(train.loc[valid_mask, i], train.loc[valid_mask, outcome])
                 chi2, p_value, dof, expected = chi2_contingency(contingency_table)
         except Exception:
             # Fallback for edge cases (e.g., constant variables, insufficient data)
