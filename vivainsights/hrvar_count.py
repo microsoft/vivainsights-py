@@ -9,6 +9,7 @@ Returns a bar plot of the counts by default, with an option to return a summary 
 import pandas as pd
 import matplotlib.pyplot as plt
 from vivainsights.extract_date_range import extract_date_range
+from vivainsights.extract_hr import extract_hr
 
 def hrvar_count_calc(data: pd.DataFrame, hrvar: str):
     """Calculate the number of distinct persons in the data population, grouped by a selected HR variable."""
@@ -89,6 +90,81 @@ def hrvar_count_viz(data: pd.DataFrame, hrvar: str, figsize: tuple = None):
     
     # return the plot object
     return fig
+
+def hrvar_count_all(data: pd.DataFrame, hrvar_list: list = None, max_unique: int = 50):
+    """
+    Name
+    ----
+    hrvar_count_all
+
+    Description
+    -----------
+    This function creates a summary table to validate organizational data. 
+    This table provides a summary of the data found in the Viva Insights Data sources page. 
+    This function returns a summary table with the count of distinct fields per HR attribute 
+    and the percentage of employees with missing values for that attribute.
+
+    Parameters
+    ---------
+    data : pandas dataframe
+        person query data
+    hrvar_list : list, optional
+        list of HR variables to analyze. If None, uses `extract_hr()` to dynamically 
+        identify organizational attributes from the dataset.
+    max_unique : int, optional
+        The maximum number of unique values a column can have to be considered an HR variable.
+        Only used when `hrvar_list` is None (i.e., when using dynamic detection via `extract_hr()`).
+        Defaults to 50.
+
+    Returns
+    -------
+    pandas.DataFrame
+        A summary table containing:
+        - hrvar: name of the HR variable
+        - distinct_values: count of distinct values in the HR variable
+        - missing_count: count of missing/null values 
+        - missing_percentage: percentage of employees with missing values
+
+    Example
+    -------
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> vi.hrvar_count_all(pq_data)
+    
+    >>> # With custom max_unique threshold
+    >>> vi.hrvar_count_all(pq_data, max_unique=100)
+    """
+    # Default HR variables if none provided - use extract_hr to dynamically detect
+    if hrvar_list is None:
+        available_hrvars = extract_hr(data, max_unique=max_unique, return_type="suggestion")
+    else:
+        # Filter to only include columns that exist in the data
+        available_hrvars = [var for var in hrvar_list if var in data.columns]
+    
+    if not available_hrvars:
+        raise ValueError("None of the specified HR variables exist in the data. Available columns: " + str(list(data.columns)))
+    
+    # Calculate summary statistics for each HR variable
+    summary_data = []
+    total_rows = len(data)
+    
+    for hrvar in available_hrvars:
+        distinct_count = data[hrvar].nunique()
+        missing_count = data[hrvar].isna().sum()
+        missing_percentage = (missing_count / total_rows) * 100
+        
+        summary_data.append({
+            'hrvar': hrvar,
+            'distinct_values': distinct_count,
+            'missing_count': missing_count,
+            'missing_percentage': round(missing_percentage, 1)
+        })
+    
+    # Create DataFrame and sort by missing percentage (descending) to highlight problematic variables first
+    summary_df = pd.DataFrame(summary_data)
+    summary_df = summary_df.sort_values('missing_percentage', ascending=False).reset_index(drop=True)
+    
+    return summary_df
 
 def hrvar_count(data: pd.DataFrame, hrvar: str = 'Organization', figsize: tuple = None, return_type: str = "plot"):
     """
