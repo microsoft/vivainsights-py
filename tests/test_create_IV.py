@@ -338,6 +338,61 @@ class TestCalculateIV(unittest.TestCase):
         
         self.assertIn("has missing values in the input training data frame", str(context.exception))
     
+    def test_calculate_IV_handles_missing_predictor_values(self):
+        """Test that calculate_IV handles missing predictor values by dropping them with a warning"""
+        test_data = self.pq_data.copy()
+        
+        # Introduce some NaN values in the predictor
+        na_indices = [0, 5, 10, 15, 20]
+        test_data.loc[na_indices, 'Email_hours'] = np.nan
+        
+        # Should issue a warning but not raise an error
+        with self.assertWarns(UserWarning) as warning_context:
+            result = calculate_IV(
+                data=test_data,
+                outcome='Binary_Outcome',
+                predictor='Email_hours',
+                bins=5
+            )
+        
+        # Check warning message mentions the predictor and count
+        self.assertIn('Email_hours', str(warning_context.warning))
+        self.assertIn('5', str(warning_context.warning))  # 5 missing values
+        
+        # Should return a valid DataFrame
+        self.assertIsInstance(result, pd.DataFrame)
+        expected_columns = ['Email_hours', 'n', 'percentage', 'WOE', 'IV']
+        for col in expected_columns:
+            self.assertIn(col, result.columns)
+        
+        # Total n should equal original rows minus NaN rows
+        expected_n = len(self.pq_data) - len(na_indices)
+        self.assertEqual(result['n'].sum(), expected_n)
+    
+    def test_calculate_IV_handles_missing_categorical_predictor(self):
+        """Test that calculate_IV handles missing values in categorical predictor"""
+        test_data = self.pq_data.copy()
+        
+        # Introduce some NaN values in categorical predictor
+        na_indices = [0, 5, 10]
+        test_data.loc[na_indices, 'Organization'] = np.nan
+        
+        # Should issue a warning but not raise an error
+        with self.assertWarns(UserWarning):
+            result = calculate_IV(
+                data=test_data,
+                outcome='Binary_Outcome',
+                predictor='Organization',
+                bins=5
+            )
+        
+        # Should return a valid DataFrame
+        self.assertIsInstance(result, pd.DataFrame)
+        
+        # Total n should equal original rows minus NaN rows
+        expected_n = len(self.pq_data) - len(na_indices)
+        self.assertEqual(result['n'].sum(), expected_n)
+    
     def test_calculate_IV_with_categorical_variable(self):
         """Test that calculate_IV works with categorical variables"""
         result = calculate_IV(

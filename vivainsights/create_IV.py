@@ -195,6 +195,11 @@ def calculate_IV(
     ------
     ValueError
         If the outcome variable has missing values in the input training data frame.
+    
+    Notes
+    -----
+    Missing values (NaN) in the predictor variable are automatically dropped before
+    processing. A warning is issued if any missing values are found.
 
     Examples
     --------
@@ -216,6 +221,18 @@ def calculate_IV(
     # Check inputs
     if outc_var.isna().sum() > 0:
         raise ValueError(f"dependent variable {outcome} has missing values in the input training data frame")
+    
+    # Handle missing values in predictor variable
+    na_count = pred_var.isna().sum()
+    if na_count > 0:
+        warnings.warn(
+            f"predictor variable '{predictor}' has {na_count} missing value(s) which will be dropped",
+            UserWarning
+        )
+        # Drop rows where predictor is NaN
+        mask = pred_var.notna()
+        pred_var = pred_var[mask]
+        outc_var = outc_var[mask]
 
     # Check if predictor is numeric or categorical
     if pd.api.types.is_numeric_dtype(pred_var):
