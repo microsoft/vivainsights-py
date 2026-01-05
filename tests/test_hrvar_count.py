@@ -31,7 +31,7 @@ class TestHrVarCount(unittest.TestCase):
         self.assertListEqual(list(test_obj.columns), expected_columns)
 
     def test_hrvar_count_all_default(self):
-        """Test hrvar_count_all with default parameters"""
+        """Test hrvar_count_all with default parameters (dynamic HR detection via extract_hr)"""
         pq_data = load_pq_data()
         result = hrvar_count_all(pq_data)
         
@@ -42,15 +42,31 @@ class TestHrVarCount(unittest.TestCase):
         expected_columns = ['hrvar', 'distinct_values', 'missing_count', 'missing_percentage']
         self.assertListEqual(list(result.columns), expected_columns)
         
-        # Check if the DataFrame is not empty
+        # Check if the DataFrame is not empty (extract_hr should find at least some HR variables)
         self.assertFalse(result.empty)
         
-        # Check if default HR variables are included
-        default_vars = ['Organization', 'LevelDesignation', 'FunctionType', 'SupervisorIndicator', 'Level']
+        # Check that all returned hrvars are actual columns in the data
         result_hrvars = result['hrvar'].tolist()
-        for var in default_vars:
-            if var in pq_data.columns:  # Only check if the variable exists in the data
-                self.assertIn(var, result_hrvars)
+        for var in result_hrvars:
+            self.assertIn(var, pq_data.columns)
+
+    def test_hrvar_count_all_with_max_unique(self):
+        """Test hrvar_count_all with custom max_unique parameter"""
+        pq_data = load_pq_data()
+        
+        # Test with a lower max_unique threshold
+        result_low = hrvar_count_all(pq_data, max_unique=10)
+        
+        # Test with a higher max_unique threshold
+        result_high = hrvar_count_all(pq_data, max_unique=100)
+        
+        # Check if the results are DataFrames
+        self.assertIsInstance(result_low, pd.DataFrame)
+        self.assertIsInstance(result_high, pd.DataFrame)
+        
+        # Higher max_unique should generally find equal or more HR variables
+        # (not strictly guaranteed, but typically true)
+        self.assertGreaterEqual(len(result_high), len(result_low))
 
     def test_hrvar_count_all_custom(self):
         """Test hrvar_count_all with custom HR variables"""

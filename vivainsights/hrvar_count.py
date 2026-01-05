@@ -9,6 +9,7 @@ Returns a bar plot of the counts by default, with an option to return a summary 
 import pandas as pd
 import matplotlib.pyplot as plt
 from vivainsights.extract_date_range import extract_date_range
+from vivainsights.extract_hr import extract_hr
 
 def hrvar_count_calc(data: pd.DataFrame, hrvar: str):
     """Calculate the number of distinct persons in the data population, grouped by a selected HR variable."""
@@ -90,7 +91,7 @@ def hrvar_count_viz(data: pd.DataFrame, hrvar: str, figsize: tuple = None):
     # return the plot object
     return fig
 
-def hrvar_count_all(data: pd.DataFrame, hrvar_list: list = None):
+def hrvar_count_all(data: pd.DataFrame, hrvar_list: list = None, max_unique: int = 50):
     """
     Name
     ----
@@ -108,8 +109,12 @@ def hrvar_count_all(data: pd.DataFrame, hrvar_list: list = None):
     data : pandas dataframe
         person query data
     hrvar_list : list, optional
-        list of HR variables to analyze. If None, defaults to common organizational attributes:
-        ['Organization', 'LevelDesignation', 'FunctionType', 'SupervisorIndicator', 'Level']
+        list of HR variables to analyze. If None, uses `extract_hr()` to dynamically 
+        identify organizational attributes from the dataset.
+    max_unique : int, optional
+        The maximum number of unique values a column can have to be considered an HR variable.
+        Only used when `hrvar_list` is None (i.e., when using dynamic detection via `extract_hr()`).
+        Defaults to 50.
 
     Returns
     -------
@@ -125,14 +130,16 @@ def hrvar_count_all(data: pd.DataFrame, hrvar_list: list = None):
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> vi.hrvar_count_all(pq_data)
-    """
-    # Default HR variables if none provided
-    if hrvar_list is None:
-        # Focus on common organizational attributes that are available in most datasets
-        hrvar_list = ['Organization', 'LevelDesignation', 'FunctionType', 'SupervisorIndicator', 'Level']
     
-    # Filter to only include columns that exist in the data
-    available_hrvars = [var for var in hrvar_list if var in data.columns]
+    >>> # With custom max_unique threshold
+    >>> vi.hrvar_count_all(pq_data, max_unique=100)
+    """
+    # Default HR variables if none provided - use extract_hr to dynamically detect
+    if hrvar_list is None:
+        available_hrvars = extract_hr(data, max_unique=max_unique, return_type="suggestion")
+    else:
+        # Filter to only include columns that exist in the data
+        available_hrvars = [var for var in hrvar_list if var in data.columns]
     
     if not available_hrvars:
         raise ValueError("None of the specified HR variables exist in the data. Available columns: " + str(list(data.columns)))
