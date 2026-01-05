@@ -1,3 +1,5 @@
+# Note: p_test tests are in tests/test_p_test.py
+
 import unittest
 import pandas as pd
 import numpy as np
@@ -211,93 +213,6 @@ class TestCreateIV(unittest.TestCase):
         self.assertIsInstance(result, pd.DataFrame)
         # Should have detected the numeric predictors
         self.assertGreater(len(result), 0)
-
-
-class TestPTest(unittest.TestCase):
-    """Test the p_test helper function"""
-    
-    def setUp(self):
-        """Set up test data"""
-        self.pq_data = load_pq_data()
-        collab_median = self.pq_data['Collaboration_hours'].median()
-        self.pq_data['Binary_Outcome'] = (self.pq_data['Collaboration_hours'] > collab_median).astype(int)
-    
-    def test_p_test_returns_dataframe(self):
-        """Test that p_test returns a DataFrame with correct structure"""
-        result = p_test(
-            data=self.pq_data,
-            outcome='Binary_Outcome',
-            behavior=['Email_hours', 'Meeting_hours']
-        )
-        
-        self.assertIsInstance(result, pd.DataFrame)
-        self.assertEqual(list(result.columns), ['Variable', 'pval'])
-        self.assertEqual(len(result), 2)
-    
-    def test_p_test_pvalues_in_valid_range(self):
-        """Test that p-values are in valid range [0, 1]"""
-        result = p_test(
-            data=self.pq_data,
-            outcome='Binary_Outcome',
-            behavior=['Email_hours', 'Meeting_hours']
-        )
-        
-        for pval in result['pval']:
-            self.assertGreaterEqual(pval, 0)
-            self.assertLessEqual(pval, 1)
-    
-    def test_p_test_with_categorical_variable(self):
-        """Test that p_test works with categorical variables using chi-square"""
-        result = p_test(
-            data=self.pq_data,
-            outcome='Binary_Outcome',
-            behavior=['Organization', 'FunctionType']
-        )
-        
-        self.assertIsInstance(result, pd.DataFrame)
-        self.assertEqual(len(result), 2)
-        
-        # P-values should be in valid range
-        for pval in result['pval']:
-            self.assertGreaterEqual(pval, 0)
-            self.assertLessEqual(pval, 1)
-    
-    def test_p_test_with_mixed_variables(self):
-        """Test that p_test works with both categorical and numeric variables"""
-        result = p_test(
-            data=self.pq_data,
-            outcome='Binary_Outcome',
-            behavior=['Organization', 'Email_hours', 'FunctionType', 'Meeting_hours']
-        )
-        
-        self.assertIsInstance(result, pd.DataFrame)
-        self.assertEqual(len(result), 4)
-        
-        # All p-values should be valid
-        for pval in result['pval']:
-            self.assertGreaterEqual(pval, 0)
-            self.assertLessEqual(pval, 1)
-    
-    def test_p_test_unpaired_handles_different_sample_sizes(self):
-        """Test that p_test (Mann-Whitney U) handles different sample sizes correctly"""
-        # Create data with unequal group sizes
-        np.random.seed(42)
-        test_data = pd.DataFrame({
-            'outcome': [1]*30 + [0]*70,  # Unequal groups: 30 vs 70
-            'numeric_var': np.random.normal(10, 2, 100)
-        })
-        
-        # This should work without error (Mann-Whitney U allows different sample sizes)
-        result = p_test(
-            data=test_data,
-            outcome='outcome',
-            behavior=['numeric_var']
-        )
-        
-        self.assertIsInstance(result, pd.DataFrame)
-        self.assertEqual(len(result), 1)
-        self.assertGreaterEqual(result['pval'].iloc[0], 0)
-        self.assertLessEqual(result['pval'].iloc[0], 1)
 
 
 class TestCalculateIV(unittest.TestCase):
