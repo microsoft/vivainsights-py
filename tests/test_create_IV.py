@@ -1,3 +1,5 @@
+# Note: p_test tests are in tests/test_p_test.py
+
 import unittest
 import pandas as pd
 import numpy as np
@@ -213,40 +215,6 @@ class TestCreateIV(unittest.TestCase):
         self.assertGreater(len(result), 0)
 
 
-class TestPTest(unittest.TestCase):
-    """Test the p_test helper function"""
-    
-    def setUp(self):
-        """Set up test data"""
-        self.pq_data = load_pq_data()
-        collab_median = self.pq_data['Collaboration_hours'].median()
-        self.pq_data['Binary_Outcome'] = (self.pq_data['Collaboration_hours'] > collab_median).astype(int)
-    
-    def test_p_test_returns_dataframe(self):
-        """Test that p_test returns a DataFrame with correct structure"""
-        result = p_test(
-            data=self.pq_data,
-            outcome='Binary_Outcome',
-            behavior=['Email_hours', 'Meeting_hours']
-        )
-        
-        self.assertIsInstance(result, pd.DataFrame)
-        self.assertEqual(list(result.columns), ['Variable', 'pval'])
-        self.assertEqual(len(result), 2)
-    
-    def test_p_test_pvalues_in_valid_range(self):
-        """Test that p-values are in valid range [0, 1]"""
-        result = p_test(
-            data=self.pq_data,
-            outcome='Binary_Outcome',
-            behavior=['Email_hours', 'Meeting_hours']
-        )
-        
-        for pval in result['pval']:
-            self.assertGreaterEqual(pval, 0)
-            self.assertLessEqual(pval, 1)
-
-
 class TestCalculateIV(unittest.TestCase):
     """Test the calculate_IV helper function"""
     
@@ -284,6 +252,177 @@ class TestCalculateIV(unittest.TestCase):
             )
         
         self.assertIn("has missing values in the input training data frame", str(context.exception))
+    
+    def test_calculate_IV_handles_missing_predictor_values(self):
+        """Test that calculate_IV handles missing predictor values by dropping them with a warning"""
+        test_data = self.pq_data.copy()
+        
+        # Introduce some NaN values in the predictor
+        na_indices = [0, 5, 10, 15, 20]
+        test_data.loc[na_indices, 'Email_hours'] = np.nan
+        
+        # Should issue a warning but not raise an error
+        with self.assertWarns(UserWarning) as warning_context:
+            result = calculate_IV(
+                data=test_data,
+                outcome='Binary_Outcome',
+                predictor='Email_hours',
+                bins=5
+            )
+        
+        # Check warning message mentions the predictor and count
+        self.assertIn('Email_hours', str(warning_context.warning))
+        self.assertIn('5', str(warning_context.warning))  # 5 missing values
+        
+        # Should return a valid DataFrame
+        self.assertIsInstance(result, pd.DataFrame)
+        expected_columns = ['Email_hours', 'n', 'percentage', 'WOE', 'IV']
+        for col in expected_columns:
+            self.assertIn(col, result.columns)
+        
+        # Total n should equal original rows minus NaN rows
+        expected_n = len(self.pq_data) - len(na_indices)
+        self.assertEqual(result['n'].sum(), expected_n)
+    
+    def test_calculate_IV_handles_missing_categorical_predictor(self):
+        """Test that calculate_IV handles missing values in categorical predictor"""
+        test_data = self.pq_data.copy()
+        
+        # Introduce some NaN values in categorical predictor
+        na_indices = [0, 5, 10]
+        test_data.loc[na_indices, 'Organization'] = np.nan
+        
+        # Should issue a warning but not raise an error
+        with self.assertWarns(UserWarning):
+            result = calculate_IV(
+                data=test_data,
+                outcome='Binary_Outcome',
+                predictor='Organization',
+                bins=5
+            )
+        
+        # Should return a valid DataFrame
+        self.assertIsInstance(result, pd.DataFrame)
+        
+        # Total n should equal original rows minus NaN rows
+        expected_n = len(self.pq_data) - len(na_indices)
+        self.assertEqual(result['n'].sum(), expected_n)
+    
+    def test_calculate_IV_with_categorical_variable(self):
+        """Test that calculate_IV works with categorical variables"""
+        result = calculate_IV(
+            data=self.pq_data,
+            outcome='Binary_Outcome',
+            predictor='Organization',
+            bins=5  # bins parameter ignored for categorical
+        )
+        
+        self.assertIsInstance(result, pd.DataFrame)
+        expected_columns = ['Organization', 'n', 'percentage', 'WOE', 'IV']
+        for col in expected_columns:
+            self.assertIn(col, result.columns)
+        
+        # Should have one row per category
+        n_categories = len(self.pq_data['Organization'].unique())
+        self.assertEqual(len(result), n_categories)
+    
+    def test_calculate_IV_with_numeric_variable_still_works(self):
+        """Test that calculate_IV still works with numeric variables after categorical support"""
+        result = calculate_IV(
+            data=self.pq_data,
+            outcome='Binary_Outcome',
+            predictor='Email_hours',
+            bins=5
+        )
+        
+        self.assertIsInstance(result, pd.DataFrame)
+        expected_columns = ['Email_hours', 'n', 'percentage', 'WOE', 'IV']
+        for col in expected_columns:
+            self.assertIn(col, result.columns)
+
+
+class TestCategoricalVariables(unittest.TestCase):
+    """Test suite for categorical variable support in create_IV"""
+    
+    def setUp(self):
+        """Set up test data"""
+        self.pq_data = load_pq_data()
+        
+        # Create a binary outcome variable for testing
+        collab_median = self.pq_data['Collaboration_hours'].median()
+        self.pq_data['High_Collaboration'] = (self.pq_data['Collaboration_hours'] > collab_median).astype(int)
+    
+    def test_create_IV_with_categorical_only(self):
+        """Test create_IV with only categorical predictors"""
+        result = create_IV(
+            data=self.pq_data,
+            predictors=['Organization', 'FunctionType'],
+            outcome='High_Collaboration',
+            exc_sig=False,
+            return_type='summary'
+        )
+        
+        self.assertIsInstance(result, pd.DataFrame)
+        self.assertEqual(len(result), 2)
+        
+        # Should have the expected columns
+        expected_columns = ['Variable', 'IV', 'pval']
+        for col in expected_columns:
+            self.assertIn(col, result.columns)
+    
+    def test_create_IV_with_mixed_types(self):
+        """Test create_IV with mixed categorical and numeric predictors"""
+        predictors = ['Organization', 'Email_hours', 'FunctionType', 'Meeting_hours']
+        result = create_IV(
+            data=self.pq_data,
+            predictors=predictors,
+            outcome='High_Collaboration',
+            exc_sig=False,
+            return_type='summary'
+        )
+        
+        self.assertIsInstance(result, pd.DataFrame)
+        self.assertEqual(len(result), len(predictors))
+    
+    def test_create_IV_categorical_return_type_IV(self):
+        """Test create_IV with categorical variables and return_type='IV'"""
+        result = create_IV(
+            data=self.pq_data,
+            predictors=['Organization'],
+            outcome='High_Collaboration',
+            exc_sig=False,
+            return_type='IV'
+        )
+        
+        # Should return tuple with 3 elements
+        self.assertIsInstance(result, tuple)
+        self.assertEqual(len(result), 3)
+        
+        output_list, IV_summary, lnodds = result
+        
+        # Check types
+        self.assertIsInstance(output_list, dict)
+        self.assertIsInstance(IV_summary, pd.DataFrame)
+        self.assertIn('Organization', output_list)
+    
+    def test_create_IV_categorical_return_type_list(self):
+        """Test create_IV with categorical variables and return_type='list'"""
+        result = create_IV(
+            data=self.pq_data,
+            predictors=['Organization', 'FunctionType'],
+            outcome='High_Collaboration',
+            exc_sig=False,
+            return_type='list'
+        )
+        
+        self.assertIsInstance(result, dict)
+        # Should have entries for the predictors
+        self.assertIn('Organization', result)
+        self.assertIn('FunctionType', result)
+        
+        # Each entry should be a DataFrame
+        for key, value in result.items():
+            self.assertIsInstance(value, pd.DataFrame)
 
 
 if __name__ == '__main__':

@@ -7,7 +7,9 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from scipy.stats import wilcoxon
+from scipy.stats import mannwhitneyu
+from scipy.stats import chi2_contingency
+from scipy.stats import fisher_exact
 from scipy.stats import mstats
 import math
 import warnings
@@ -80,8 +82,7 @@ def _reserve_header_space(fig, top=_TOP_LIMIT):
 def p_test(
     data: pd.DataFrame,
     outcome: str,
-    behavior: list,
-    paired = False
+    behavior: list
     ):
     """
     Name
@@ -90,7 +91,22 @@ def p_test(
     
     Description
     -----------
-    Performs Wilcoxon signed-rank test or rank-sum test between two groups.
+    Performs statistical tests between predictor variables and a binary outcome.
+    Automatically selects the appropriate test based on variable type:
+    - Mann-Whitney U test (rank-sum test) for numeric variables
+    - Chi-square test for categorical variables
+    
+    Note: The test compares two independent groups (outcome=0 vs outcome=1),
+    so the Mann-Whitney U test is always used for numeric variables as these
+    are inherently unpaired/independent samples.
+    
+    For categorical variables with low expected frequencies (< 5 in any cell),
+    following Cochran's guideline (1954) for Chi-square test validity:
+    - 2x2 contingency tables: Fisher's exact test is used instead
+    - Larger tables: Chi-square test is used with a warning about reliability
+    
+    If a statistical test fails for a variable (e.g., constant values, insufficient data),
+    the p-value will be NaN and a warning will be issued.
 
     Parameters
     ----------
@@ -100,8 +116,6 @@ def p_test(
         Name of the outcome variable.
     behavior : list
         List of behavior variables to test.
-    paired : bool, optional
-        Boolean indicating if the test should be paired or not. Default is False.
 
     Returns
     -------
@@ -129,17 +143,47 @@ def p_test(
     train[outcome] = train[outcome].astype(str).astype('category')
     p_value_dict = {}
     for i in behavior:
-        # Separate data into positive and negative outcomes
-        pos = train[train[outcome] == '1'][i].dropna()
-        neg = train[train[outcome] == '0'][i].dropna()
+        try:
+            # Check if variable is numeric/continuous
+            if pd.api.types.is_numeric_dtype(train[i]):
+                # For continuous variables: use Mann-Whitney U test (rank-sum test)
+                # Explicitly drop missing values
+                pos = train[train[outcome] == '1'][i].dropna()
+                neg = train[train[outcome] == '0'][i].dropna()
 
-        # Ensure that the lengths of pos and neg are the same
-        min_len = min(len(pos), len(neg))
-        pos = pos[:min_len]
-        neg = neg[:min_len]
-
-        # Perform Wilcoxon signed-rank test (or rank-sum test for unpaired data)
-        _, p_value = wilcoxon(pos, neg) if paired else wilcoxon(pos, neg, alternative='two-sided')
+                # Mann-Whitney U test for independent samples (handles different sample sizes)
+                _, p_value = mannwhitneyu(pos, neg, alternative='two-sided')
+            else:
+                # For categorical variables: use Chi-square test
+                # Explicitly drop rows with missing values in the predictor for consistency
+                valid_mask = train[i].notna()
+                contingency_table = pd.crosstab(train.loc[valid_mask, i], train.loc[valid_mask, outcome])
+                
+                # Calculate expected frequencies to check Chi-square assumptions
+                chi2, p_value, dof, expected = chi2_contingency(contingency_table)
+                
+                # Check for low expected frequencies (< 5)
+                if (expected < 5).any():
+                    # For 2x2 tables, use Fisher's exact test (more accurate for small samples)
+                    if contingency_table.shape == (2, 2):
+                        _, p_value = fisher_exact(contingency_table)
+                    else:
+                        # For larger tables, warn about unreliable results
+                        warnings.warn(
+                            f"Low expected frequencies (< 5) in contingency table for '{i}'. "
+                            f"Chi-square test results may be unreliable.",
+                            UserWarning
+                        )
+                        # p_value already calculated above from chi2_contingency
+        except Exception as e:
+            # Return NaN and warn user instead of silently returning 1.0
+            warnings.warn(
+                f"Statistical test failed for variable '{i}': {str(e)}. "
+                f"P-value set to NaN.",
+                UserWarning
+            )
+            p_value = np.nan
+        
         p_value_dict.update({i: p_value})
 
     data_frame = pd.DataFrame(list(p_value_dict.items()), columns=['Variable', 'pval'])
@@ -161,6 +205,8 @@ def calculate_IV(
     Description
     -----------
     Calculates Information Value (IV) between a single predictor variable and the outcome variable.
+    For numeric variables, uses binning based on quantiles.
+    For categorical variables, uses each category as a bin.
 
     Parameters
     ----------
@@ -171,7 +217,7 @@ def calculate_IV(
     predictor : str
         Name of the predictor variable.
     bins : int
-        Number of bins for binning the predictor variable.
+        Number of bins for binning the predictor variable (only used for numeric variables).
 
     Returns
     -------
@@ -182,6 +228,11 @@ def calculate_IV(
     ------
     ValueError
         If the outcome variable has missing values in the input training data frame.
+    
+    Notes
+    -----
+    Missing values (NaN) in the predictor variable are automatically dropped before
+    processing. A warning is issued if any missing values are found.
 
     Examples
     --------
@@ -203,32 +254,74 @@ def calculate_IV(
     # Check inputs
     if outc_var.isna().sum() > 0:
         raise ValueError(f"dependent variable {outcome} has missing values in the input training data frame")
+    
+    # Handle missing values in predictor variable
+    na_count = pred_var.isna().sum()
+    if na_count > 0:
+        warnings.warn(
+            f"predictor variable '{predictor}' has {na_count} missing value(s) which will be dropped",
+            UserWarning
+        )
+        # Drop rows where predictor is NaN
+        mask = pred_var.notna()
+        pred_var = pred_var[mask]
+        outc_var = outc_var[mask]
 
-    # Compute quantiles
-    q = mstats.mquantiles(pred_var, prob=np.arange(1, bins) / bins, alphap=0, betap=0)
+    # Check if predictor is numeric or categorical
+    if pd.api.types.is_numeric_dtype(pred_var):
+        # For numeric variables: use quantile-based binning
+        # Compute quantiles
+        q = mstats.mquantiles(pred_var, prob=np.arange(1, bins) / bins, alphap=0, betap=0)
 
-    # Compute cuts
-    cuts = np.unique(q)
+        # Compute cuts
+        cuts = np.unique(q)
 
-    # Compute intervals
-    intervals = np.digitize(pred_var, bins=cuts, right=False)
+        # Compute intervals
+        intervals = np.digitize(pred_var, bins=cuts, right=False)
 
-    # Compute cut_table
-    cut_table = pd.crosstab(intervals, outc_var).reset_index()
+        # Compute cut_table
+        cut_table = pd.crosstab(intervals, outc_var).reset_index()
 
-    # Compute min/max and percentage
-    cut_table_2 = pd.DataFrame({
-        'var': pred_var,
-        'intervals': intervals
-    }).groupby('intervals').agg(
-        min=('var', 'min'),
-        max=('var', 'max'),
-        n=('var', 'size')
-    ).reset_index().round({'min': 1, 'max': 1})
+        # Compute min/max and percentage
+        cut_table_2 = pd.DataFrame({
+            'var': pred_var,
+            'intervals': intervals
+        }).groupby('intervals').agg(
+            min=('var', 'min'),
+            max=('var', 'max'),
+            n=('var', 'size')
+        ).reset_index().round({'min': 1, 'max': 1})
 
-    cut_table_2[predictor] = cut_table_2.apply(lambda row: f"[{row['min']},{row['max']}]", axis=1)
-    cut_table_2['percentage'] = cut_table_2['n'] / cut_table_2['n'].sum()
-    cut_table_2 = cut_table_2[[predictor, 'intervals', 'n', 'percentage']]
+        cut_table_2[predictor] = cut_table_2.apply(lambda row: f"[{row['min']},{row['max']}]", axis=1)
+        cut_table_2['percentage'] = cut_table_2['n'] / cut_table_2['n'].sum()
+        cut_table_2 = cut_table_2[[predictor, 'intervals', 'n', 'percentage']]
+    else:
+        # For categorical variables: use each category as a bin
+        # Create intervals based on unique categories with deterministic ordering
+        if hasattr(pred_var, 'cat'):
+            # Already categorical - use existing category codes for consistency
+            intervals = pred_var.cat.codes
+        else:
+            # Sort unique categories for deterministic ordering across runs
+            categories = sorted(pred_var.unique(), key=str)
+            category_map = {cat: idx for idx, cat in enumerate(categories)}
+            intervals = pred_var.map(category_map)
+        
+        # Compute cut_table
+        cut_table = pd.crosstab(intervals, outc_var).reset_index()
+        
+        # Compute category name and percentage
+        cut_table_2 = pd.DataFrame({
+            'var': pred_var,
+            'intervals': intervals
+        }).groupby('intervals').agg(
+            category=('var', 'first'),
+            n=('var', 'size')
+        ).reset_index()
+        
+        cut_table_2[predictor] = cut_table_2['category'].astype(str)
+        cut_table_2['percentage'] = cut_table_2['n'] / cut_table_2['n'].sum()
+        cut_table_2 = cut_table_2[[predictor, 'intervals', 'n', 'percentage']]
 
     # Calculate Non-events and Events
     cut_table_1 = cut_table[1].values.astype(float)
