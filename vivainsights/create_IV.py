@@ -247,9 +247,15 @@ def calculate_IV(
         cut_table_2 = cut_table_2[[predictor, 'intervals', 'n', 'percentage']]
     else:
         # For categorical variables: use each category as a bin
-        # Create intervals based on unique categories
-        category_map = {cat: idx for idx, cat in enumerate(pred_var.unique())}
-        intervals = pred_var.map(category_map)
+        # Create intervals based on unique categories with deterministic ordering
+        if hasattr(pred_var, 'cat'):
+            # Already categorical - use existing category codes for consistency
+            intervals = pred_var.cat.codes
+        else:
+            # Sort unique categories for deterministic ordering across runs
+            categories = sorted(pred_var.unique(), key=str)
+            category_map = {cat: idx for idx, cat in enumerate(categories)}
+            intervals = pred_var.map(category_map)
         
         # Compute cut_table
         cut_table = pd.crosstab(intervals, outc_var).reset_index()
