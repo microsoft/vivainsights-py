@@ -426,12 +426,8 @@ def network_p2p(data,
                     labelcolor = 'grey',
                     ncols = leg_cols
                 )
-
-                if pdf:
-                    return fig
-                else:
-                    plt.show()
-                    return fig
+    
+                return fig
 
             # Default PDF output unless None supplied to path
             if return_type == "plot":
