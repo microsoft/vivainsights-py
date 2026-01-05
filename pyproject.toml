@@ -21,14 +21,20 @@ authors = [
 ]
 description = "Python library to analyze and visualize data from Microsoft Viva Insights."
 readme = "README.md"
-license = {file = "LICENSE.md"}
+license = "MIT"
+license-files = ["LICENSE.md"]
 requires-python = ">=3.7"
 dynamic = ["dependencies"]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+
+[tool.setuptools]
+packages = ["vivainsights"]
+
+[tool.setuptools.package-data]
+vivainsights = ["data/*.csv"]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
