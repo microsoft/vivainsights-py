@@ -277,6 +277,27 @@ class TestPTest(unittest.TestCase):
         for pval in result['pval']:
             self.assertGreaterEqual(pval, 0)
             self.assertLessEqual(pval, 1)
+    
+    def test_p_test_unpaired_handles_different_sample_sizes(self):
+        """Test that p_test (Mann-Whitney U) handles different sample sizes correctly"""
+        # Create data with unequal group sizes
+        np.random.seed(42)
+        test_data = pd.DataFrame({
+            'outcome': [1]*30 + [0]*70,  # Unequal groups: 30 vs 70
+            'numeric_var': np.random.normal(10, 2, 100)
+        })
+        
+        # This should work without error (Mann-Whitney U allows different sample sizes)
+        result = p_test(
+            data=test_data,
+            outcome='outcome',
+            behavior=['numeric_var']
+        )
+        
+        self.assertIsInstance(result, pd.DataFrame)
+        self.assertEqual(len(result), 1)
+        self.assertGreaterEqual(result['pval'].iloc[0], 0)
+        self.assertLessEqual(result['pval'].iloc[0], 1)
 
 
 class TestCalculateIV(unittest.TestCase):

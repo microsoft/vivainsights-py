@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from scipy.stats import wilcoxon
+from scipy.stats import mannwhitneyu
 from scipy.stats import chi2_contingency
 from scipy.stats import mstats
 import math
@@ -81,8 +81,7 @@ def _reserve_header_space(fig, top=_TOP_LIMIT):
 def p_test(
     data: pd.DataFrame,
     outcome: str,
-    behavior: list,
-    paired = False
+    behavior: list
     ):
     """
     Name
@@ -93,8 +92,12 @@ def p_test(
     -----------
     Performs statistical tests between predictor variables and a binary outcome.
     Automatically selects the appropriate test based on variable type:
-    - Wilcoxon rank-sum test for numeric variables
+    - Mann-Whitney U test (rank-sum test) for numeric variables
     - Chi-square test for categorical variables
+    
+    Note: The test compares two independent groups (outcome=0 vs outcome=1),
+    so the Mann-Whitney U test is always used for numeric variables as these
+    are inherently unpaired/independent samples.
 
     Parameters
     ----------
@@ -104,8 +107,6 @@ def p_test(
         Name of the outcome variable.
     behavior : list
         List of behavior variables to test.
-    paired : bool, optional
-        Boolean indicating if the test should be paired or not. Default is False.
 
     Returns
     -------
@@ -136,17 +137,12 @@ def p_test(
         try:
             # Check if variable is numeric/continuous
             if pd.api.types.is_numeric_dtype(train[i]):
-                # For continuous variables: use Wilcoxon rank-sum test
+                # For continuous variables: use Mann-Whitney U test (rank-sum test)
                 pos = train[train[outcome] == '1'][i].dropna()
                 neg = train[train[outcome] == '0'][i].dropna()
 
-                # Ensure that the lengths of pos and neg are the same
-                min_len = min(len(pos), len(neg))
-                pos = pos[:min_len]
-                neg = neg[:min_len]
-
-                # Perform Wilcoxon signed-rank test (or rank-sum test for unpaired data)
-                _, p_value = wilcoxon(pos, neg) if paired else wilcoxon(pos, neg, alternative='two-sided')
+                # Mann-Whitney U test for independent samples (handles different sample sizes)
+                _, p_value = mannwhitneyu(pos, neg, alternative='two-sided')
             else:
                 # For categorical variables: use Chi-square test
                 contingency_table = pd.crosstab(train[i], train[outcome])
