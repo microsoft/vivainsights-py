@@ -7,6 +7,8 @@ The function `check_inputs` checks if the required variables are present in the 
 '''
 import pandas as pd
 
+__all__ = ['check_inputs']
+
 def check_inputs(data: pd.DataFrame, requirements: str):
   """
   Name

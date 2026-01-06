@@ -9,6 +9,9 @@ and an optional encoding parameter (default is 'utf-8'). It checks if the file i
 in the file using pandas, cleans the column names by removing spaces and special characters, and
 returns the resulting data as a pandas dataframe. If there is an error reading the file, the function prints an error message.
 """
+
+__all__ = ['import_query']
+
 import pandas as pd
 import re 
 import os

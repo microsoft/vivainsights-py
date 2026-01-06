@@ -5,6 +5,9 @@
 """
 This module returns a network plot given a data frame containing a group-to-group query.
 """
+
+__all__ = ['network_g2g']
+
 import pandas as pd
 from igraph import *
 import igraph as ig

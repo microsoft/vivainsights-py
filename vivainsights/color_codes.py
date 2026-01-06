@@ -7,6 +7,8 @@ This module defines an Enum class for colors and creates two color palettes usin
 """
 from enum import Enum
 
+__all__ = ['Colors', 'COLOR_PALLET_ALT_1', 'COLOR_PALLET_ALT_2']
+
 class Colors(Enum):
     PRIMARY = '#1d627e'
     HIGHLIGHT_POSITIVE = '#34b1e2'

@@ -6,6 +6,8 @@
 This module calculates odds ratios for ordinal metrics against a specified metric.
 """
 
+__all__ = ['create_odds_ratios', 'compute_fav']
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt

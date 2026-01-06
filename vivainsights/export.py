@@ -12,6 +12,8 @@ Functions:
 By default, export() copies a data frame to the clipboard, and matplotlib objects are saved as PNG files.
 """
 
+__all__ = ['display_plot', 'export']
+
 import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime

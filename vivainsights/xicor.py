@@ -6,6 +6,8 @@
 This module calculates the chatterjee coefficient for a given metric.
 """
 
+__all__ = ['xicor']
+
 import numpy as np
 from scipy.stats import rankdata
 

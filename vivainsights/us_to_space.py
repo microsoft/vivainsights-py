@@ -15,5 +15,8 @@ Examples
 --------
 >>> us_to_space("Meeting_and_call_hours_with_manager_1_1")
 """
+
+__all__ = ['us_to_space']
+
 def us_to_space(string):
     return string.replace("_", " ")

@@ -7,6 +7,9 @@ This module extracts HR attributes (organizational data) through a combination o
 number of unique values, regular expressions. There is an option to return either just a list of the variable names 
 or a DataFrame containing only the variables themselves.
 """
+
+__all__ = ['extract_hr']
+
 import pandas as pd
 def extract_hr(
     data: pd.DataFrame,

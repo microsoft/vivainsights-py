@@ -6,6 +6,8 @@
 This module returns a data frame containing a meeting query.
 """
 
+__all__ = ['load_mt_data']
+
 import importlib.resources
 import pandas as pd
 

@@ -6,6 +6,8 @@
 This module calculates the Gini coefficient and plots the Lorenz curve for a given metric.
 """
 
+__all__ = ['get_value_proportion', 'compute_gini', 'create_lorenz']
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt

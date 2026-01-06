@@ -9,6 +9,8 @@ By default, `create_trend` returns a week by week heatmap bar plot, highlighting
 Additional options available to return a summary table.
 """
 
+__all__ = ['create_trend', 'create_trend_calc', 'create_trend_viz']
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates

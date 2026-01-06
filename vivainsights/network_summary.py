@@ -5,6 +5,9 @@
 """
 This module summarises node centrality statistics with an igraph object
 """
+
+__all__ = ['network_summary']
+
 from igraph import *
 import igraph as ig
 import pandas as pd

@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+__all__ = ['create_bar_asis']
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np

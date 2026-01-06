@@ -9,6 +9,8 @@ holiday weeks and optionally an edited dataframe with outliers removed. By
 default, missing values are excluded.
 """
 
+__all__ = ['identify_holidayweeks']
+
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FixedLocator
