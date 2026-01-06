@@ -38,7 +38,8 @@ def network_p2p(data,
     node_sizes = [1, 20],
     node_scale = 1,
     seed = 1,
-    legend_ncols=0
+    legend_ncols=0,
+    figsize: tuple = None
 ):
     """
     Name
@@ -131,6 +132,9 @@ def network_p2p(data,
         Seed for the random number generator passed to either `set.seed()` when the louvain or leiden community detection algorithm is used, to ensure consistency. Only applicable when `community` is set to one of the valid non-null values.
     legend_ncols : int
         Value is either 0 or 1, Parameter to change the orientation horizontal to vertical of legend in the plot.
+    figsize : tuple
+        The `figsize` parameter is an optional tuple that specifies the size of the figure for the boxplot visualization. It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.
+        
     Returns
     -------
     A different output is returned depending on the value passed to the `return_type` argument:     
@@ -179,7 +183,9 @@ def network_p2p(data,
     >>>    )
     
     """
-    path ="p2p" + ("" if community is None else '_' + community)
+    # Only set default path if user didn't provide one
+    if path == "":
+        path = "p2p" + ("" if community is None else '_' + community)
     
     # `style` is currently a placeholder as only igraph is supported
     # legacy argument from the R implementation
@@ -355,7 +361,7 @@ def network_p2p(data,
             #Internal basic plotting function used inside 'network_p2p()'
             def plot_basic_graph(lpos = legend_pos, pdf=False, node_scale=node_scale):
                 
-                fig, ax = plt.subplots(figsize=(10, 10))
+                fig, ax = plt.subplots(figsize=figsize if figsize else (8, 6))
                 plt.rcParams["figure.facecolor"] = bg_fill
                 layout_func = getattr(ig.Graph, f"layout_{layout}")
                 
@@ -420,16 +426,13 @@ def network_p2p(data,
                     labelcolor = 'grey',
                     ncols = leg_cols
                 )
-
-                if pdf:
-                    return fig
-                
-                return plt.show() #return 'ggplot' object
+    
+                return fig
 
             # Default PDF output unless None supplied to path
             if return_type == "plot":
                 
-                plot_basic_graph(lpos = legend_pos)
+                return plot_basic_graph(lpos = legend_pos)
                 
             elif return_type == "plot-pdf":
                 with PdfPages(out_path) as pdf:

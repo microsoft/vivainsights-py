@@ -25,6 +25,8 @@ def identify_usage_segments(data, metric=None, metric_str=None, version="12w", r
         List of metric columns to aggregate for classification.
     version : str, optional
         Version of classification: "12w" (12-week rolling average), "4w" (4-week rolling average), or None for custom parameters. Default is "12w".
+    figsize : tuple, optional
+        The `figsize` parameter is an optional tuple that specifies the size of the figure for the boxplot visualization. It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.        
     return_type : str, optional
         What to return: "data" (default), "plot", or "table".
     threshold : int, optional
@@ -228,7 +230,7 @@ def identify_usage_segments(data, metric=None, metric_str=None, version="12w", r
         raise ValueError("Invalid return_type. Choose 'data', 'plot', or 'table'.")
 
 
-def plot_ts_us(data, cus, caption):
+def plot_ts_us(data, cus, caption,figsize=None):
     """
     Plot usage segments over time.
 
@@ -266,7 +268,7 @@ def plot_ts_us(data, cus, caption):
     pivot_data = pivot_data[category_order]
 
     # Plot the stacked bar chart
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=figsize if figsize else (8, 6))
     pivot_data.plot(kind="bar", stacked=True, color=colors, ax=ax)
 
     # Customize the plot

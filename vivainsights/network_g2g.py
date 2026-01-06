@@ -13,7 +13,7 @@ import numpy as np
 import re
 import random
 
-def network_g2g(data, primary=None, secondary=None, metric="Group_collaboration_time_invested", algorithm="fr", node_colour="lightblue", exc_threshold=0.1, org_count=None, node_scale = 1, edge_scale = 10, subtitle="Collaboration Across Organizations", return_type="plot"):
+def network_g2g(data, primary=None, secondary=None, metric="Group_collaboration_time_invested", algorithm="fr", node_colour="lightblue", exc_threshold=0.1, org_count=None, node_scale = 1, edge_scale = 10, subtitle="Collaboration Across Organizations",figsize=None, return_type="plot"):
     """
     Name
     ----
@@ -56,6 +56,8 @@ def network_g2g(data, primary=None, secondary=None, metric="Group_collaboration_
     edge_scale: Numeric value controlling the width of the edges. 1 keeps the size of the edges as is. Defaults to 10. 
     subtitle : str 
         String to override default plot subtitle.
+    figsize : tuple, optional
+        The `figsize` parameter is an optional tuple that specifies the size of the figure for the boxplot visualization. It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.        
     return_type : str
         String specifying what to return. This must be one of the following strings:
         - `"plot"`
@@ -191,7 +193,7 @@ def network_g2g(data, primary=None, secondary=None, metric="Group_collaboration_
             g = g_noloops # use version of graph with no self-collaboration
             
             # plot object
-            fig, ax = plt.subplots(figsize=(8, 8))
+            fig, ax = plt.subplots(figsize=figsize if figsize else (8, 6))
             ig.plot(
                 g,
                 layout=g.layout(algorithm),
@@ -208,7 +210,7 @@ def network_g2g(data, primary=None, secondary=None, metric="Group_collaboration_
             
             plt.suptitle("Group to Group Collaboration" + '\n' + subtitle, fontsize=13)
             plt.figtext(0.95, 0.05, "Displays only collaboration above {}% of node's total collaboration".format(int(exc_threshold * 100)), ha="right", va="bottom", fontsize=8)     
-            return plt.show() #return 'ggplot' object
+            return fig
     else:
         raise ValueError("Please enter a valid input for 'return'.")
     

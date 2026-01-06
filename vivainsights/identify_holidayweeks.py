@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FixedLocator
 
 
-def identify_holidayweeks(data: pd.DataFrame, sd = 1, return_type = "text"):
+def identify_holidayweeks(data: pd.DataFrame, sd = 1, return_type = "text",figsize: tuple = None):
     """"
     Name
     -----
@@ -39,6 +39,8 @@ def identify_holidayweeks(data: pd.DataFrame, sd = 1, return_type = "text"):
         The standard deviation below the mean for collaboration hours that should 
         define an outlier week.  Enter a positive number. 
         Default is 1 standard deviation.
+    figsize : tuple, optional
+        The `figsize` parameter is an optional tuple that specifies the size of the figure for the boxplot visualization. It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.
     return_type : str
         String specifying what to return. This must be one of the following strings:
         - "text" (default)
@@ -127,7 +129,7 @@ def identify_holidayweeks(data: pd.DataFrame, sd = 1, return_type = "text"):
         
         elif return_type == "plot":
             # Generate a line plot with matplotlib for the collaboration hours
-            fig, ax = plt.subplots(figsize=(10, 6))
+            fig, ax = plt.subplots(figsize=figsize if figsize else (8, 6))
 
             # Plot the collaboration hours
             ax.plot(Calc["MetricDate"], Calc["mean_collab"].round(0), color="#1d627e", linewidth=3)

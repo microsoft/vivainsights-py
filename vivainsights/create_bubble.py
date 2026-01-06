@@ -15,7 +15,7 @@ from adjustText import adjust_text
 from vivainsights.totals_col import totals_col
 from matplotlib.lines import Line2D
 
-def create_bubble(data, metric_x, metric_y, hrvar="Organization", mingroup=5, return_type="plot", bubble_size=(1, 100)):
+def create_bubble(data, metric_x, metric_y, hrvar="Organization", mingroup=5, return_type="plot", bubble_size=(1, 100), figsize: tuple = None):
     """
     Name
     -----
@@ -44,7 +44,9 @@ def create_bubble(data, metric_x, metric_y, hrvar="Organization", mingroup=5, re
         The type of output to return. Can be "plot" to return a bubble plot visualization, or "table" to return a summary table. Defaults to "plot".
     bubble_size : tuple, optional
         Size range for the bubbles in the plot as a tuple (min_size, max_size). Defaults to (1, 100).
-
+    figsize : tuple, optional
+        The `figsize` parameter is an optional tuple that specifies the size of the figure for the bubble plot visualization. It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.
+    
     Returns
     -------
     Various
@@ -82,7 +84,7 @@ def create_bubble(data, metric_x, metric_y, hrvar="Organization", mingroup=5, re
 
     # Plotting
     if return_type == "plot":
-        fig, ax = plt.subplots(figsize=(8, 6))
+        fig, ax = plt.subplots(figsize=figsize if figsize else (8, 6))
         
         # Reserve more space for title/subtitle/orange line
         plt.subplots_adjust(top=0.82)

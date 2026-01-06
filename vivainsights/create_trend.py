@@ -34,7 +34,10 @@ def create_trend(data: pd.DataFrame,
                  return_type: str = "plot",
                  legend_title: str = "Hours",
                  date_column: str = "MetricDate",
-                 date_format: str = "%Y-%m-%d"):  
+                 date_format: str = "%Y-%m-%d",
+                 figsize: tuple = None,
+                 size_x_axis_label: int = 5
+                 ):  
   """
   Name
   ----
@@ -64,6 +67,8 @@ def create_trend(data: pd.DataFrame,
       The name of the column in the DataFrame that contains the dates for the trend analysis. Defaults to MetricDate
   date_format : str
       The `date_format` parameter is used to specify the format of the dates in the `date_column` of the input data. It should be a string that follows the syntax of the Python `datetime` module's `strftime` function. This allows you to specify how the dates are formatted in the. Defaults to %Y-%m-%d
+  figsize : tuple, optional
+      The `figsize` parameter is used to specify the size of the figure in inches. If not provided, it defaults to (8, 6). This parameter is used when creating the plot to determine the dimensions of the figure.
 
   Returns
   ------
@@ -86,7 +91,7 @@ def create_trend(data: pd.DataFrame,
     myTable_return = myTable.pivot(index="group", columns=date_column, values=metric)
     return myTable_return    
   elif return_type == "plot":
-    return create_trend_viz(data, metric, palette, hrvar, mingroup, legend_title, date_column, date_format)
+    return create_trend_viz(data, metric, palette, hrvar, mingroup, legend_title, date_column, date_format, size_x_axis_label, figsize)
   else:
     raise ValueError("Please enter a valid input for return_type.")
   
@@ -113,24 +118,35 @@ def create_trend_calc(data, metric, hrvar, mingroup, date_column, date_format):
 
   # Clean metric name
   clean_nm = metric.replace("_", " ")
-
   # Convert Date to datetime and rename hrvar to group
+  data = data.copy()
   data[date_column] = pd.to_datetime(data[date_column], format=date_format)
   data = data.rename(columns={hrvar: "group"})
 
-  # Select relevant columns and group by group
+  # Select relevant columns
   myTable = data[["PersonId", date_column, "group", metric]]
-  myTable = myTable.groupby("group")
 
-  # Calculate employee count and filter by mingroup
-  myTable = myTable.apply(lambda x: x.assign(Employee_Count = x["PersonId"].nunique()))
-  myTable = myTable[myTable["Employee_Count"] >= mingroup]
+  # Determine eligible groups based on overall group size across the dataset
+  group_sizes = (
+      myTable.groupby("group")["PersonId"].nunique().reset_index(name="Group_Count")
+  )
+  eligible_groups = set(group_sizes.loc[group_sizes["Group_Count"] >= mingroup, "group"])
 
-  # Group by date and group and calculate mean metric and employee count
-  myTable.reset_index(drop = True, inplace = True)
-  myTable = myTable.groupby([date_column, "group"]).agg({"Employee_Count": "mean", metric: "mean"}).reset_index()
+  # Filter table to only eligible groups (based on overall size)
+  myTable = myTable[myTable["group"].isin(eligible_groups)]
 
-  return myTable
+  # Compute Employee_Count per date and group (unique people that week in that group)
+  agg = (
+      myTable
+      .groupby(["group", date_column])
+      .agg(Employee_Count=("PersonId", "nunique"), **{metric: (metric, "mean")})
+      .reset_index()
+  )
+
+  # Reorder columns to match expected output
+  agg = agg[[date_column, "group", "Employee_Count", metric]]
+
+  return agg
   
   
 def create_trend_viz(
@@ -141,7 +157,9 @@ def create_trend_viz(
   mingroup,
   legend_title: str,
   date_column: str,
-  date_format: str
+  date_format: str,
+  size_x_axis_label,
+  figsize: tuple = None
 ):
   """
   Name
@@ -156,20 +174,17 @@ def create_trend_viz(
   
   myTable = create_trend_calc(data, metric, hrvar, mingroup, date_column, date_format)
   myTable_plot = myTable[[date_column, "group", metric]]  
-  # myTable_plot[date_column] = pd.to_datetime(myTable[date_column], format=date_format)
-  # myTable_plot[date_column] = pd.to_datetime(myTable[date_column], format=date_format).dt.date
   
-  # Clean labels for plotting
+  # Cleaning labels for plotting
   clean_nm = metric.replace("_", " ")  
   title_text = f"{clean_nm} Hotspots"
   subtitle_text = f'By {hrvar}'
   caption_text = extract_date_range(data, return_type = 'text')  
   
-  # Create the plot object
-  # Setup plot size.
-  fig, ax = plt.subplots(figsize=(7, 4))
+  # Creating the plot object
+  fig, ax = plt.subplots(figsize=figsize if figsize else (8, 6))
     
-  # Remove tick marks
+  # Removing tick marks
   ax.tick_params(
       which='both',      # Both major and minor ticks are affected
       top=False,         # Remove ticks from the top
@@ -178,14 +193,67 @@ def create_trend_viz(
       right=False        # Remove ticks from the right
   )
   
-  # Create heatmap plot
+  # Creating Pivot the data and sort columns
+  pivot_table = myTable_plot.pivot(index="group", columns=date_column, values=metric)
+  pivot_table = pivot_table.sort_index(axis=1)
+
+  # Creating heatmap
   sns.heatmap(
-    data = myTable_plot.pivot(index="group", columns=date_column, values=metric),
-    cmap = palette,
-    cbar_kws={"label": legend_title},
-    xticklabels= myTable_plot[date_column].dt.date.unique()
-    )
+      data=pivot_table,
+      cmap=palette,
+      cbar_kws={"label": legend_title},
+      xticklabels=False
+  )
+
+  # Calculating date range and generate tick labels
+  date_range_days = (pivot_table.columns.max() - pivot_table.columns.min()).days
+  date_list = list(pivot_table.columns)
+
+  # Deciding format and deduplicate
+
+  tick_labels = []
+  last_label = ""
+  for d in date_list:
+      if date_range_days > 365:
+          label = d.strftime('%Y')
+      elif date_range_days > 90:
+          label = d.strftime('%b %Y')
+      else:
+          label = d.strftime('%d-%m-%y')
+
+      if label != last_label:
+          tick_labels.append(label)
+          last_label = label
+      else:
+          tick_labels.append("")  # Empty for duplicate to avoid clutter
+
+  # Explicitly setting the x-ticks positions and labels
+  ax.set_xticks([i + 0.5 for i in range(len(date_list))])  # heatmap cell centers
+  ax.set_xticklabels(tick_labels, rotation=45, ha='right', fontsize=9)
+
   
+  # Grouping indices by the bracket label
+  bracket_groups = {}
+  current_label = None
+  for idx, label in enumerate(tick_labels):
+      if label != "":
+          current_label = label
+          bracket_groups[current_label] = [idx, idx]
+      else:
+          if current_label:
+              bracket_groups[current_label][1] = idx
+  
+  # Drawing brackets clearly under each grouped label
+  bracket_y = -0.08
+  for label, (start, end) in bracket_groups.items():
+      ax.hlines(y=bracket_y, xmin=start, xmax=end + 1, color='black', linewidth=1.2, transform=ax.get_xaxis_transform(), clip_on=False)
+      ax.vlines([start, end + 1], ymin=bracket_y - 0.01, ymax=bracket_y, color='black', linewidth=1.2, transform=ax.get_xaxis_transform(), clip_on=False)
+      ax.text((start + end + 1) / 2, bracket_y - 0.03, label, ha='center', va='top', fontsize=size_x_axis_label, transform=ax.get_xaxis_transform(), clip_on=False)
+  
+  # Adding padding at bottom for brackets and labels
+  plt.subplots_adjust(bottom=0.12)
+
+  # Set x-tick labels
   # Reformat x-axis tick labels
   ax.xaxis.set_tick_params(labelsize = 9, rotation=45)
   ax.yaxis.set_tick_params(labelsize = 9)
@@ -236,16 +304,11 @@ def create_trend_viz(
       fontsize = 11,        
       alpha = .8
   )
-
+  ax.xaxis.set_major_locator(plt.NullLocator())
+  ax.xaxis.set_major_formatter(plt.NullFormatter())
 
   # Set caption
   ax.text(x=-0.08, y=-0.12, s=caption_text, transform=fig.transFigure, ha='left', fontsize=9, alpha=.7)
   
   # return the plot object
   return fig
-  
-  """Legacy 
-  # plot_object.set_title(f"{clean_nm}\nHotspots by {hrvar.lower()}")
-  # plot_object.set_xlabel(date_column)
-  # plot_object.set_ylabel(hrvar)
-  """
