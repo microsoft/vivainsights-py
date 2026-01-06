@@ -5,6 +5,8 @@
 
 #Create a sankey chart from a two-column count table
 
+__all__ = ['create_sankey']
+
 import pandas as pd
 import plotly.graph_objects as go
 import random

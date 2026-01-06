@@ -7,6 +7,9 @@ This module visualizes the average of metric by sub-population over time.
 Returns a line plot showing the average of a selected metric by default.
 Additional options available to return a summary table.
 """
+
+__all__ = ['create_line_calc', 'create_line_viz', 'create_line']
+
 import pandas as pd
 import seaborn as sns
 import numpy as np

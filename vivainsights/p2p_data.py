@@ -5,6 +5,9 @@
 """
 This module returns a data frame containing a person-to-person query.
 """
+
+__all__ = ['load_p2p_data']
+
 import importlib.resources
 import pandas as pd
 

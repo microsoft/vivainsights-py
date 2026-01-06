@@ -5,6 +5,9 @@
 """
 This module performs network analysis with a person-to-person query
 """
+
+__all__ = ['network_p2p']
+
 import vivainsights as vi
 import pandas as pd
 import igraph as ig

@@ -9,6 +9,8 @@ Prints diagnostic data about the data query to the console, with information suc
 date range, number of employees, HR attributes identified, etc.
 """
 
+__all__ = ['check_query']
+
 import pandas as pd
 from .extract_hr import extract_hr
 from .extract_date_range import extract_date_range

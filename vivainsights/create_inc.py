@@ -5,6 +5,9 @@
 """
 This module creates an incidence analysis reflecting the proportion of the population scoring above or below a specified threshold for a metric. 
 """
+
+__all__ = ['create_inc', 'create_inc_bar', 'create_inc_grid']
+
 import typing
 import pandas as pd
 import numpy as np

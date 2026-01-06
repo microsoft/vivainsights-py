@@ -5,6 +5,9 @@
 """
 This module returns a data frame containing a person query.
 """
+
+__all__ = ['load_pq_data']
+
 import importlib.resources
 import pandas as pd
 import os

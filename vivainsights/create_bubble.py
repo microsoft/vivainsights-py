@@ -7,6 +7,9 @@
 The function `create_bubble` creates a bubble visualization and summary table for a given metric
 and grouping variable in a dataset.
 """
+
+__all__ = ['create_bubble']
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns

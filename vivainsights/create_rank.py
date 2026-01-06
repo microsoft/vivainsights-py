@@ -5,6 +5,9 @@
 """
 This module performs a rank operation on all groups across HR attributes for a selected Viva Insights metric.
 """
+
+__all__ = ['create_rank_calc', 'create_rank_viz', 'create_rank']
+
 import pandas as pd
 from vivainsights.create_bar import create_bar_calc
 from vivainsights.extract_date_range import extract_date_range

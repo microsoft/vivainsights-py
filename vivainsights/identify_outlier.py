@@ -6,6 +6,8 @@
 This function takes in a selected metric and uses the z-score (number of standard deviations) to identify outliers across time. There are applications in this for identifying weeks with abnormally low collaboration activity, e.g. holidays. Time as a grouping variable can be overridden with the `group_var` argument.
 """
 
+__all__ = ['identify_outlier']
+
 import pandas as pd
     
 def identify_outlier(data: pd.DataFrame, group_var = "MetricDate", metric = "Collaboration_hours"):

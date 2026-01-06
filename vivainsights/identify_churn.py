@@ -8,6 +8,9 @@ This is done by measuring whether an employee who is present in the first `n` (n
 is also present in the last `n` (n2) weeks of the data.
 An additional use case of this function is the ability to identify "new-joiners" by using the argument `flip`.
 """
+
+__all__ = ['identify_churn']
+
 import pandas as pd
 
 def identify_churn(data: pd.DataFrame,

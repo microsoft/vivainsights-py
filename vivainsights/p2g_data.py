@@ -5,6 +5,9 @@
 """
 This module returns a data frame containing a person-to-group query.
 """
+
+__all__ = ['load_p2g_data']
+
 import importlib.resources
 import pandas as pd
 

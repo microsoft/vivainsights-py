@@ -8,6 +8,9 @@ metric, grouped by a selected HR variable.
 
 The metrics are first aggregated at a user-level prior to being aggregated at the level of the HR variable. The function `create_bar` returns either a plot object or a table, depending on the value passed to `return_type`. 
 """
+
+__all__ = ['create_bar_calc', 'create_bar_viz', 'create_bar']
+
 import pandas as pd
 import seaborn as sns
 from vivainsights.extract_date_range import extract_date_range
