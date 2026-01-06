@@ -6,17 +6,23 @@
 This module returns a data frame containing a meeting query.
 """
 
-import pkg_resources
+import importlib.resources
 import pandas as pd
 
 def load_mt_data():
-    # This is a stream-like object. If you want the actual info, call
-    # stream.read()
-    # stream = pkg_resources.resource_string('vivainsights', 'data/mt_data.csv')
-    if(pkg_resources.resource_exists(__name__, 'data/mt_data.csv')):
-        stream = pkg_resources.resource_stream(__name__, 'data/mt_data.csv')
-    elif(pkg_resources.resource_exists(__name__, '../data/mt_data.csv')):
-        stream = pkg_resources.resource_stream(__name__, '../data/mt_data.csv')
-    else:
-        print('Error: please report issue to repo maintainer')    
-    return pd.read_csv(stream, encoding='utf-8')
+    try:
+        # Python 3.9+ with importlib.resources.files
+        files = importlib.resources.files(__package__).joinpath('data', 'mt_data.csv')
+        with importlib.resources.as_file(files) as csv_path:
+            out = pd.read_csv(csv_path, encoding='utf-8')
+    except (TypeError, FileNotFoundError):
+        # Fallback for older Python or different package structure
+        try:
+            files = importlib.resources.files(__package__.rsplit('.', 1)[0]).joinpath('data', 'mt_data.csv')
+            with importlib.resources.as_file(files) as csv_path:
+                out = pd.read_csv(csv_path, encoding='utf-8')
+        except Exception:
+            print('Error: please report issue to repo maintainer')
+            return None
+    
+    return out

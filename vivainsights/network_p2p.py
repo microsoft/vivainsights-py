@@ -183,7 +183,9 @@ def network_p2p(data,
     >>>    )
     
     """
-    path ="p2p" + ("" if community is None else '_' + community)
+    # Only set default path if user didn't provide one
+    if path == "":
+        path = "p2p" + ("" if community is None else '_' + community)
     
     # `style` is currently a placeholder as only igraph is supported
     # legacy argument from the R implementation
@@ -424,16 +426,13 @@ def network_p2p(data,
                     labelcolor = 'grey',
                     ncols = leg_cols
                 )
-
-                if pdf:
-                    return fig
-                
-                return plt.show() #return 'ggplot' object
+    
+                return fig
 
             # Default PDF output unless None supplied to path
             if return_type == "plot":
                 
-                plot_basic_graph(lpos = legend_pos)
+                return plot_basic_graph(lpos = legend_pos)
                 
             elif return_type == "plot-pdf":
                 with PdfPages(out_path) as pdf:
