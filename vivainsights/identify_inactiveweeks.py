@@ -7,6 +7,9 @@ The function `identify_inactiveweeks` identifies weeks where collaboration hours
 specified number of standard deviations below the mean and returns the result in the specified
 format.
 """
+
+__all__ = ['identify_inactiveweeks']
+
 import pandas as pd
 from vivainsights.create_bar import create_bar_calc
 

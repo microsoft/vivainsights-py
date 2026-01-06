@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+__all__ = ['p_test', 'calculate_IV', 'map_IV', 'plot_WOE', 'create_IV']
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -150,6 +152,17 @@ def p_test(
                 # Explicitly drop missing values
                 pos = train[train[outcome] == '1'][i].dropna()
                 neg = train[train[outcome] == '0'][i].dropna()
+
+                # Check for insufficient data before running the test
+                if len(pos) == 0 or len(neg) == 0:
+                    warnings.warn(
+                        f"Statistical test failed for variable '{i}': insufficient data after removing NaN values. "
+                        f"P-value set to NaN.",
+                        UserWarning
+                    )
+                    p_value = np.nan
+                    p_value_dict.update({i: p_value})
+                    continue
 
                 # Mann-Whitney U test for independent samples (handles different sample sizes)
                 _, p_value = mannwhitneyu(pos, neg, alternative='two-sided')

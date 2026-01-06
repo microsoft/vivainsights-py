@@ -10,6 +10,9 @@ Example
 >>> import vivainsights as vi
 >>> g2g_data = vi.load_g2g_data()
 """
+
+__all__ = ['load_g2g_data']
+
 import importlib.resources
 import pandas as pd
 

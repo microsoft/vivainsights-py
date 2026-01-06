@@ -7,6 +7,8 @@
 This script generate a summary of key metrics with options to return a heatmap or a summary table.
 """
 
+__all__ = ['keymetrics_scan']
+
 import pandas as pd
 import numpy as np
 import seaborn as sns

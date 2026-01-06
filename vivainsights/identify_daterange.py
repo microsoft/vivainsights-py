@@ -7,6 +7,9 @@ Takes a vector of dates and identify whether the frequency is 'daily', 'weekly',
 The primary use case for this function is to provide an accurate description of the query type 
 used and for raising errors should a wrong date grouping be used in the data input.
 """
+
+__all__ = ['identify_datefreq']
+
 import pandas as pd
 
 def identify_datefreq(x):

@@ -5,6 +5,8 @@
 import pandas as pd
 """Extracts the date range from a dataframe."""
 
+__all__ = ['extract_date_range']
+
 def extract_date_range(data: pd.DataFrame, return_type: str = "table"):
     """
     Name

@@ -5,6 +5,9 @@
 """
 The function `totals_col` adds a new column with a specified total value to a given pandas DataFrame.
 """
+
+__all__ = ['totals_col']
+
 import pandas as pd
 
 def totals_col(data: pd.DataFrame, total_value: str ='Total'):

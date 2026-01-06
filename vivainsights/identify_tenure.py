@@ -7,6 +7,8 @@ The `identify_tenure` function calculates and summarizes employee tenure based o
 dates, and provides various options for returning the results.
 """
 
+__all__ = ['identify_tenure']
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt

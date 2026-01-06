@@ -6,6 +6,9 @@
 This module generates a count of the distinct persons in the data population.
 Returns a bar plot of the counts by default, with an option to return a summary table.
 """
+
+__all__ = ['hrvar_count_calc', 'hrvar_count_viz', 'hrvar_count_all', 'hrvar_count']
+
 import pandas as pd
 import matplotlib.pyplot as plt
 from vivainsights.extract_date_range import extract_date_range

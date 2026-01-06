@@ -9,6 +9,9 @@ small-world network model. Organizational data fields are also simulated for `Or
 data frame with the same column structure as a person-to-person flexible query.
 This has an edgelist structure and can be used directly as an input to `network_p2p()`.
 """
+
+__all__ = ['p2p_data_sim']
+
 import igraph
 import pandas as pd
 

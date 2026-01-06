@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+__all__ = ['identify_habit']
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt

@@ -6,6 +6,9 @@
 The function `create_boxplot` creates a boxplot visualization and summary table for a given metric
 and grouping variable in a dataset.
 """
+
+__all__ = ['create_boxplot_calc', 'create_boxplot_summary', 'create_boxplot_viz', 'create_boxplot']
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
