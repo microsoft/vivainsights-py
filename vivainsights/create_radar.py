@@ -3,34 +3,62 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-
 """
 create_radar: Parameterized radar-chart workflow (calc + viz + wrapper),
 in the same spirit as create_bar.
 
-Features
-- Accepts dynamic metrics, segment column, titles, figsize, etc.
-- Optional indexing (Total = 100 by default). Other modes supported.
-- Optional auto-segmentation via vi.identify_usage_segments if segment_col missing.
+Core design
+-----------
+- General-purpose: works with any segment column, not just RL12 usage segments.
+- If `segment_col` is not supplied, it can automatically classify people into
+  usage segments by calling `vivainsights.identify_usage_segments(...)`.
+- Keeps the important calculation pipeline:
+    * person-level aggregation within segment
+    * segment-level aggregation
+    * minimum group size (`mingroup`)
+    * indexing modes: "total", "none", "ref_group", "minmax"
 - Returns either a plot or a table.
 
-Examples
---------
-Minimal plot with default indexing against total:
+Typical usage
+-------------
+Pre-computed segment column:
+
 >>> import vivainsights as vi
+>>> from vivainsights.create_radar import create_radar
+>>>
 >>> pq_data = vi.load_pq_data()
 >>> fig = create_radar(
 ...     data=pq_data,
-...     metrics=["Copilot_actions_taken_in_Teams", "Collaboration_hours",
-...              "After_hours_collaboration_hours", "Internal_network_size"]
+...     metrics=[
+...         "Copilot_actions_taken_in_Teams",
+...         "Collaboration_hours",
+...         "After_hours_collaboration_hours",
+...         "Internal_network_size",
+...     ],
+...     segment_col="Organization",
+... )
+
+Automatic usage segments via identify_usage_segments:
+
+>>> # Segment people automatically into usage segments based on the same metrics
+>>> fig = create_radar(
+...     data=pq_data,
+...     metrics=[
+...         "Copilot_actions_taken_in_Excel",
+...         "Copilot_actions_taken_in_Outlook",
+...         "Copilot_actions_taken_in_Word",
+...         "Copilot_actions_taken_in_Powerpoint",
+...     ],
+...     # segment_col omitted -> identify_usage_segments() is called
 ... )
 
 Return the indexed table instead of a plot:
 
 >>> tbl = create_radar(
 ...     data=pq_data,
-...     metrics=["Copilot_actions_taken_in_Teams", "Collaboration_hours"],
-...     return_type="table"
+...     metrics=["Collaboration_hours", "Meetings_count"],
+...     segment_col="Organization",
+...     return_type="table",
 ... )
 
 Reference a specific segment as 100 (ref_group indexing):
@@ -38,8 +66,9 @@ Reference a specific segment as 100 (ref_group indexing):
 >>> fig = create_radar(
 ...     data=pq_data,
 ...     metrics=["Collaboration_hours", "Meetings_count"],
+...     segment_col="Organization",
 ...     index_mode="ref_group",
-...     index_ref_group="Power User"
+...     index_ref_group="Contoso Ltd",
 ... )
 
 Min–max scaling to [0,100] within observed segment ranges:
@@ -47,160 +76,104 @@ Min–max scaling to [0,100] within observed segment ranges:
 >>> fig = create_radar(
 ...     data=pq_data,
 ...     metrics=["Collaboration_hours", "Meetings_count", "Focus_hours"],
-...     index_mode="minmax"
+...     segment_col="Organization",
+...     index_mode="minmax",
 ... )
-
->>> # More complex example with auto-segmentation, custom segments, and date-range caption
-... import vivainsights as vi
-... pq_data = vi.load_pq_data()
-... fig = create_radar(
-...     data=pq_data,
-...     metrics=["Copilot_actions_taken_in_Excel","Copilot_actions_taken_in_Outlook",
-...                                "Copilot_actions_taken_in_Word","Copilot_actions_taken_in_Powerpoint","Copilot_actions_taken_in_Copilot_chat_(work)"],  # or selected_metrics
-...     segment_col="UsageSegments_12w",
-...     person_id_col="PersonId",
-...     auto_segment_if_missing=True,
-...     identify_metric="Copilot_actions_taken_in_Teams",
-...     identify_version="4w",
-...     mingroup=5,
-...     agg="mean",
-...     index_mode="total",  # options: "total", "none", "ref_group", "minmax"
-...     index_ref_group=None,
-...     dropna=False,
-...     required_segments=None,  # or ["Power User", "Habitual User", "Novice User", "Low User", "Non-user"]
-...     synonyms_map=None,
-...     enforce_required_segments=True,
-...     auto_relax_mingroup=True,
-...     fill_missing_with_plot="zero",  # or "nan"
-...     return_type="plot",  # or "table"
-...     figsize=(8, 6),
-...     title="Behavioral Profiles by Segment",
-...     # subtitle="Copilot usage radar chart",
-...     caption_from_date_range=True,
-...     caption_text="Indexed to overall average (Total = 100)",
-...     legend_loc="upper right",
-...     legend_bbox_to_anchor=(1.3, 1.1),
-...     alpha_fill=0.01,
-...     linewidth=1.5
-... )
-
-
 """
 
-from typing import List, Optional, Tuple, Literal
+from typing import List, Optional, Tuple, Literal, Union
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
-from typing import Dict
+from vivainsights.identify_usage_segments import identify_usage_segments
+from vivainsights.extract_date_range import extract_date_range
 
-try:
-    import vivainsights as vi
-    from vivainsights.extract_date_range import extract_date_range
-except Exception:
-    vi = None
-    def extract_date_range(data, return_type='text'):
-        return ""
-
-CANONICAL_ORDER = ["Power User", "Habitual User", "Novice User", "Low User", "Non-user"]
-DEFAULT_SYNONYMS: Dict[str, str] = {
-    # common variants → canonical
-    "Power Users": "Power User",
-    "Power user": "Power User",
-    "Habitual Users": "Habitual User",
-    "Novice Users": "Novice User",
-    "Novice user": "Novice User",
-    "Low Users": "Low User",
-    "Low users": "Low User",
-    "Non-users": "Non-user",
-    "Non user": "Non-user",
-    "Non Users": "Non-user",
-}
+def extract_date_range(data, return_type: str = "text") -> str:
+    return ""
 
 # Try vivainsights highlight color; fall back to hex
 try:
     from vivainsights.color_codes import Colors
+
     _HIGHLIGHT = Colors.HIGHLIGHT_NEGATIVE.value
 except Exception:
     _HIGHLIGHT = "#fe7f4f"
 
-# Header layout constants (match Lorenz style)
-_TITLE_Y   = 0.955
-_SUB_Y     = 0.915
-_RULE_Y    = 0.900
+# Header layout constants (aligned with other visuals)
+_TITLE_Y = 0.955
+_SUB_Y = 0.915
+_RULE_Y = 0.900
 _TOP_LIMIT = 0.80
 
-def _retitle_left(fig, title_text, subtitle_text=None, left=0.01):
+__all__ = ["create_radar_calc", "create_radar_viz", "create_radar"]
+
+
+# --------------------------------------------------------------------
+# Figure-level header helpers
+# --------------------------------------------------------------------
+def _retitle_left(fig, title_text: Optional[str], subtitle_text: Optional[str] = None, left: float = 0.01) -> None:
     """Left-aligned figure-level title/subtitle; clear any axes titles/supertitle."""
     for ax in fig.get_axes():
-        try: ax.set_title("")
-        except Exception: pass
+        try:
+            ax.set_title("")
+        except Exception:
+            pass
+
     if getattr(fig, "_suptitle", None) is not None:
         fig._suptitle.set_visible(False)
 
-    fig.text(left, _TITLE_Y, title_text or "", ha="left", fontsize=13, weight="bold", alpha=.8)
+    if title_text:
+        fig.text(left, _TITLE_Y, title_text, ha="left", fontsize=13, weight="bold", alpha=.8)
     if subtitle_text:
         fig.text(left, _SUB_Y, subtitle_text, ha="left", fontsize=11, alpha=.8)
 
-def _add_header_decoration(fig, color=_HIGHLIGHT, y=_RULE_Y):
-    """Orange rule + small box under the subtitle."""
+
+def _add_header_decoration(fig, color: str = _HIGHLIGHT, y: float = _RULE_Y) -> None:
+    """Colored rule + small box under the subtitle."""
     overlay = fig.add_axes([0, 0, 1, 1], frameon=False, zorder=10)
     overlay.set_axis_off()
-    overlay.add_line(Line2D([0.01, 1.0], [y, y], transform=overlay.transAxes,
-                            color=color, linewidth=1.2))
-    overlay.add_patch(plt.Rectangle((0.01, y), 0.03, -0.015,
-                                    transform=overlay.transAxes,
-                                    facecolor=color, linewidth=0))
+    overlay.add_line(
+        Line2D([0.01, 1.0], [y, y], transform=overlay.transAxes, color=color, linewidth=1.2)
+    )
+    overlay.add_patch(
+        plt.Rectangle(
+            (0.01, y),
+            0.03,
+            -0.015,
+            transform=overlay.transAxes,
+            facecolor=color,
+            linewidth=0,
+        )
+    )
 
-def _reserve_header_space(fig, top=_TOP_LIMIT):
+
+def _reserve_header_space(fig, top: float = _TOP_LIMIT) -> None:
     """Push axes down so the header never overlaps."""
     try:
         if hasattr(fig, "get_constrained_layout") and fig.get_constrained_layout():
             fig.set_constrained_layout(False)
     except Exception:
         pass
+
     fig.subplots_adjust(top=top)
 
-def _canonicalize_segments(
-    df: pd.DataFrame,
-    segment_col: str,
-    synonyms_map: Dict[str, str]
-) -> pd.DataFrame:
-    def _canon(x):
-        if pd.isna(x):
-            return x
-        return synonyms_map.get(str(x), str(x))
-    out = df.copy()
-    out[segment_col] = out[segment_col].map(_canon)
-    return out
 
-def _ensure_required_segments(
-    df: pd.DataFrame,
-    segment_col: str,
-    metrics: List[str],
-    required_segments: List[str],
-) -> pd.DataFrame:
-    """Add missing segment rows with NaNs for metrics so they can still be shown/ordered."""
-    present = set(df[segment_col].astype(str))
-    missing = [s for s in required_segments if s not in present]
-    if not missing:
-        return df
-
-    filler = pd.DataFrame([{segment_col: seg, **{m: np.nan for m in metrics}} for seg in missing])
-    out = pd.concat([df, filler], ignore_index=True)
-    return out
-
-# =========================
+# --------------------------------------------------------------------
 # 1) CALC
-# =========================
+# --------------------------------------------------------------------
+IndexMode = Literal["total", "none", "ref_group", "minmax"]
+
+
 def create_radar_calc(
     data: pd.DataFrame,
     metrics: List[str],
-    segment_col: str = "UsageSegments_12w",
+    segment_col: str,
     person_id_col: str = "PersonId",
     mingroup: int = 5,
-    agg: Literal["mean","median"] = "mean",
-    index_mode: Literal["total","none","ref_group","minmax"] = "total",
+    agg: Literal["mean", "median"] = "mean",
+    index_mode: IndexMode = "total",
     index_ref_group: Optional[str] = None,
     dropna: bool = True,
 ) -> Tuple[pd.DataFrame, pd.Series]:
@@ -212,18 +185,21 @@ def create_radar_calc(
     Description
     -----------
     Compute segment-level metric values and (optionally) index them for radar plotting.
-    The function first aggregates at the person-within-segment level (mean/median),
-    then aggregates across people to the segment level, enforces a minimum group size,
-    and finally applies one of the supported indexing modes.
+
+    Steps:
+      1. Aggregate to person-level within each segment (mean/median).
+      2. Aggregate the person-level values to the segment level.
+      3. Enforce a minimum person count per segment (`mingroup`).
+      4. Apply an indexing mode to make metrics comparable.
 
     Parameters
     ----------
     data : pd.DataFrame
         Source table containing `metrics`, `segment_col`, and `person_id_col`.
     metrics : List[str]
-        Numeric metric column names to summarize and index for the radar chart.
-    segment_col : str, default "UsageSegments_12w"
-        Column identifying the segment/class for each person (e.g., usage segments).
+        Numeric metric column names to summarise and index for the radar chart.
+    segment_col : str
+        Column identifying the segment/class for each person (e.g., Organization, Region, usage band).
     person_id_col : str, default "PersonId"
         Column uniquely identifying people for person-level aggregation.
     mingroup : int, default 5
@@ -231,14 +207,15 @@ def create_radar_calc(
     agg : {"mean","median"}, default "mean"
         Aggregation function for both person-level and segment-level summaries.
     index_mode : {"total","none","ref_group","minmax"}, default "total"
-        - "total": index each metric vs. the overall person-level average (Total=100).
-        - "ref_group": index vs. a specific segment given by `index_ref_group` (Ref=100).
+        - "total": index each metric vs. the overall person-level average (Total = 100).
+        - "ref_group": index vs. a specific segment given by `index_ref_group` (Ref = 100).
         - "minmax": scale to [0,100] within the min–max of observed segment values (per metric).
         - "none": return raw (unindexed) segment values.
     index_ref_group : Optional[str], default None
         Required when `index_mode="ref_group"`. Name of the segment to serve as reference (=100).
     dropna : bool, default True
-        If True, drop rows with NA in any of `[person_id_col, segment_col] + metrics` prior to aggregation.
+        If True, drop rows with NA in any of `[person_id_col, segment_col] + metrics`
+        prior to aggregation.
 
     Returns
     -------
@@ -250,61 +227,71 @@ def create_radar_calc(
             - For "total" / "ref_group": a pd.Series of reference means/medians.
             - For "minmax": a two-column Series-like (MultiIndex) with per-metric min and max.
             - For "none": empty Series.
-
-    Raises
-    ------
-    ValueError
-        If `index_mode="ref_group"` and `index_ref_group` is missing or not found.
-    KeyError
-        If any of `metrics`, `segment_col`, or `person_id_col` are not present in `data`.
-
-    Notes
-    -----
-    - Person-level aggregation precedes segment-level aggregation to avoid over-weighting
-      individuals with more rows. This mirrors common workplace analytics practice.
-    - `mingroup` is enforced using the unique person count per segment to protect privacy
-      and avoid unstable small-group estimates.
-
-    Examples
-    --------
-    >>> tbl, ref = create_radar_calc(
-    ...     data=df,
-    ...     metrics=["Collaboration_hours", "Meetings_count"],
-    ...     segment_col="UsageSegments_12w",
-    ...     person_id_col="PersonId",
-    ...     index_mode="total"
-    ... )
     """
-    df = data.copy()
-    if dropna:
-        df = df.dropna(subset=[person_id_col, segment_col] + metrics)
+    if not metrics:
+        raise ValueError("`metrics` must be a non-empty list of column names.")
 
-    # Person-level averaging within segment
+    required_cols = [person_id_col, segment_col] + metrics
+    missing = [c for c in required_cols if c not in data.columns]
+    if missing:
+        raise KeyError(f"Missing required column(s): {missing}")
+
+    df = data[required_cols].copy()
+
+    if dropna:
+        df = df.dropna(subset=required_cols)
+
+    # Person-level aggregation within segment
     if agg == "mean":
-        person_level = (df.groupby([person_id_col, segment_col])[metrics]
-                          .mean().reset_index())
+        person_level = (
+            df.groupby([person_id_col, segment_col])[metrics]
+            .mean()
+            .reset_index()
+        )
+    elif agg == "median":
+        person_level = (
+            df.groupby([person_id_col, segment_col])[metrics]
+            .median()
+            .reset_index()
+        )
     else:
-        person_level = (df.groupby([person_id_col, segment_col])[metrics]
-                          .median().reset_index())
+        raise ValueError("`agg` must be 'mean' or 'median'.")
 
     # Segment-level aggregation across people
     if agg == "mean":
-        segment_level = (person_level.groupby(segment_col)[metrics]
-                           .mean().reset_index())
+        segment_level = (
+            person_level.groupby(segment_col)[metrics]
+            .mean()
+            .reset_index()
+        )
     else:
-        segment_level = (person_level.groupby(segment_col)[metrics]
-                           .median().reset_index())
+        segment_level = (
+            person_level.groupby(segment_col)[metrics]
+            .median()
+            .reset_index()
+        )
 
     # Enforce mingroup (by unique people per segment)
-    counts = (person_level.groupby(segment_col)[person_id_col]
-              .nunique().rename("n"))
+    counts = (
+        person_level.groupby(segment_col)[person_id_col]
+        .nunique()
+        .rename("n")
+    )
     segment_level = segment_level.merge(counts, on=segment_col, how="left")
     segment_level = segment_level[segment_level["n"] >= mingroup].copy()
     segment_level.drop(columns=["n"], inplace=True)
 
+    if segment_level.empty:
+        ref = pd.Series(dtype=float)
+        return segment_level, ref
+
     # Compute reference for indexing
     if index_mode == "total":
-        ref = person_level[metrics].mean() if agg == "mean" else person_level[metrics].median()
+        ref = (
+            person_level[metrics].mean()
+            if agg == "mean"
+            else person_level[metrics].median()
+        )
     elif index_mode == "ref_group":
         if index_ref_group is None:
             raise ValueError("index_ref_group must be provided when index_mode='ref_group'.")
@@ -316,8 +303,10 @@ def create_radar_calc(
         mins = segment_level[metrics].min()
         maxs = segment_level[metrics].max()
         ref = pd.concat({"min": mins, "max": maxs}, axis=1)
-    else:  # "none"
+    elif index_mode == "none":
         ref = pd.Series(dtype=float)
+    else:
+        raise ValueError("index_mode must be one of: 'total', 'none', 'ref_group', 'minmax'.")
 
     # Indexing
     segment_level_indexed = segment_level.copy()
@@ -326,31 +315,88 @@ def create_radar_calc(
             denom = ref[m] if (hasattr(ref, "__getitem__") and m in ref) else np.nan
             segment_level_indexed[m] = (segment_level_indexed[m] / denom) * 100.0
     elif index_mode == "minmax":
-        mins = ref["min"]; maxs = ref["max"]
+        mins = ref["min"]
+        maxs = ref["max"]
         for m in metrics:
             den = (maxs[m] - mins[m])
-            segment_level_indexed[m] = 100.0 * (segment_level_indexed[m] - mins[m]) / (den if den != 0 else 1.0)
+            segment_level_indexed[m] = 100.0 * (
+                segment_level_indexed[m] - mins[m]
+            ) / (den if den != 0 else 1.0)
     # else: "none" → leave raw values
 
     return segment_level_indexed, ref
 
-# =========================
+
+# --------------------------------------------------------------------
+# Auto segmentation helper
+# --------------------------------------------------------------------
+from pandas.api.types import is_object_dtype, is_categorical_dtype
+
+
+def _auto_segment_using_identify_usage(
+    data: pd.DataFrame,
+    metrics: List[str],
+    version: str = "12w",
+) -> Tuple[pd.DataFrame, str]:
+    """
+    Call vivainsights.identify_usage_segments() and infer the segment column
+    without hard-coding any specific segment labels.
+
+    - If a single metric is provided, it is used as `metric=...`.
+    - If multiple metrics are provided, they are passed as `metric_str=[...]`.
+    - Among the newly-added columns, we look for an object/categorical column with
+      a small number of distinct values, and use that as the segment column.
+    """
+
+    original_cols = set(data.columns)
+
+    if len(metrics) == 1:
+        seg_data = identify_usage_segments(
+            data=data.copy(),
+            metric=metrics[0],
+            version=version,
+            return_type="data",
+        )
+    else:
+        seg_data = identify_usage_segments(
+            data=data.copy(),
+            metric_str=metrics,
+            version=version,
+            return_type="data",
+        )
+
+    new_cols = [c for c in seg_data.columns if c not in original_cols]
+    candidates = []
+    for c in new_cols:
+        s = seg_data[c]
+        if is_object_dtype(s) or is_categorical_dtype(s):
+            nunique = s.nunique(dropna=True)
+            # Usage segment columns typically have a small number of categories.
+            if 1 < nunique <= 10:
+                candidates.append((c, nunique))
+
+    if not candidates:
+        raise ValueError(
+            "Auto usage segmentation did not produce a suitable segment column. "
+            "Consider providing `segment_col` explicitly."
+        )
+
+    candidates.sort(key=lambda x: x[1])
+    segment_col = candidates[0][0]
+    return seg_data, segment_col
+
+
+# --------------------------------------------------------------------
 # 2) VIZ
-# =========================
+# --------------------------------------------------------------------
 def create_radar_viz(
     segment_level_indexed: pd.DataFrame,
     metrics: List[str],
-    segment_col: str = "UsageSegments_12w",
-    figsize: Tuple[float,float] = (8,6),
+    segment_col: str,
+    figsize: Tuple[float, float] = (8, 6),
     title: Optional[str] = None,
     subtitle: Optional[str] = None,
     caption: Optional[str] = None,
-    legend_loc: str = "upper right",
-    legend_bbox_to_anchor: Tuple[float,float] = (1.3,1.1),
-    alpha_fill: float = 0.10,
-    linewidth: float = 1.5,
-    order: Optional[List[str]] = None,
-    fill_missing_with_plot: Literal["zero","nan"] = "zero",
 ) -> plt.Figure:
     """
     Name
@@ -370,129 +416,93 @@ def create_radar_viz(
         Values should already be indexed/scaled to comparable units.
     metrics : List[str]
         Ordered list of metric columns to plot around the radar.
-    segment_col : str, default "UsageSegments_12w"
+    segment_col : str
         Column containing the segment labels used in the legend.
     figsize : Tuple[float, float], default (8, 6)
         Matplotlib figure size in inches (width, height).
     title : Optional[str], default None
-        Top title for the figure; if None, no title is set here.
+        Top title for the figure.
     subtitle : Optional[str], default None
-        Optional smaller line beneath the title (axes space).
+        Optional smaller line beneath the title (figure-level, not axes).
     caption : Optional[str], default None
-        Small text flush-center near the bottom of the figure (e.g., date range).
-    legend_loc : str, default "upper right"
-        Matplotlib legend `loc`.
-    legend_bbox_to_anchor : Tuple[float, float], default (1.3, 1.1)
-        Anchor for legend placement (useful for placing legend outside the plot).
-    alpha_fill : float, default 0.10
-        Alpha for polygon fill.
-    linewidth : float, default 1.5
-        Line width for polygon outlines.
-
-    Returns
-    -------
-    fig : matplotlib.figure.Figure
-        The constructed matplotlib Figure.
-
-    Notes
-    -----
-    - The metrics determine the angle positions clockwise from the top (π/2 offset).
-    - Ensure that values are on a common scale (e.g., indexed to 100) for meaningful comparison.
-
-    Examples
-    --------
-    >>> fig = create_radar_viz(
-    ...     segment_level_indexed=tbl,
-    ...     metrics=["Collaboration_hours", "Meetings_count", "Focus_hours"],
-    ...     segment_col="UsageSegments_12w",
-    ...     title="Behavioral Profiles by Segment (Indexed)"
-    ... )
+        Small text near the bottom of the figure (e.g., date range).
     """
-    # Angles
+    if segment_level_indexed.empty:
+        raise ValueError("`segment_level_indexed` is empty – nothing to plot.")
+
     num_vars = len(metrics)
+    if num_vars == 0:
+        raise ValueError("`metrics` must be a non-empty list.")
+
+    # Angles
     angles = [n / float(num_vars) * 2 * np.pi for n in range(num_vars)]
     angles += angles[:1]
 
     fig, ax = plt.subplots(figsize=figsize, subplot_kw=dict(polar=True))
 
-    # Determine plotting order
     segments = list(segment_level_indexed[segment_col].astype(str).unique())
-    if order:
-        # Keep only those in table; table may include NaN rows we added
-        segments = [s for s in order if s in set(segment_level_indexed[segment_col].astype(str))]
 
-    # Plot each segment in the chosen order
+    # Plot each segment
     for seg in segments:
         row = segment_level_indexed.loc[segment_level_indexed[segment_col].astype(str) == seg]
         if row.empty:
             continue
+
         vals = row[metrics].iloc[0].to_list()
-        # For plotting only: replace NaNs with 0 if requested so the polygon renders
-        if fill_missing_with_plot == "zero":
-            vals = [0.0 if (pd.isna(v)) else float(v) for v in vals]
+        # Replace NaNs with 0 for plotting so the polygon renders
+        vals = [0.0 if (pd.isna(v)) else float(v) for v in vals]
         vals += vals[:1]
-        ax.plot(angles, vals, label=seg, linewidth=linewidth)
-        ax.fill(angles, vals, alpha=alpha_fill)
+
+        ax.plot(angles, vals, label=seg, linewidth=1.5)
+        ax.fill(angles, vals, alpha=0.10)
 
     # Formatting
     ax.set_theta_offset(np.pi / 2)
     ax.set_theta_direction(-1)
     ax.set_thetagrids([a * 180 / np.pi for a in angles[:-1]], metrics)
 
-    # Bottom caption (unchanged)
+    # Bottom caption
     if caption:
         fig.text(0.5, 0.01, caption, ha="center", va="center", fontsize=9)
 
-    # Legend (unchanged)
-    plt.legend(loc=legend_loc, bbox_to_anchor=legend_bbox_to_anchor)
+    # Legend (simple, positioned outside on the right)
+    ax.legend(loc="upper right", bbox_to_anchor=(1.3, 1.1))
 
     # Let Matplotlib tighten elements first...
     plt.tight_layout()
 
-    # --- New: figure-level left-aligned header + orange rule/box + spacing ---
+    # Figure-level header styling
     _retitle_left(fig, title, subtitle, left=0.01)
-    _add_header_decoration(fig)   # orange rule + box at _RULE_Y
+    _add_header_decoration(fig)   # rule + box
     _reserve_header_space(fig)    # push axes down to avoid overlap
 
     return fig
 
-# =========================
+
+# --------------------------------------------------------------------
 # 3) WRAPPER
-# =========================
+# --------------------------------------------------------------------
+ReturnType = Literal["plot", "table"]
+
+
 def create_radar(
     data: pd.DataFrame,
     metrics: List[str],
-    # segmentation
-    segment_col: str = "UsageSegments_12w",
+    segment_col: Optional[str] = None,
     person_id_col: str = "PersonId",
-    auto_segment_if_missing: bool = True,
-    identify_metric: str = "Copilot_actions_taken_in_Teams",
-    identify_version: Optional[str] = "4w",
-    # calc params
     mingroup: int = 5,
-    agg: Literal["mean","median"] = "mean",
-    index_mode: Literal["total","none","ref_group","minmax"] = "total",
+    agg: Literal["mean", "median"] = "mean",
+    index_mode: IndexMode = "total",
     index_ref_group: Optional[str] = None,
-    dropna: bool = False,  # <- default False so Non-user with NaNs isn't dropped
-    # NEW: segment controls
-    required_segments: Optional[List[str]] = None,
-    synonyms_map: Optional[Dict[str,str]] = None,
-    enforce_required_segments: bool = True,
-    auto_relax_mingroup: bool = True,
-    fill_missing_with_plot: Literal["zero","nan"] = "zero",
-    # output
-    return_type: Literal["plot","table"] = "plot",
-    # viz params
-    figsize: Tuple[float,float] = (8,6),
-    title: Optional[str] = "Behavioral Profiles by Segment",
-    subtitle: Optional[str] = "Copilot usage radar chart",
+    dropna: bool = False,  # often False to keep low-usage segments with NaNs
+    return_type: ReturnType = "plot",
+    figsize: Tuple[float, float] = (8, 6),
+    title: Optional[str] = None,
+    subtitle: Optional[str] = None,
     caption_from_date_range: bool = True,
     caption_text: Optional[str] = None,
-    legend_loc: str = "upper right",
-    legend_bbox_to_anchor: Tuple[float,float] = (1.3,1.1),
-    alpha_fill: float = 0.10,
-    linewidth: float = 1.5,
-) -> object:
+    usage_version: str = "12w",
+) -> Union[plt.Figure, pd.DataFrame]:
     """
     Name
     ----
@@ -507,22 +517,19 @@ def create_radar(
     Parameters
     ----------
     data : pd.DataFrame
-        Source table containing at least `metrics`, `person_id_col`, and either
-        `segment_col` or data sufficient for auto-segmentation (see below).
+        Source table containing at least `metrics`, `person_id_col`, and either:
+          - a pre-computed `segment_col`, or
+          - enough information for `vivainsights.identify_usage_segments(...)`
+            to classify people into usage segments (see `usage_version`).
     metrics : List[str]
-        Numeric metric columns to visualize (order determines the radar axes).
-    segment_col : str, default "UsageSegments_12w"
-        Segment label column. If missing and `auto_segment_if_missing=True`,
-        the function will attempt to call `vi.identify_usage_segments(...)`.
+        Numeric metric columns to visualise (order determines the radar axes).
+    segment_col : Optional[str], default None
+        Segment label column (e.g., Organization, Region, usage band).
+        If None, the function will:
+          - call `identify_usage_segments()` using `metrics` as the input metric(s), and
+          - auto-detect the resulting usage-segment column.
     person_id_col : str, default "PersonId"
         Unique person identifier for person-level aggregation.
-    auto_segment_if_missing : bool, default True
-        If True and `segment_col` not found, attempt to auto-identify usage segments
-        using `vivainsights.identify_usage_segments`.
-    identify_metric : str, default "Copilot_actions_taken_in_Teams"
-        Metric to use when auto-identifying segments via `vivainsights`.
-    identify_version : Optional[str], default None
-        Optional version parameter forwarded to `vi.identify_usage_segments`.
     mingroup : int, default 5
         Minimum unique person count per segment.
     agg : {"mean","median"}, default "mean"
@@ -538,130 +545,51 @@ def create_radar(
         - "table": return the indexed segment-level DataFrame.
     figsize : Tuple[float, float], default (8, 6)
         Figure size for the plot (ignored when return_type="table").
-    title : Optional[str], default "Behavioral Profiles by Segment"
-        Plot title. If indexing is used, a suffix "(Indexed)" is appended automatically.
+    title : Optional[str], default None
+        Plot title. If None, a default title is inferred based on `index_mode`.
     subtitle : Optional[str], default None
-        Optional subtitle line below the main title.
+        Optional subtitle line.
     caption_from_date_range : bool, default True
         If True and `extract_date_range` is available, append a date-range caption
         derived from `data`.
     caption_text : Optional[str], default None
         Additional caption text. If `caption_from_date_range` also yields text,
         both are combined as "date-range | caption_text".
-    legend_loc : str, default "upper right"
-        Legend location (matplotlib).
-    legend_bbox_to_anchor : Tuple[float, float], default (1.3, 1.1)
-        Legend anchor to place legend outside the plot area.
-    alpha_fill : float, default 0.10
-        Polygon fill alpha.
-    linewidth : float, default 1.5
-        Polygon line width.
+    usage_version : str, default "12w"
+        Passed through to `identify_usage_segments` when automatic segmentation
+        is used (i.e., when `segment_col` is None).
 
     Returns
     -------
     matplotlib.figure.Figure or pd.DataFrame
         - If `return_type="plot"`: a Figure containing the radar chart.
         - If `return_type="table"`: the segment-level indexed DataFrame.
-
-    Raises
-    ------
-    ImportError
-        If auto-segmentation is required (segment_col missing) but `vivainsights` is not available.
-    ValueError
-        If `index_mode="ref_group"` and `index_ref_group` is missing or not present in data.
-    KeyError
-        If required columns are missing from `data`.
-
-    Notes
-    -----
-    - For meaningful radar comparisons, metrics should be on a comparable scale.
-      Use "total" or "ref_group" indexing (or "minmax") when raw units differ.
-
-    Examples
-    --------
-    >>> import vivainsights as vi
-    >>> pq_data = vi.load_pq_data()
-    >>> # Plot with Total=100 indexing and date-range caption
-    >>> fig = create_radar(
-    ...     data=pq_data,
-    ...     metrics=["Copilot_actions_taken_in_Teams","Collaboration_hours",
-    ...              "After_hours_collaboration_hours","Internal_network_size"],
-    ...     return_type="plot",
-    ... )
-
-    >>> # Table only, no indexing
-    >>> tbl = create_radar(
-    ...     data=pq_data,
-    ...     metrics=["Collaboration_hours","Meetings_count"],
-    ...     index_mode="none",
-    ...     return_type="table"
-    ... )
-
-    >>> # Ref group = 100 (e.g., "Power User")
-    >>> fig = create_radar(
-    ...     data=pq_data,
-    ...     metrics=["Collaboration_hours","Meetings_count","Focus_hours"],
-    ...     index_mode="ref_group",
-    ...     index_ref_group="Power User"
-    ... )
-
-    >>> # More complex example with auto-segmentation, custom segments, and date-range caption
-    ... fig = create_radar(
-    ...     data=pq_data,
-    ...     metrics=["Copilot_actions_taken_in_Excel","Copilot_actions_taken_in_Outlook",
-    ...                                "Copilot_actions_taken_in_Word","Copilot_actions_taken_in_Powerpoint","Copilot_actions_taken_in_Copilot_chat_(work)"],  # or selected_metrics
-    ...     segment_col="UsageSegments_12w",
-    ...     person_id_col="PersonId",
-    ...     auto_segment_if_missing=True,
-    ...     identify_metric="Copilot_actions_taken_in_Teams",
-    ...     identify_version="4w",
-    ...     mingroup=5,
-    ...     agg="mean",
-    ...     index_mode="total",  # options: "total", "none", "ref_group", "minmax"
-    ...     index_ref_group=None,
-    ...     dropna=False,
-    ...     required_segments=None,  # or ["Power User", "Habitual User", "Novice User", "Low User", "Non-user"]
-    ...     synonyms_map=None,
-    ...     enforce_required_segments=True,
-    ...     auto_relax_mingroup=True,
-    ...     fill_missing_with_plot="zero",  # or "nan"
-    ...     return_type="plot",  # or "table"
-    ...     figsize=(8, 6),
-    ...     title="Behavioral Profiles by Segment",
-    ...     # subtitle="Copilot usage radar chart",
-    ...     caption_from_date_range=True,
-    ...     caption_text="Indexed to overall average (Total = 100)",
-    ...     legend_loc="upper right",
-    ...     legend_bbox_to_anchor=(1.3, 1.1),
-    ...     alpha_fill=0.01,
-    ...     linewidth=1.5
-    ... )
     """
     df = data.copy()
-    required_segments = required_segments or CANONICAL_ORDER
-    synonyms_map = synonyms_map or DEFAULT_SYNONYMS
 
-    # Auto-identify segments if needed
-    if (segment_col not in df.columns) and auto_segment_if_missing:
-        if vi is None:
-            raise ImportError("vivainsights not available to auto-identify usage segments.")
-        df = vi.identify_usage_segments(data=df, metric=identify_metric, version=identify_version)
+    # Automatic usage segmentation if no segment_col provided
+    if segment_col is None:
+        df, segment_col = _auto_segment_using_identify_usage(
+            data=df,
+            metrics=metrics,
+            version=usage_version,
+        )
+    else:
+        if segment_col not in df.columns:
+            raise KeyError(f"segment_col '{segment_col}' not found in data.")
 
-    # Canonicalize before calc (helps with ref_group lookups)
-    df = _canonicalize_segments(df, segment_col, synonyms_map)
-
-    # Caption
+    # Build caption
     caption = ""
     if caption_from_date_range:
         try:
-            caption = extract_date_range(df, return_type='text')
+            caption = extract_date_range(df, return_type="text")
         except Exception:
             caption = ""
     if caption_text:
         caption = caption_text if not caption else f"{caption} | {caption_text}"
 
-    # Compute (first pass)
-    table, ref = create_radar_calc(
+    # Compute segment-level table
+    table, _ = create_radar_calc(
         data=df,
         metrics=metrics,
         segment_col=segment_col,
@@ -673,43 +601,23 @@ def create_radar(
         dropna=dropna,
     )
 
-    # Canonicalize again (post-calc)
-    table = _canonicalize_segments(table, segment_col, synonyms_map)
-
-    # If we need specific segments and some are missing, try relaxing mingroup automatically
-    have = set(table[segment_col].astype(str))
-    need = set(required_segments)
-    missing_first = [s for s in required_segments if s not in have]
-
-    if enforce_required_segments and missing_first and auto_relax_mingroup and mingroup > 1:
-        table_relaxed, _ = create_radar_calc(
-            data=df, metrics=metrics, segment_col=segment_col,
-            person_id_col=person_id_col, mingroup=1, agg=agg,
-            index_mode=index_mode, index_ref_group=index_ref_group, dropna=dropna
-        )
-        table_relaxed = _canonicalize_segments(table_relaxed, segment_col, synonyms_map)
-        # prefer relaxed results, then fall back to original where still missing
-        table = table_relaxed
-
-    # Ensure required segments rows exist (add NaN rows for truly absent)
-    if enforce_required_segments:
-        table = _ensure_required_segments(table, segment_col, metrics, required_segments)
-
-    # Order rows
-    cat = pd.Categorical(table[segment_col], categories=required_segments, ordered=True)
-    table[segment_col] = cat
-    table = table.sort_values(segment_col).reset_index(drop=True)
-
     if return_type == "table":
         return table
 
-    # Title/subtitle defaults that mirror your bar style
-    if index_mode in ("total","ref_group"):
-        base_title = (title or "Behavioral Profiles by Segment") + " (Indexed)"
-    elif index_mode == "minmax":
-        base_title = (title or "Behavioral Profiles by Segment") + " (Min–Max Scaled)"
+    # Default title/subtitle
+    if title is None:
+        base_title = "Behavioral Profiles by Segment"
+        if index_mode in ("total", "ref_group"):
+            base_title += " (Indexed)"
+        elif index_mode == "minmax":
+            base_title += " (Min–Max Scaled)"
     else:
-        base_title = (title or "Behavioral Profiles by Segment")
+        base_title = title
+
+    if subtitle is None:
+        subtitle_effective = f"Radar view across metrics by {segment_col}"
+    else:
+        subtitle_effective = subtitle
 
     fig = create_radar_viz(
         segment_level_indexed=table,
@@ -717,13 +625,7 @@ def create_radar(
         segment_col=segment_col,
         figsize=figsize,
         title=base_title,
-        subtitle=subtitle,
+        subtitle=subtitle_effective,
         caption=caption,
-        legend_loc=legend_loc,
-        legend_bbox_to_anchor=legend_bbox_to_anchor,
-        alpha_fill=alpha_fill,
-        linewidth=linewidth,
-        order=required_segments,
-        fill_missing_with_plot=fill_missing_with_plot,
     )
     return fig
