@@ -56,6 +56,26 @@
     margin-right: 0.5rem;
 }
 
+/* --- Autosummary table normalization --- */
+/* Force all autosummary tables to use consistent column widths */
+table.autosummary {
+    table-layout: fixed;
+    width: 100%;
+}
+
+table.autosummary col:first-child {
+    width: 55%;
+}
+
+table.autosummary col:last-child {
+    width: 45%;
+}
+
+table.autosummary td {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .sd-dropdown .sd-summary-title {
