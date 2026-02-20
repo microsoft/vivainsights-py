@@ -30,93 +30,23 @@ pip install vivainsights[dev]
 ```
 To get started, we recommend checking out the [demo Jupyter notebook](https://microsoft.github.io/vivainsights-py/demo-vivainsights-py.html) and the code examples below. You can also find more details in our [GitHub repository](https://github.com/microsoft/vivainsights-py/).
 
-## How to use
+## Quick start
 
-Once confirmed that the library is installed, you can load the package with: 
+Once the library is installed, you can get started in just a few lines:
+
 ```python
 import vivainsights as vi
+
+# Load a built-in sample person query dataset
+pq_data = vi.load_pq_data()
+
+# Create a bar chart of average metrics by group
+vi.create_bar(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup=5)
 ```
 
-Typically, you will require **Analyst** access to Microsoft Viva Insights that will enable you to download a Person Query as a .csv file, configured to your specific needs. For ease of testing and exploring the package, we will have some demo datasets in **vivainsights** that you can load to test out our functions: 
+Most functions accept a `return_type` argument to switch between a plot (`'plot'`) and a summary table (`'table'`) as a Pandas DataFrame. Use `vi.export()` to save outputs to clipboard or to a local file.
 
-```python
-pq_data = vi.load_pq_data() # load and assign in-built person query
-mt_data = vi.load_mt_data() # load and assign in-built meeting query
-```
-
-Functions like `create_bar()` make exploring population averages easy: 
-```python
-# visualize averaged metrics per group (using person-averaging)
-out_plot = vi.create_bar(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup=5)
-vi.export(out_plot) # display plot interactively
-
-out_tab = vi.create_bar(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup=5, return_type='table')
-print(out_tab) # print summary table to console
-```
-
-Most functions come with an option to generate a matplotlib figure object or a summary table in the form of a Pandas DataFrame, which can be specified with the argument `return_type`. Once these output objects are generated, they can also be copied to clipboard or saved locally using the `vi.export()` function: 
-
-```python
-# export summary table results to clipboard
-vi.export(out_tab)
-
-# save plot locally as png
-vi.export(out_plot, file_format = 'png')
-```
-
-The following demonstrates several other examples of visualization outputs:
-```python
-# Calculate counts of distinct people in each sub-population
-vi.hrvar_count(data=pq_data, hrvar='Organization', return_type='plot').show()
-vi.hrvar_count(data=pq_data, hrvar='Organization', return_type='table')
-
-# Get date ranges from data frame, using 'MetricDate'
-vi.extract_date_range(data=pq_data)
-vi.extract_date_range(data=pq_data, return_type = "text")
-
-# create a line chart showing average of metrics by sub-pop group over time
-vi.create_line(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup=5, return_type='plot').show()
-vi.create_line(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup=5, return_type='table')
-
-# create a heatmap chart showing average of metrics by sub-pop group over time
-vi.create_trend(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup=5, return_type='plot').show()
-vi.create_trend(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup=5, return_type='table')
-
-# Calculate the mean value of a metric for all groups in the dataset
-vi.create_rank(
-    data=pq_data,
-    metric='Emails_sent',
-    hrvar=['Organization', 'FunctionType', 'LevelDesignation'],
-    mingroup=5,
-    return_type='table'
-    )
-
-# Visualize the top and bottom values across organizational attributes
-vi.create_rank(
-    data=pq_data,
-    metric='Emails_sent',
-    hrvar=['Organization', 'FunctionType', 'LevelDesignation'],
-    mingroup=5,
-    return_type='plot'
-    ).show()    
-```
-
-To perform analysis on a dataset from a flexible query (stored as a .csv file), there is a simple three step process:
-
-```python
-# 1. Load package
-import vivainsights as vi
-
-# 2. Load csv
-pq_df = vi.import_query(x = '/data/VI_PERSON_QUERY.Csv')
-
-# 3. Create analysis
-vi.create_rank(
-    data = pq_df,
-    metric = 'Collaboration_hours',
-    hrvar = ['Organization', 'LevelDesignation', 'FunctionType']
-)
-```
+For a comprehensive walkthrough — including trend analysis, ranking, network visualization, and more — see the **[demo notebook](https://microsoft.github.io/vivainsights-py/demo-vivainsights-py.html)**.
 
 ## Visualization Gallery
 
