@@ -1,0 +1,7 @@
+﻿vivainsights.identify\_inactiveweeks
+====================================
+
+.. automodule:: vivainsights.identify_inactiveweeks
+   :members:
+   :undoc-members:
+   :show-inheritance:

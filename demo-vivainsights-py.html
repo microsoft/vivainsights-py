@@ -1,0 +1,1753 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="author" title="About these documents" href="about.html"><link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Demo: Using create_odds_ratios from the vivainsights Python Package" href="demo-create_odds_ratios.html"><link rel="prev" title="vivainsights.keymetrics_scan" href="_autosummary/vivainsights.keymetrics_scan.html">
+        <link rel="prefetch" href="_static/vivainsights-py.png" as="image">
+
+    <link rel="shortcut icon" href="_static/favicon.svg"><!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
+        <title>Demo Notebook for the vivainsights Python package - vivainsights 0.4.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=ac958071" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">vivainsights 0.4.2 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="_static/vivainsights-py.png" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">vivainsights 0.4.2 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html#quick-start">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html#visualization-gallery">Visualization Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html#related-repositories">Related repositories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html#contributing">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html#license">License</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">vivainsights</a><input aria-label="Toggle navigation of vivainsights" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="vivainsights.html">Reference - Functions</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="vivainsights.html#visualization-functions">Visualization Functions</a><input aria-label="Toggle navigation of Visualization Functions" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_bar.html">vivainsights.create_bar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_boxplot.html">vivainsights.create_boxplot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_bubble.html">vivainsights.create_bubble</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_line.html">vivainsights.create_line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_rank.html">vivainsights.create_rank</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_trend.html">vivainsights.create_trend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_sankey.html">vivainsights.create_sankey</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_lorenz.html">vivainsights.create_lorenz</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_inc.html">vivainsights.create_inc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_bar_asis.html">vivainsights.create_bar_asis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_IV.html">vivainsights.create_IV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_odds_ratios.html">vivainsights.create_odds_ratios</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="vivainsights.html#data-analysis-identification">Data Analysis &amp; Identification</a><input aria-label="Toggle navigation of Data Analysis &amp; Identification" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.identify_churn.html">vivainsights.identify_churn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.identify_tenure.html">vivainsights.identify_tenure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.identify_habit.html">vivainsights.identify_habit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.identify_usage_segments.html">vivainsights.identify_usage_segments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.identify_outlier.html">vivainsights.identify_outlier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.identify_inactiveweeks.html">vivainsights.identify_inactiveweeks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.identify_holidayweeks.html">vivainsights.identify_holidayweeks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.identify_nkw.html">vivainsights.identify_nkw</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.identify_daterange.html">vivainsights.identify_daterange</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.extract_date_range.html">vivainsights.extract_date_range</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="vivainsights.html#network-analysis">Network Analysis</a><input aria-label="Toggle navigation of Network Analysis" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.network_g2g.html">vivainsights.network_g2g</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.network_p2p.html">vivainsights.network_p2p</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.network_summary.html">vivainsights.network_summary</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="vivainsights.html#data-management">Data Management</a><input aria-label="Toggle navigation of Data Management" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.pq_data.html">vivainsights.pq_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.mt_data.html">vivainsights.mt_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.g2g_data.html">vivainsights.g2g_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.p2p_data.html">vivainsights.p2p_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.p2g_data.html">vivainsights.p2g_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.p2p_data_sim.html">vivainsights.p2p_data_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.import_query.html">vivainsights.import_query</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.export.html">vivainsights.export</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="vivainsights.html#utility-functions">Utility Functions</a><input aria-label="Toggle navigation of Utility Functions" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.extract_hr.html">vivainsights.extract_hr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.hrvar_count.html">vivainsights.hrvar_count</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.totals_col.html">vivainsights.totals_col</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.us_to_space.html">vivainsights.us_to_space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.check_inputs.html">vivainsights.check_inputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.color_codes.html">vivainsights.color_codes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.xicor.html">vivainsights.xicor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.keymetrics_scan.html">vivainsights.keymetrics_scan</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Demo Notebook for the vivainsights Python package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo-create_odds_ratios.html">Demo: Using <code class="docutils literal notranslate"><span class="pre">create_odds_ratios</span></code> from the vivainsights Python Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html">Version 0.4.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-4-1">Version 0.4.1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-4-0">Version 0.4.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-3-4">Version 0.3.4</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-3-3">Version 0.3.3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-3-2">Version 0.3.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-3-1">Version 0.3.1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-3-0">Version 0.3.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-2-4">Version 0.2.4</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-2-3">Version 0.2.3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-2-2">Version 0.2.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-2-1">Version 0.2.1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-2-0">Version 0.2.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-1-0">Version 0.1.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTORS.html">Contributors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SECURITY.html">Security</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SECURITY.html#reporting-security-issues">Reporting Security Issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SECURITY.html#preferred-languages">Preferred Languages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SECURITY.html#policy">Policy</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/demo-vivainsights-py.ipynb.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="Demo-Notebook-for-the-vivainsights-Python-package">
+<h1>Demo Notebook for the vivainsights Python package<a class="headerlink" href="#Demo-Notebook-for-the-vivainsights-Python-package" title="Link to this heading">¶</a></h1>
+<p>Welcome to the comprehensive demo of the <strong>vivainsights</strong> Python package! This notebook showcases the full analytical capabilities available for Microsoft Viva Insights data analysis.</p>
+<p><strong>vivainsights</strong> is a powerful Python library designed to help you:</p>
+<ul class="simple">
+<li><p>📊 <strong>Visualize</strong> collaboration patterns and organizational metrics</p></li>
+<li><p>🔍 <strong>Analyze</strong> employee engagement and wellbeing indicators</p></li>
+<li><p>📈 <strong>Identify</strong> trends, outliers, and areas for improvement</p></li>
+<li><p>🌐 <strong>Explore</strong> collaboration networks and organizational dynamics</p></li>
+<li><p>⚡ <strong>Generate</strong> actionable insights for leaders and HR teams</p></li>
+</ul>
+<p>This demo covers the major function categories with real examples using sample Person Query data.</p>
+<p>For more information about the package:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://microsoft.github.io/vivainsights-py/">📚 Documentation</a> - Complete API reference and guides</p></li>
+<li><p><a class="reference external" href="https://github.com/microsoft/vivainsights-py/">💻 GitHub Repository</a> - Source code and issue tracking</p></li>
+<li><p><a class="reference external" href="https://microsoft.github.io/vivainsights-py/about.html">🎯 Use Cases</a> - Real-world applications and examples</p></li>
+</ul>
+<section id="Getting-Started:-Loading-Data-and-Libraries">
+<h2>Getting Started: Loading Data and Libraries<a class="headerlink" href="#Getting-Started:-Loading-Data-and-Libraries" title="Link to this heading">¶</a></h2>
+<p>The <strong>vivainsights</strong> package comes with built-in sample datasets that mirror the structure of real Viva Insights exports. The <code class="docutils literal notranslate"><span class="pre">load_pq_data()</span></code> function loads a representative Person Query dataset containing:</p>
+<ul class="simple">
+<li><p><strong>Individual metrics</strong>: Collaboration hours, email activity, meeting patterns</p></li>
+<li><p><strong>Organizational attributes</strong>: Function, level, organization, manager status</p></li>
+<li><p><strong>Time series data</strong>: Weekly observations for trend analysis</p></li>
+<li><p><strong>Network data</strong>: Collaboration patterns across the organization</p></li>
+</ul>
+<p>Let’s start by loading the library and exploring the sample data:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import vivainsights as vi
+
+# load in-built datasets
+pq_data = vi.load_pq_data() # load and assign in-built person query
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import warnings
+warnings.filterwarnings(&#39;ignore&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pq_data.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PersonId</th>
+      <th>MetricDate</th>
+      <th>Collaboration_hours</th>
+      <th>Copilot_actions_taken_in_Teams</th>
+      <th>Meeting_and_call_hours</th>
+      <th>Internal_network_size</th>
+      <th>Email_hours</th>
+      <th>Channel_message_posts</th>
+      <th>Conflicting_meeting_hours</th>
+      <th>Large_and_long_meeting_hours</th>
+      <th>...</th>
+      <th>Summarise_chat_actions_taken_using_Copilot_in_Teams</th>
+      <th>Summarise_email_thread_actions_taken_using_Copilot_in_Outlook</th>
+      <th>Summarise_meeting_actions_taken_using_Copilot_in_Teams</th>
+      <th>Summarise_presentation_actions_taken_using_Copilot_in_PowerPoint</th>
+      <th>Summarise_Word_document_actions_taken_using_Copilot_in_Word</th>
+      <th>FunctionType</th>
+      <th>SupervisorIndicator</th>
+      <th>Level</th>
+      <th>Organization</th>
+      <th>LevelDesignation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>bf361ad4-fc29-432f-95f3-837e689f4ac4</td>
+      <td>2024-03-31</td>
+      <td>17.452987</td>
+      <td>4</td>
+      <td>11.767599</td>
+      <td>92</td>
+      <td>7.523189</td>
+      <td>0.753451</td>
+      <td>2.079210</td>
+      <td>0.635489</td>
+      <td>...</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>Specialist</td>
+      <td>Manager</td>
+      <td>Level3</td>
+      <td>IT</td>
+      <td>Senior IC</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0500f22c-2910-4154-b6e2-66864898d848</td>
+      <td>2024-03-31</td>
+      <td>32.860820</td>
+      <td>6</td>
+      <td>26.743370</td>
+      <td>193</td>
+      <td>11.578396</td>
+      <td>0.000000</td>
+      <td>8.106997</td>
+      <td>1.402567</td>
+      <td>...</td>
+      <td>2</td>
+      <td>0</td>
+      <td>4</td>
+      <td>1</td>
+      <td>0</td>
+      <td>Specialist</td>
+      <td>Manager</td>
+      <td>Level2</td>
+      <td>Legal</td>
+      <td>Senior Manager</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>bb495ec9-8577-468a-8b48-e32677442f51</td>
+      <td>2024-03-31</td>
+      <td>21.502359</td>
+      <td>8</td>
+      <td>13.982031</td>
+      <td>113</td>
+      <td>9.073214</td>
+      <td>0.894786</td>
+      <td>3.001401</td>
+      <td>0.000192</td>
+      <td>...</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>Manager</td>
+      <td>Manager</td>
+      <td>Level4</td>
+      <td>Legal</td>
+      <td>Junior IC</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>f6d58aaf-a2b2-42ab-868f-d7ac2e99788d</td>
+      <td>2024-03-31</td>
+      <td>25.416502</td>
+      <td>4</td>
+      <td>16.895513</td>
+      <td>131</td>
+      <td>10.281204</td>
+      <td>0.528731</td>
+      <td>1.846423</td>
+      <td>1.441596</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>Manager</td>
+      <td>Manager</td>
+      <td>Level1</td>
+      <td>HR</td>
+      <td>Executive</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>c81cb49a-aa27-4cfc-8211-4087b733a3c6</td>
+      <td>2024-03-31</td>
+      <td>11.433377</td>
+      <td>4</td>
+      <td>6.957468</td>
+      <td>75</td>
+      <td>5.510535</td>
+      <td>2.288934</td>
+      <td>0.474048</td>
+      <td>0.269996</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>Technician</td>
+      <td>Manager</td>
+      <td>Level1</td>
+      <td>Finance</td>
+      <td>Executive</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 73 columns</p>
+</div></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">extract_hr()</span></code> returns all the HR or organizational attributes it identifies within the target DataFrame:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>vi.extract_hr(pq_data)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+MetricDate,
+ FunctionType,
+ SupervisorIndicator,
+ Level,
+ Organization,
+ LevelDesignation,
+
+</pre></div></div>
+</div>
+</section>
+<section id="Core-Visualization-Functions">
+<h2>Core Visualization Functions<a class="headerlink" href="#Core-Visualization-Functions" title="Link to this heading">¶</a></h2>
+<p>The <strong>vivainsights</strong> package provides a comprehensive suite of visualization functions, each designed for specific analytical needs. All visualization functions follow a consistent pattern:</p>
+<p><strong>Key Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code> - Your Viva Insights dataset (Person Query, Meeting Query, etc.)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">metric</span></code> - The collaboration metric to analyze (e.g., ‘Collaboration_hours’, ‘Emails_sent’)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hrvar</span></code> - Organizational grouping variable (e.g., ‘Organization’, ‘LevelDesignation’)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mingroup</span></code> - Minimum group size to display (privacy protection)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">return_type</span></code> - Output format: <code class="docutils literal notranslate"><span class="pre">'plot'</span></code> (visualization) or <code class="docutils literal notranslate"><span class="pre">'table'</span></code> (summary data)</p></li>
+</ul>
+<section id="Bar-Charts:-Comparing-Groups">
+<h3>Bar Charts: Comparing Groups<a class="headerlink" href="#Bar-Charts:-Comparing-Groups" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">create_bar()</span></code> function creates person-averaged bar charts - it first calculates individual averages, then group averages. This prevents larger groups from dominating the analysis and ensures fair comparison across organizational segments.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_bar = vi.create_bar(data=pq_data, metric=&#39;Emails_sent&#39;, hrvar=&#39;Organization&#39;, mingroup=5)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo-vivainsights-py_8_0.png" src="_images/demo-vivainsights-py_8_0.png" />
+</div>
+</div>
+<p>You can also ask the function to return a summary table by specifying the parameter <code class="docutils literal notranslate"><span class="pre">return_type</span></code>. This summary table can be copied to a clipboard with <code class="docutils literal notranslate"><span class="pre">export()</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>tb = vi.create_bar(data=pq_data, metric=&#39;Emails_sent&#39;, hrvar=&#39;Organization&#39;, mingroup=5, return_type=&#39;table&#39;)
+print(tb)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+  Organization     metric   n
+1           HR  44.423377  33
+5     Research  44.364859  52
+4   Operations  44.345455  22
+0      Finance  44.213445  68
+2           IT  43.871867  68
+6        Sales  43.723077  13
+3        Legal  43.328571  44
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>vi.export(tb)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Data frame copied to clipboard.
+You may paste the contents directly to Excel.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+()
+</pre></div></div>
+</div>
+<p>Here are some other visual outputs, and their accompanying summary table outputs:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[138]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_line = vi.create_line(data=pq_data, metric=&#39;Emails_sent&#39;, hrvar=&#39;Level&#39;, mingroup=5, return_type=&#39;plot&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo-vivainsights-py_13_0.png" src="_images/demo-vivainsights-py_13_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[139]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>vi.create_line(data=pq_data, metric=&#39;Emails_sent&#39;, hrvar=&#39;Organization&#39;, mingroup=5, return_type=&#39;table&#39;).head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[139]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>MetricDate</th>
+      <th>Organization</th>
+      <th>metric</th>
+      <th>n</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2024-03-31</td>
+      <td>Finance</td>
+      <td>42.529412</td>
+      <td>68</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2024-03-31</td>
+      <td>HR</td>
+      <td>41.090909</td>
+      <td>33</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2024-03-31</td>
+      <td>IT</td>
+      <td>43.632353</td>
+      <td>68</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2024-03-31</td>
+      <td>Legal</td>
+      <td>43.931818</td>
+      <td>44</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2024-03-31</td>
+      <td>Operations</td>
+      <td>44.545455</td>
+      <td>22</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<section id="Distribution-&amp;-Inequality-Analysis">
+<h4>Distribution &amp; Inequality Analysis<a class="headerlink" href="#Distribution-&-Inequality-Analysis" title="Link to this heading">¶</a></h4>
+<p>Understanding how metrics are distributed across your organization is crucial for identifying patterns, outliers, and inequality. The <strong>vivainsights</strong> package provides powerful functions for distribution analysis that go beyond simple averages.</p>
+<p><strong>Distribution Functions:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">create_boxplot()</span></code> - Visualizes metric distributions and identifies outliers across groups</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">create_lorenz()</span></code> - Analyzes inequality using Lorenz curves and Gini coefficients</p></li>
+</ul>
+<p>These functions are particularly valuable when analyzing engagement metrics. For example, while the average “Collaboration hours” might appear healthy across your organization, the distribution could reveal that a small group of employees are experiencing unsustainable collaboration loads, while others might be under-collaborating.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[140]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_box = vi.create_boxplot(data=pq_data, metric=&#39;Emails_sent&#39;, hrvar=&#39;Organization&#39;, mingroup=5, return_type=&#39;plot&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo-vivainsights-py_16_0.png" src="_images/demo-vivainsights-py_16_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[141]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>vi.create_boxplot(data=pq_data, metric=&#39;Emails_sent&#39;, hrvar=&#39;Organization&#39;, mingroup=5, return_type=&#39;table&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[141]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>index</th>
+      <th>group</th>
+      <th>mean</th>
+      <th>median</th>
+      <th>sd</th>
+      <th>min</th>
+      <th>max</th>
+      <th>n</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>Finance</td>
+      <td>44.213445</td>
+      <td>43.900000</td>
+      <td>2.446053</td>
+      <td>39.342857</td>
+      <td>50.000000</td>
+      <td>68</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>HR</td>
+      <td>44.423377</td>
+      <td>44.485714</td>
+      <td>2.140707</td>
+      <td>40.314286</td>
+      <td>49.428571</td>
+      <td>33</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>IT</td>
+      <td>43.871867</td>
+      <td>43.885714</td>
+      <td>2.565453</td>
+      <td>37.742857</td>
+      <td>48.542857</td>
+      <td>68</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3</td>
+      <td>Legal</td>
+      <td>43.328571</td>
+      <td>43.585714</td>
+      <td>2.434427</td>
+      <td>38.314286</td>
+      <td>49.828571</td>
+      <td>44</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4</td>
+      <td>Operations</td>
+      <td>44.345455</td>
+      <td>45.442857</td>
+      <td>3.152513</td>
+      <td>39.000000</td>
+      <td>50.085714</td>
+      <td>22</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>5</td>
+      <td>Research</td>
+      <td>44.364859</td>
+      <td>44.228571</td>
+      <td>2.276114</td>
+      <td>39.657143</td>
+      <td>48.971429</td>
+      <td>52</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>6</td>
+      <td>Sales</td>
+      <td>43.723077</td>
+      <td>43.971429</td>
+      <td>2.132463</td>
+      <td>40.000000</td>
+      <td>46.885714</td>
+      <td>13</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+</section>
+<section id="Lorenz-Curve:-Analyzing-Inequality">
+<h3>Lorenz Curve: Analyzing Inequality<a class="headerlink" href="#Lorenz-Curve:-Analyzing-Inequality" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">create_lorenz()</span></code> function helps you understand inequality within your data by plotting Lorenz curves and calculating Gini coefficients. This is particularly useful for identifying whether certain metrics are concentrated among a small subset of employees.</p>
+<p>A Gini coefficient close to 0 indicates equality (everyone has similar values), while a value close to 1 indicates high inequality (few people have most of the value).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Lorenz curve for collaboration hours - shows inequality across the population
+lorenz_plot = vi.create_lorenz(data=pq_data, metric=&#39;Collaboration_hours&#39;, return_type=&#39;plot&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo-vivainsights-py_19_0.png" src="_images/demo-vivainsights-py_19_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[143]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Get the Gini coefficient to quantify inequality
+gini_coef = vi.create_lorenz(data=pq_data, metric=&#39;Collaboration_hours&#39;, return_type=&#39;gini&#39;)
+print(f&quot;Gini coefficient for Collaboration Hours: {gini_coef:.3f}&quot;)
+print(f&quot;Interpretation: {&#39;High inequality&#39; if gini_coef &gt; 0.5 else &#39;Moderate inequality&#39; if gini_coef &gt; 0.3 else &#39;Low inequality&#39;}&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Gini coefficient for Collaboration Hours: 0.149
+Interpretation: Low inequality
+</pre></div></div>
+</div>
+</section>
+<section id="Incidence-Analysis:-Understanding-Thresholds">
+<h3>Incidence Analysis: Understanding Thresholds<a class="headerlink" href="#Incidence-Analysis:-Understanding-Thresholds" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">create_inc()</span></code> function helps you understand what percentage of your population exceeds certain thresholds for key metrics. This is crucial for identifying employees who might be at risk of burnout or disengagement.</p>
+<p>For example, you might want to know what percentage of employees in each organization have collaboration hours above a healthy threshold.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[144]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Incidence analysis: What % of people have &gt;20 collaboration hours per week?
+inc_plot = vi.create_inc(
+    data=pq_data,
+    metric=&#39;Collaboration_hours&#39;,
+    hrvar=&#39;Organization&#39;,
+    threshold=20,  # Threshold of 20 hours per week
+    position=&#39;above&#39;,  # Looking at people above this threshold
+    mingroup=5,
+    return_type=&#39;plot&#39;
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo-vivainsights-py_22_0.png" src="_images/demo-vivainsights-py_22_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[145]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Get the exact percentages as a table
+inc_table = vi.create_inc(
+    data=pq_data,
+    metric=&#39;Collaboration_hours&#39;,
+    hrvar=&#39;Organization&#39;,
+    threshold=20,
+    position=&#39;above&#39;,
+    mingroup=5,
+    return_type=&#39;table&#39;
+)
+print(&quot;Percentage of employees with &gt;20 collaboration hours per week:&quot;)
+print(inc_table)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Percentage of employees with &gt;20 collaboration hours per week:
+  Organization    metric   n
+1           HR  0.705628  33
+4   Operations  0.703896  22
+0      Finance  0.697059  68
+5     Research  0.690659  52
+2           IT  0.688235  68
+3        Legal  0.676623  44
+6        Sales  0.668132  13
+</pre></div></div>
+</div>
+</section>
+</section>
+<section id="Exploratory-Data-Analysis">
+<h2>Exploratory Data Analysis<a class="headerlink" href="#Exploratory-Data-Analysis" title="Link to this heading">¶</a></h2>
+<section id="Multi-dimensional-Ranking:-Finding-Top-Contributors-and-Risk-Groups">
+<h3>Multi-dimensional Ranking: Finding Top Contributors and Risk Groups<a class="headerlink" href="#Multi-dimensional-Ranking:-Finding-Top-Contributors-and-Risk-Groups" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">create_rank()</span></code> function is one of the most powerful tools for rapid organizational exploration. It allows you to:</p>
+<ul class="simple">
+<li><p><strong>Compare multiple organizational dimensions</strong> simultaneously</p></li>
+<li><p><strong>Identify top and bottom performers</strong> across any metric</p></li>
+<li><p><strong>Discover hidden patterns</strong> in your organizational structure</p></li>
+<li><p><strong>Prioritize attention</strong> by ranking all groups by importance</p></li>
+</ul>
+<p>This function is particularly valuable for leadership teams who need to quickly understand where to focus their attention across complex organizational hierarchies.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[146]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>vi.create_rank(
+    data=pq_data,
+    metric=&#39;Collaboration_hours&#39;,
+    hrvar = [&#39;Organization&#39;, &#39;FunctionType&#39;, &#39;LevelDesignation&#39;, &#39;SupervisorIndicator&#39;],
+    mingroup=5,
+    return_type = &#39;table&#39;
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[146]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>hrvar</th>
+      <th>attributes</th>
+      <th>metric</th>
+      <th>n</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>4</th>
+      <td>FunctionType</td>
+      <td>Technician</td>
+      <td>23.426417</td>
+      <td>292</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>LevelDesignation</td>
+      <td>Executive</td>
+      <td>23.285180</td>
+      <td>37</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>FunctionType</td>
+      <td>Advisor</td>
+      <td>23.252294</td>
+      <td>299</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Organization</td>
+      <td>HR</td>
+      <td>23.249373</td>
+      <td>33</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Organization</td>
+      <td>Operations</td>
+      <td>23.225234</td>
+      <td>22</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Organization</td>
+      <td>Research</td>
+      <td>23.187623</td>
+      <td>52</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>Organization</td>
+      <td>Finance</td>
+      <td>23.100312</td>
+      <td>68</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>FunctionType</td>
+      <td>Specialist</td>
+      <td>23.092292</td>
+      <td>300</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>LevelDesignation</td>
+      <td>Senior IC</td>
+      <td>23.092287</td>
+      <td>87</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>SupervisorIndicator</td>
+      <td>IC</td>
+      <td>23.065672</td>
+      <td>34</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>SupervisorIndicator</td>
+      <td>Manager</td>
+      <td>23.052194</td>
+      <td>266</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>LevelDesignation</td>
+      <td>Senior Manager</td>
+      <td>23.037783</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>FunctionType</td>
+      <td>Manager</td>
+      <td>22.991247</td>
+      <td>300</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Organization</td>
+      <td>Sales</td>
+      <td>22.984326</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Organization</td>
+      <td>IT</td>
+      <td>22.980218</td>
+      <td>68</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>LevelDesignation</td>
+      <td>Junior IC</td>
+      <td>22.970769</td>
+      <td>136</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>FunctionType</td>
+      <td>Consultant</td>
+      <td>22.874061</td>
+      <td>298</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Organization</td>
+      <td>Legal</td>
+      <td>22.725075</td>
+      <td>44</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>This can be visualized as well:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[147]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_rank = vi.create_rank(
+    data=pq_data,
+    metric=&#39;Collaboration_hours&#39;,
+    hrvar = [&#39;Organization&#39;, &#39;FunctionType&#39;, &#39;LevelDesignation&#39;, &#39;SupervisorIndicator&#39;],
+    mingroup=5,
+    return_type = &#39;plot&#39;
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo-vivainsights-py_27_0.png" src="_images/demo-vivainsights-py_27_0.png" />
+</div>
+</div>
+</section>
+<section id="Validating-/-exploring-the-data">
+<h3>Validating / exploring the data<a class="headerlink" href="#Validating-/-exploring-the-data" title="Link to this heading">¶</a></h3>
+<p>Since HR variables or organizational attributes are a key part of the analysis process, it is also possible to perform some exploration or validation before we begin the analysis.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[148]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plot_hrcount = vi.hrvar_count(data=pq_data, hrvar=&#39;Organization&#39;, return_type=&#39;plot&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo-vivainsights-py_29_0.png" src="_images/demo-vivainsights-py_29_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[149]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>vi.hrvar_count(data=pq_data, hrvar=&#39;Organization&#39;, return_type=&#39;table&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[149]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Organization</th>
+      <th>n</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Finance</td>
+      <td>68</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>IT</td>
+      <td>68</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Research</td>
+      <td>52</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Legal</td>
+      <td>44</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>HR</td>
+      <td>33</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Operations</td>
+      <td>22</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Sales</td>
+      <td>13</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+</section>
+<section id="Additional-Examples">
+<h2>Additional Examples<a class="headerlink" href="#Additional-Examples" title="Link to this heading">¶</a></h2>
+<p>Below are additional examples using the demo dataset <code class="docutils literal notranslate"><span class="pre">pq_data</span></code> for some of the newer functions in <strong>vivainsights</strong>.</p>
+<section id="Bubble-Plot:-create_bubble()">
+<h3>Bubble Plot: <code class="docutils literal notranslate"><span class="pre">create_bubble()</span></code><a class="headerlink" href="#Bubble-Plot:-create_bubble()" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">create_bubble()</span></code> function visualizes the relationship between two metrics, with bubble size representing group size. This is useful for comparing two metrics across organizational groups.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[150]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Bubble plot: Collaboration_hours vs. Multitasking_hours by Organization
+bubble_plot = vi.create_bubble(
+    data=pq_data,
+    metric_x=&quot;Collaboration_hours&quot;,
+    metric_y=&quot;Multitasking_hours&quot;,
+    hrvar=&quot;Organization&quot;,
+    mingroup=5,
+    return_type=&quot;plot&quot;
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo-vivainsights-py_33_0.png" src="_images/demo-vivainsights-py_33_0.png" />
+</div>
+</div>
+</section>
+<section id="Trend-Plot:-create_trend()">
+<h3>Trend Plot: <code class="docutils literal notranslate"><span class="pre">create_trend()</span></code><a class="headerlink" href="#Trend-Plot:-create_trend()" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">create_trend()</span></code> function provides a week-by-week heatmap view of a selected metric, grouped by an HR attribute. This helps identify trends and hotspots over time.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[151]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Trend plot: Collaboration_hours by LevelDesignation
+trend_plot = vi.create_trend(
+    data=pq_data,
+    metric=&quot;Collaboration_hours&quot;,
+    hrvar=&quot;LevelDesignation&quot;,
+    mingroup=5,
+    return_type=&quot;plot&quot;
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo-vivainsights-py_35_0.png" src="_images/demo-vivainsights-py_35_0.png" />
+</div>
+</div>
+</section>
+<section id="Key-Metrics-Scan:-keymetrics_scan()">
+<h3>Key Metrics Scan: <code class="docutils literal notranslate"><span class="pre">keymetrics_scan()</span></code><a class="headerlink" href="#Key-Metrics-Scan:-keymetrics_scan()" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">keymetrics_scan()</span></code> function summarizes multiple key metrics across a grouping variable, returning either a heatmap or a summary table. This is useful for a high-level scan of organizational health.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[152]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Key metrics scan: heatmap by Organization
+keymetrics_plot = vi.keymetrics_scan(
+    data=pq_data,
+    hrvar=&quot;Organization&quot;,
+    mingroup=5,
+    return_type=&quot;plot&quot;
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo-vivainsights-py_37_0.png" src="_images/demo-vivainsights-py_37_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[153]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Key metrics scan: summary table by Organization
+keymetrics_table = vi.keymetrics_scan(
+    data=pq_data,
+    hrvar=&quot;Organization&quot;,
+    mingroup=5,
+    return_type=&quot;table&quot;
+)
+keymetrics_table.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[153]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Organization</th>
+      <th>Collaboration_hours</th>
+      <th>After_hours_collaboration_hours</th>
+      <th>Meetings</th>
+      <th>Meeting_hours</th>
+      <th>Emails_sent</th>
+      <th>Email_hours</th>
+      <th>Internal_network_size</th>
+      <th>External_network_size</th>
+      <th>Employee_Count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Finance</td>
+      <td>23.100312</td>
+      <td>6.917373</td>
+      <td>16.652941</td>
+      <td>19.172045</td>
+      <td>44.213445</td>
+      <td>8.818406</td>
+      <td>123.316807</td>
+      <td>32.385294</td>
+      <td>68</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>HR</td>
+      <td>23.249373</td>
+      <td>6.834921</td>
+      <td>16.757576</td>
+      <td>18.894323</td>
+      <td>44.423377</td>
+      <td>8.843827</td>
+      <td>124.337662</td>
+      <td>32.619913</td>
+      <td>33</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>IT</td>
+      <td>22.980218</td>
+      <td>7.079035</td>
+      <td>16.614569</td>
+      <td>18.561649</td>
+      <td>43.871867</td>
+      <td>8.743025</td>
+      <td>122.583193</td>
+      <td>32.331092</td>
+      <td>68</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Legal</td>
+      <td>22.725075</td>
+      <td>7.239442</td>
+      <td>16.357143</td>
+      <td>18.121719</td>
+      <td>43.328571</td>
+      <td>8.627604</td>
+      <td>120.527922</td>
+      <td>31.561688</td>
+      <td>44</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Operations</td>
+      <td>23.225234</td>
+      <td>7.540438</td>
+      <td>16.711688</td>
+      <td>20.339809</td>
+      <td>44.345455</td>
+      <td>8.858412</td>
+      <td>124.092208</td>
+      <td>32.531169</td>
+      <td>22</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+</section>
+<section id="Network-Analysis-&amp;-Flow-Visualization">
+<h2>Network Analysis &amp; Flow Visualization<a class="headerlink" href="#Network-Analysis-&-Flow-Visualization" title="Link to this heading">¶</a></h2>
+<p><strong>vivainsights</strong> includes powerful functions for analyzing collaboration networks and visualizing flows between organizational groups.</p>
+<section id="Sankey-Diagrams:-Visualizing-Organizational-Flows">
+<h3>Sankey Diagrams: Visualizing Organizational Flows<a class="headerlink" href="#Sankey-Diagrams:-Visualizing-Organizational-Flows" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">create_sankey()</span></code> function creates flow diagrams that show how people are distributed across different organizational attributes. This is particularly useful for understanding organizational structure and identifying potential silos.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[154]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># First, create a summary table for the Sankey diagram
+# Sankey diagrams need aggregated data showing flows between two variables
+sankey_data = pq_data.groupby([&#39;Organization&#39;, &#39;LevelDesignation&#39;])[&#39;PersonId&#39;].nunique().reset_index(name=&#39;n&#39;)
+
+# Create Sankey diagram showing flow from Organization to Level
+sankey_plot = vi.create_sankey(
+    data=sankey_data,
+    var1=&#39;Organization&#39;,  # Left side of diagram
+    var2=&#39;LevelDesignation&#39;,  # Right side of diagram
+    count=&#39;n&#39;  # The flow volume
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="admonition warning">
+<p>Data type cannot be displayed: application/vnd.plotly.v1+json</p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="Advanced-Analytics">
+<h2>Advanced Analytics<a class="headerlink" href="#Advanced-Analytics" title="Link to this heading">¶</a></h2>
+<section id="Information-Value-Analysis:-Predictive-Insights">
+<h3>Information Value Analysis: Predictive Insights<a class="headerlink" href="#Information-Value-Analysis:-Predictive-Insights" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">create_IV()</span></code> function helps you understand which organizational attributes are most predictive of key outcomes. This is particularly useful for identifying factors that drive engagement, performance, or retention.</p>
+<p>Information Value (IV) measures the predictive strength of variables:</p>
+<ul class="simple">
+<li><p>IV &lt; 0.02: Not useful for prediction</p></li>
+<li><p>0.02 ≤ IV &lt; 0.1: Weak predictive power</p></li>
+<li><p>0.1 ≤ IV &lt; 0.3: Medium predictive power</p></li>
+<li><p>0.3 ≤ IV &lt; 0.5: Strong predictive power</p></li>
+<li><p>IV ≥ 0.5: Very strong (potentially suspicious)</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Information Value analysis: Which factors predict high collaboration?
+# First, create a binary outcome variable for high collaboration (&gt;median)
+pq_data_iv = vi.load_pq_data()
+copilot_median = pq_data_iv[&#39;Copilot_actions_taken_in_Teams&#39;].median()
+pq_data_iv[&#39;High_Copilot&#39;] = (pq_data_iv[&#39;Copilot_actions_taken_in_Teams&#39;] &gt; copilot_median).astype(int)
+
+# Define predictor variables
+predictors = [&#39;Email_hours&#39;, &#39;Meeting_hours&#39;, &#39;Chat_hours&#39;]
+
+# Run Information Value analysis
+vi.create_IV(
+    data=pq_data_iv,
+    predictors=predictors,
+    outcome=&#39;High_Copilot&#39;,
+    return_type=&#39;plot&#39;
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo-vivainsights-py_42_0.png" src="_images/demo-vivainsights-py_42_0.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="Putting-It-All-Together:-Analysis-Best-Practices">
+<h2>Putting It All Together: Analysis Best Practices<a class="headerlink" href="#Putting-It-All-Together:-Analysis-Best-Practices" title="Link to this heading">¶</a></h2>
+<p>The <strong>vivainsights</strong> package provides a comprehensive toolkit for organizational analytics. Here are some best practices for effective analysis:</p>
+<section id="1.-Start-with-Exploration">
+<h3>1. Start with Exploration<a class="headerlink" href="#1.-Start-with-Exploration" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">create_rank()</span></code> and <code class="docutils literal notranslate"><span class="pre">keymetrics_scan()</span></code> to get a high-level overview</p></li>
+<li><p>Apply <code class="docutils literal notranslate"><span class="pre">hrvar_count()</span></code> to understand your population segments</p></li>
+<li><p>Check data quality with <code class="docutils literal notranslate"><span class="pre">identify_outlier()</span></code> and related functions</p></li>
+</ul>
+</section>
+<section id="2.-Dive-Deep-with-Distribution-Analysis">
+<h3>2. Dive Deep with Distribution Analysis<a class="headerlink" href="#2.-Dive-Deep-with-Distribution-Analysis" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">create_boxplot()</span></code> to identify outliers and understand spread</p></li>
+<li><p>Apply <code class="docutils literal notranslate"><span class="pre">create_lorenz()</span></code> to assess inequality and concentration</p></li>
+<li><p>Leverage <code class="docutils literal notranslate"><span class="pre">create_inc()</span></code> to understand threshold exceedances</p></li>
+</ul>
+</section>
+<section id="3.-Understand-Relationships">
+<h3>3. Understand Relationships<a class="headerlink" href="#3.-Understand-Relationships" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">create_bubble()</span></code> to explore relationships between two metrics</p></li>
+<li><p>Apply <code class="docutils literal notranslate"><span class="pre">create_trend()</span></code> to identify patterns over time</p></li>
+<li><p>Visualize organizational flows with <code class="docutils literal notranslate"><span class="pre">create_sankey()</span></code></p></li>
+</ul>
+</section>
+<section id="4.-Advanced-Insights">
+<h3>4. Advanced Insights<a class="headerlink" href="#4.-Advanced-Insights" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">create_IV()</span></code> for predictive analytics and identifying key drivers</p></li>
+<li><p>Apply network analysis functions for collaboration insights</p></li>
+</ul>
+</section>
+<section id="5.-Export-and-Share">
+<h3>5. Export and Share<a class="headerlink" href="#5.-Export-and-Share" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>All functions support <code class="docutils literal notranslate"><span class="pre">return_type='table'</span></code> for extracting underlying data</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">export()</span></code> to copy tables to clipboard for easy sharing</p></li>
+<li><p>Combine multiple analyses to tell compelling data stories</p></li>
+</ul>
+<p>This comprehensive approach ensures you can uncover meaningful insights about collaboration, engagement, and organizational health using Viva Insights data.</p>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="demo-create_odds_ratios.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Demo: Using <code class="docutils literal notranslate"><span class="pre">create_odds_ratios</span></code> from the vivainsights Python Package</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="_autosummary/vivainsights.keymetrics_scan.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">vivainsights.keymetrics_scan</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, Microsoft Corporation
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Demo Notebook for the vivainsights Python package</a><ul>
+<li><a class="reference internal" href="#Getting-Started:-Loading-Data-and-Libraries">Getting Started: Loading Data and Libraries</a></li>
+<li><a class="reference internal" href="#Core-Visualization-Functions">Core Visualization Functions</a><ul>
+<li><a class="reference internal" href="#Bar-Charts:-Comparing-Groups">Bar Charts: Comparing Groups</a><ul>
+<li><a class="reference internal" href="#Distribution-&amp;-Inequality-Analysis">Distribution &amp; Inequality Analysis</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Lorenz-Curve:-Analyzing-Inequality">Lorenz Curve: Analyzing Inequality</a></li>
+<li><a class="reference internal" href="#Incidence-Analysis:-Understanding-Thresholds">Incidence Analysis: Understanding Thresholds</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Exploratory-Data-Analysis">Exploratory Data Analysis</a><ul>
+<li><a class="reference internal" href="#Multi-dimensional-Ranking:-Finding-Top-Contributors-and-Risk-Groups">Multi-dimensional Ranking: Finding Top Contributors and Risk Groups</a></li>
+<li><a class="reference internal" href="#Validating-/-exploring-the-data">Validating / exploring the data</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Additional-Examples">Additional Examples</a><ul>
+<li><a class="reference internal" href="#Bubble-Plot:-create_bubble()">Bubble Plot: <code class="docutils literal notranslate"><span class="pre">create_bubble()</span></code></a></li>
+<li><a class="reference internal" href="#Trend-Plot:-create_trend()">Trend Plot: <code class="docutils literal notranslate"><span class="pre">create_trend()</span></code></a></li>
+<li><a class="reference internal" href="#Key-Metrics-Scan:-keymetrics_scan()">Key Metrics Scan: <code class="docutils literal notranslate"><span class="pre">keymetrics_scan()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Network-Analysis-&amp;-Flow-Visualization">Network Analysis &amp; Flow Visualization</a><ul>
+<li><a class="reference internal" href="#Sankey-Diagrams:-Visualizing-Organizational-Flows">Sankey Diagrams: Visualizing Organizational Flows</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Advanced-Analytics">Advanced Analytics</a><ul>
+<li><a class="reference internal" href="#Information-Value-Analysis:-Predictive-Insights">Information Value Analysis: Predictive Insights</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Putting-It-All-Together:-Analysis-Best-Practices">Putting It All Together: Analysis Best Practices</a><ul>
+<li><a class="reference internal" href="#1.-Start-with-Exploration">1. Start with Exploration</a></li>
+<li><a class="reference internal" href="#2.-Dive-Deep-with-Distribution-Analysis">2. Dive Deep with Distribution Analysis</a></li>
+<li><a class="reference internal" href="#3.-Understand-Relationships">3. Understand Relationships</a></li>
+<li><a class="reference internal" href="#4.-Advanced-Insights">4. Advanced Insights</a></li>
+<li><a class="reference internal" href="#5.-Export-and-Share">5. Export and Share</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=ff822928"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

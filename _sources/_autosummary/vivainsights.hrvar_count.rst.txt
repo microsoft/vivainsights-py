@@ -1,0 +1,7 @@
+﻿vivainsights.hrvar\_count
+=========================
+
+.. automodule:: vivainsights.hrvar_count
+   :members:
+   :undoc-members:
+   :show-inheritance:

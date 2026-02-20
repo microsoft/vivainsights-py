@@ -1,0 +1,7 @@
+﻿vivainsights.create\_odds\_ratios
+=================================
+
+.. automodule:: vivainsights.create_odds_ratios
+   :members:
+   :undoc-members:
+   :show-inheritance:

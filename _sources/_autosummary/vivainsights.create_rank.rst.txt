@@ -1,0 +1,7 @@
+﻿vivainsights.create\_rank
+=========================
+
+.. automodule:: vivainsights.create_rank
+   :members:
+   :undoc-members:
+   :show-inheritance:

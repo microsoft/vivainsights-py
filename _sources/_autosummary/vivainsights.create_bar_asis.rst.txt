@@ -1,0 +1,7 @@
+﻿vivainsights.create\_bar\_asis
+==============================
+
+.. automodule:: vivainsights.create_bar_asis
+   :members:
+   :undoc-members:
+   :show-inheritance:

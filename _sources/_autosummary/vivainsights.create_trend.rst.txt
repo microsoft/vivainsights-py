@@ -1,0 +1,7 @@
+﻿vivainsights.create\_trend
+==========================
+
+.. automodule:: vivainsights.create_trend
+   :members:
+   :undoc-members:
+   :show-inheritance:

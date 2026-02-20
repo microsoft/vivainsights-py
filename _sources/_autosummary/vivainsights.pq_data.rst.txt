@@ -1,0 +1,7 @@
+﻿vivainsights.pq\_data
+=====================
+
+.. automodule:: vivainsights.pq_data
+   :members:
+   :undoc-members:
+   :show-inheritance:

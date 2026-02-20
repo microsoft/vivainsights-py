@@ -1,0 +1,7 @@
+﻿vivainsights.create\_bubble
+===========================
+
+.. automodule:: vivainsights.create_bubble
+   :members:
+   :undoc-members:
+   :show-inheritance:

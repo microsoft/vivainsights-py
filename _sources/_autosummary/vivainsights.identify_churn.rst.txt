@@ -1,0 +1,7 @@
+﻿vivainsights.identify\_churn
+============================
+
+.. automodule:: vivainsights.identify_churn
+   :members:
+   :undoc-members:
+   :show-inheritance:

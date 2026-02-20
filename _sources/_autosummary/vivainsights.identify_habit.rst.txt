@@ -1,0 +1,7 @@
+﻿vivainsights.identify\_habit
+============================
+
+.. automodule:: vivainsights.identify_habit
+   :members:
+   :undoc-members:
+   :show-inheritance:

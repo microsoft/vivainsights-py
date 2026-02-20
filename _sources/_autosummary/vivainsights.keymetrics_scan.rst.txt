@@ -1,0 +1,7 @@
+﻿vivainsights.keymetrics\_scan
+=============================
+
+.. automodule:: vivainsights.keymetrics_scan
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+﻿vivainsights.extract\_date\_range
+=================================
+
+.. automodule:: vivainsights.extract_date_range
+   :members:
+   :undoc-members:
+   :show-inheritance:

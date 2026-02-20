@@ -1,0 +1,1339 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="author" title="About these documents" href="about.html"><link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Frequently Asked Questions" href="faq.html"><link rel="prev" title="Demo Notebook for the vivainsights Python package" href="demo-vivainsights-py.html">
+        <link rel="prefetch" href="_static/vivainsights-py.png" as="image">
+
+    <link rel="shortcut icon" href="_static/favicon.svg"><!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
+        <title>Demo: Using create_odds_ratios from the vivainsights Python Package - vivainsights 0.4.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=ac958071" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">vivainsights 0.4.2 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="_static/vivainsights-py.png" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">vivainsights 0.4.2 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html#quick-start">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html#visualization-gallery">Visualization Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html#related-repositories">Related repositories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html#contributing">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html#license">License</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">vivainsights</a><input aria-label="Toggle navigation of vivainsights" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="vivainsights.html">Reference - Functions</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="vivainsights.html#visualization-functions">Visualization Functions</a><input aria-label="Toggle navigation of Visualization Functions" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_bar.html">vivainsights.create_bar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_boxplot.html">vivainsights.create_boxplot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_bubble.html">vivainsights.create_bubble</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_line.html">vivainsights.create_line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_rank.html">vivainsights.create_rank</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_trend.html">vivainsights.create_trend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_sankey.html">vivainsights.create_sankey</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_lorenz.html">vivainsights.create_lorenz</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_inc.html">vivainsights.create_inc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_bar_asis.html">vivainsights.create_bar_asis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_IV.html">vivainsights.create_IV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.create_odds_ratios.html">vivainsights.create_odds_ratios</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="vivainsights.html#data-analysis-identification">Data Analysis &amp; Identification</a><input aria-label="Toggle navigation of Data Analysis &amp; Identification" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.identify_churn.html">vivainsights.identify_churn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.identify_tenure.html">vivainsights.identify_tenure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.identify_habit.html">vivainsights.identify_habit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.identify_usage_segments.html">vivainsights.identify_usage_segments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.identify_outlier.html">vivainsights.identify_outlier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.identify_inactiveweeks.html">vivainsights.identify_inactiveweeks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.identify_holidayweeks.html">vivainsights.identify_holidayweeks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.identify_nkw.html">vivainsights.identify_nkw</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.identify_daterange.html">vivainsights.identify_daterange</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.extract_date_range.html">vivainsights.extract_date_range</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="vivainsights.html#network-analysis">Network Analysis</a><input aria-label="Toggle navigation of Network Analysis" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.network_g2g.html">vivainsights.network_g2g</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.network_p2p.html">vivainsights.network_p2p</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.network_summary.html">vivainsights.network_summary</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="vivainsights.html#data-management">Data Management</a><input aria-label="Toggle navigation of Data Management" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.pq_data.html">vivainsights.pq_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.mt_data.html">vivainsights.mt_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.g2g_data.html">vivainsights.g2g_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.p2p_data.html">vivainsights.p2p_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.p2g_data.html">vivainsights.p2g_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.p2p_data_sim.html">vivainsights.p2p_data_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.import_query.html">vivainsights.import_query</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.export.html">vivainsights.export</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="vivainsights.html#utility-functions">Utility Functions</a><input aria-label="Toggle navigation of Utility Functions" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.extract_hr.html">vivainsights.extract_hr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.hrvar_count.html">vivainsights.hrvar_count</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.totals_col.html">vivainsights.totals_col</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.us_to_space.html">vivainsights.us_to_space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.check_inputs.html">vivainsights.check_inputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.color_codes.html">vivainsights.color_codes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.xicor.html">vivainsights.xicor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/vivainsights.keymetrics_scan.html">vivainsights.keymetrics_scan</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="demo-vivainsights-py.html">Demo Notebook for the vivainsights Python package</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Demo: Using <code class="docutils literal notranslate"><span class="pre">create_odds_ratios</span></code> from the vivainsights Python Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html">Version 0.4.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-4-1">Version 0.4.1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-4-0">Version 0.4.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-3-4">Version 0.3.4</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-3-3">Version 0.3.3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-3-2">Version 0.3.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-3-1">Version 0.3.1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-3-0">Version 0.3.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-2-4">Version 0.2.4</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-2-3">Version 0.2.3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-2-2">Version 0.2.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-2-1">Version 0.2.1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-2-0">Version 0.2.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-1-0">Version 0.1.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTORS.html">Contributors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SECURITY.html">Security</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SECURITY.html#reporting-security-issues">Reporting Security Issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SECURITY.html#preferred-languages">Preferred Languages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SECURITY.html#policy">Policy</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/demo-create_odds_ratios.ipynb.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="Demo:-Using-create_odds_ratios-from-the-vivainsights-Python-Package">
+<h1>Demo: Using <code class="docutils literal notranslate"><span class="pre">create_odds_ratios</span></code> from the vivainsights Python Package<a class="headerlink" href="#Demo:-Using-create_odds_ratios-from-the-vivainsights-Python-Package" title="Link to this heading">¶</a></h1>
+<p>This notebook demonstrates how to use the <code class="docutils literal notranslate"><span class="pre">create_odds_ratios</span></code> function from the <strong>vivainsights</strong> Python package to analyze the relationship between ordinal metrics and an independent variable.</p>
+<p>In this walkthrough, you will:</p>
+<ol class="arabic simple">
+<li><p>Load demo data (<code class="docutils literal notranslate"><span class="pre">pq_data</span></code>) from the package.</p></li>
+<li><p>Create an independent variable (<code class="docutils literal notranslate"><span class="pre">UsageSegments_12w</span></code>) using <code class="docutils literal notranslate"><span class="pre">identify_usage_segments</span></code>.</p></li>
+<li><p>Compute favorability scores for ordinal metrics with <code class="docutils literal notranslate"><span class="pre">compute_fav</span></code>.</p></li>
+<li><p>Calculate odds ratios for ordinal metrics using <code class="docutils literal notranslate"><span class="pre">create_odds_ratios</span></code>.</p></li>
+<li><p>Visualize the results for easier interpretation.</p></li>
+</ol>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Import necessary libraries
+import vivainsights as vi
+import pandas as pd
+import warnings
+
+# Suppress warnings for cleaner output
+warnings.filterwarnings(&quot;ignore&quot;)
+</pre></div>
+</div>
+</div>
+<section id="Step-1:-Load-the-demo-data">
+<h2>Step 1: Load the demo data<a class="headerlink" href="#Step-1:-Load-the-demo-data" title="Link to this heading">¶</a></h2>
+<p>First, load the sample Person Query dataset (<code class="docutils literal notranslate"><span class="pre">pq_data</span></code>) provided by <strong>vivainsights</strong>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Load the demo data
+pq_data = vi.load_pq_data()
+
+# Display the first few rows of the dataset
+pq_data.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PersonId</th>
+      <th>MetricDate</th>
+      <th>Collaboration_hours</th>
+      <th>Copilot_actions_taken_in_Teams</th>
+      <th>Meeting_and_call_hours</th>
+      <th>Internal_network_size</th>
+      <th>Email_hours</th>
+      <th>Channel_message_posts</th>
+      <th>Conflicting_meeting_hours</th>
+      <th>Large_and_long_meeting_hours</th>
+      <th>...</th>
+      <th>Summarise_chat_actions_taken_using_Copilot_in_Teams</th>
+      <th>Summarise_email_thread_actions_taken_using_Copilot_in_Outlook</th>
+      <th>Summarise_meeting_actions_taken_using_Copilot_in_Teams</th>
+      <th>Summarise_presentation_actions_taken_using_Copilot_in_PowerPoint</th>
+      <th>Summarise_Word_document_actions_taken_using_Copilot_in_Word</th>
+      <th>FunctionType</th>
+      <th>SupervisorIndicator</th>
+      <th>Level</th>
+      <th>Organization</th>
+      <th>LevelDesignation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>bf361ad4-fc29-432f-95f3-837e689f4ac4</td>
+      <td>2024-03-31</td>
+      <td>17.452987</td>
+      <td>4</td>
+      <td>11.767599</td>
+      <td>92</td>
+      <td>7.523189</td>
+      <td>0.753451</td>
+      <td>2.079210</td>
+      <td>0.635489</td>
+      <td>...</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>Specialist</td>
+      <td>Manager</td>
+      <td>Level3</td>
+      <td>IT</td>
+      <td>Senior IC</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0500f22c-2910-4154-b6e2-66864898d848</td>
+      <td>2024-03-31</td>
+      <td>32.860820</td>
+      <td>6</td>
+      <td>26.743370</td>
+      <td>193</td>
+      <td>11.578396</td>
+      <td>0.000000</td>
+      <td>8.106997</td>
+      <td>1.402567</td>
+      <td>...</td>
+      <td>2</td>
+      <td>0</td>
+      <td>4</td>
+      <td>1</td>
+      <td>0</td>
+      <td>Specialist</td>
+      <td>Manager</td>
+      <td>Level2</td>
+      <td>Legal</td>
+      <td>Senior Manager</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>bb495ec9-8577-468a-8b48-e32677442f51</td>
+      <td>2024-03-31</td>
+      <td>21.502359</td>
+      <td>8</td>
+      <td>13.982031</td>
+      <td>113</td>
+      <td>9.073214</td>
+      <td>0.894786</td>
+      <td>3.001401</td>
+      <td>0.000192</td>
+      <td>...</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>Manager</td>
+      <td>Manager</td>
+      <td>Level4</td>
+      <td>Legal</td>
+      <td>Junior IC</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>f6d58aaf-a2b2-42ab-868f-d7ac2e99788d</td>
+      <td>2024-03-31</td>
+      <td>25.416502</td>
+      <td>4</td>
+      <td>16.895513</td>
+      <td>131</td>
+      <td>10.281204</td>
+      <td>0.528731</td>
+      <td>1.846423</td>
+      <td>1.441596</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>Manager</td>
+      <td>Manager</td>
+      <td>Level1</td>
+      <td>HR</td>
+      <td>Executive</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>c81cb49a-aa27-4cfc-8211-4087b733a3c6</td>
+      <td>2024-03-31</td>
+      <td>11.433377</td>
+      <td>4</td>
+      <td>6.957468</td>
+      <td>75</td>
+      <td>5.510535</td>
+      <td>2.288934</td>
+      <td>0.474048</td>
+      <td>0.269996</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>Technician</td>
+      <td>Manager</td>
+      <td>Level1</td>
+      <td>Finance</td>
+      <td>Executive</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 73 columns</p>
+</div></div>
+</div>
+</section>
+<section id="Step-2:-Create-the-independent-variable-with-identify_usage_segments">
+<h2>Step 2: Create the independent variable with <code class="docutils literal notranslate"><span class="pre">identify_usage_segments</span></code><a class="headerlink" href="#Step-2:-Create-the-independent-variable-with-identify_usage_segments" title="Link to this heading">¶</a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">identify_usage_segments</span></code> to classify users into usage segments based on their Copilot actions. The independent variable (<code class="docutils literal notranslate"><span class="pre">UsageSegments_12w</span></code>) is created by aggregating columns that start with <code class="docutils literal notranslate"><span class="pre">Copilot_actions_taken_in_</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Identify usage segments
+usage_segments_data = vi.identify_usage_segments(
+    data=pq_data,
+    metric_str=[
+        &quot;Copilot_actions_taken_in_Teams&quot;,
+        &quot;Copilot_actions_taken_in_Outlook&quot;,
+        &quot;Copilot_actions_taken_in_Excel&quot;,
+        &quot;Copilot_actions_taken_in_Word&quot;,
+        &quot;Copilot_actions_taken_in_Powerpoint&quot;
+    ],
+    version=&quot;12w&quot;,
+    return_type=&quot;data&quot;
+)
+
+# Display the first few rows of the updated dataset
+usage_segments_data.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PersonId</th>
+      <th>MetricDate</th>
+      <th>Collaboration_hours</th>
+      <th>Copilot_actions_taken_in_Teams</th>
+      <th>Meeting_and_call_hours</th>
+      <th>Internal_network_size</th>
+      <th>Email_hours</th>
+      <th>Channel_message_posts</th>
+      <th>Conflicting_meeting_hours</th>
+      <th>Large_and_long_meeting_hours</th>
+      <th>...</th>
+      <th>Level</th>
+      <th>Organization</th>
+      <th>LevelDesignation</th>
+      <th>target_metric</th>
+      <th>target_metric_l12w</th>
+      <th>target_metric_l4w</th>
+      <th>IsHabit12w</th>
+      <th>IsHabit4w</th>
+      <th>UsageSegments_12w</th>
+      <th>UsageSegments_4w</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>01986072-719a-404c-ae98-009d92e82323</td>
+      <td>2024-03-31</td>
+      <td>26.884733</td>
+      <td>7</td>
+      <td>17.700027</td>
+      <td>156</td>
+      <td>9.667004</td>
+      <td>0.117751</td>
+      <td>2.674868</td>
+      <td>1.262361</td>
+      <td>...</td>
+      <td>Level4</td>
+      <td>IT</td>
+      <td>Junior IC</td>
+      <td>10</td>
+      <td>10.00</td>
+      <td>10.00</td>
+      <td>False</td>
+      <td>False</td>
+      <td>Novice User</td>
+      <td>Novice User</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>01986072-719a-404c-ae98-009d92e82323</td>
+      <td>2024-04-07</td>
+      <td>21.280727</td>
+      <td>10</td>
+      <td>15.372990</td>
+      <td>121</td>
+      <td>8.417014</td>
+      <td>0.519473</td>
+      <td>0.368913</td>
+      <td>2.108141</td>
+      <td>...</td>
+      <td>Level4</td>
+      <td>IT</td>
+      <td>Junior IC</td>
+      <td>12</td>
+      <td>11.00</td>
+      <td>11.00</td>
+      <td>False</td>
+      <td>False</td>
+      <td>Novice User</td>
+      <td>Novice User</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>01986072-719a-404c-ae98-009d92e82323</td>
+      <td>2024-04-14</td>
+      <td>17.450330</td>
+      <td>8</td>
+      <td>11.808617</td>
+      <td>104</td>
+      <td>7.889519</td>
+      <td>1.907069</td>
+      <td>0.096829</td>
+      <td>0.853150</td>
+      <td>...</td>
+      <td>Level4</td>
+      <td>IT</td>
+      <td>Junior IC</td>
+      <td>11</td>
+      <td>11.00</td>
+      <td>11.00</td>
+      <td>False</td>
+      <td>False</td>
+      <td>Novice User</td>
+      <td>Novice User</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>01986072-719a-404c-ae98-009d92e82323</td>
+      <td>2024-04-21</td>
+      <td>21.368059</td>
+      <td>3</td>
+      <td>14.908550</td>
+      <td>115</td>
+      <td>6.776404</td>
+      <td>0.209775</td>
+      <td>3.953832</td>
+      <td>0.878616</td>
+      <td>...</td>
+      <td>Level4</td>
+      <td>IT</td>
+      <td>Junior IC</td>
+      <td>4</td>
+      <td>9.25</td>
+      <td>9.25</td>
+      <td>False</td>
+      <td>True</td>
+      <td>Novice User</td>
+      <td>Habitual User</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>01986072-719a-404c-ae98-009d92e82323</td>
+      <td>2024-04-28</td>
+      <td>20.849744</td>
+      <td>5</td>
+      <td>13.737000</td>
+      <td>110</td>
+      <td>8.759793</td>
+      <td>0.931585</td>
+      <td>1.201305</td>
+      <td>0.000000</td>
+      <td>...</td>
+      <td>Level4</td>
+      <td>IT</td>
+      <td>Junior IC</td>
+      <td>6</td>
+      <td>8.60</td>
+      <td>8.25</td>
+      <td>False</td>
+      <td>True</td>
+      <td>Novice User</td>
+      <td>Habitual User</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 80 columns</p>
+</div></div>
+</div>
+<section id="Visualize-the-mean-of-target_metric-by-usage-segment">
+<h3>Visualize the mean of <code class="docutils literal notranslate"><span class="pre">target_metric</span></code> by usage segment<a class="headerlink" href="#Visualize-the-mean-of-target_metric-by-usage-segment" title="Link to this heading">¶</a></h3>
+<p>To better understand usage behavior, create a bar plot showing the mean of <code class="docutils literal notranslate"><span class="pre">target_metric</span></code> grouped by <code class="docutils literal notranslate"><span class="pre">UsageSegments_12w</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Visualize the mean of `target_metric` by `UsageSegments_12w`
+usage_segments_bar_plot = vi.create_bar(
+    data=usage_segments_data,
+    metric=&quot;target_metric&quot;,
+    hrvar=&quot;UsageSegments_12w&quot;,
+    return_type=&quot;plot&quot;,
+    plot_title=&quot;Mean Target Metric by Usage Segment&quot;,
+    plot_subtitle=&quot;Based on 12-week rolling averages&quot;
+)
+
+# Display the bar plot
+usage_segments_bar_plot.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo-create_odds_ratios_7_0.png" src="_images/demo-create_odds_ratios_7_0.png" />
+</div>
+</div>
+</section>
+<section id="Visualize-usage-segments-over-time">
+<h3>Visualize usage segments over time<a class="headerlink" href="#Visualize-usage-segments-over-time" title="Link to this heading">¶</a></h3>
+<p>Next, visualize the distribution of usage segments over time using <code class="docutils literal notranslate"><span class="pre">identify_usage_segments</span></code> with <code class="docutils literal notranslate"><span class="pre">return_type='plot'</span></code>. The following shows a horizontal stacked bar plot, which shows the evolution in the proportion of the usage segments over time.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Visualize usage segments over time
+usage_segments_time_plot = vi.identify_usage_segments(
+    data=pq_data,
+    metric_str=[
+        &quot;Copilot_actions_taken_in_Teams&quot;,
+        &quot;Copilot_actions_taken_in_Outlook&quot;,
+        &quot;Copilot_actions_taken_in_Excel&quot;,
+        &quot;Copilot_actions_taken_in_Word&quot;,
+        &quot;Copilot_actions_taken_in_Powerpoint&quot;
+    ],
+    version=&quot;12w&quot;,
+    return_type=&quot;plot&quot;
+)
+
+# Display the time plot
+usage_segments_time_plot.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo-create_odds_ratios_9_0.png" src="_images/demo-create_odds_ratios_9_0.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="Step-3:-Compute-favorability-scores-for-ordinal-metrics">
+<h2>Step 3: Compute favorability scores for ordinal metrics<a class="headerlink" href="#Step-3:-Compute-favorability-scores-for-ordinal-metrics" title="Link to this heading">¶</a></h2>
+<p>Before calculating odds ratios, use <code class="docutils literal notranslate"><span class="pre">compute_fav()</span></code> to convert ordinal metrics into categorical variables representing favorable and unfavorable scores. This standardizes metrics to a 100-point scale, making results easier to interpret and compare.</p>
+<p>Neutral scores are dropped to focus on the most meaningful responses.</p>
+<p>In <code class="docutils literal notranslate"><span class="pre">usage_segments_data</span></code> printed below, it can be seen that <code class="docutils literal notranslate"><span class="pre">compute_fav()</span></code> has added several columns suffixing the <code class="docutils literal notranslate"><span class="pre">ordinal_metrics</span></code> columns with <code class="docutils literal notranslate"><span class="pre">_100</span></code> and <code class="docutils literal notranslate"><span class="pre">_fav</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Define the ordinal metrics
+ordinal_metrics = [
+    &quot;eSat&quot;,
+    &quot;Initiative&quot;,
+    &quot;Manager_Recommend&quot;,
+    &quot;Resources&quot;,
+    &quot;Speak_My_Mind&quot;,
+    &quot;Wellbeing&quot;,
+    &quot;Work_Life_Balance&quot;,
+    &quot;Workload&quot;
+]
+
+# Compute favorability scores
+usage_segments_data = vi.compute_fav(
+    data=usage_segments_data,
+    ord_metrics=ordinal_metrics,
+    item_options=5,  # Assuming a 5-point scale for ordinal metrics
+    fav_threshold=70,
+    unfav_threshold=40,
+    drop_neutral=True
+)
+
+# Display the first few rows of the updated dataset
+usage_segments_data.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PersonId</th>
+      <th>MetricDate</th>
+      <th>Collaboration_hours</th>
+      <th>Copilot_actions_taken_in_Teams</th>
+      <th>Meeting_and_call_hours</th>
+      <th>Internal_network_size</th>
+      <th>Email_hours</th>
+      <th>Channel_message_posts</th>
+      <th>Conflicting_meeting_hours</th>
+      <th>Large_and_long_meeting_hours</th>
+      <th>...</th>
+      <th>Resources_100</th>
+      <th>Resources_fav</th>
+      <th>Speak_My_Mind_100</th>
+      <th>Speak_My_Mind_fav</th>
+      <th>Wellbeing_100</th>
+      <th>Wellbeing_fav</th>
+      <th>Work_Life_Balance_100</th>
+      <th>Work_Life_Balance_fav</th>
+      <th>Workload_100</th>
+      <th>Workload_fav</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>36</th>
+      <td>02723512-4f45-4385-8d1a-c23048e1e961</td>
+      <td>2024-04-07</td>
+      <td>26.310260</td>
+      <td>1</td>
+      <td>17.635230</td>
+      <td>124</td>
+      <td>10.887553</td>
+      <td>0.000000</td>
+      <td>3.322255</td>
+      <td>0.067661</td>
+      <td>...</td>
+      <td>25.0</td>
+      <td>unfav</td>
+      <td>25.0</td>
+      <td>unfav</td>
+      <td>100.0</td>
+      <td>fav</td>
+      <td>0.0</td>
+      <td>unfav</td>
+      <td>0.0</td>
+      <td>unfav</td>
+    </tr>
+    <tr>
+      <th>83</th>
+      <td>02c55079-f137-4abb-9806-f58e9b60efd6</td>
+      <td>2024-06-30</td>
+      <td>17.401642</td>
+      <td>4</td>
+      <td>10.399207</td>
+      <td>84</td>
+      <td>5.253439</td>
+      <td>0.195852</td>
+      <td>3.203440</td>
+      <td>0.975272</td>
+      <td>...</td>
+      <td>25.0</td>
+      <td>unfav</td>
+      <td>25.0</td>
+      <td>unfav</td>
+      <td>100.0</td>
+      <td>fav</td>
+      <td>0.0</td>
+      <td>unfav</td>
+      <td>0.0</td>
+      <td>unfav</td>
+    </tr>
+    <tr>
+      <th>123</th>
+      <td>02ddc980-8f37-4156-9397-6d621e445a00</td>
+      <td>2024-08-04</td>
+      <td>20.612899</td>
+      <td>3</td>
+      <td>14.130869</td>
+      <td>103</td>
+      <td>8.070390</td>
+      <td>0.577123</td>
+      <td>1.374351</td>
+      <td>0.000000</td>
+      <td>...</td>
+      <td>25.0</td>
+      <td>unfav</td>
+      <td>25.0</td>
+      <td>unfav</td>
+      <td>100.0</td>
+      <td>fav</td>
+      <td>0.0</td>
+      <td>unfav</td>
+      <td>0.0</td>
+      <td>unfav</td>
+    </tr>
+    <tr>
+      <th>135</th>
+      <td>02ddc980-8f37-4156-9397-6d621e445a00</td>
+      <td>2024-10-27</td>
+      <td>19.514361</td>
+      <td>2</td>
+      <td>10.986860</td>
+      <td>91</td>
+      <td>6.221707</td>
+      <td>2.286118</td>
+      <td>2.294472</td>
+      <td>0.391576</td>
+      <td>...</td>
+      <td>25.0</td>
+      <td>unfav</td>
+      <td>25.0</td>
+      <td>unfav</td>
+      <td>100.0</td>
+      <td>fav</td>
+      <td>0.0</td>
+      <td>unfav</td>
+      <td>0.0</td>
+      <td>unfav</td>
+    </tr>
+    <tr>
+      <th>164</th>
+      <td>032432ad-390c-4ce4-9f25-d5be080bd982</td>
+      <td>2024-09-15</td>
+      <td>34.160594</td>
+      <td>3</td>
+      <td>27.364673</td>
+      <td>182</td>
+      <td>12.926987</td>
+      <td>0.197464</td>
+      <td>6.306590</td>
+      <td>1.153810</td>
+      <td>...</td>
+      <td>25.0</td>
+      <td>unfav</td>
+      <td>25.0</td>
+      <td>unfav</td>
+      <td>100.0</td>
+      <td>fav</td>
+      <td>0.0</td>
+      <td>unfav</td>
+      <td>0.0</td>
+      <td>unfav</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 96 columns</p>
+</div></div>
+</div>
+</section>
+<section id="Step-4:-Calculate-odds-ratios-for-ordinal-metrics">
+<h2>Step 4: Calculate odds ratios for ordinal metrics<a class="headerlink" href="#Step-4:-Calculate-odds-ratios-for-ordinal-metrics" title="Link to this heading">¶</a></h2>
+<p>Now, calculate odds ratios for the favorability scores of these ordinal metrics:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">eSat</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Initiative</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Manager_Recommend</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Resources</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Speak_My_Mind</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Wellbeing</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Work_Life_Balance</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Workload</span></code></p></li>
+</ul>
+<p>The independent variable is <code class="docutils literal notranslate"><span class="pre">UsageSegments_12w</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Calculate odds ratios
+odds_ratios_table = vi.create_odds_ratios(
+    data=usage_segments_data,
+    ord_metrics=ordinal_metrics,
+    metric=&quot;UsageSegments_12w&quot;,
+    return_type=&quot;table&quot;
+)
+
+# Display the odds ratios table
+print(odds_ratios_table)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+   UsageSegments_12w Level  Odds_Ratio     Ordinal_Metric      n
+0      Habitual User     1    1.000000               eSat    3.0
+1        Novice User     1    1.000000               eSat    1.0
+2      Habitual User     2   53.571429               eSat  135.0
+3        Novice User     2   37.000000               eSat   49.0
+4      Habitual User     4   18.142857               eSat   58.0
+5        Novice User     4   10.333333               eSat   14.0
+6      Habitual User     5    0.428571               eSat    1.0
+7        Novice User     5    0.333333               eSat    NaN
+8      Habitual User     1    1.000000         Initiative    4.0
+9        Novice User     1    1.000000         Initiative    3.0
+10     Habitual User     2   54.333333         Initiative  166.0
+11       Novice User     2   18.142857         Initiative   57.0
+12     Habitual User     4    1.444444         Initiative    6.0
+13       Novice User     4    1.571429         Initiative    5.0
+14     Habitual User     1    1.000000  Manager_Recommend    5.0
+15       Novice User     1    1.000000  Manager_Recommend    NaN
+16     Habitual User     2   43.545455  Manager_Recommend  163.0
+17       Novice User     2  133.000000  Manager_Recommend   59.0
+18     Habitual User     4    1.909091  Manager_Recommend   10.0
+19       Novice User     4    7.000000  Manager_Recommend    3.0
+20     Habitual User     5    0.090909  Manager_Recommend    NaN
+21       Novice User     5    5.000000  Manager_Recommend    2.0
+22     Habitual User     1    1.000000          Resources    2.0
+23       Novice User     1    1.000000          Resources    NaN
+24     Habitual User     2  100.600000          Resources  171.0
+25       Novice User     2  141.000000          Resources   62.0
+26     Habitual User     4    0.600000          Resources    1.0
+27       Novice User     4    3.000000          Resources    1.0
+28     Habitual User     1    1.000000      Speak_My_Mind    2.0
+29       Novice User     1    1.000000      Speak_My_Mind    1.0
+30     Habitual User     2   97.400000      Speak_My_Mind  166.0
+31       Novice User     2   43.666667      Speak_My_Mind   58.0
+32     Habitual User     4    3.800000      Speak_My_Mind    9.0
+33       Novice User     4    3.666667      Speak_My_Mind    5.0
+34     Habitual User     4    1.000000          Wellbeing   74.0
+35       Novice User     4    1.000000          Wellbeing   24.0
+36     Habitual User     5    1.786885          Wellbeing  123.0
+37       Novice User     5    1.938776          Wellbeing   43.0
+38     Habitual User     1    1.000000  Work_Life_Balance  143.0
+39       Novice User     1    1.000000  Work_Life_Balance   49.0
+40     Habitual User     2    0.352785  Work_Life_Balance   58.0
+41       Novice User     2    0.321101  Work_Life_Balance   17.0
+42     Habitual User     1    1.000000           Workload  143.0
+43       Novice User     1    1.000000           Workload   51.0
+44     Habitual User     2    0.317829           Workload   54.0
+45       Novice User     2    0.252174           Workload   14.0
+</pre></div></div>
+</div>
+<p>Since favorability columns with the values <code class="docutils literal notranslate"><span class="pre">fav</span></code>, <code class="docutils literal notranslate"><span class="pre">unfav</span></code>, and <code class="docutils literal notranslate"><span class="pre">neu</span></code> have already been created using <code class="docutils literal notranslate"><span class="pre">compute_fav()</span></code>, you can use these directly in the proportional odds model to simplify the analysis.</p>
+<p>When interpreting odds ratios, a value greater than 1 indicates that the odds of a favorable outcome are higher for the group compared to the reference group, while a value less than 1 means the odds are lower. An odds ratio of exactly 1 suggests no difference between groups. This helps you understand how different usage segments are associated with the likelihood of favorable responses on each metric.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Define ordinal metrics with &#39;_fav&#39; suffix
+ordinal_metrics_fav = [f&quot;{metric}_fav&quot; for metric in ordinal_metrics]
+
+# Calculate odds ratios
+odds_ratios_table_fav = vi.create_odds_ratios(
+    data=usage_segments_data,
+    ord_metrics=ordinal_metrics_fav,
+    metric=&quot;UsageSegments_12w&quot;,
+    return_type=&quot;table&quot;
+)
+
+# Display the odds ratios table
+print(odds_ratios_table_fav)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+   UsageSegments_12w  Level  Odds_Ratio         Ordinal_Metric    n
+0      Habitual User    fav    1.000000               eSat_fav   59
+1        Novice User    fav    1.000000               eSat_fav   14
+2      Habitual User  unfav    2.953488               eSat_fav  137
+3        Novice User  unfav    3.645161               eSat_fav   50
+4      Habitual User    fav    1.000000         Initiative_fav    6
+5        Novice User    fav    1.000000         Initiative_fav    5
+6      Habitual User  unfav   38.230769         Initiative_fav  168
+7        Novice User  unfav   12.090909         Initiative_fav   59
+8      Habitual User    fav    1.000000  Manager_Recommend_fav   10
+9        Novice User    fav    1.000000  Manager_Recommend_fav    5
+10     Habitual User  unfav   23.285714  Manager_Recommend_fav  167
+11       Novice User  unfav   12.090909  Manager_Recommend_fav   59
+12     Habitual User    fav    1.000000          Resources_fav    1
+13       Novice User    fav    1.000000          Resources_fav    1
+14     Habitual User  unfav  169.000000          Resources_fav  172
+15       Novice User  unfav   47.000000          Resources_fav   62
+16     Habitual User    fav    1.000000      Speak_My_Mind_fav    9
+17       Novice User    fav    1.000000      Speak_My_Mind_fav    5
+18     Habitual User  unfav   25.842105      Speak_My_Mind_fav  167
+19       Novice User  unfav   12.090909      Speak_My_Mind_fav   59
+20     Habitual User    fav    1.000000          Wellbeing_fav  172
+21       Novice User    fav    1.000000          Wellbeing_fav   63
+22     Habitual User  unfav    1.000000  Work_Life_Balance_fav  172
+23       Novice User  unfav    1.000000  Work_Life_Balance_fav   63
+24     Habitual User  unfav    1.000000           Workload_fav  172
+25       Novice User  unfav    1.000000           Workload_fav   63
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Filter for Level == &#39;fav&#39; only, and sort Odds_Ratio in descending order
+odds_ratios_table_fav = odds_ratios_table_fav[odds_ratios_table_fav[&#39;Level&#39;] == &#39;fav&#39;]
+odds_ratios_table_fav = odds_ratios_table_fav.sort_values(by=&#39;Odds_Ratio&#39;, ascending=False)
+
+print(odds_ratios_table_fav)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+   UsageSegments_12w Level  Odds_Ratio         Ordinal_Metric    n
+4      Habitual User   fav         1.0         Initiative_fav    6
+5        Novice User   fav         1.0         Initiative_fav    5
+8      Habitual User   fav         1.0  Manager_Recommend_fav   10
+16     Habitual User   fav         1.0      Speak_My_Mind_fav    9
+9        Novice User   fav         1.0  Manager_Recommend_fav    5
+12     Habitual User   fav         1.0          Resources_fav    1
+1        Novice User   fav         1.0               eSat_fav   14
+17       Novice User   fav         1.0      Speak_My_Mind_fav    5
+13       Novice User   fav         1.0          Resources_fav    1
+21       Novice User   fav         1.0          Wellbeing_fav   63
+0      Habitual User   fav         1.0               eSat_fav   59
+20     Habitual User   fav         1.0          Wellbeing_fav  172
+</pre></div></div>
+</div>
+</section>
+<section id="Step-5:-Visualize-the-odds-ratios">
+<h2>Step 5: Visualize the odds ratios<a class="headerlink" href="#Step-5:-Visualize-the-odds-ratios" title="Link to this heading">¶</a></h2>
+<p>Create a bar plot to visualize the odds ratios for the ordinal metrics, making it easier to compare the impact of usage segments.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Visualize odds ratios
+odds_ratios_plot = vi.create_odds_ratios(
+    data=usage_segments_data,
+    ord_metrics=ordinal_metrics,
+    metric=&quot;UsageSegments_12w&quot;,
+    return_type=&quot;plot&quot;
+)
+
+# Display the plot
+odds_ratios_plot.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo-create_odds_ratios_18_0.png" src="_images/demo-create_odds_ratios_18_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Visualize odds ratios for favorability
+odds_ratios_plot_fav = vi.create_odds_ratios(
+    data=usage_segments_data,
+    ord_metrics=ordinal_metrics_fav,
+    metric=&quot;UsageSegments_12w&quot;,
+    return_type=&quot;plot&quot;
+)
+
+# Display the plot
+odds_ratios_plot_fav.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/demo-create_odds_ratios_19_0.png" src="_images/demo-create_odds_ratios_19_0.png" />
+</div>
+</div>
+</section>
+<section id="Summary">
+<h2>Summary<a class="headerlink" href="#Summary" title="Link to this heading">¶</a></h2>
+<p>In this notebook, you learned how to:</p>
+<ol class="arabic simple">
+<li><p>Load demo data (<code class="docutils literal notranslate"><span class="pre">pq_data</span></code>).</p></li>
+<li><p>Create an independent variable (<code class="docutils literal notranslate"><span class="pre">UsageSegments_12w</span></code>) using <code class="docutils literal notranslate"><span class="pre">identify_usage_segments</span></code>.</p></li>
+<li><p>Compute favorability scores for ordinal metrics with <code class="docutils literal notranslate"><span class="pre">compute_fav</span></code>.</p></li>
+<li><p>Calculate odds ratios for ordinal metrics using <code class="docutils literal notranslate"><span class="pre">create_odds_ratios</span></code>.</p></li>
+<li><p>Visualize the results for interpretation.</p></li>
+</ol>
+<p>By combining <code class="docutils literal notranslate"><span class="pre">create_odds_ratios</span></code> with <code class="docutils literal notranslate"><span class="pre">compute_fav</span></code>, you can consistently analyze the relationship between ordinal metrics and independent variables, regardless of the original point scale.</p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="faq.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Frequently Asked Questions</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="demo-vivainsights-py.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Demo Notebook for the vivainsights Python package</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, Microsoft Corporation
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Demo: Using <code class="docutils literal notranslate"><span class="pre">create_odds_ratios</span></code> from the vivainsights Python Package</a><ul>
+<li><a class="reference internal" href="#Step-1:-Load-the-demo-data">Step 1: Load the demo data</a></li>
+<li><a class="reference internal" href="#Step-2:-Create-the-independent-variable-with-identify_usage_segments">Step 2: Create the independent variable with <code class="docutils literal notranslate"><span class="pre">identify_usage_segments</span></code></a><ul>
+<li><a class="reference internal" href="#Visualize-the-mean-of-target_metric-by-usage-segment">Visualize the mean of <code class="docutils literal notranslate"><span class="pre">target_metric</span></code> by usage segment</a></li>
+<li><a class="reference internal" href="#Visualize-usage-segments-over-time">Visualize usage segments over time</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Step-3:-Compute-favorability-scores-for-ordinal-metrics">Step 3: Compute favorability scores for ordinal metrics</a></li>
+<li><a class="reference internal" href="#Step-4:-Calculate-odds-ratios-for-ordinal-metrics">Step 4: Calculate odds ratios for ordinal metrics</a></li>
+<li><a class="reference internal" href="#Step-5:-Visualize-the-odds-ratios">Step 5: Visualize the odds ratios</a></li>
+<li><a class="reference internal" href="#Summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=ff822928"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

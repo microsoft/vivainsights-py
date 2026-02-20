@@ -1,0 +1,7 @@
+﻿vivainsights.identify\_holidayweeks
+===================================
+
+.. automodule:: vivainsights.identify_holidayweeks
+   :members:
+   :undoc-members:
+   :show-inheritance:

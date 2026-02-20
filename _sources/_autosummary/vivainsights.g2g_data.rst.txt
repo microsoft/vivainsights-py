@@ -1,0 +1,7 @@
+﻿vivainsights.g2g\_data
+======================
+
+.. automodule:: vivainsights.g2g_data
+   :members:
+   :undoc-members:
+   :show-inheritance:

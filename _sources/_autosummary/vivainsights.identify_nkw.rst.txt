@@ -1,0 +1,7 @@
+﻿vivainsights.identify\_nkw
+==========================
+
+.. automodule:: vivainsights.identify_nkw
+   :members:
+   :undoc-members:
+   :show-inheritance:

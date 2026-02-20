@@ -1,0 +1,7 @@
+﻿vivainsights.create\_line
+=========================
+
+.. automodule:: vivainsights.create_line
+   :members:
+   :undoc-members:
+   :show-inheritance:

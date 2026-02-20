@@ -1,0 +1,1063 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="author" title="About these documents" href="../../about.html"><link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html">
+        <link rel="prefetch" href="../../_static/vivainsights-py.png" as="image">
+
+    <link rel="shortcut icon" href="../../_static/favicon.svg"><!-- Generated with Sphinx 7.4.7 and Furo 2025.12.19 -->
+        <title>vivainsights.create_IV - vivainsights 0.4.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=ac958071" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">vivainsights 0.4.2 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../_static/vivainsights-py.png" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">vivainsights 0.4.2 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html#quick-start">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html#visualization-gallery">Visualization Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html#related-repositories">Related repositories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html#contributing">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html#license">License</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">vivainsights</a><input aria-label="Toggle navigation of vivainsights" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../vivainsights.html">Reference - Functions</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../vivainsights.html#visualization-functions">Visualization Functions</a><input aria-label="Toggle navigation of Visualization Functions" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.create_bar.html">vivainsights.create_bar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.create_boxplot.html">vivainsights.create_boxplot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.create_bubble.html">vivainsights.create_bubble</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.create_line.html">vivainsights.create_line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.create_rank.html">vivainsights.create_rank</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.create_trend.html">vivainsights.create_trend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.create_sankey.html">vivainsights.create_sankey</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.create_lorenz.html">vivainsights.create_lorenz</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.create_inc.html">vivainsights.create_inc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.create_bar_asis.html">vivainsights.create_bar_asis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.create_IV.html">vivainsights.create_IV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.create_odds_ratios.html">vivainsights.create_odds_ratios</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../vivainsights.html#data-analysis-identification">Data Analysis &amp; Identification</a><input aria-label="Toggle navigation of Data Analysis &amp; Identification" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.identify_churn.html">vivainsights.identify_churn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.identify_tenure.html">vivainsights.identify_tenure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.identify_habit.html">vivainsights.identify_habit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.identify_usage_segments.html">vivainsights.identify_usage_segments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.identify_outlier.html">vivainsights.identify_outlier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.identify_inactiveweeks.html">vivainsights.identify_inactiveweeks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.identify_holidayweeks.html">vivainsights.identify_holidayweeks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.identify_nkw.html">vivainsights.identify_nkw</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.identify_daterange.html">vivainsights.identify_daterange</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.extract_date_range.html">vivainsights.extract_date_range</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../vivainsights.html#network-analysis">Network Analysis</a><input aria-label="Toggle navigation of Network Analysis" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.network_g2g.html">vivainsights.network_g2g</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.network_p2p.html">vivainsights.network_p2p</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.network_summary.html">vivainsights.network_summary</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../vivainsights.html#data-management">Data Management</a><input aria-label="Toggle navigation of Data Management" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.pq_data.html">vivainsights.pq_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.mt_data.html">vivainsights.mt_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.g2g_data.html">vivainsights.g2g_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.p2p_data.html">vivainsights.p2p_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.p2g_data.html">vivainsights.p2g_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.p2p_data_sim.html">vivainsights.p2p_data_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.import_query.html">vivainsights.import_query</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.export.html">vivainsights.export</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../vivainsights.html#utility-functions">Utility Functions</a><input aria-label="Toggle navigation of Utility Functions" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.extract_hr.html">vivainsights.extract_hr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.hrvar_count.html">vivainsights.hrvar_count</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.totals_col.html">vivainsights.totals_col</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.us_to_space.html">vivainsights.us_to_space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.check_inputs.html">vivainsights.check_inputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.color_codes.html">vivainsights.color_codes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.xicor.html">vivainsights.xicor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/vivainsights.keymetrics_scan.html">vivainsights.keymetrics_scan</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo-vivainsights-py.html">Demo Notebook for the vivainsights Python package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demo-create_odds_ratios.html">Demo: Using <code class="docutils literal notranslate"><span class="pre">create_odds_ratios</span></code> from the vivainsights Python Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../NEWS.html">Version 0.4.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../NEWS.html#version-0-4-1">Version 0.4.1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../NEWS.html#version-0-4-0">Version 0.4.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../NEWS.html#version-0-3-4">Version 0.3.4</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../NEWS.html#version-0-3-3">Version 0.3.3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../NEWS.html#version-0-3-2">Version 0.3.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../NEWS.html#version-0-3-1">Version 0.3.1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../NEWS.html#version-0-3-0">Version 0.3.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../NEWS.html#version-0-2-4">Version 0.2.4</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../NEWS.html#version-0-2-3">Version 0.2.3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../NEWS.html#version-0-2-2">Version 0.2.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../NEWS.html#version-0-2-1">Version 0.2.1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../NEWS.html#version-0-2-0">Version 0.2.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../NEWS.html#version-0-1-0">Version 0.1.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTORS.html">Contributors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../SECURITY.html">Security</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../SECURITY.html#reporting-security-issues">Reporting Security Issues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../SECURITY.html#preferred-languages">Preferred Languages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../SECURITY.html#policy">Policy</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for vivainsights.create_IV</h1><div class="highlight"><pre>
+<span></span><span class="c1"># --------------------------------------------------------------------------------------------</span>
+<span class="c1"># Copyright (c) Microsoft Corporation. All rights reserved.</span>
+<span class="c1"># Licensed under the MIT License. See LICENSE.txt in the project root for license information.</span>
+<span class="c1"># --------------------------------------------------------------------------------------------</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;p_test&#39;</span><span class="p">,</span> <span class="s1">&#39;calculate_IV&#39;</span><span class="p">,</span> <span class="s1">&#39;map_IV&#39;</span><span class="p">,</span> <span class="s1">&#39;plot_WOE&#39;</span><span class="p">,</span> <span class="s1">&#39;create_IV&#39;</span><span class="p">]</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">mannwhitneyu</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">chi2_contingency</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">fisher_exact</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">mstats</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">vivainsights.create_bar_asis</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+
+<span class="c1"># Ignore warnings for cleaner output</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.lines</span><span class="w"> </span><span class="kn">import</span> <span class="n">Line2D</span>
+
+<span class="c1"># Optional: reuse vivainsights colors if present</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">vivainsights.color_codes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Colors</span>
+    <span class="n">_HIGHLIGHT</span> <span class="o">=</span> <span class="n">Colors</span><span class="o">.</span><span class="n">HIGHLIGHT_NEGATIVE</span><span class="o">.</span><span class="n">value</span>  <span class="c1"># orange</span>
+<span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+    <span class="n">_HIGHLIGHT</span> <span class="o">=</span> <span class="s2">&quot;#fe7f4f&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.figure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Figure</span>  <span class="c1"># add this import at the top</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">contextmanager</span>
+
+<span class="nd">@contextmanager</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_suppress_matplotlib_show</span><span class="p">():</span>
+    <span class="n">orig_show</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">:</span> <span class="kc">None</span>  <span class="c1"># no-op</span>
+        <span class="k">yield</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span> <span class="o">=</span> <span class="n">orig_show</span>
+
+<span class="c1"># Header positions (tweak here if you like)</span>
+<span class="n">_TITLE_Y</span>   <span class="o">=</span> <span class="mf">0.955</span>
+<span class="n">_SUB_Y</span>     <span class="o">=</span> <span class="mf">0.915</span>
+<span class="n">_RULE_Y</span>    <span class="o">=</span> <span class="mf">0.900</span>
+<span class="n">_TOP_LIMIT</span> <span class="o">=</span> <span class="mf">0.84</span>   <span class="c1"># top of the Axes area (leave space for header above)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_retitle_left</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">title_text</span><span class="p">,</span> <span class="n">subtitle_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Left-aligned figure-level title/subtitle; hide axis/suptitle.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">fig</span><span class="o">.</span><span class="n">get_axes</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span> <span class="k">pass</span>
+    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s2">&quot;_suptitle&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">_suptitle</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">fig</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">_TITLE_Y</span><span class="p">,</span> <span class="n">title_text</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.8</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">subtitle_text</span><span class="p">:</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">_SUB_Y</span><span class="p">,</span> <span class="n">subtitle_text</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.8</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_add_header_decoration</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">_HIGHLIGHT</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">_RULE_Y</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Orange rule + box under the subtitle, on an overlay so it&#39;s always on top.&quot;&quot;&quot;</span>
+    <span class="n">overlay</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">overlay</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
+    <span class="n">overlay</span><span class="o">.</span><span class="n">add_line</span><span class="p">(</span><span class="n">Line2D</span><span class="p">([</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span> <span class="n">transform</span><span class="o">=</span><span class="n">overlay</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                            <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.2</span><span class="p">))</span>
+    <span class="n">overlay</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="mf">0.03</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.015</span><span class="p">,</span>
+                                    <span class="n">transform</span><span class="o">=</span><span class="n">overlay</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+                                    <span class="n">facecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_reserve_header_space</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="n">_TOP_LIMIT</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Push the plot area down so it doesn&#39;t overlap the header.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># If constrained layout was enabled by create_bar_asis, disable so we can adjust</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s2">&quot;get_constrained_layout&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">fig</span><span class="o">.</span><span class="n">get_constrained_layout</span><span class="p">():</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">set_constrained_layout</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">top</span><span class="o">=</span><span class="n">top</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="p_test">
+<a class="viewcode-back" href="../../_autosummary/vivainsights.create_IV.html#vivainsights.create_IV.p_test">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">p_test</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">outcome</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">behavior</span><span class="p">:</span> <span class="nb">list</span>
+    <span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Name</span>
+<span class="sd">    -----</span>
+<span class="sd">    p_test</span>
+<span class="sd">    </span>
+<span class="sd">    Description</span>
+<span class="sd">    -----------</span>
+<span class="sd">    Performs statistical tests between predictor variables and a binary outcome.</span>
+<span class="sd">    Automatically selects the appropriate test based on variable type:</span>
+<span class="sd">    - Mann-Whitney U test (rank-sum test) for numeric variables</span>
+<span class="sd">    - Chi-square test for categorical variables</span>
+<span class="sd">    </span>
+<span class="sd">    Note: The test compares two independent groups (outcome=0 vs outcome=1),</span>
+<span class="sd">    so the Mann-Whitney U test is always used for numeric variables as these</span>
+<span class="sd">    are inherently unpaired/independent samples.</span>
+<span class="sd">    </span>
+<span class="sd">    For categorical variables with low expected frequencies (&lt; 5 in any cell),</span>
+<span class="sd">    following Cochran&#39;s guideline (1954) for Chi-square test validity:</span>
+<span class="sd">    - 2x2 contingency tables: Fisher&#39;s exact test is used instead</span>
+<span class="sd">    - Larger tables: Chi-square test is used with a warning about reliability</span>
+<span class="sd">    </span>
+<span class="sd">    If a statistical test fails for a variable (e.g., constant values, insufficient data),</span>
+<span class="sd">    the p-value will be NaN and a warning will be issued.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : pd.DataFrame</span>
+<span class="sd">        A Pandas DataFrame.</span>
+<span class="sd">    outcome : str</span>
+<span class="sd">        Name of the outcome variable.</span>
+<span class="sd">    behavior : list</span>
+<span class="sd">        List of behavior variables to test.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pd.DataFrame</span>
+<span class="sd">        A DataFrame with variables and corresponding p-values.</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------    </span>
+<span class="sd">    &gt;&gt;&gt; import vivainsights as vi</span>
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt; data = pd.DataFrame({</span>
+<span class="sd">    ...     &#39;outcome&#39;: [1, 0, 1, 0, 1],</span>
+<span class="sd">    ...     &#39;behavior1&#39;: [10, 20, 30, 40, 50],</span>
+<span class="sd">    ...     &#39;behavior2&#39;: [5, 15, 25, 35, 45]</span>
+<span class="sd">    ... })</span>
+<span class="sd">    &gt;&gt;&gt; outcome = &#39;outcome&#39;</span>
+<span class="sd">    &gt;&gt;&gt; behavior = [&#39;behavior1&#39;, &#39;behavior2&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; vi.p_test(data, outcome, behavior)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># Filter the dataset based on the outcome variable</span>
+    <span class="n">train</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Convert outcome to string and then to a factor</span>
+    <span class="n">train</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">=</span> <span class="n">train</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">)</span>
+    <span class="n">p_value_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">behavior</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Check if variable is numeric/continuous</span>
+            <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_numeric_dtype</span><span class="p">(</span><span class="n">train</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                <span class="c1"># For continuous variables: use Mann-Whitney U test (rank-sum test)</span>
+                <span class="c1"># Explicitly drop missing values</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="n">train</span><span class="p">[</span><span class="n">train</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+                <span class="n">neg</span> <span class="o">=</span> <span class="n">train</span><span class="p">[</span><span class="n">train</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;0&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+                <span class="c1"># Check for insufficient data before running the test</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">neg</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Statistical test failed for variable &#39;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&#39;: insufficient data after removing NaN values. &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;P-value set to NaN.&quot;</span><span class="p">,</span>
+                        <span class="ne">UserWarning</span>
+                    <span class="p">)</span>
+                    <span class="n">p_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                    <span class="n">p_value_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">i</span><span class="p">:</span> <span class="n">p_value</span><span class="p">})</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># Mann-Whitney U test for independent samples (handles different sample sizes)</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">p_value</span> <span class="o">=</span> <span class="n">mannwhitneyu</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">neg</span><span class="p">,</span> <span class="n">alternative</span><span class="o">=</span><span class="s1">&#39;two-sided&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># For categorical variables: use Chi-square test</span>
+                <span class="c1"># Explicitly drop rows with missing values in the predictor for consistency</span>
+                <span class="n">valid_mask</span> <span class="o">=</span> <span class="n">train</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span>
+                <span class="n">contingency_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">,</span> <span class="n">i</span><span class="p">],</span> <span class="n">train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">,</span> <span class="n">outcome</span><span class="p">])</span>
+                
+                <span class="c1"># Calculate expected frequencies to check Chi-square assumptions</span>
+                <span class="n">chi2</span><span class="p">,</span> <span class="n">p_value</span><span class="p">,</span> <span class="n">dof</span><span class="p">,</span> <span class="n">expected</span> <span class="o">=</span> <span class="n">chi2_contingency</span><span class="p">(</span><span class="n">contingency_table</span><span class="p">)</span>
+                
+                <span class="c1"># Check for low expected frequencies (&lt; 5)</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">expected</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                    <span class="c1"># For 2x2 tables, use Fisher&#39;s exact test (more accurate for small samples)</span>
+                    <span class="k">if</span> <span class="n">contingency_table</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+                        <span class="n">_</span><span class="p">,</span> <span class="n">p_value</span> <span class="o">=</span> <span class="n">fisher_exact</span><span class="p">(</span><span class="n">contingency_table</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># For larger tables, warn about unreliable results</span>
+                        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Low expected frequencies (&lt; 5) in contingency table for &#39;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;Chi-square test results may be unreliable.&quot;</span><span class="p">,</span>
+                            <span class="ne">UserWarning</span>
+                        <span class="p">)</span>
+                        <span class="c1"># p_value already calculated above from chi2_contingency</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># Return NaN and warn user instead of silently returning 1.0</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Statistical test failed for variable &#39;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;P-value set to NaN.&quot;</span><span class="p">,</span>
+                <span class="ne">UserWarning</span>
+            <span class="p">)</span>
+            <span class="n">p_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        
+        <span class="n">p_value_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">i</span><span class="p">:</span> <span class="n">p_value</span><span class="p">})</span>
+
+    <span class="n">data_frame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">p_value_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Variable&#39;</span><span class="p">,</span> <span class="s1">&#39;pval&#39;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">data_frame</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_IV">
+<a class="viewcode-back" href="../../_autosummary/vivainsights.create_IV.html#vivainsights.create_IV.calculate_IV">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_IV</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">outcome</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">predictor</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">bins</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Name</span>
+<span class="sd">    ----</span>
+<span class="sd">    calculate_IV</span>
+
+<span class="sd">    Description</span>
+<span class="sd">    -----------</span>
+<span class="sd">    Calculates Information Value (IV) between a single predictor variable and the outcome variable.</span>
+<span class="sd">    For numeric variables, uses binning based on quantiles.</span>
+<span class="sd">    For categorical variables, uses each category as a bin.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : pd.DataFrame</span>
+<span class="sd">        A DataFrame containing the data.</span>
+<span class="sd">    outcome : str</span>
+<span class="sd">        Name of the outcome variable.</span>
+<span class="sd">    predictor : str</span>
+<span class="sd">        Name of the predictor variable.</span>
+<span class="sd">    bins : int</span>
+<span class="sd">        Number of bins for binning the predictor variable (only used for numeric variables).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pd.DataFrame</span>
+<span class="sd">        A DataFrame with IV calculations for the predictor variable.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the outcome variable has missing values in the input training data frame.</span>
+<span class="sd">    </span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Missing values (NaN) in the predictor variable are automatically dropped before</span>
+<span class="sd">    processing. A warning is issued if any missing values are found.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import vivainsights as vi</span>
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt; data = pd.DataFrame({</span>
+<span class="sd">    ...     &#39;outcome&#39;: [1, 0, 1, 0, 1],</span>
+<span class="sd">    ...     &#39;predictor&#39;: [10, 20, 30, 40, 50]</span>
+<span class="sd">    ... })</span>
+<span class="sd">    &gt;&gt;&gt; outcome = &#39;outcome&#39;</span>
+<span class="sd">    &gt;&gt;&gt; predictor = &#39;predictor&#39;</span>
+<span class="sd">    &gt;&gt;&gt; bins = 5</span>
+<span class="sd">    &gt;&gt;&gt; vi.calculate_IV(data, outcome, predictor, bins)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">pred_var</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">predictor</span><span class="p">]</span>
+    <span class="n">outc_var</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span>
+
+    <span class="c1"># Check inputs</span>
+    <span class="k">if</span> <span class="n">outc_var</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;dependent variable </span><span class="si">{</span><span class="n">outcome</span><span class="si">}</span><span class="s2"> has missing values in the input training data frame&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Handle missing values in predictor variable</span>
+    <span class="n">na_count</span> <span class="o">=</span> <span class="n">pred_var</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">na_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;predictor variable &#39;</span><span class="si">{</span><span class="n">predictor</span><span class="si">}</span><span class="s2">&#39; has </span><span class="si">{</span><span class="n">na_count</span><span class="si">}</span><span class="s2"> missing value(s) which will be dropped&quot;</span><span class="p">,</span>
+            <span class="ne">UserWarning</span>
+        <span class="p">)</span>
+        <span class="c1"># Drop rows where predictor is NaN</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">pred_var</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span>
+        <span class="n">pred_var</span> <span class="o">=</span> <span class="n">pred_var</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+        <span class="n">outc_var</span> <span class="o">=</span> <span class="n">outc_var</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+
+    <span class="c1"># Check if predictor is numeric or categorical</span>
+    <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_numeric_dtype</span><span class="p">(</span><span class="n">pred_var</span><span class="p">):</span>
+        <span class="c1"># For numeric variables: use quantile-based binning</span>
+        <span class="c1"># Compute quantiles</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">mstats</span><span class="o">.</span><span class="n">mquantiles</span><span class="p">(</span><span class="n">pred_var</span><span class="p">,</span> <span class="n">prob</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">bins</span><span class="p">)</span> <span class="o">/</span> <span class="n">bins</span><span class="p">,</span> <span class="n">alphap</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">betap</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Compute cuts</span>
+        <span class="n">cuts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+
+        <span class="c1"># Compute intervals</span>
+        <span class="n">intervals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">pred_var</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">cuts</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Compute cut_table</span>
+        <span class="n">cut_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">intervals</span><span class="p">,</span> <span class="n">outc_var</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+
+        <span class="c1"># Compute min/max and percentage</span>
+        <span class="n">cut_table_2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+            <span class="s1">&#39;var&#39;</span><span class="p">:</span> <span class="n">pred_var</span><span class="p">,</span>
+            <span class="s1">&#39;intervals&#39;</span><span class="p">:</span> <span class="n">intervals</span>
+        <span class="p">})</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;intervals&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span>
+            <span class="nb">min</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;var&#39;</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="p">),</span>
+            <span class="nb">max</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;var&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">),</span>
+            <span class="n">n</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;var&#39;</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">({</span><span class="s1">&#39;min&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+
+        <span class="n">cut_table_2</span><span class="p">[</span><span class="n">predictor</span><span class="p">]</span> <span class="o">=</span> <span class="n">cut_table_2</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">cut_table_2</span><span class="p">[</span><span class="s1">&#39;percentage&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cut_table_2</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">cut_table_2</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">cut_table_2</span> <span class="o">=</span> <span class="n">cut_table_2</span><span class="p">[[</span><span class="n">predictor</span><span class="p">,</span> <span class="s1">&#39;intervals&#39;</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;percentage&#39;</span><span class="p">]]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># For categorical variables: use each category as a bin</span>
+        <span class="c1"># Create intervals based on unique categories with deterministic ordering</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pred_var</span><span class="p">,</span> <span class="s1">&#39;cat&#39;</span><span class="p">):</span>
+            <span class="c1"># Already categorical - use existing category codes for consistency</span>
+            <span class="n">intervals</span> <span class="o">=</span> <span class="n">pred_var</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">codes</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Sort unique categories for deterministic ordering across runs</span>
+            <span class="n">categories</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">pred_var</span><span class="o">.</span><span class="n">unique</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+            <span class="n">category_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">cat</span><span class="p">:</span> <span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">cat</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">categories</span><span class="p">)}</span>
+            <span class="n">intervals</span> <span class="o">=</span> <span class="n">pred_var</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">category_map</span><span class="p">)</span>
+        
+        <span class="c1"># Compute cut_table</span>
+        <span class="n">cut_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">intervals</span><span class="p">,</span> <span class="n">outc_var</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+        
+        <span class="c1"># Compute category name and percentage</span>
+        <span class="n">cut_table_2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+            <span class="s1">&#39;var&#39;</span><span class="p">:</span> <span class="n">pred_var</span><span class="p">,</span>
+            <span class="s1">&#39;intervals&#39;</span><span class="p">:</span> <span class="n">intervals</span>
+        <span class="p">})</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;intervals&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span>
+            <span class="n">category</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;var&#39;</span><span class="p">,</span> <span class="s1">&#39;first&#39;</span><span class="p">),</span>
+            <span class="n">n</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;var&#39;</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+        
+        <span class="n">cut_table_2</span><span class="p">[</span><span class="n">predictor</span><span class="p">]</span> <span class="o">=</span> <span class="n">cut_table_2</span><span class="p">[</span><span class="s1">&#39;category&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+        <span class="n">cut_table_2</span><span class="p">[</span><span class="s1">&#39;percentage&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cut_table_2</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">cut_table_2</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">cut_table_2</span> <span class="o">=</span> <span class="n">cut_table_2</span><span class="p">[[</span><span class="n">predictor</span><span class="p">,</span> <span class="s1">&#39;intervals&#39;</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;percentage&#39;</span><span class="p">]]</span>
+
+    <span class="c1"># Calculate Non-events and Events</span>
+    <span class="n">cut_table_1</span> <span class="o">=</span> <span class="n">cut_table</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">cut_table_0</span> <span class="o">=</span> <span class="n">cut_table</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">n_non_event</span> <span class="o">=</span> <span class="n">cut_table_1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">cut_table_0</span><span class="p">)</span>
+    <span class="n">n_yes_event</span> <span class="o">=</span> <span class="n">cut_table_0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">cut_table_1</span><span class="p">)</span>
+
+    <span class="c1"># Compute WOE (Weight of Evidence)</span>
+    <span class="n">cut_table_2</span><span class="p">[</span><span class="s1">&#39;WOE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">cut_table</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">cut_table</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">n_non_event</span> <span class="o">/</span> <span class="n">n_yes_event</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Compute IV_weight</span>
+    <span class="n">p1</span> <span class="o">=</span> <span class="n">cut_table</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">cut_table</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">p0</span> <span class="o">=</span> <span class="n">cut_table</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">cut_table</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">cut_table_2</span><span class="p">[</span><span class="s1">&#39;IV_weight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">p1</span> <span class="o">-</span> <span class="n">p0</span>
+    <span class="n">cut_table_2</span><span class="p">[</span><span class="s1">&#39;IV&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cut_table_2</span><span class="p">[</span><span class="s1">&#39;WOE&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">cut_table_2</span><span class="p">[</span><span class="s1">&#39;IV_weight&#39;</span><span class="p">]</span>
+    <span class="n">cut_table_2</span><span class="p">[</span><span class="s1">&#39;IV&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cut_table_2</span><span class="p">[</span><span class="s1">&#39;IV&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">cut_table_2</span><span class="p">[[</span><span class="n">predictor</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;percentage&#39;</span><span class="p">,</span> <span class="s1">&#39;WOE&#39;</span><span class="p">,</span> <span class="s1">&#39;IV&#39;</span><span class="p">]]</span></div>
+
+
+
+<div class="viewcode-block" id="map_IV">
+<a class="viewcode-back" href="../../_autosummary/vivainsights.create_IV.html#vivainsights.create_IV.map_IV">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">map_IV</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">outcome</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">predictors</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Name</span>
+<span class="sd">    ----</span>
+<span class="sd">    map_IV</span>
+<span class="sd">    </span>
+<span class="sd">    Description</span>
+<span class="sd">    -----------</span>
+<span class="sd">    Maps Information Value (IV) calculations for multiple predictor variables. </span>
+<span class="sd">    Calls `calculate_IV()` for every predictor-outcome variable pair.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - data: DataFrame containing the data</span>
+<span class="sd">    - outcome: Name of the outcome variable</span>
+<span class="sd">    - predictors: List of predictor variables (if None, all numeric variables except outcome are used)</span>
+<span class="sd">    - bins: Number of bins for binning the predictor variables</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    - Dictionary containing IV calculations for each predictor variable and a summary DataFrame    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">predictors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">predictors</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="s1">&#39;number&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">difference</span><span class="p">([</span><span class="n">outcome</span><span class="p">])</span>
+
+    <span class="c1"># List of individual tables</span>
+    <span class="n">Tables</span> <span class="o">=</span> <span class="p">{</span><span class="n">pred</span><span class="p">:</span> <span class="n">calculate_IV</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">bins</span><span class="p">)</span> <span class="k">for</span> <span class="n">pred</span> <span class="ow">in</span> <span class="n">predictors</span><span class="p">}</span>
+
+    <span class="c1"># Compile Summary Table</span>
+    <span class="n">Summary</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;Variable&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">Tables</span><span class="o">.</span><span class="n">keys</span><span class="p">())})</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+        <span class="n">IV</span><span class="o">=</span><span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Variable&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">var</span><span class="p">:</span> <span class="n">Tables</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;IV&#39;</span><span class="p">])</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;IV&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;Tables&#39;</span><span class="p">:</span> <span class="n">Tables</span><span class="p">,</span> <span class="s1">&#39;Summary&#39;</span><span class="p">:</span> <span class="n">Summary</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="plot_WOE">
+<a class="viewcode-back" href="../../_autosummary/vivainsights.create_IV.html#vivainsights.create_IV.plot_WOE">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_WOE</span><span class="p">(</span><span class="n">IV</span><span class="p">,</span> <span class="n">predictor</span><span class="p">,</span> <span class="n">figsize</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Name</span>
+<span class="sd">    ----</span>
+<span class="sd">    plot_WOE</span>
+
+<span class="sd">    Description</span>
+<span class="sd">    -----------</span>
+<span class="sd">    Plots Weight of Evidence (WOE) for a predictor variable.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    IV : dict</span>
+<span class="sd">        Dictionary containing IV calculations for each predictor variable.</span>
+<span class="sd">    predictor : str</span>
+<span class="sd">        Name of the predictor variable.</span>
+<span class="sd">    figsize : tuple, optional</span>
+<span class="sd">        The `figsize` parameter is an optional tuple that specifies the size of the figure for the WOE plot visualization.</span>
+<span class="sd">        It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">        This function doesn&#39;t return a value; it plots the WOE.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">    &gt;&gt;&gt; data = pd.DataFrame({</span>
+<span class="sd">    ...     &#39;outcome&#39;: [1, 0, 1, 0, 1],</span>
+<span class="sd">    ...     &#39;predictor&#39;: [10, 20, 30, 40, 50]</span>
+<span class="sd">    ... })</span>
+<span class="sd">    &gt;&gt;&gt; outcome = &#39;outcome&#39;</span>
+<span class="sd">    &gt;&gt;&gt; predictor = &#39;predictor&#39;</span>
+<span class="sd">    &gt;&gt;&gt; bins = 5</span>
+<span class="sd">    &gt;&gt;&gt; IV = map_IV(data, outcome, [predictor], bins)</span>
+<span class="sd">    &gt;&gt;&gt; plot_WOE(IV, predictor)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Identify right table</span>
+    <span class="n">plot_table</span> <span class="o">=</span> <span class="n">IV</span><span class="p">[</span><span class="s1">&#39;Tables&#39;</span><span class="p">][</span><span class="n">predictor</span><span class="p">]</span>
+
+    <span class="c1"># Get range</span>
+    <span class="n">WOE_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">table</span><span class="p">[</span><span class="s1">&#39;WOE&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">IV</span><span class="p">[</span><span class="s1">&#39;Tables&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">WOE_values</span><span class="p">)):</span>
+        <span class="n">WOE_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">WOE_values</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">WOE_values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">mn</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">plot_table</span><span class="p">[</span><span class="s1">&#39;WOE&#39;</span><span class="p">]))</span>
+    <span class="n">mx</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">plot_table</span><span class="p">[</span><span class="s1">&#39;WOE&#39;</span><span class="p">]))</span>
+    <span class="n">tick_lst</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">mn</span><span class="p">,</span> <span class="n">mx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="c1"># Plot</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span> <span class="k">if</span> <span class="n">figsize</span> <span class="k">else</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">predictor</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;WOE&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">plot_table</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#8BC7E0&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">plot_table</span><span class="p">[</span><span class="s1">&#39;WOE&#39;</span><span class="p">]):</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span>
+                <span class="n">va</span><span class="o">=</span><span class="s1">&#39;top&#39;</span> <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;bottom&#39;</span><span class="p">,</span>
+                <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span> <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;green&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Use figure-level title to match our header motif, clear Axes title</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.12</span><span class="p">,</span> <span class="mf">0.91</span><span class="p">,</span> <span class="n">predictor</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.8</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.12</span><span class="p">,</span> <span class="mf">0.86</span><span class="p">,</span> <span class="s2">&quot;Weight of Evidence by bin&quot;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.8</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">predictor</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Weight of Evidence (WOE)&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">WOE_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">,</span> <span class="n">WOE_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">tick_lst</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.15</span><span class="p">)</span>
+
+    <span class="c1"># Orange header motif + sensible layout</span>
+    <span class="n">_add_header_decoration</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">top</span><span class="o">=</span><span class="mf">0.80</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mf">0.12</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">fig</span></div>
+
+
+
+<div class="viewcode-block" id="create_IV">
+<a class="viewcode-back" href="../../_autosummary/vivainsights.create_IV.html#vivainsights.create_IV.create_IV">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_IV</span><span class="p">(</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">predictors</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">outcome</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="n">siglevel</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">exc_sig</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">figsize</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">return_type</span> <span class="o">=</span><span class="s2">&quot;plot&quot;</span>
+    <span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Name</span>
+<span class="sd">    ----</span>
+<span class="sd">    create_IV</span>
+
+<span class="sd">    Description</span>
+<span class="sd">    -----------</span>
+<span class="sd">    Creates Information Value (IV) analysis for predictor variables.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : pd.DataFrame</span>
+<span class="sd">        DataFrame containing the data.</span>
+<span class="sd">    predictors : list, optional</span>
+<span class="sd">        List of predictor variables.</span>
+<span class="sd">    outcome : str</span>
+<span class="sd">        Name of the outcome variable.</span>
+<span class="sd">    bins : int, optional</span>
+<span class="sd">        Number of bins for binning the predictor variables. Defaults to 5.</span>
+<span class="sd">    siglevel : float, optional</span>
+<span class="sd">        Significance level. Defaults to 0.05.</span>
+<span class="sd">    exc_sig : bool, optional</span>
+<span class="sd">        Boolean indicating if non-significant predictors should be excluded. </span>
+<span class="sd">        If True, only predictors with p-value &lt;= siglevel are included in the analysis.</span>
+<span class="sd">        If False, all predictors are included regardless of significance. Defaults to False.</span>
+<span class="sd">    return_type : str, optional</span>
+<span class="sd">        Type of output to return (&quot;plot&quot;, &quot;summary&quot;, &quot;list&quot;, &quot;plot-WOE&quot;, &quot;IV&quot;). Defaults to &quot;plot&quot;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Various</span>
+<span class="sd">        The type of output to return. Can be &quot;plot&quot;, &quot;summary&quot;, &quot;list&quot;, &quot;plot-WOE&quot;, or &quot;IV&quot;.</span>
+<span class="sd">    </span>
+<span class="sd">    Note    </span>
+<span class="sd">    ----</span>
+<span class="sd">      * create_IV function return_type &#39;list&#39; and &#39;summary&#39; has output format as a dictionary, please use for loop to access the key and values.</span>
+<span class="sd">      * create_IV function return_type &#39;IV&#39; has output format as a tuple, tuple element &#39;output_list&#39;format is dictionary hence please use for loop to access the key and values.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; import vivainsights as vi</span>
+<span class="sd">    &gt;&gt;&gt; pq_data = vi.load_pq_data()</span>
+<span class="sd">    &gt;&gt;&gt; pred_vars = [&quot;Email_hours&quot;, &quot;Meeting_hours&quot;, &quot;Chat_hours&quot;]</span>
+<span class="sd">    &gt;&gt;&gt; pq_data[&quot;outcome_sim&quot;] = np.where(pq_data[&quot;Internal_network_size&quot;] &gt; 40, 1, 0)</span>
+
+<span class="sd">    &gt;&gt;&gt; # Example 1: Return IV tables for all predictors without excluding non-significant ones</span>
+<span class="sd">    &gt;&gt;&gt; vi.create_IV(pq_data, predictors=pred_vars, outcome=&quot;outcome_sim&quot;, exc_sig=False, return_type=&quot;IV&quot;)</span>
+
+<span class="sd">    &gt;&gt;&gt; # Example 2: Exclude non-significant predictors and return summary</span>
+<span class="sd">    &gt;&gt;&gt; vi.create_IV(pq_data, predictors=pred_vars, outcome=&quot;outcome_sim&quot;, exc_sig=True, return_type=&quot;summary&quot;)</span>
+
+<span class="sd">    &gt;&gt;&gt; # Example 3: Return IV for all predictors (single plot)</span>
+<span class="sd">    &gt;&gt;&gt; vi.create_IV(pq_data, predictors=pred_vars, outcome=&quot;outcome_sim&quot;, exc_sig=False, return_type=&quot;plot&quot;)</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; # Example 4: Return WOE plots for all predictors</span>
+<span class="sd">    &gt;&gt;&gt; vi.create_IV(pq_data, predictors=pred_vars, outcome=&quot;outcome_sim&quot;, exc_sig=False, return_type=&quot;plot-WOE&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># Preserve string</span>
+    <span class="n">pred_chr</span> <span class="o">=</span> <span class="n">predictors</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">predictors</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="c1"># Select training dataset</span>
+    <span class="k">if</span> <span class="n">predictors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">train</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">train</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">predictors</span> <span class="o">+</span> <span class="p">[</span><span class="n">outcome</span><span class="p">]]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+    <span class="c1"># Calculate odds</span>
+    <span class="n">odds</span> <span class="o">=</span> <span class="n">train</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">train</span><span class="p">[</span><span class="n">outcome</span><span class="p">])</span> <span class="o">-</span> <span class="n">train</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+    <span class="n">lnodds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">odds</span><span class="p">)</span>
+
+    <span class="c1"># Assert</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc_sig</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid input to `exc_sig`&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Prepare predictors DataFrame</span>
+    <span class="n">predictors</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;Variable&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">train</span><span class="o">.</span><span class="n">columns</span><span class="p">)})</span>
+    <span class="n">predictors</span> <span class="o">=</span> <span class="n">predictors</span><span class="p">[</span><span class="n">predictors</span><span class="p">[</span><span class="s1">&#39;Variable&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">outcome</span><span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">predictors</span><span class="p">[</span><span class="s1">&#39;Variable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">predictors</span><span class="p">[</span><span class="s1">&#39;Variable&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+
+    <span class="c1"># Perform statistical test</span>
+    <span class="c1"># Perform statistical test</span>
+    <span class="n">predictors_pval</span> <span class="o">=</span> <span class="n">p_test</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">train</span><span class="p">,</span> <span class="n">outcome</span><span class="o">=</span><span class="n">outcome</span><span class="p">,</span> <span class="n">behavior</span><span class="o">=</span><span class="n">predictors</span><span class="p">[</span><span class="s2">&quot;Variable&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+    
+    <span class="c1"># Filter significant predictors only if exc_sig is True</span>
+    <span class="k">if</span> <span class="n">exc_sig</span><span class="p">:</span>
+        <span class="n">predictors_pval_filtered</span> <span class="o">=</span> <span class="n">predictors_pval</span><span class="p">[</span><span class="n">predictors_pval</span><span class="p">[</span><span class="s2">&quot;pval&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">siglevel</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">predictors_pval_filtered</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No predictors where the p-value lies below the significance level.&quot;</span><span class="p">)</span>
+        
+        <span class="n">train</span> <span class="o">=</span> <span class="n">train</span><span class="p">[</span><span class="n">predictors_pval_filtered</span><span class="p">[</span><span class="s2">&quot;Variable&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">+</span> <span class="p">[</span><span class="n">outcome</span><span class="p">]]</span>
+        <span class="n">predictors_to_use</span> <span class="o">=</span> <span class="n">predictors_pval_filtered</span><span class="p">[</span><span class="s2">&quot;Variable&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Use all predictors regardless of significance</span>
+        <span class="n">train</span> <span class="o">=</span> <span class="n">train</span><span class="p">[</span><span class="n">predictors_pval</span><span class="p">[</span><span class="s2">&quot;Variable&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">+</span> <span class="p">[</span><span class="n">outcome</span><span class="p">]]</span>
+        <span class="n">predictors_to_use</span> <span class="o">=</span> <span class="n">predictors_pval</span><span class="p">[</span><span class="s2">&quot;Variable&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    
+    <span class="c1"># Filter significant predictors only if exc_sig is True</span>
+    <span class="k">if</span> <span class="n">exc_sig</span><span class="p">:</span>
+        <span class="n">predictors_pval_filtered</span> <span class="o">=</span> <span class="n">predictors_pval</span><span class="p">[</span><span class="n">predictors_pval</span><span class="p">[</span><span class="s2">&quot;pval&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">siglevel</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">predictors_pval_filtered</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No predictors where the p-value lies below the significance level.&quot;</span><span class="p">)</span>
+        
+        <span class="n">train</span> <span class="o">=</span> <span class="n">train</span><span class="p">[</span><span class="n">predictors_pval_filtered</span><span class="p">[</span><span class="s2">&quot;Variable&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">+</span> <span class="p">[</span><span class="n">outcome</span><span class="p">]]</span>
+        <span class="n">predictors_to_use</span> <span class="o">=</span> <span class="n">predictors_pval_filtered</span><span class="p">[</span><span class="s2">&quot;Variable&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Use all predictors regardless of significance</span>
+        <span class="n">train</span> <span class="o">=</span> <span class="n">train</span><span class="p">[</span><span class="n">predictors_pval</span><span class="p">[</span><span class="s2">&quot;Variable&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">+</span> <span class="p">[</span><span class="n">outcome</span><span class="p">]]</span>
+        <span class="n">predictors_to_use</span> <span class="o">=</span> <span class="n">predictors_pval</span><span class="p">[</span><span class="s2">&quot;Variable&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+    <span class="c1"># IV Analysis</span>
+    <span class="n">IV</span> <span class="o">=</span> <span class="n">map_IV</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">predictors</span><span class="o">=</span><span class="n">predictors_to_use</span><span class="p">)</span>
+    <span class="n">IV_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">IV</span><span class="p">[</span><span class="s2">&quot;Tables&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    
+    <span class="c1"># Merge with p-values for final output (use appropriate filtered/unfiltered version)</span>
+    <span class="k">if</span> <span class="n">exc_sig</span><span class="p">:</span>
+        <span class="n">IV_summary</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">IV</span><span class="p">[</span><span class="s2">&quot;Summary&quot;</span><span class="p">],</span> <span class="n">predictors_pval_filtered</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;Variable&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">IV_summary</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">IV</span><span class="p">[</span><span class="s2">&quot;Summary&quot;</span><span class="p">],</span> <span class="n">predictors_pval</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;Variable&quot;</span><span class="p">)</span>
+    
+    <span class="n">IV_summary</span><span class="p">[</span><span class="s2">&quot;pval&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">IV_summary</span><span class="p">[</span><span class="s2">&quot;pval&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+    <span class="c1"># Output loop</span>
+    <span class="k">if</span> <span class="n">return_type</span> <span class="o">==</span> <span class="s2">&quot;summary&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">IV_summary</span>
+
+    <span class="k">elif</span> <span class="n">return_type</span> <span class="o">==</span> <span class="s2">&quot;IV&quot;</span><span class="p">:</span>
+        <span class="n">output_list</span> <span class="o">=</span> <span class="p">{</span><span class="n">variable</span><span class="p">:</span> <span class="n">IV</span><span class="p">[</span><span class="s2">&quot;Tables&quot;</span><span class="p">][</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+            <span class="n">ODDS</span><span class="o">=</span><span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;WOE&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">lnodds</span><span class="p">),</span>
+            <span class="n">PROB</span><span class="o">=</span><span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;ODDS&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;ODDS&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">IV_names</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">output_list</span><span class="p">,</span> <span class="n">IV_summary</span><span class="p">,</span> <span class="n">lnodds</span>
+
+    <span class="k">elif</span> <span class="n">return_type</span> <span class="o">==</span> <span class="s2">&quot;plot&quot;</span><span class="p">:</span>
+        <span class="n">top_n</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="n">IV_summary</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    
+        <span class="c1"># Track existing figures so we can detect the new one</span>
+        <span class="n">before</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">get_fignums</span><span class="p">())</span>
+    
+        <span class="c1"># Suppress any internal plt.show() inside create_bar_asis</span>
+        <span class="k">with</span> <span class="n">_suppress_matplotlib_show</span><span class="p">():</span>
+            <span class="n">bar_obj</span> <span class="o">=</span> <span class="n">create_bar_asis</span><span class="p">(</span>
+                <span class="n">IV_summary</span><span class="p">,</span>
+                <span class="n">group_var</span><span class="o">=</span><span class="s2">&quot;Variable&quot;</span><span class="p">,</span>
+                <span class="n">bar_var</span><span class="o">=</span><span class="s2">&quot;IV&quot;</span><span class="p">,</span>
+                <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Information Value (IV)&quot;</span><span class="p">,</span>
+                <span class="n">subtitle</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Showing top&quot;</span><span class="p">,</span> <span class="n">top_n</span><span class="p">,</span> <span class="s2">&quot;predictors&quot;</span><span class="p">),</span>
+                <span class="n">caption</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">ylab</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">xlab</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">percent</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">bar_colour</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+                <span class="n">rounding</span><span class="o">=</span><span class="mi">1</span>
+            <span class="p">)</span>
+        
+        <span class="c1"># Resolve the actual figure to decorate</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Prefer explicit return (Axes or Figure)</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.figure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Figure</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">bar_obj</span><span class="p">,</span> <span class="s2">&quot;figure&quot;</span><span class="p">):</span>           <span class="c1"># Axes-like</span>
+                <span class="n">fig</span> <span class="o">=</span> <span class="n">bar_obj</span><span class="o">.</span><span class="n">figure</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bar_obj</span><span class="p">,</span> <span class="n">Figure</span><span class="p">):</span>        <span class="c1"># Figure</span>
+                <span class="n">fig</span> <span class="o">=</span> <span class="n">bar_obj</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Fallback: pick the newly created figure</span>
+                <span class="n">after</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">get_fignums</span><span class="p">())</span>
+                <span class="n">new_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">after</span> <span class="o">-</span> <span class="n">before</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">new_ids</span><span class="p">:</span>
+                    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">new_ids</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># last resort</span>
+                    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+    
+        <span class="c1"># Apply dynamic size + orange header motif</span>
+        <span class="c1"># after resolving `fig` and optional figsize</span>
+        <span class="k">if</span> <span class="n">fig</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">figsize</span><span class="p">:</span>
+                <span class="n">fig</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="o">*</span><span class="n">figsize</span><span class="p">,</span> <span class="n">forward</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+            <span class="n">subtitle_txt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Showing top </span><span class="si">{</span><span class="n">top_n</span><span class="si">}</span><span class="s2"> predictors&quot;</span>
+            <span class="n">_retitle_left</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s2">&quot;Information Value (IV)&quot;</span><span class="p">,</span> <span class="n">subtitle_txt</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+            <span class="n">_add_header_decoration</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>       <span class="c1"># draws at _RULE_Y just below subtitle</span>
+            <span class="n">_reserve_header_space</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>        <span class="c1"># moves Axes down so nothing overlaps</span>
+        
+        <span class="k">return</span> <span class="n">fig</span>
+
+
+    <span class="k">elif</span> <span class="n">return_type</span> <span class="o">==</span> <span class="s2">&quot;plot-WOE&quot;</span><span class="p">:</span>
+        <span class="c1"># Preserve original behavior: returns list of Nones (each plot_WOE shows a figure)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">plot_WOE</span><span class="p">(</span><span class="n">IV</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span> <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">IV</span><span class="p">[</span><span class="s2">&quot;Summary&quot;</span><span class="p">][</span><span class="s2">&quot;Variable&quot;</span><span class="p">]]</span>
+
+    <span class="k">elif</span> <span class="n">return_type</span> <span class="o">==</span> <span class="s2">&quot;list&quot;</span><span class="p">:</span>
+        <span class="n">output_list</span> <span class="o">=</span> <span class="p">{</span><span class="n">variable</span><span class="p">:</span> <span class="n">IV</span><span class="p">[</span><span class="s2">&quot;Tables&quot;</span><span class="p">][</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+            <span class="n">ODDS</span><span class="o">=</span><span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;WOE&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">lnodds</span><span class="p">),</span>
+            <span class="n">PROB</span><span class="o">=</span><span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;ODDS&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;ODDS&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">IV_names</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">output_list</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Please enter a valid input for `return_type`.&quot;</span><span class="p">)</span></div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, Microsoft Corporation
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=ff822928"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    </body>
+</html>
