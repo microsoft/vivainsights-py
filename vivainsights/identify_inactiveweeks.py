@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
+Identify weeks where collaboration hours fall far below the mean.
+
 The function `identify_inactiveweeks` identifies weeks where collaboration hours are more than a
 specified number of standard deviations below the mean and returns the result in the specified
 format.

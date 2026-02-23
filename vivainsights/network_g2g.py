@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module returns a network plot given a data frame containing a group-to-group query.
+Create a network plot from a group-to-group query.
 """
 
 __all__ = ['network_g2g']

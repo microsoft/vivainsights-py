@@ -2,8 +2,10 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+"""
+Extract the minimum and maximum date range from a dataset.
+"""
 import pandas as pd
-"""Extracts the date range from a dataframe."""
 
 __all__ = ['extract_date_range']
 

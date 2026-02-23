@@ -3,7 +3,9 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-The `create_trend` function provides a week by week view of a selected Viva Insights metric, 
+Create a week-by-week heatmap of a selected Viva Insights metric.
+
+The `create_trend` function provides a week by week view of a selected Viva Insights metric,
 allowing you to either return a week by week heatmap bar plot or a summary table. 
 By default, `create_trend` returns a week by week heatmap bar plot, highlighting the points intime with most activity. 
 Additional options available to return a summary table.

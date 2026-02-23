@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 """
+Create a bubble chart visualization of two metrics by organizational group.
+
 The function `create_bubble` creates a bubble visualization and summary table for a given metric
 and grouping variable in a dataset.
 """

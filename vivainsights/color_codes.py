@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module defines an Enum class for colors and creates two color palettes using the defined colors.
+Define color palettes and an Enum class for standard vivainsights colors.
 """
 from enum import Enum
 

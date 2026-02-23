@@ -2,6 +2,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+"""
+Segment employees into usage-based groups from collaboration metrics.
+"""
 
 __all__ = ['identify_usage_segments', 'plot_ts_us']
 

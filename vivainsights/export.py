@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module provides functions for displaying and exporting data frames and plot objects.
+Display and export data frames and plot objects to various formats.
 
 Functions:
 - display_plot: Universal function to display plots regardless of type (matplotlib.Figure or seaborn.FacetGrid)

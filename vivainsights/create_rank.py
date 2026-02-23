@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module performs a rank operation on all groups across HR attributes for a selected Viva Insights metric.
+Rank all groups across HR attributes for a selected Viva Insights metric.
 """
 
 __all__ = ['create_rank_calc', 'create_rank_viz', 'create_rank']

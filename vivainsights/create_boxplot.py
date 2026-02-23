@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
+Create boxplot visualizations of metric distributions by organizational group.
+
 The function `create_boxplot` creates a boxplot visualization and summary table for a given metric
 and grouping variable in a dataset.
 """

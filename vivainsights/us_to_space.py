@@ -3,9 +3,7 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-Description
------------
-The function replaces underscores with spaces in a given string.
+Replace underscores with spaces in a given string.
 
 :param string: A string that may contain underscores that need to be replaced with spaces
 :return: The function `us_to_space` takes a string as input and replaces all underscores with spaces

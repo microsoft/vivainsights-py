@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-The function `totals_col` adds a new column with a specified total value to a given pandas DataFrame.
+Add a totals column with a specified value to a DataFrame.
 """
 
 __all__ = ['totals_col']

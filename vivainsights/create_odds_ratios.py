@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module calculates odds ratios for ordinal metrics against a specified metric.
+Calculate odds ratios for ordinal metrics against a specified outcome.
 """
 
 __all__ = ['create_odds_ratios', 'compute_fav']

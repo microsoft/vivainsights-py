@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module summarises node centrality statistics with an igraph object
+Summarize node centrality statistics from an igraph network object.
 """
 
 __all__ = ['network_summary']

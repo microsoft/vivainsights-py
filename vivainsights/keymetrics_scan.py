@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 """
-This script generate a summary of key metrics with options to return a heatmap or a summary table.
+Generate a heatmap or summary table scanning key Viva Insights metrics.
 """
 
 __all__ = ['keymetrics_scan']

@@ -3,8 +3,9 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module extracts HR attributes (organizational data) through a combination of detecting variable class, 
-number of unique values, regular expressions. There is an option to return either just a list of the variable names 
+Extract HR or organizational attribute columns from a Viva Insights dataset.
+
+There is an option to return either just a list of the variable names
 or a DataFrame containing only the variables themselves.
 """
 

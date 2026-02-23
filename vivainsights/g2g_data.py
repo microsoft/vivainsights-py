@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module returns a data frame containing a group-to-group query.
+Load a sample group-to-group query dataset.
 
 Example
 -------

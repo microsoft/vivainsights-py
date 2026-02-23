@@ -3,7 +3,8 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module identifies and counts the number of employees who have churned from the dataset.
+Identify and count employees who have churned from or joined the dataset.
+
 This is done by measuring whether an employee who is present in the first `n` (n1) weeks of the data,
 is also present in the last `n` (n2) weeks of the data.
 An additional use case of this function is the ability to identify "new-joiners" by using the argument `flip`.

@@ -2,8 +2,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
-#Create a sankey chart from a two-column count table
+"""
+Create a Sankey chart from a two-column count table.
+"""
 
 __all__ = ['create_sankey']
 

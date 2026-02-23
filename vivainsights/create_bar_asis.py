@@ -2,6 +2,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+"""
+Create a bar chart with customizable options and no pre-aggregation.
+"""
 
 __all__ = ['create_bar_asis']
 

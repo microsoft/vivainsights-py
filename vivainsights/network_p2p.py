@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module performs network analysis with a person-to-person query
+Perform person-to-person network analysis and visualization.
 """
 
 __all__ = ['network_p2p']

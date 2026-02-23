@@ -4,8 +4,9 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-Generate an person-to-person query / edgelist based on the graph according to the Watts-Strogatz
-small-world network model. Organizational data fields are also simulated for `Organization`, `LevelDesignation`, and `City`
+Simulate a person-to-person network using the Watts-Strogatz model.
+
+Organizational data fields are also simulated for `Organization`, `LevelDesignation`, and `City`
 data frame with the same column structure as a person-to-person flexible query.
 This has an edgelist structure and can be used directly as an input to `network_p2p()`.
 """

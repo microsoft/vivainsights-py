@@ -3,8 +3,9 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-The `identify_tenure` function calculates and summarizes employee tenure based on hire and metric
-dates, and provides various options for returning the results.
+Calculate and summarize employee tenure based on hire and metric dates.
+
+The `identify_tenure` function provides various options for returning the results.
 """
 
 __all__ = ['identify_tenure']

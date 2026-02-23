@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module creates an incidence analysis reflecting the proportion of the population scoring above or below a specified threshold for a metric. 
+Analyze the proportion of a population above or below a metric threshold.
 """
 
 __all__ = ['create_inc', 'create_inc_bar', 'create_inc_grid']

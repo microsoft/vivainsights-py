@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module returns a data frame containing a person-to-group query.
+Load a sample person-to-group query dataset.
 """
 
 __all__ = ['load_p2g_data']

@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
+Calculate and visualize the mean of a metric by organizational group.
+
 The code defines a function `create_bar` that calculates and visualizes the mean of a selected
 metric, grouped by a selected HR variable. 
 

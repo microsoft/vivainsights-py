@@ -2,9 +2,10 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-""" 
-This function scans a standard query output for weeks where collaboration
-hours is far outside the mean. Returns a list of weeks that appear to be
+"""
+Detect holiday weeks by scanning for anomalous collaboration hours.
+
+Returns a list of weeks that appear to be
 holiday weeks and optionally an edited dataframe with outliers removed. By
 default, missing values are excluded.
 """

@@ -2,6 +2,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+"""
+Identify non-knowledge workers based on collaboration activity thresholds.
+"""
 
 __all__ = ['identify_nkw']
 

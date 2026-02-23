@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module calculates the Gini coefficient and plots the Lorenz curve for a given metric.
+Calculate the Gini coefficient and plot the Lorenz curve for a given metric.
 """
 
 __all__ = ['get_value_proportion', 'compute_gini', 'create_lorenz']

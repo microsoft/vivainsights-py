@@ -3,7 +3,8 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module generates a count of the distinct persons in the data population.
+Count the number of distinct persons by organizational group.
+
 Returns a bar plot of the counts by default, with an option to return a summary table.
 """
 
