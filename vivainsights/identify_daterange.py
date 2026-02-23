@@ -14,6 +14,25 @@ __all__ = ['identify_datefreq']
 import pandas as pd
 
 def identify_datefreq(x):
+    """Identify whether dates have daily, weekly, or monthly frequency.
+
+    Parameters
+    ----------
+    x : array-like
+        A sequence of date values (strings or datetime objects).
+
+    Returns
+    -------
+    str
+        ``"daily"``, ``"weekly"``, ``"monthly"``, or a message if the
+        frequency cannot be determined.
+
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> vi.identify_datefreq(pq_data["MetricDate"])
+    """
     x = pd.to_datetime(x)
     
     # Data frame for checking

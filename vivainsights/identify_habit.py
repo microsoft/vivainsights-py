@@ -25,63 +25,49 @@ def identify_habit(
     plot_mode="time",
     figsize: tuple = None,
     fill_col=("#E5E5E5", "#0078D4")):
-    """
-    Name
-    -----
-    identify_habit
+    """Identify recurring behavioral habits from a metric.
 
-    Description
-    -----------
-    Identify habitual behavior over a given interval of time. This function analyzes 
-    a dataset to determine whether a habit exists based on a specified metric and 
-    thresholds. It can return data, plots, or summary statistics depending on the 
-    `return_type` argument.
+    Analyses a dataset to determine whether a habit exists based on a
+    specified metric and thresholds.  Can return classified data, plots,
+    or summary statistics.
 
     Parameters
     ----------
     data : pandas.DataFrame
-        A dataset containing the data to analyze. Must include 'PersonId', 'MetricDate', 
-        and the metric column.
+        Person query data.  Must include ``PersonId``, ``MetricDate``,
+        and the *metric* column.
     metric : str
-        Column name of the metric to analyze.
-    threshold : int, optional
-        Minimum value for a week to be considered a qualifying count. Default is 1.
-    width : int, optional
-        Number of qualifying counts required for a habit.
-    max_window : int, optional
+        Column name of the metric to analyse.
+    threshold : int, default 1
+        Minimum value for a week to count as a qualifying event.
+    width : int, default 1
+        Number of qualifying events required to establish a habit.
+    max_window : int, default 4
         Maximum number of periods to consider for a habit.
-    hrvar : str, optional
-        Column name for grouping (e.g., department or team). Default is None.
-    return_type : str, optional
-        Type of output to return. Must be one of the following:
-        - "data": Returns a DataFrame with habit classification.
-        - "plot": Returns a plot of habitual behavior.
-        - "summary": Returns summary statistics.
-        Default is "plot".
-    plot_mode : str, optional
-        Type of plot to generate if `return_type` is "plot". Must be one of the following:
-        - "time": Time series plot of habitual behavior.
-        - "boxplot": Boxplot of habitual behavior by group.
-        Default is "time".
-    figsize : tuple, optional
-        The `figsize` parameter is an optional tuple that specifies the size of the figure for the boxplot visualization. It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.
-    fill_col : tuple, optional
-        Colors for the plot. Default is ("#E5E5E5", "#0078D4").
+    hrvar : str or None, default None
+        Column name for grouping (used with ``plot_mode="boxplot"``).
+    return_type : str, default "plot"
+        ``"data"`` for a classified DataFrame, ``"plot"`` for a chart,
+        or ``"summary"`` for summary statistics.
+    plot_mode : str, default "time"
+        ``"time"`` for a stacked bar time series, ``"boxplot"`` for a
+        boxplot by group.
+    figsize : tuple or None, default None
+        Figure size ``(width, height)`` in inches.  Defaults to ``(8, 6)``.
+    fill_col : tuple, default ("#E5E5E5", "#0078D4")
+        Colours for the plot.
 
     Returns
     -------
-    Depending on the value of `return_type`, the function returns:
-    - pandas.DataFrame: If `return_type` is "data".
-    - matplotlib plot: If `return_type` is "plot".
-    - dict: Summary statistics if `return_type` is "summary".
+    pandas.DataFrame, matplotlib.figure.Figure, or dict
+        Classified data, a plot, or summary statistics depending on
+        *return_type*.
 
     Examples
     --------
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> vi.identify_habit(pq_data, metric='Multitasking_hours', threshold=1, width=9, max_window=12, return_type="data")
-    >>> vi.identify_habit(pq_data, metric='Multitasking_hours', threshold=1, width=9, max_window=12, return_type="plot", plot_mode="time")
-    >>> vi.identify_habit(pq_data, metric='Multitasking_hours', threshold=1, width=9, max_window=12, return_type="summary")
     """
     # Ensure MetricDate is a datetime object
     data['MetricDate'] = pd.to_datetime(data['MetricDate'])

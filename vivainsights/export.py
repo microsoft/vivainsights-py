@@ -36,8 +36,8 @@ def display_plot(plot_obj):
     None
         Displays the plot using the appropriate method
         
-    Example
-    -------
+    Examples
+    --------
     >>> import vivainsights as vi
     >>> plot = vi.create_line(data=vi.load_pq_data(), metric='Email_hours', hrvar='Organization')
     >>> vi.display_plot(plot)
@@ -60,57 +60,47 @@ def export(x,
            timestamp=True):
            
         """
-        Name
-        ----
+        Export data frames or plot objects to various formats.
 
-        Description
-        -----------
-        Exports the data to the specified file format and saves it to the specified filename.
-        A general use function to export 'vivainsights' outputs to CSV, clipboard, or save as
-        images. By default, `export()` copies a data frame to the clipboard and displays plot objects.
-        
+        A general-purpose function to export vivainsights outputs to CSV,
+        clipboard, or save as images. By default, copies a DataFrame to the
+        clipboard and displays plot objects.
+
         Parameters
-        ---------
-        x : dataframe or matplotlib figure object
-            The object to export, which can be a data frame or a matplotlib figure object.
+        ----------
+        x : pandas.DataFrame or matplotlib.figure.Figure
+            Object to export.
         file_format : str, optional
-            Character string specifying the method of export. Defaults to 'auto' which:
-            - For DataFrames: copies to clipboard
-            - For plot objects: displays the plot
-            Other options: 'csv', 'png', 'svg', 'jpeg', 'pdf', 'clipboard', 'display'
-        path : str or optional 
-            If exporting a file, enter the path and the desired file name. Defaults to "insights export". 
-        dpi : int or optional
-            Integer specifying the dots per inch for the image. Defaults to 300.
-        timestamp : bool or optional 
-            Logical vector specifying whether to include a timestamp in the file name. Defaults to True.
-        
+            Export method. Defaults to ``"auto"`` which copies DataFrames to
+            clipboard and displays plot objects. Other options:
+            ``"csv"``, ``"png"``, ``"svg"``, ``"jpeg"``, ``"pdf"``,
+            ``"clipboard"``, ``"display"``.
+        path : str, optional
+            File path (without extension). Defaults to ``"insights export"``.
+        dpi : int, optional
+            Dots per inch for image export. Defaults to 300.
+        timestamp : bool, optional
+            Whether to append a timestamp to the file name. Defaults to ``True``.
+
         Returns
         -------
-        A different output is returned depending on the value passed to the `file_format`
-        Argument:
-        - `"auto"`: DataFrame -> clipboard, plot objects -> display
-        - `"clipboard"`: data frame is saved to clipboard.
-        - `"csv"`: CSV file containing data frame is saved to specified path.
-        - `"png"`: PNG file containing plot object is saved to specified path.
-        - `"svg"`: SVG file containing plot object is saved to specified path.
-        - `"jpeg"`: JPEG file containing plot object is saved to specified path.
-        - `"pdf"`: PDF file containing plot object is saved to specified path.
-        - `"display"`: plot object is displayed using display_plot()
+        None
+            Output is written to disk, clipboard, or displayed depending on
+            ``file_format``.
 
-        Example
-        -------
+        Examples
+        --------
         >>> import vivainsights as vi
-        >>> # Auto behavior - plot will be displayed
-        >>> km_plot = vi.keymetrics_scan(data = vi.load_pq_data(), hrvar='Organization', return_type = "plot")
-        >>> vi.export(km_plot)  # Displays the plot
-        >>> 
-        >>> # Auto behavior - DataFrame will be copied to clipboard
+        >>> # Auto behavior — plot will be displayed
+        >>> km_plot = vi.keymetrics_scan(data=vi.load_pq_data(), hrvar='Organization', return_type="plot")
+        >>> vi.export(km_plot)
+        >>>
+        >>> # Auto behavior — DataFrame will be copied to clipboard
         >>> data = vi.load_pq_data()
-        >>> vi.export(data)  # Copies to clipboard
-        >>> 
+        >>> vi.export(data)
+        >>>
         >>> # Explicit file export
-        >>> vi.export(km_plot, file_format = 'png', path = 'keymetrics_scan', timestamp = False)
+        >>> vi.export(km_plot, file_format='png', path='keymetrics_scan', timestamp=False)
         """
     
         # Determine object type for auto behavior

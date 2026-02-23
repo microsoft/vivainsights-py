@@ -14,39 +14,32 @@ import pandas as pd
     
 def identify_outlier(data: pd.DataFrame, group_var = "MetricDate", metric = "Collaboration_hours"):
     
-    """
-    Name
-    -----
-    identify_outlier 
-    
-    Description
-    -----------
-    This function takes in a selected metric and uses the
-    z-score (number of standard deviations) to identify outliers
-    across time. There are applications in this for identifying
-    weeks with abnormally low collaboration activity, e.g. holidays.
-    Time as a grouping variable can be overridden with the `group_var`
-    argument.
+    """Identify outlier weeks using z-scores for a metric.
+
+    Computes the mean of the metric per group (default: ``MetricDate``)
+    and the corresponding z-scores to flag outliers.  Useful for
+    detecting weeks with abnormally low collaboration, e.g. holidays.
 
     Parameters
     ----------
-    data : pandas dataframe
-        A Standard Person Query dataset in the form of a pandas dataframe.
-    group_var : str
-        A string with the name of the grouping variable. Default: `MetricDate`.
-    metric : str
-        A string containing the name of the metric (e.g., "Collaboration_hours")
+    data : pandas.DataFrame
+        Person query data.
+    group_var : str, default "MetricDate"
+        Grouping variable.
+    metric : str, default "Collaboration_hours"
+        Name of the metric column.
 
     Returns
     -------
-    A dataframe with `MetricDate` (if grouping variable is not set),
-    the metric, and the corresponding z-score. 
+    pandas.DataFrame
+        A DataFrame indexed by *group_var* with the metric mean and a
+        ``zscore`` column.
 
-    Example
-    -------
+    Examples
+    --------
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
-    >>> vi.identify_outlier(pq_data, group_var = "MetricDate", metric = "Collaboration_hours")
+    >>> vi.identify_outlier(pq_data, metric="Collaboration_hours")
     """ 
 
     try:

@@ -19,61 +19,50 @@ from vivainsights.extract_date_range import extract_date_range
 
 def create_inc(data: pd.DataFrame, metric: str, hrvar: typing.Union[typing.List, str], mingroup: int = 5, threshold: float = None, position: str = None, return_type: str = 'plot'):
     """
-    Name
-    ----
-    create_inc
+    Create an incidence analysis showing the proportion of employees above
+    or below a metric threshold.
 
-    Description
-    -----------
-    Create an incidence analysis reflecting proportion of population scoring above or below a threshold for a metric. 
-    An incidence analysis is generated, with each value in the table reflecting the proportion of the population that 
-    is above or below a threshold for a specified metric. There is an option to only provide a single `hrvar` in which a 
-    bar plot is generated, or two `hrvar` values where an incidence table (heatmap) is generated.
+    When a single ``hrvar`` is supplied, a bar chart is returned. When two
+    ``hrvar`` values are supplied, a heatmap is returned.
 
     Parameters
     ----------
-    data : pandas dataframe
-        A Standard Person Query dataset in the form of a Pandas DataFrame.
-    metric : str 
-        Name of the metric, e.g. "Collaboration_hours".
-    hrvar : str or list
-         Name(s) of the HR Variable(s) by which to split metrics.
+    data : pandas.DataFrame
+        Person query data.
+    metric : str
+        Metric column name, e.g. ``"Collaboration_hours"``.
+    hrvar : str or list of str
+        HR variable(s) for grouping (at most length 2).
     mingroup : int
-        Privacy threshold / minimum group size. Defaults to 5.
-    threshold : float
-        Threshold value to split the data based on the position argument. Defaults to None.
-    position :  str 
-        One of the below valid values:
-        - "above": show incidence of those equal to or above the threshold
-        - "below": show incidence of those equal to or below the threshold
+        Minimum group size. Defaults to 5.
+    threshold : float, optional
+        Value to split the population.
+    position : str, optional
+        ``"above"`` or ``"below"``.
     return_type : str
-        What to return. This must be one of the following strings:
-        - "plot"
-        - "table"
-                    
+        ``"plot"`` (default) or ``"table"``.
+
     Returns
     -------
-    Output is returned depending on the value passed to the return_type argument:
-    - "plot": Matplotlib or Seaborn plot object
-    - "table": Pandas DataFrame
-    
+    matplotlib.figure.Figure or pandas.DataFrame
+        Plot or table depending on ``return_type``.
+
     Raises
     ------
-    ValueError: If hrvar is not a string or list with at most length 2.
+    ValueError
+        If ``hrvar`` has more than two elements.
 
-    Example
-    -------
+    Examples
+    --------
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> vi.create_inc(
-        pq_data, 
-        metric = 'Collaboration_hours',
-        hrvar = 'LevelDesignation',
-        mingroup = 5,
-        threshold = 10,
-        position = 'above',
-        return_type = 'plot'
-        ) 
+    ...     pq_data,
+    ...     metric="Collaboration_hours",
+    ...     hrvar="LevelDesignation",
+    ...     threshold=10,
+    ...     position="above",
+    ... )
     """
     
     if not isinstance(hrvar, list):
@@ -88,50 +77,43 @@ def create_inc(data: pd.DataFrame, metric: str, hrvar: typing.Union[typing.List,
     
 def create_inc_bar(data: pd.DataFrame, metric: str, hrvar: str, mingroup: int = 5, threshold: float = None, position: str = None, return_type: str='plot',figsize: tuple = None):
     """
-    Name
-    -----
-    create_inc_bar
-
-    Description
-    -----------
-    Run `create_inc` with only single `hrvar`. Returning a bar chart
+    Run incidence analysis with a single HR variable, returning a bar chart.
 
     Parameters
     ----------
-    data : pandas dataframe
-        A Standard Person Query dataset in the form of a Pandas DataFrame.
-    metric : str 
-        Name of the metric, e.g. "Collaboration_hours".
+    data : pandas.DataFrame
+        Person query data.
+    metric : str
+        Metric column name.
     hrvar : str
-        Name of the HR Variable by which to split metrics.
+        HR variable for grouping.
     mingroup : int
-        Privacy threshold / minimum group size. Defaults to 5.
-    threshold : float
-        Threshold value to split the data based on the position argument. Defaults to None.
-    position : str
-        One of the below valid values:
-        - "above": show incidence of those equal to or above the threshold
-        - "below": show incidence of those equal to or below the threshold
+        Minimum group size. Defaults to 5.
+    threshold : float, optional
+        Split threshold.
+    position : str, optional
+        ``"above"`` or ``"below"``.
+    return_type : str
+        ``"plot"`` (default) or ``"table"``.
     figsize : tuple, optional
-        The `figsize` parameter is an optional tuple that specifies the size of the figure for the bar chart visualization. It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.
-    return_type : str 
-        What to return. This must be one of the following strings:
-        - "plot"
-        - "table"
-                    
+        Figure size as ``(width, height)`` in inches. Defaults to ``(8, 6)``.
+
     Returns
     -------
-    Output is returned depending on the value passed to the return_type argument:
-    - "plot": Matplotlib or Seaborn plot object
-    - "table": Pandas DataFrame
+    matplotlib.figure.Figure or pandas.DataFrame
+        Bar chart or summary table.
 
-    Raises
-    ------
-    ValueError: If hrvar is not a string.
-
-    Example
-    -------
-    >>> create_inc_bar(data = pq_data, metric = "Collaboration_hours", hrvar = "LevelDesignation", threshold = 20, position = "below", return_type = "plot")
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> vi.create_inc_bar(
+    ...     pq_data,
+    ...     metric="Collaboration_hours",
+    ...     hrvar="LevelDesignation",
+    ...     threshold=20,
+    ...     position="below",
+    ... )
     """
 
     # Transform data so that metrics become proportions
@@ -164,47 +146,36 @@ def create_inc_bar(data: pd.DataFrame, metric: str, hrvar: str, mingroup: int = 
 
 def create_inc_grid(data: pd.DataFrame, metric: str, hrvar: typing.List, mingroup: int=5, threshold: float=None, position: str=None, return_type: str='plot', figsize: tuple = None):
     """
-    Name
-    -----
-    create_inc_grid
-
-    Description
-    -----------
-    Run `create_inc` with two `hrvar`.
-    Returning a heatmap
+    Run incidence analysis with two HR variables, returning a heatmap.
 
     Parameters
     ----------
-    data : pandas dataframe 
-        A Standard Person Query dataset in the form of a Pandas DataFrame.
+    data : pandas.DataFrame
+        Person query data.
     metric : str
-         Name of the metric, e.g. "Collaboration_hours".
-    hrvar : list
-         Names of the HR Variables by which to split metrics.
+        Metric column name.
+    hrvar : list of str
+        Two HR variables for the heatmap axes.
     mingroup : int
-         Privacy threshold / minimum group size. Defaults to 5.
-    threshold : float
-         Threshold value to split the data based on the position argument. Defaults to None.
-    position : str 
-        One of the below valid values:
-        - "above": show incidence of those equal to or above the threshold
-        - "below": show incidence of those equal to or below the threshold
+        Minimum group size. Defaults to 5.
+    threshold : float, optional
+        Split threshold.
+    position : str, optional
+        ``"above"`` or ``"below"``.
     figsize : tuple, optional
-        The `figsize` parameter is an optional tuple that specifies the size of the figure for the heatmap visualization. It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.
+        Figure size as ``(width, height)`` in inches. Defaults to ``(8, 6)``.
     return_type : str
-        What to return. This must be one of the following strings:
-        - "plot"
-        - "table"
-                    
+        ``"plot"`` (default) or ``"table"``.
+
     Returns
     -------
-    Output is returned depending on the value passed to the return_type argument:
-    - "plot": Matplotlib or Seaborn plot object
-    - "table": Pandas DataFrame
+    matplotlib.figure.Figure or pandas.DataFrame
+        Heatmap or summary table.
 
     Raises
     ------
-    ValueError: If hrvar is not a list of length 2.
+    ValueError
+        If ``hrvar`` is not a list of length 2.
     """
 
     if not isinstance(hrvar, list) or len(hrvar) != 2:

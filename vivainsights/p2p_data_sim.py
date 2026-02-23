@@ -17,6 +17,36 @@ import igraph
 import pandas as pd
 
 def p2p_data_sim(dim=1, size=300, nei=5, p=0.05):
+    """Simulate a person-to-person network dataset.
+
+    Generate a synthetic person-to-person edgelist using the Watts-Strogatz
+    small-world model.  Organizational attributes (``Organization``,
+    ``LevelDesignation``, ``City``) are simulated for both primary and
+    secondary collaborators.  The output can be passed directly to
+    ``network_p2p()``.
+
+    Parameters
+    ----------
+    dim : int, default 1
+        Dimension of the Watts-Strogatz lattice.
+    size : int, default 300
+        Number of nodes in the network.
+    nei : int, default 5
+        Number of neighbours each node is connected to in the lattice.
+    p : float, default 0.05
+        Rewiring probability.
+
+    Returns
+    -------
+    pandas.DataFrame
+        An edgelist DataFrame with columns for person IDs, organizational
+        attributes, and a ``StrongTieScore`` column.
+
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> sim = vi.p2p_data_sim(size=50)
+    """
     graph = igraph.Graph.Watts_Strogatz(dim=dim, size=size, nei=nei, p=p)
     edgelist = graph.get_edgelist()
     df = pd.DataFrame(edgelist, columns=["PrimaryCollaborator_PersonId", "SecondaryCollaborator_PersonId"])

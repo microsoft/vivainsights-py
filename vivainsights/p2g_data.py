@@ -12,6 +12,21 @@ import importlib.resources
 import pandas as pd
 
 def load_p2g_data():
+    """Load a sample person-to-group query dataset.
+
+    Returns a DataFrame containing a de-identified sample of Viva Insights
+    person-to-group query data.
+
+    Returns
+    -------
+    pandas.DataFrame
+        A person-to-group query dataset.
+
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> p2g_data = vi.load_p2g_data()
+    """
     try:
         # Python 3.9+ with importlib.resources.files
         files = importlib.resources.files(__package__).joinpath('data', 'p2g_data.csv')

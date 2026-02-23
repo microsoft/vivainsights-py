@@ -23,44 +23,42 @@ def identify_tenure(data: pd.DataFrame,
                     return_type = "message", # use return_type to avoid conflict with built-in function
                     date_format = "%Y-%m-%d"): 
   
-  '''
-  Name
-  ----
-  identify_tenure
+  """Calculate and summarize employee tenure.
 
-  Description
-  -----------
-  The function `identify_tenure` calculates and summarizes employee tenure based on hire and metric
-  dates, and provides various options for returning the results.
-  
+  Computes tenure in years from hire date to the latest metric date and
+  provides diagnostics, plots, or filtered datasets.
+
   Parameters
   ----------
-  data : pandas dataframe
-    The `data` parameter is a pandas DataFrame that contains the employee data. It should have columns for the hire date (`beg_date`) and the metric date (`end_date`).
-  beg_date : optional
-    The `beg_date` parameter is the name of the column in the DataFrame that represents the start date of employment for each employee. By default, it is set to "HireDate".
-  end_date : optional
-    The `end_date` parameter is the name of the column in the `data` DataFrame that represents the end date of the tenure period for each employee.
-  maxten : optional
-    The `maxten` parameter is used to specify the maximum tenure in years. Employees with a tenure greater than or equal to `maxten` will be considered as "odd" employees.
-  return_type :  optional
-    The `return_type` parameter determines the type of output that the function will return. It can have the following values:
-    - "message" (default)
-    - "plot"
-    - "data_cleaned"
-    - "data_dirty"
-    - "data"
-    - "text"
-  
-  date_format : optional
-    The `date_format` parameter is used to specify the format of the date strings in the `beg_date` and `end_date` columns of the input DataFrame. It is set to "%Y-%m-%d" by default, which represents the format "YYYY-MM-DD".
-  
+  data : pandas.DataFrame
+      Person query data.  Must include columns for hire and metric dates.
+  beg_date : str, default "HireDate"
+      Column name for the hire date.
+  end_date : str, default "MetricDate"
+      Column name for the end / metric date.
+  maxten : int, default 40
+      Maximum tenure threshold in years.  Employees at or above this
+      value are flagged.
+  return_type : str, default "message"
+      ``"message"`` prints a summary, ``"text"`` returns it as a string,
+      ``"plot"`` displays a density curve, ``"data_cleaned"`` removes
+      flagged employees, ``"data_dirty"`` keeps only flagged employees,
+      ``"data"`` returns per-person tenure.
+  date_format : str, default "%Y-%m-%d"
+      ``strftime`` format of dates in the date columns.
+
   Returns
   -------
-  The function `identify_tenure` returns different outputs based on the value of the `return_type`
-  parameter. The possible return values are:
-  
-  '''  
+  None, str, pandas.DataFrame, or matplotlib plot
+      A printed message, string, density plot, or DataFrame depending on
+      *return_type*.
+
+  Examples
+  --------
+  >>> import vivainsights as vi
+  >>> pq_data = vi.load_pq_data()
+  >>> vi.identify_tenure(pq_data, return_type="text")
+  """  
   required_variables = [beg_date, end_date]
   # check if required columns are not present
   check_inputs(data, requirements = required_variables)

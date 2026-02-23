@@ -19,25 +19,32 @@ import os
 
 def import_query(x, encoding: str = 'utf-8'):
     """
-    Name
-    ----
-    import_query
+    Import a Viva Insights query from a CSV file.
 
-    Description
-    ----------- 
-    The function `import_query` reads a CSV file, removes leading and trailing spaces from column names,
-    and replaces spaces and special characters with underscores in column names.
-    
+    Reads the file, strips whitespace from column names and replaces spaces
+    and special characters with underscores.
+
     Parameters
     ----------
     x : str
-        The parameter `x` is the input file name or path. It should be a string representing the file name or path of the CSV file you want to import.
+        Path to a ``.csv`` file.
     encoding : str, optional
-        The encoding parameter specifies the character encoding to be used when reading the CSV file. The default value is 'utf-8', which is a widely used encoding for text files. However, you can specify a different encoding if needed.
-    
+        Character encoding for reading the file. Defaults to ``"utf-8"``.
+
     Returns
     -------
-    The variable `data` if the input file is a valid CSV file. If the input file is not a valid CSVfile, the function will print an error message and return `None`.
+    pandas.DataFrame
+        The imported data with cleaned column names.
+
+    Raises
+    ------
+    ValueError
+        If the file does not exist, is not a CSV, or cannot be read.
+
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> data = vi.import_query("path/to/query.csv")
     """    
     
     # in case '.csv' is not all in lower case, make it lower case

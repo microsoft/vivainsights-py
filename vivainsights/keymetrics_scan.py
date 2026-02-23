@@ -47,142 +47,51 @@ def keymetrics_scan(data,
                     textsize=10,
                     plot_row_scaling_factor=0.8):    
     """
-    Name
-    ----
-    keymetrics_scan
-
-    Description
-    ------------
-    Generate a summary of key metrics with options to return a heatmap or a summary table.
+    Generate a summary heatmap or table scanning key Viva Insights metrics.
 
     Parameters
     ----------
     data : pandas.DataFrame
-        A Person Query dataset in the form of a pandas dataframe.
+        Person query data.
     hrvar : str, optional
-        The column name to group the data by. Defaults to `"Organization"`.
+        Column name to group by. Defaults to ``"Organization"``.
     mingroup : int, optional
-        The minimum number of employees required to include a group in the analysis. Defaults to `5`.
+        Minimum group size to include. Defaults to 5.
     metrics : list of str, optional
-        A list of metric column names to calculate averages for. Defaults to:
-        - `"Workweek_span"`
-        - `"Collaboration_hours"`
-        - `"After_hours_collaboration_hours"`
-        - `"Meetings"`
-        - `"Meeting_hours"`
-        - `"After_hours_meeting_hours"`
-        - `"Low_quality_meeting_hours"`
-        - `"Meeting_hours_with_manager_1_on_1"`
-        - `"Meeting_hours_with_manager"`
-        - `"Emails_sent"`
-        - `"Email_hours"`
-        - `"After_hours_email_hours"`
-        - `"Generated_workload_email_hours"`
-        - `"Total_focus_hours"`
-        - `"Internal_network_size"`
-        - `"Networking_outside_organization"`
-        - `"External_network_size"`
-        - `"Networking_outside_company"`
+        Metric column names to calculate averages for. Defaults to a
+        standard set of Viva Insights metrics (see source).
     return_type : str, optional
-        Specifies the type of output to return. Valid values are:
-        - `"plot"` (default): Generate a heatmap visualization.
-        - `"table"`: Return a summary table as a pandas DataFrame.
-    mid_color : str, optional
-    high_color: str, optional
+        ``"plot"`` (default) returns a heatmap; ``"table"`` returns a
+        summary DataFrame.
     low_color : str, optional
-        Color codes for low, mid, and high values in the heatmap. Defaults to:
-        - `low_color="#4169E1"` (blue)
-        - `mid_color="#F1CC9E"` (beige)
-        - `high_color="#D8182A"` (red)
-        Color codes for low, mid, and high values in the heatmap. Can be set to:
-        - `Black: "#000000"`
-        - `White: "#FFFFFF"`
-        - `Red: "#FF0000"`
-        - `Lime: "#00FF00"`
-        - `Blue: "#0000FF"`
-        - `Yellow: "#FFFF00"`
-        - `Cyan/Aqua: "#00FFFF"`
-        - `Magenta/Fuchsia: "#FF00FF"`
-        - `Silver: "#C0C0C0"`
-        - `Gray: "#808080"`
-        - `Maroon: "#800000"`
-        - `Olive: "#808000"`
-        - `Green: "#008000"`
-        - `Purple: "#800080"`
-        - `Teal: "#008080"`
-        - `Navy: "#000080"`
-        - `Light Gray: "#D3D3D3"`
-        - `Dark Gray: "#A9A9A9"`
-        - `Dim Gray: "#696969"`
-        - `Slate Gray: "#708090"`
-        - `Light Slate Gray: "#778899"`
-        - `Crimson: "#DC143C"`
-        - `Coral: "#FF7F50"`
-        - `Tomato: "#FF6347"`
-        - `Orange: "#FFA500"`
-        - `Gold: "#FFD700"`
-        - `Dark Orange: "#FF8C00"`
-        - `Light Salmon: "#FFA07A"`
-        - `Dodger Blue: "#1E90FF"`
-        - `Sky Blue: "#87CEEB"`
-        - `Steel Blue: "#4682B4"`
-        - `Light Blue: "#ADD8E6"`
-        - `Dark Blue: "#00008B"`
-        - `Medium Blue: "#0000CD"`
-        - `Royal Blue: "#4169E1"`
-        - `Sienna: "#A0522D"`
-        - `Saddle Brown: "#8B4513"`
-        - `Chocolate: "#D2691E"`
-        - `Peru: "#CD853F"`
-        - `Sandy Brown: "#F4A460"`
-        - `Tan: "#D2B48C"`
-        - `Lavender: "#E6E6FA"`
-        - `Thistle: "#D8BFD8"`
-        - `Plum: "#DDA0DD"`
-        - `Orchid: "#DA70D6"`
-        - `Peach Puff: "#FFDAB9"`
-        - `Mint Cream: "#F5FFFA"`
-        - `Forest Green: "#228B22"`
-        - `Sea Green: "#2E8B57"`
-        - `Medium Sea Green: "#3CB371"`
-        - `Spring Green: "#00FF7F"`
-        - `Pale Green: "#98FB98"`
-        - `Indian Red: "#CD5C5C"`
-        - `Rosy Brown: "#BC8F8F"`
-        - `Hot Pink: "#FF69B4"`
-        - `Deep Pink: "#FF1493"`
-        - `Light Pink: "#FFB6C1"`
-        - `Midnight Blue: "#191970"`
-        - `Cornflower Blue: "#6495ED"`
-        - `Powder Blue: "#B0E0E6"`
-        - `Light Sky Blue: "#87CEFA"`
+        Hex colour for low heatmap values. Defaults to ``"#4169E1"``.
+    mid_color : str, optional
+        Hex colour for mid heatmap values. Defaults to ``"#F1CC9E"``.
+    high_color : str, optional
+        Hex colour for high heatmap values. Defaults to ``"#D8182A"``.
     textsize : int, optional
-        Font size for text elements in the heatmap. Defaults to `10`.
+        Font size for heatmap annotations. Defaults to 10.
+    plot_row_scaling_factor : float, optional
+        Scaling factor for plot row height. Defaults to 0.8.
 
     Returns
     -------
-    - If `return_type="plot"`: Displays a heatmap visualization of the rescaled key metrics grouped by the specified HR attribute.
-    - If `return_type="table"`: Returns a pandas DataFrame containing a summary table of average metric values grouped by the specified HR attribute.
+    matplotlib.figure.Figure or pandas.DataFrame
+        Heatmap figure or summary table depending on ``return_type``.
 
     Raises
     ------
     ValueError
-        - If none of the specified metrics are present in the dataset.
-        - If no data is available after applying the `mingroup` filter.
+        If no specified metrics exist in the data or if no groups remain
+        after applying ``mingroup``.
 
     Examples
     --------
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> vi.keymetrics_scan(data=pq_data, hrvar="Organization", mingroup=10, return_type="table")
-    # Returns a summary table grouped by "Team" with a minimum group size of 10.
-
-    >>> vi.keymetrics_scan(data=pq_data, hrvar="Organization", metrics=["Workweek_span", "Meeting_hours"], return_type="plot")
-    # Displays a heatmap of the rescaled "Workweek_span" and "Meeting_hours" metrics grouped by "Department".
-
-    >>> vi.keymetrics_scan(data=pq_data, low_color="#4169E1", mid_color="#F1CC9E", high_color="#D8182A", textsize=12)
-    # Generates a heatmap using the low mid and high color palette with font size 12.
-
+    >>>
+    >>> vi.keymetrics_scan(data=pq_data, metrics=["Workweek_span", "Meeting_hours"], return_type="plot")
     """    
     # Default group handling
     if hrvar is None:

@@ -4,17 +4,27 @@
 # --------------------------------------------------------------------------------------------
 """
 Replace underscores with spaces in a given string.
-
-:param string: A string that may contain underscores that need to be replaced with spaces
-:return: The function `us_to_space` takes a string as input and replaces all underscores with spaces
-using the `replace` method. It then returns the modified string with spaces instead of underscores.
-
-Examples
---------
->>> us_to_space("Meeting_and_call_hours_with_manager_1_1")
 """
 
 __all__ = ['us_to_space']
 
 def us_to_space(string):
+    """Replace underscores with spaces in a string.
+
+    Parameters
+    ----------
+    string : str
+        Input string potentially containing underscores.
+
+    Returns
+    -------
+    str
+        String with underscores replaced by spaces.
+
+    Examples
+    --------
+    >>> from vivainsights import us_to_space
+    >>> us_to_space("Meeting_and_call_hours_with_manager_1_1")
+    'Meeting and call hours with manager 1 1'
+    """
     return string.replace("_", " ")

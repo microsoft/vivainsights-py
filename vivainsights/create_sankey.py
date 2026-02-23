@@ -12,36 +12,32 @@ import pandas as pd
 import plotly.graph_objects as go
 import random
 def create_sankey(data, var1, var2, count = "n"):
-    """   
-    Name
-    ----
-    create_sankey
+    """Create a Sankey diagram from a long count table.
 
-    Description
-    ------------
-    Create a 'networkD3' style sankey chart based on a long count table with two variables. The input data should have three columns, where each row is a unique group:
-    1. Variable 1
-    2. Variable 2
-    3. Count
-    
+    The input *data* should have at least three columns: two categorical
+    variables and a count column, where each row represents a unique
+    group combination.
+
     Parameters
     ----------
-    data : dataframe
-        Data frame of the long count table.
-    var1 : str 
-        String containing the name of the variable to be shown on the left.
-    var2 : str 
-        String containing the name of the variable to be shown on the right.
-    count : str
-        String containing the name of the count variable.
+    data : pandas.DataFrame
+        Long count table.
+    var1 : str
+        Column name for the variable shown on the left.
+    var2 : str
+        Column name for the variable shown on the right.
+    count : str, default "n"
+        Column name containing the count values.
 
     Returns
     -------
-    A 'sankeyNetwork' and 'htmlwidget' object containing a two-tier sankey plot. The output can be saved locally with `htmlwidgets::saveWidget()`.
-    
-    Example
-    -------
-    >>> create_sankey(data = pq_data, var1 = "Organization", var2 = "FunctionType")
+    None
+        Displays an interactive Plotly Sankey diagram.
+
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> vi.create_sankey(data=pq_data, var1="Organization", var2="FunctionType")
     """ 
     #Rename 
     data['pregroup'] = data[[var1]]

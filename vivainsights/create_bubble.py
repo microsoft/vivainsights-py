@@ -22,48 +22,46 @@ from matplotlib.lines import Line2D
 
 def create_bubble(data, metric_x, metric_y, hrvar="Organization", mingroup=5, return_type="plot", bubble_size=(1, 100), figsize: tuple = None):
     """
-    Name
-    -----
-    create_bubble
-    
-    Description
-    -----------
-    The function `create_bubble` creates a bubble plot visualization or summary table based on two selected metrics. 
-    The metrics are first aggregated at a user-level prior to being aggregated at the level of the HR variable. 
-    The bubble size represents the group size (number of employees) for each HR variable group. 
-    `create_bubble` returns either a plot object or a table, depending on the value passed to `return_type`.
+    Create a bubble plot of two metrics by organizational group.
+
+    Metrics are first aggregated per person, then per HR variable group.
+    Bubble size represents the number of employees in each group.
 
     Parameters
     ----------
-    data : pd.DataFrame
-        Person query data containing the metrics and employee details.
+    data : pandas.DataFrame
+        Person query data.
     metric_x : str
-        Column name representing the x-axis metric. This variable should be present in the input data DataFrame.
+        Column name for the x-axis metric.
     metric_y : str
-        Column name representing the y-axis metric. This variable should be present in the input data DataFrame.
+        Column name for the y-axis metric.
     hrvar : str, optional
-        Name of the organizational attribute to be used for grouping. Defaults to "Organization".
+        Organizational attribute for grouping. Defaults to ``"Organization"``.
     mingroup : int, optional
-        Minimum group size threshold. Groups with fewer employees than this threshold will be excluded from the analysis. Defaults to 5.
+        Minimum group size. Groups below this are excluded. Defaults to 5.
     return_type : str, optional
-        The type of output to return. Can be "plot" to return a bubble plot visualization, or "table" to return a summary table. Defaults to "plot".
+        ``"plot"`` (default) returns a bubble chart; ``"table"`` returns a
+        summary DataFrame.
     bubble_size : tuple, optional
-        Size range for the bubbles in the plot as a tuple (min_size, max_size). Defaults to (1, 100).
+        ``(min_size, max_size)`` range for bubble scaling. Defaults to ``(1, 100)``.
     figsize : tuple, optional
-        The `figsize` parameter is an optional tuple that specifies the size of the figure for the bubble plot visualization. It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.
-    
+        Figure size as ``(width, height)`` in inches. Defaults to ``(8, 6)``.
+
     Returns
     -------
-    Various
-        The output, either a plot or a table, depending on the value passed to `return_type`.
-        - If return_type == "plot", returns a matplotlib Figure object with bubble plot visualization.
-        - If return_type == "table", returns a pandas DataFrame with the summarized metrics by HR variable.
+    matplotlib.figure.Figure or pandas.DataFrame
+        Bubble chart or summary table depending on ``return_type``.
 
-    Example
-    -------
+    Examples
+    --------
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
-    >>> vi.create_bubble(data=pq_data, metric_x="Collaboration_hours", metric_y="Multitasking_hours", hrvar="Organization")
+    >>> vi.create_bubble(
+    ...     data=pq_data,
+    ...     metric_x="Collaboration_hours",
+    ...     metric_y="Multitasking_hours",
+    ...     hrvar="Organization",
+    ... )
     """
     # Handling NULL values passed to hrvar
     if(hrvar is None):

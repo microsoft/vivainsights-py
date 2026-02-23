@@ -42,47 +42,46 @@ def create_trend(data: pd.DataFrame,
                  figsize: tuple = None,
                  size_x_axis_label: int = 5
                  ):  
-  """
-  Name
-  ----
-  create_trend
+  """Create a week-by-week heatmap of a selected metric.
 
-  Description
-  -----------
-  This module provides a week by week view of a selected Viva Insights metric. 
-  By default returns a week by week heatmap bar plot, highlighting the points intime with most activity. 
-  Additional options available to return a summary table.
-    
+  Produces a heatmap bar plot highlighting activity hotspots over time,
+  or returns a summary table.
+
   Parameters
-  ---------
-  data : panda dataframe
-      The input data as a pandas DataFrame.
+  ----------
+  data : pandas.DataFrame
+      Person query data.
   metric : str
-    The metric parameter is a string that represents the column name in the data DataFrame that contains the values to be plotted or analyzed. This could be any numerical metric such as sales, revenue, or number of hours worked.
-  palette : list
-    The `palette` parameter is a list of colors that will be used to represent different groups in the trend plot. Each color in the list corresponds to a different group. By default, the palette includes 8 colors, but you can modify it to include more or fewer colors if needed.
-  hrvar : str
-    hrvar is a string parameter that represents the variable used for grouping the data. In this case, it is used to group the data by organization. Defaults to Organization mingroup: The `mingroup` parameter is used to specify the minimum number of groups that should be present in the data for the trend analysis. If the number of unique values in the `hrvar` column is less than `mingroup`, the function will raise an error. Defaults to 5
-  return_type : str
-      The `return_type` parameter determines the type of output that the function will return. It can have two possible values:. Defaults to plot
-  legend_title : str
-      The title for the legend in the plot. It is used to label the different categories or groups in the data. Defaults to Hours
-  date_column : str
-      The name of the column in the DataFrame that contains the dates for the trend analysis. Defaults to MetricDate
-  date_format : str
-      The `date_format` parameter is used to specify the format of the dates in the `date_column` of the input data. It should be a string that follows the syntax of the Python `datetime` module's `strftime` function. This allows you to specify how the dates are formatted in the. Defaults to %Y-%m-%d
-  figsize : tuple, optional
-      The `figsize` parameter is used to specify the size of the figure in inches. If not provided, it defaults to (8, 6). This parameter is used when creating the plot to determine the dimensions of the figure.
+      Name of the metric column to plot.
+  palette : list of str
+      Colours used for the heatmap gradient.
+  hrvar : str, default "Organization"
+      Name of the organizational attribute for grouping.
+  mingroup : int, default 5
+      Minimum group size.
+  return_type : str, default "plot"
+      ``"plot"`` for a heatmap figure, ``"table"`` for a pivoted DataFrame.
+  legend_title : str, default "Hours"
+      Label for the colour-bar legend.
+  date_column : str, default "MetricDate"
+      Name of the date column.
+  date_format : str, default "%Y-%m-%d"
+      ``strftime`` format of dates in *date_column*.
+  figsize : tuple or None, default None
+      Figure size ``(width, height)`` in inches.  Defaults to ``(8, 6)``.
+  size_x_axis_label : int, default 5
+      Font size for x-axis bracket labels.
 
   Returns
-  ------
-  The function `create_trend` returns either a table or a plot, depending on the value of the `return_type` parameter.
-
-  Example
   -------
+  matplotlib.figure.Figure or pandas.DataFrame
+      A heatmap figure or a pivoted summary table.
+
+  Examples
+  --------
   >>> import vivainsights as vi
-  >>> pq_data = vi.load_pq_data()  
-  >>> create_trend(data = pq_data, metric = "Collaboration_hours", hrvar = "LevelDesignation")
+  >>> pq_data = vi.load_pq_data()
+  >>> vi.create_trend(pq_data, metric="Collaboration_hours", hrvar="LevelDesignation")
   """
   
   if(hrvar is None):
@@ -101,14 +100,29 @@ def create_trend(data: pd.DataFrame,
   
 def create_trend_calc(data, metric, hrvar, mingroup, date_column, date_format):
   """
-  Name 
-  ----
-  create_trend_calc
+  Compute weekly group-level metric averages for trend analysis.
 
-  Description
-  -----------
-  This function creates a trend calculation by grouping data by a specified variable and calculating
-  the mean of a specified metric over time.
+  Used internally by ``create_trend``.
+
+  Parameters
+  ----------
+  data : pandas.DataFrame
+      Person query data.
+  metric : str
+      Name of the metric column.
+  hrvar : str
+      Name of the organizational attribute for grouping.
+  mingroup : int
+      Minimum group size.
+  date_column : str
+      Name of the date column.
+  date_format : str
+      ``strftime`` format of dates in *date_column*.
+
+  Returns
+  -------
+  pandas.DataFrame
+      Aggregated table with date, group, employee count, and metric mean.
   """
   # Check inputs
   required_variables = [date_column, metric, "PersonId"]
@@ -166,14 +180,37 @@ def create_trend_viz(
   figsize: tuple = None
 ):
   """
-  Name
-  ----
-  create_trend_viz
+  Create a heatmap visualization of a metric over time by group.
 
-  Description
-  -----------
-  This function creates a heatmap visualization of trends in a given metric by a specified variable
-  over time.
+  Used internally by ``create_trend`` when ``return_type="plot"``.
+
+  Parameters
+  ----------
+  data : pandas.DataFrame
+      Person query data.
+  metric : str
+      Name of the metric column.
+  palette : list of str
+      Colours for the heatmap gradient.
+  hrvar : str
+      Name of the organizational attribute for grouping.
+  mingroup : int
+      Minimum group size.
+  legend_title : str
+      Label for the colour-bar legend.
+  date_column : str
+      Name of the date column.
+  date_format : str
+      ``strftime`` format of dates in *date_column*.
+  size_x_axis_label : int
+      Font size for x-axis bracket labels.
+  figsize : tuple or None, default None
+      Figure size ``(width, height)`` in inches.
+
+  Returns
+  -------
+  matplotlib.figure.Figure
+      The heatmap figure.
   """
   
   myTable = create_trend_calc(data, metric, hrvar, mingroup, date_column, date_format)

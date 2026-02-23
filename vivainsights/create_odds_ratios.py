@@ -15,37 +15,35 @@ import seaborn as sns
 
 def create_odds_ratios(data: pd.DataFrame, ord_metrics: list, metric: str, return_type: str = 'table'):
     """
-    Name
-    ----
-    create_odds_ratios
-
-    Description
-    -----------
-    Calculates odds ratios for ordinal metrics against a specified metric.
+    Calculate odds ratios for ordinal metrics against a specified metric.
 
     Parameters
     ----------
-    data : pandas dataframe
-        A Person Query dataset in the form of a pandas DataFrame.
-    ord_metrics : list
-        List of strings referring to the column names of the ordinal variables.
+    data : pandas.DataFrame
+        Person query data.
+    ord_metrics : list of str
+        Column names of the ordinal variables.
     metric : str
-        Name of the variable to calculate proportional odds against the `ord_metrics`.
+        Variable to calculate proportional odds against ``ord_metrics``.
     return_type : str, optional
-        Specifies what to return. Defaults to 'table'. 
-        - 'table': Returns a data frame with the final odds ratio table sorted by odds ratio.
-        - 'plot': Returns a plot for visualizing the odds ratio.
+        ``"table"`` (default) returns the odds-ratio DataFrame;
+        ``"plot"`` returns a bar chart.
 
     Returns
     -------
-    pandas DataFrame or matplotlib Figure
-        Depending on the value of `return_type`, either a table or a plot is returned.
+    pandas.DataFrame or matplotlib.figure.Figure
+        Odds-ratio table or visualization depending on ``return_type``.
 
-    Example
-    -------
+    Examples
+    --------
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
-    >>> vi.create_odds_ratios(data=pq_data, ord_metrics=["Engagement_Score", "Satisfaction_Score"], metric="Copilot_Usage", return_type="table")
+    >>> vi.create_odds_ratios(
+    ...     data=pq_data,
+    ...     ord_metrics=["Engagement_Score", "Satisfaction_Score"],
+    ...     metric="Copilot_Usage",
+    ...     return_type="table",
+    ... )
     """
     # Validate inputs
     if not isinstance(ord_metrics, list):
@@ -117,42 +115,44 @@ def create_odds_ratios(data: pd.DataFrame, ord_metrics: list, metric: str, retur
 
 def compute_fav(data: pd.DataFrame, ord_metrics: list, item_options: int = 5, fav_threshold: int = 70, unfav_threshold: int = 40, drop_neutral: bool = True):
     """
-    Name
-    ----
-    compute_fav
-
-    Description
-    -----------
-    Converts ordinal variables into categorical variables with favorable and unfavorable scores.
+    Convert ordinal variables into categorical favorable/unfavorable scores.
 
     Parameters
     ----------
-    data : pandas dataframe
-        A dataset containing the ordinal variables.
-    ord_metrics : list
-        List of strings referring to the column names of the ordinal variables.
+    data : pandas.DataFrame
+        Dataset containing the ordinal variables.
+    ord_metrics : list of str
+        Column names of the ordinal variables.
     item_options : int, optional
-        Number of options in the ordinal metrics. Default is 5.
+        Number of scale points in the ordinal metrics. Defaults to 5.
     fav_threshold : int, optional
-        Threshold for favorable scores (in 100-point scale). Default is 70.
+        Threshold on a 100-point scale above which a score is favourable.
+        Defaults to 70.
     unfav_threshold : int, optional
-        Threshold for unfavorable scores (in 100-point scale). Default is 40.
+        Threshold on a 100-point scale below which a score is unfavourable.
+        Defaults to 40.
     drop_neutral : bool, optional
-        Whether to drop neutral scores. Default is True.
+        Whether to drop neutral scores. Defaults to ``True``.
 
     Returns
     -------
-    pandas DataFrame
-        The returned DataFrame includes all original columns, plus for each ordinal metric:
-        - '<metric>_100': the metric rescaled to a 100-point scale
-        - '<metric>_fav': the favorability category ('fav', 'unfav', or 'neu')
-        If `drop_neutral` is True, rows with neutral scores are removed.
+    pandas.DataFrame
+        Input DataFrame with added ``<metric>_100`` and ``<metric>_fav``
+        columns. If ``drop_neutral`` is ``True``, rows with neutral scores
+        are removed.
 
-    Example
-    -------
+    Examples
+    --------
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
-    >>> vi.compute_fav(data=pq_data, ord_metrics=["eSat", "Initiative"], item_options=5, fav_threshold=70, unfav_threshold=40, drop_neutral=True)
+    >>> vi.compute_fav(
+    ...     data=pq_data,
+    ...     ord_metrics=["eSat", "Initiative"],
+    ...     item_options=5,
+    ...     fav_threshold=70,
+    ...     unfav_threshold=40,
+    ...     drop_neutral=True,
+    ... )
     """
     # Validate inputs
     if not isinstance(ord_metrics, list):

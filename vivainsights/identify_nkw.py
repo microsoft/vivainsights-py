@@ -19,38 +19,36 @@ def identify_nkw(
     collab_threshold = 5,
     return_type = 'data_summary'
 ):
-    """
-    Name
-    -------
-    identify_nkw
+    """Identify non-knowledge workers based on collaboration activity.
 
-    Description
-    -------
-    Identifies non-knowledge workers based on their average collaboration hours.
-    This function groups the input data by 'PersonId' and 'Organization', calculates the mean collaboration hours for each group, and flags those with average collaboration hours below a specified threshold as non-knowledge workers. It then calculates the proportion of non-knowledge workers in each organization.
+    Groups the data by ``PersonId`` and ``Organization``, computes mean
+    collaboration hours, and flags employees below the threshold as
+    non-knowledge workers.
 
     Parameters
-    -------
-        data (pd.DataFrame): The input data. Must contain the columns 'PersonId', 'Organization', and 'Collaboration_hours'.
-        collab_threshold (int, optional): The threshold for average collaboration hours below which a person is considered a non-knowledge worker. Defaults to 5.
-        return_type (str, optional): Specifies the type of data to return. 
-        - If 'data_with_flag', returns the input data with an additional 'flag_nkw' column indicating whether each person is a non-knowledge worker. 
-        - If 'data_summary', returns a summary of the number and proportion of non-knowledge workers in each organization. 
-        - If 'text', returns a text summary of the number and proportion of non-knowledge workers in each organization.
-        Defaults to 'data_summary'.
+    ----------
+    data : pandas.DataFrame
+        Person query data.  Must contain ``PersonId``, ``Organization``,
+        and ``Collaboration_hours``.
+    collab_threshold : int, default 5
+        Average weekly collaboration hours below which a person is
+        considered a non-knowledge worker.
+    return_type : str, default "data_summary"
+        ``"data_with_flag"`` adds a ``flag_nkw`` column, ``"data_summary"``
+        returns per-organization counts, ``"text"`` returns a diagnostic
+        message, ``"data_clean"`` / ``"data_cleaned"`` returns only
+        knowledge workers.
 
     Returns
     -------
-        pd.DataFrame: The output data, as specified by the 'return_type' parameter.
-        
-    Example
-    -------
-    >>> vi.identify_nkw(
-    >>>        data = pq_data,
-    >>>        collab_threshold=15,
-    >>>        return_type = 'text'
-    >>>    )
-    
+    pandas.DataFrame or str
+        Depending on *return_type*.
+
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> vi.identify_nkw(pq_data, collab_threshold=15, return_type="text")
     """
     summary_byPersonId = (
         data.groupby(['PersonId', 'Organization'])

@@ -18,67 +18,39 @@ from matplotlib.ticker import FixedLocator
 
 
 def identify_holidayweeks(data: pd.DataFrame, sd = 1, return_type = "text",figsize: tuple = None):
-    """"
-    Name
-    -----
-    identify_holidayweeks
+    """Detect holiday weeks by scanning for anomalous collaboration hours.
 
-    Description
-    -----------
-    Identify Holiday Weeks based on outliers.
-    This function scans a standard query output for weeks where collaboration
-    hours is far outside the mean. Returns a list of weeks that appear to be
-    holiday weeks and optionally an edited dataframe with outliers removed. By
-    default, missing values are excluded.
-
-    As best practice, run this function prior to any analysis to remove atypical
-    collaboration weeks from your dataset.    
+    Scans a standard person query for weeks where collaboration hours fall
+    far below the mean.  As best practice, run this function before other
+    analyses to remove atypical weeks from the dataset.
 
     Parameters
     ----------
-    data : pandas dataframe
-        A Standard Person Query dataset in the form of a data frame.
-    sd : int 
-        The standard deviation below the mean for collaboration hours that should 
-        define an outlier week.  Enter a positive number. 
-        Default is 1 standard deviation.
-    figsize : tuple, optional
-        The `figsize` parameter is an optional tuple that specifies the size of the figure for the boxplot visualization. It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.
-    return_type : str
-        String specifying what to return. This must be one of the following strings:
-        - "text" (default)
-        - "labelled_data" or "dirty_data" or "data_dirty"
-        - "cleaned_data" or "data_cleaned"
-        - "holidayweeks_data"
-        - "plot"
+    data : pandas.DataFrame
+        Person query data.  Must contain ``MetricDate`` and
+        ``Collaboration_hours``.
+    sd : int or float, default 1
+        Number of standard deviations below the mean to flag as an
+        outlier.  Enter a positive number.
+    return_type : str, default "text"
+        One of ``"text"``, ``"labelled_data"`` / ``"dirty_data"`` /
+        ``"data_dirty"``, ``"cleaned_data"`` / ``"data_cleaned"``,
+        ``"holidayweeks_data"``, or ``"plot"``.
+    figsize : tuple or None, default None
+        Figure size ``(width, height)`` in inches.  Defaults to ``(8, 6)``.
 
     Returns
     -------
-    A different output is returned depending on the value passed to return_type:
-
-    text : str
-        A message is printed identifying holiday weeks.
-    data_cleaned / cleaned_data : pandas dataframe
-        A dataset with outlier weeks removed is returned.
-    data_dirty / dirty_data / labelled_data : pandas dataframe
-        A dataset with only outlier weeks is returned.
-    holidayweeks_data : pandas dataframe
-        A dataset with only outlier weeks is returned.
-    plot : matplotlib plot 
-        A line plot of Collaboration Hours with holiday weeks highlighted.
+    str, pandas.DataFrame, or matplotlib.figure.Figure
+        A diagnostic string, a filtered dataset, or a line chart
+        depending on *return_type*.
 
     Examples
     --------
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
-    >>> vi.identify_holidayweeks(pq_data, sd = .75, return_type = "text")
-    "The weeks where collaboration was 0.75 standard deviations below the mean (18.7) are: `05/22/2022`"
-
-    >>> vi.identify_holidayweeks(pq_data, sd = .75, return_type = "plot")
-    
-    >>> vi.identify_holidayweeks(pq_data, sd = .75, return_type = "cleaned_data")
-    
-    >>> vi.identify_holidayweeks(pq_data, sd = .75, return_type = "holidayweeks_data")
+    >>> vi.identify_holidayweeks(pq_data, sd=0.75, return_type="text")
+    >>> vi.identify_holidayweeks(pq_data, sd=0.75, return_type="plot")
     """
 
     try:

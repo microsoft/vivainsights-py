@@ -15,41 +15,33 @@ import matplotlib.pyplot as plt
 
 def network_summary(graph, hrvar = None, return_type = "table"):
     """
-    Name
-    ----
-    network_summary
-
-    Description
-    ------------
-    This function summarises node centrality statistics with an igraph object.
+    Summarise node centrality statistics from an igraph object.
 
     Parameters
     ----------
-    graph : igraph object
-        'igraph' object that can be returned from `network_g2g()` or `network_p2p()` when the `return` argument is set to `"network"`.
-    hrvar : str 
-        String containing the name of the HR Variable by which to split metrics. Defaults to `None`.
-    return_type : str 
-        String specifying what output to return. Valid inputs include:
-        - `"table"`
-        - `"network"`
-        - `"plot"`
-   
+    graph : igraph.Graph
+        Graph object returned from ``network_g2g()`` or ``network_p2p()``
+        with ``return_type="network"``.
+    hrvar : str, optional
+        HR variable by which to split metrics. Defaults to ``None``.
+    return_type : str
+        Type of output to return. Valid values:
+
+        - ``"table"`` (default): summary DataFrame.
+        - ``"network"``: igraph object with centrality attributes added.
+        - ``"plot"``: (not yet implemented).
+
     Returns
     -------
-    By default, a data frame containing centrality statistics. Available statistics include:
-    - `betweenness`: number of shortest paths going through a node.
-    - `closeness`: number of steps required to access every other node from a given node.
-    - `degree`: number of connections linked to a node.
-    - `eigenvector`: a measure of the influence a node has on a network.
-    - `pagerank`: calculates the PageRank for the specified vertices.
+    pandas.DataFrame or igraph.Graph
+        DataFrame with columns ``betweenness``, ``closeness``, ``degree``,
+        ``eigenvector``, and ``pagerank``; or the enriched igraph object.
 
     Examples
     --------
     >>> import vivainsights as vi
-    >>> # Assign igraph object to `graph`
-    >>> graph = network_g2g(data = vi.load_g2g_data(), return_type = "network")
-    >>> network_summary(graph, hrvar = "Organization", return_type = "table")
+    >>> graph = vi.network_g2g(data=vi.load_g2g_data(), return_type="network")
+    >>> vi.network_summary(graph, hrvar="Organization", return_type="table")
     """ 
     #calculate summary table
     sum_tb = pd.DataFrame({

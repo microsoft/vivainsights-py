@@ -11,28 +11,32 @@ __all__ = ['totals_col']
 import pandas as pd
 
 def totals_col(data: pd.DataFrame, total_value: str ='Total'):
-    '''    
-    Name
-    ----
-    totals_col
-
-    Description
-    -----------
-    The function `totals_col` adds a new column with a specified total value to a given pandas DataFrame.
+    """
+    Add a new column with a specified total value to a DataFrame.
 
     Parameters
     ----------
-    data : pandas dataframe
-        A pandas DataFrame that represents the data you want to add a totals column to.
-    total_value : optional
-        The `total_value` parameter is a string that represents the name of the new column that will be
-    added to the DataFrame. By default, it is set to 'Total'.
-    
+    data : pandas.DataFrame
+        Input DataFrame.
+    total_value : str, optional
+        Name and fill value for the new column. Defaults to ``"Total"``.
+
     Returns
     -------
-    The function `totals_col` returns the modified DataFrame `data` with a new column added.
-    
-    '''
+    pandas.DataFrame
+        The input DataFrame with the new column appended.
+
+    Raises
+    ------
+    ValueError
+        If a column named ``total_value`` already exists.
+
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> vi.totals_col(pq_data, total_value="Total")
+    """
     if total_value in data.columns:
         raise ValueError(f"Column '{total_value}' already exists. Please supply a different value to `total_value`")
 

@@ -2,33 +2,34 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-'''
+"""
 Validate that required variables exist in a DataFrame.
-'''
+"""
 import pandas as pd
 
 __all__ = ['check_inputs']
 
 def check_inputs(data: pd.DataFrame, requirements: str):
   """
-  Name
-  -----
-  check_inputs
-  
-  Description
-  -----------
-  The function `check_inputs` checks if each variable in the `requirements` list is present as a column in the `data` object. If any variable is missing, it raises an error.
+  Check that each variable in ``requirements`` exists as a column in ``data``.
 
   Parameters
   ----------
-  data : pandas dataframe
-      The `data` parameter is expected to be a pandas DataFrame object that contains the data to be checked.
-  requirements : str list
-      The `requirements` parameter is a list of variables that are required to be present in the `data` object. 
-    
-  Example
-  -------
-  >>> check_inputs(iris, ["Sepal.Length", "Sepal.Width", "RandomVariable"])
+  data : pandas.DataFrame
+      DataFrame to validate.
+  requirements : list of str
+      Column names that must be present in ``data``.
+
+  Raises
+  ------
+  ValueError
+      If any required variable is missing from ``data``.
+
+  Examples
+  --------
+  >>> import vivainsights as vi
+  >>> pq_data = vi.load_pq_data()
+  >>> vi.check_inputs(pq_data, ["PersonId", "MetricDate"])
   """  
   # Check if the required variables are in the data
   # Raise an error if not

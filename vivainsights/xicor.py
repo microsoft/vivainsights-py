@@ -13,34 +13,32 @@ from scipy.stats import rankdata
 
 def xicor(x, y, ties=True):
     """
-    Name
-    -----
-    xicor
-    
-    Description
-    ------------
-    Calculate Chatterjee's Rank Correlation Coefficient, a measure of association 
-    between two variables, useful for identifying monotonic relationships.
+    Calculate Chatterjee's rank correlation coefficient.
+
+    A measure of association between two variables, useful for identifying
+    monotonic relationships.
 
     Parameters
-    -----------
+    ----------
     x : array-like
-        A numeric array representing the independent variable.
+        Numeric array representing the independent variable.
     y : array-like
-        A numeric array representing the dependent variable.
-    ties : bool
-        A boolean indicating whether to handle ties in the data. 
-                 Default is True.
+        Numeric array representing the dependent variable.
+    ties : bool, optional
+        Whether to handle ties in the data. Defaults to ``True``.
 
     Returns
-    ---------
-    float: A numeric value representing Chatterjee's rank correlation coefficient.
+    -------
+    float
+        Chatterjee's rank correlation coefficient.
 
     Raises
-    -------
-    ValueError: If the lengths of X and Y are not the same.
+    ------
+    ValueError
+        If ``x`` and ``y`` have different lengths.
 
-    Examples:
+    Examples
+    --------
     >>> X = [1, 2, 3, 4, 5]
     >>> Y = [2, 1, 4, 3, 5]
     >>> xicor(X, Y)

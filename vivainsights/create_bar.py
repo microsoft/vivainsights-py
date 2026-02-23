@@ -33,7 +33,29 @@ def create_bar_calc(
     mingroup = 5,
     stats = False
     ):
-    """Calculate the mean of a selected metric, grouped by a selected HR variable."""
+    """Calculate the mean of a metric, grouped by an HR variable.
+
+    Aggregates at the person level first, then at the level of the
+    grouping variable.  Used internally by ``create_bar``.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Person query data.
+    metric : str
+        Name of the metric column.
+    hrvar : str
+        Name of the organizational attribute for grouping.
+    mingroup : int, default 5
+        Minimum group size; groups below this threshold are dropped.
+    stats : bool, default False
+        If ``True``, append standard deviation, median, min, and max.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Summary table with the mean of the metric per group.
+    """
     data = data.groupby(['PersonId',hrvar])        
     data = data[metric].mean()
     data = data.reset_index()
@@ -80,7 +102,34 @@ def create_bar_viz(
     plot_title = None,
     plot_subtitle = None,
     figsize: tuple = None):
-    """Visualise the mean of a selected metric, grouped by a selected HR variable."""
+    """Create a horizontal bar chart of mean metric values by group.
+
+    Used internally by ``create_bar`` when ``return_type="plot"``.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Person query data.
+    metric : str
+        Name of the metric column.
+    hrvar : str
+        Name of the organizational attribute for grouping.
+    mingroup : int, default 5
+        Minimum group size.
+    percent : bool, default False
+        Whether to format the x-axis as percentages.
+    plot_title : str or None, default None
+        Custom plot title.  Defaults to a cleaned version of *metric*.
+    plot_subtitle : str or None, default None
+        Custom subtitle.
+    figsize : tuple or None, default None
+        Figure size ``(width, height)`` in inches.  Defaults to ``(8, 6)``.
+
+    Returns
+    -------
+    matplotlib.figure.Figure
+        The bar chart figure.
+    """
     sum_df = create_bar_calc(data, metric, hrvar, mingroup)
     caption_text = extract_date_range(data, return_type='text')
     plot_order = sum_df[hrvar].to_numpy()
@@ -167,47 +216,44 @@ def create_bar(
     plot_subtitle = None,
     figsize: tuple = None
     ):
-    """
-    Name
-    -----
-    create_bar 
-    
-    Description
-    -----------
-    The function `create_bar` calculates and visualizes the mean of a selected metric, grouped by a selected HR variable. 
-    The metrics are first aggregated at a user-level prior to being aggregated at the level of the HR variable. 
-    `create_bar` returns either a plot object or a table, depending on the value passed to `return_type`.
-    Internally, `create_bar` calls `create_bar_viz()` and `create_bar_calc()` to create the plot and calculate the mean of the selected metric, respectively.
+    """Calculate and visualize the mean of a metric by organizational group.
+
+    Metrics are first aggregated at the person level before being aggregated
+    at the level of the HR variable.  Returns either a plot or a summary
+    table depending on *return_type*.  Internally delegates to
+    ``create_bar_calc`` and ``create_bar_viz``.
 
     Parameters
     ----------
-    data : pd.DataFrame
+    data : pandas.DataFrame
         Person query data.
     metric : str
-        Name of the metric to be analysed.
+        Name of the metric to analyse.
     hrvar : str
-        Name of the organizational attribute to be used for grouping.
-    mingroup : int, optional
-        Minimum group size. Defaults to 5.
-    percent : bool, optional
-        Whether to display values as percentages. Defaults to False.
-    return_type : str, optional
-        The type of output to return. Can be "plot" or "table". Defaults to "plot".
-    plot_title : str, optional
-        Title of the plot. Defaults to None.
-    plot_subtitle : str, optional
-        Subtitle of the plot. Defaults to None.
-    figsize : tuple, optional
-        The `figsize` parameter is an optional tuple that specifies the size of the figure for the boxplot visualization. It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.
+        Name of the organizational attribute for grouping.
+    mingroup : int, default 5
+        Minimum group size; smaller groups are excluded.
+    percent : bool, default False
+        Whether to display values as percentages.
+    return_type : str, default "plot"
+        ``"plot"`` for a matplotlib figure, ``"table"`` for a DataFrame.
+    plot_title : str or None, default None
+        Custom plot title.
+    plot_subtitle : str or None, default None
+        Custom plot subtitle.
+    figsize : tuple or None, default None
+        Figure size ``(width, height)`` in inches.  Defaults to ``(8, 6)``.
 
     Returns
     -------
-    Various
-        The output, either a plot or a table, depending on the value passed to `return_type`.
+    matplotlib.figure.Figure or pandas.DataFrame
+        A bar chart figure or a summary table.
 
-    Example
-    -------
-    >>> create_bar(pq_data, metric = "Collaboration_hours", hrvar = "LevelDesignation")
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> vi.create_bar(pq_data, metric="Collaboration_hours", hrvar="LevelDesignation")
     """  
     
     ## Handling None value passed to hrvar
