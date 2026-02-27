@@ -53,9 +53,23 @@ def identify_churn(data: pd.DataFrame,
 
   Examples
   --------
+  Return a diagnostic text summary:
+
   >>> import vivainsights as vi
   >>> pq_data = vi.load_pq_data()
   >>> vi.identify_churn(pq_data, return_type="text")
+
+  Return the set of churned PersonIds:
+
+  >>> vi.identify_churn(pq_data, return_type="data")
+
+  Flip the logic to detect employees who appear only in later weeks:
+
+  >>> vi.identify_churn(pq_data, flip=True, return_type="text")
+
+  Customize the number of boundary weeks to compare:
+
+  >>> vi.identify_churn(pq_data, n1=3, n2=3, return_type="text")
   """
 
   data[date_column] = pd.to_datetime(data[date_column], format = date_format) # Ensure correct format

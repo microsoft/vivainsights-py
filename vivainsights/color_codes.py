@@ -10,6 +10,25 @@ from enum import Enum
 __all__ = ['Colors', 'COLOR_PALLET_ALT_1', 'COLOR_PALLET_ALT_2']
 
 class Colors(Enum):
+    """Standard colour palette for vivainsights visualizations.
+
+    Each member stores a hex colour string.
+
+    Examples
+    --------
+    Access the primary colour:
+
+    >>> from vivainsights.color_codes import Colors
+    >>> Colors.PRIMARY.value
+    '#1d627e'
+
+    Use a colour in a matplotlib plot:
+
+    >>> import matplotlib.pyplot as plt
+    >>> fig, ax = plt.subplots()
+    >>> ax.bar(["A", "B"], [3, 7], color=Colors.HIGHLIGHT_POSITIVE.value)
+    """
+
     PRIMARY = '#1d627e'
     HIGHLIGHT_POSITIVE = '#34b1e2'
     HIGHLIGHT_NEGATIVE = '#fe7f4f'
@@ -21,6 +40,13 @@ class Colors(Enum):
     NEGATIVE_ALT_3 = '#facebc'
     NON_HIGHLIGHT = '#e1e1e1'
 
+
+#: Ten-colour palette suitable for categorical data.
+#:
+#: Examples
+#: --------
+#: >>> from vivainsights.color_codes import COLOR_PALLET_ALT_1
+#: >>> COLOR_PALLET_ALT_1[:3]  # first three colours
 COLOR_PALLET_ALT_1 = [
     Colors.PRIMARY.value,
     Colors.HIGHLIGHT_POSITIVE.value,
@@ -34,6 +60,13 @@ COLOR_PALLET_ALT_1 = [
     Colors.NON_HIGHLIGHT.value
     ]
 
+#: Six-colour palette used for heatmaps and trend charts.
+#:
+#: Examples
+#: --------
+#: >>> from vivainsights.color_codes import COLOR_PALLET_ALT_2
+#: >>> len(COLOR_PALLET_ALT_2)
+#: 6
 COLOR_PALLET_ALT_2 = [
     Colors.PRIMARY.value,
     Colors.HIGHLIGHT_POSITIVE.value,

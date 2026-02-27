@@ -39,9 +39,15 @@ def network_summary(graph, hrvar = None, return_type = "table"):
 
     Examples
     --------
+    Return centrality metrics as a table:
+
     >>> import vivainsights as vi
     >>> graph = vi.network_g2g(data=vi.load_g2g_data(), return_type="network")
     >>> vi.network_summary(graph, hrvar="Organization", return_type="table")
+
+    Return the enriched igraph network object:
+
+    >>> vi.network_summary(graph, hrvar="Organization", return_type="network")
     """ 
     #calculate summary table
     sum_tb = pd.DataFrame({

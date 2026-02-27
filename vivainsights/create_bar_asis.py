@@ -52,10 +52,29 @@ def create_bar_asis(data, group_var, bar_var, title=None, subtitle=None, caption
 
     Examples
     --------
+    Basic bar chart from pre-aggregated data:
+
     >>> import vivainsights as vi
     >>> import pandas as pd
     >>> df = pd.DataFrame({"Group": ["A", "B", "C"], "Value": [10, 20, 15]})
     >>> vi.create_bar_asis(df, group_var="Group", bar_var="Value")
+
+    Customize title, subtitle, caption, and bar colour:
+
+    >>> vi.create_bar_asis(
+    ...     df,
+    ...     group_var="Group",
+    ...     bar_var="Value",
+    ...     title="Custom Title",
+    ...     subtitle="Breakdown by Group",
+    ...     caption="Source: sample data",
+    ...     bar_colour="alert",
+    ... )
+
+    Display values as percentages with custom rounding:
+
+    >>> pct = pd.DataFrame({"Team": ["X", "Y"], "Rate": [0.75, 0.62]})
+    >>> vi.create_bar_asis(pct, group_var="Team", bar_var="Rate", percent=True, rounding=2)
     """
 
     # Set default colors if not specified

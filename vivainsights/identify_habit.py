@@ -65,9 +65,31 @@ def identify_habit(
 
     Examples
     --------
+    Return classified data with habit labels:
+
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> vi.identify_habit(pq_data, metric='Multitasking_hours', threshold=1, width=9, max_window=12, return_type="data")
+
+    Return a plot of habit classification over time:
+
+    >>> vi.identify_habit(pq_data, metric='Multitasking_hours', threshold=1, width=9, max_window=12, return_type="plot")
+
+    Return a summary dictionary of habit statistics:
+
+    >>> vi.identify_habit(pq_data, metric='Multitasking_hours', threshold=1, width=9, max_window=12, return_type="summary")
+
+    Group results by an HR variable:
+
+    >>> vi.identify_habit(
+    ...     pq_data,
+    ...     metric='Multitasking_hours',
+    ...     threshold=1,
+    ...     width=9,
+    ...     max_window=12,
+    ...     hrvar='Organization',
+    ...     return_type="plot",
+    ... )
     """
     # Ensure MetricDate is a datetime object
     data['MetricDate'] = pd.to_datetime(data['MetricDate'])

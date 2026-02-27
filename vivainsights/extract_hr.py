@@ -44,11 +44,23 @@ def extract_hr(
 
     Examples
     --------
+    Print HR variable names to console (default):
+
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> vi.extract_hr(data=pq_data)
-    >>>
+
+    Return the HR columns as a filtered DataFrame:
+
     >>> vi.extract_hr(data=pq_data, return_type="vars")
+
+    Return a list of suggested HR column names:
+
+    >>> vi.extract_hr(data=pq_data, return_type="suggestion")
+
+    Adjust the maximum unique values threshold:
+
+    >>> vi.extract_hr(data=pq_data, max_unique=50, return_type="names")
     """
     try:
         if((isinstance(max_unique, int)) and (isinstance(exclude_constants, bool))\

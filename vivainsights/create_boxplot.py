@@ -256,9 +256,28 @@ def create_boxplot(data: pd.DataFrame, metric: str, hrvar: str ="Organization", 
 
     Examples
     --------
+    Return a boxplot (default):
+
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> vi.create_boxplot(pq_data, metric="Collaboration_hours", hrvar="Organization")
+
+    Return a summary table with mean, median, sd, min, max:
+
+    >>> vi.create_boxplot(pq_data, metric="Collaboration_hours", hrvar="Organization", return_type="table")
+
+    Return the processed person-level data:
+
+    >>> vi.create_boxplot(pq_data, metric="Collaboration_hours", hrvar="Organization", return_type="data")
+
+    Customize the figure size:
+
+    >>> vi.create_boxplot(
+    ...     pq_data,
+    ...     metric="Collaboration_hours",
+    ...     hrvar="LevelDesignation",
+    ...     figsize=(12, 8),
+    ... )
     """
     # Check inputs
     required_variables = ["MetricDate", metric, "PersonId"]

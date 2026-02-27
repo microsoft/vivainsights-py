@@ -81,6 +81,13 @@ def get_value_proportion(df, population_share):
     ------
     ValueError
         If *population_share* is not between 0 and 1.
+
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> lorenz_table = vi.create_lorenz(data=pq_data, metric="Emails_sent", return_type="table")
+    >>> vi.get_value_proportion(lorenz_table, population_share=0.5)
     """
     if population_share < 0 or population_share > 1:
         raise ValueError("Population share must be between 0 and 1")
@@ -109,6 +116,12 @@ def compute_gini(x):
     ------
     ValueError
         If *x* is not a numeric vector.
+
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> vi.compute_gini(pq_data["Emails_sent"])
     """
     if not isinstance(x, (list, np.ndarray, pd.Series)):
         raise ValueError("Input must be a numeric vector")
@@ -149,9 +162,27 @@ def create_lorenz(data, metric, return_type="plot",figsize: Optional[Tuple[float
 
     Examples
     --------
+    Compute the Gini coefficient:
+
     >>> import vivainsights as vi
     >>> vi.create_lorenz(data=vi.load_pq_data(), metric="Emails_sent", return_type="gini")
+
+    Display the Lorenz curve plot:
+
     >>> vi.create_lorenz(data=vi.load_pq_data(), metric="Emails_sent", return_type="plot")
+
+    Return a table of cumulative population and value shares:
+
+    >>> vi.create_lorenz(data=vi.load_pq_data(), metric="Emails_sent", return_type="table")
+
+    Customize the figure size:
+
+    >>> vi.create_lorenz(
+    ...     data=vi.load_pq_data(),
+    ...     metric="Collaboration_hours",
+    ...     return_type="plot",
+    ...     figsize=(10, 8),
+    ... )
     """
     if metric not in data.columns:
         raise ValueError(f"Metric '{metric}' not found in data.")

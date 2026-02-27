@@ -33,9 +33,15 @@ def totals_col(data: pd.DataFrame, total_value: str ='Total'):
 
     Examples
     --------
+    Add a default "Total" column:
+
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> vi.totals_col(pq_data, total_value="Total")
+
+    Use a custom label:
+
+    >>> vi.totals_col(pq_data, total_value="AllEmployees")
     """
     if total_value in data.columns:
         raise ValueError(f"Column '{total_value}' already exists. Please supply a different value to `total_value`")

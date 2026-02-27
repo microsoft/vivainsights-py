@@ -36,6 +36,8 @@ def create_odds_ratios(data: pd.DataFrame, ord_metrics: list, metric: str, retur
 
     Examples
     --------
+    Return an odds-ratio summary table:
+
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> vi.create_odds_ratios(
@@ -43,6 +45,15 @@ def create_odds_ratios(data: pd.DataFrame, ord_metrics: list, metric: str, retur
     ...     ord_metrics=["Engagement_Score", "Satisfaction_Score"],
     ...     metric="Copilot_Usage",
     ...     return_type="table",
+    ... )
+
+    Return a visualization of the odds ratios:
+
+    >>> vi.create_odds_ratios(
+    ...     data=pq_data,
+    ...     ord_metrics=["Engagement_Score", "Satisfaction_Score"],
+    ...     metric="Copilot_Usage",
+    ...     return_type="plot",
     ... )
     """
     # Validate inputs
@@ -143,6 +154,8 @@ def compute_fav(data: pd.DataFrame, ord_metrics: list, item_options: int = 5, fa
 
     Examples
     --------
+    Compute favourability scores with neutral rows dropped:
+
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> vi.compute_fav(
@@ -152,6 +165,17 @@ def compute_fav(data: pd.DataFrame, ord_metrics: list, item_options: int = 5, fa
     ...     fav_threshold=70,
     ...     unfav_threshold=40,
     ...     drop_neutral=True,
+    ... )
+
+    Keep neutral rows for further analysis:
+
+    >>> vi.compute_fav(
+    ...     data=pq_data,
+    ...     ord_metrics=["eSat"],
+    ...     item_options=5,
+    ...     fav_threshold=70,
+    ...     unfav_threshold=40,
+    ...     drop_neutral=False,
     ... )
     """
     # Validate inputs

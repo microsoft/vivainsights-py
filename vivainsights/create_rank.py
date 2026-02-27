@@ -197,9 +197,25 @@ def create_rank(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, retur
 
     Examples
     --------
+    Return a dumbbell chart (default):
+
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> vi.create_rank(pq_data, hrvar=["FunctionType", "Organization"], metric="Emails_sent")
+
+    Return a ranked summary table:
+
+    >>> vi.create_rank(pq_data, hrvar=["FunctionType", "Organization"], metric="Emails_sent", return_type="table")
+
+    Customize figure size and minimum group size:
+
+    >>> vi.create_rank(
+    ...     pq_data,
+    ...     hrvar=["LevelDesignation", "Organization"],
+    ...     metric="Collaboration_hours",
+    ...     mingroup=10,
+    ...     figsize=(10, 5),
+    ... )
     """
     if type(hrvar)==str:
         hrvar = [hrvar]

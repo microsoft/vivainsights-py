@@ -37,9 +37,15 @@ def identify_outlier(data: pd.DataFrame, group_var = "MetricDate", metric = "Col
 
     Examples
     --------
+    Detect outlier groups using the default grouping variable:
+
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> vi.identify_outlier(pq_data, metric="Collaboration_hours")
+
+    Specify a custom grouping variable:
+
+    >>> vi.identify_outlier(pq_data, metric="Collaboration_hours", group_var="LevelDesignation")
     """ 
 
     try:

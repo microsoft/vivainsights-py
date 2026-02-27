@@ -79,9 +79,26 @@ def create_trend(data: pd.DataFrame,
 
   Examples
   --------
+  Return a heatmap (default):
+
   >>> import vivainsights as vi
   >>> pq_data = vi.load_pq_data()
   >>> vi.create_trend(pq_data, metric="Collaboration_hours", hrvar="LevelDesignation")
+
+  Return a pivoted summary table:
+
+  >>> vi.create_trend(pq_data, metric="Collaboration_hours", hrvar="LevelDesignation", return_type="table")
+
+  Customize the legend title, figure size, and date format:
+
+  >>> vi.create_trend(
+  ...     pq_data,
+  ...     metric="Collaboration_hours",
+  ...     hrvar="Organization",
+  ...     legend_title="Avg Hours",
+  ...     figsize=(12, 6),
+  ...     date_format="%Y-%m-%d",
+  ... )
   """
   
   if(hrvar is None):

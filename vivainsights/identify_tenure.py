@@ -55,9 +55,27 @@ def identify_tenure(data: pd.DataFrame,
 
   Examples
   --------
+  Return a text summary of tenure distribution:
+
   >>> import vivainsights as vi
   >>> pq_data = vi.load_pq_data()
   >>> vi.identify_tenure(pq_data, return_type="text")
+
+  Return a density plot of tenure:
+
+  >>> vi.identify_tenure(pq_data, return_type="plot")
+
+  Return the dataset with a computed tenure column:
+
+  >>> vi.identify_tenure(pq_data, return_type="data")
+
+  Return only rows with short tenure (below threshold):
+
+  >>> vi.identify_tenure(pq_data, maxten=40, return_type="data_cleaned")
+
+  Specify custom date column names:
+
+  >>> vi.identify_tenure(pq_data, beg_date="HireDate", end_date="MetricDate", return_type="text")
   """  
   required_variables = [beg_date, end_date]
   # check if required columns are not present

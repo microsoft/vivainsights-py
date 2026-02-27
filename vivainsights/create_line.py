@@ -256,9 +256,24 @@ def create_line(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, retur
 
     Examples
     --------
+    Return a line chart (default):
+
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> vi.create_line(pq_data, metric="Collaboration_hours", hrvar="LevelDesignation")
+
+    Return a summary table of weekly averages:
+
+    >>> vi.create_line(pq_data, metric="Collaboration_hours", hrvar="LevelDesignation", return_type="table")
+
+    Customize figure size:
+
+    >>> vi.create_line(
+    ...     pq_data,
+    ...     metric="Collaboration_hours",
+    ...     hrvar="Organization",
+    ...     figsize=(12, 6),
+    ... )
     """    
     
     ## Handling None value passed to hrvar

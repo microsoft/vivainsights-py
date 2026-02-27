@@ -16,14 +16,54 @@ from vivainsights.extract_date_range import extract_date_range
 from vivainsights.extract_hr import extract_hr
 
 def hrvar_count_calc(data: pd.DataFrame, hrvar: str):
-    """Calculate the number of distinct persons in the data population, grouped by a selected HR variable."""
+    """Calculate the number of distinct persons in the data population, grouped by a selected HR variable.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Person query data.
+    hrvar : str
+        Name of the organizational attribute for grouping.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Summary table with unique person count per group.
+
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> vi.hrvar_count_calc(pq_data, hrvar="Organization")
+    """
     data = data.groupby([hrvar])
     data = data['PersonId'].nunique().reset_index(name='n')
     output = data.sort_values(by = 'n', ascending=False)
     return output
 
 def hrvar_count_viz(data: pd.DataFrame, hrvar: str, figsize: tuple = None):
-    """Visualise the number of distinct persons in the data population, grouped by a selected HR variable."""
+    """Visualise the number of distinct persons in the data population, grouped by a selected HR variable.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Person query data.
+    hrvar : str
+        Name of the organizational attribute for grouping.
+    figsize : tuple or None, default None
+        Figure size ``(width, height)`` in inches.
+
+    Returns
+    -------
+    matplotlib.figure.Figure
+        The bar chart figure.
+
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> vi.hrvar_count_viz(pq_data, hrvar="Organization")
+    """
     sum_df = hrvar_count_calc(data = data, hrvar = hrvar)
     cap_str = extract_date_range(data, return_type = 'text')
     
@@ -183,9 +223,19 @@ def hrvar_count(data: pd.DataFrame, hrvar: str = 'Organization', figsize: tuple 
 
     Examples
     --------
+    Return a bar chart (default):
+
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> vi.hrvar_count(pq_data, hrvar="LevelDesignation")
+
+    Return a summary table:
+
+    >>> vi.hrvar_count(pq_data, hrvar="Organization", return_type="table")
+
+    Customize figure size:
+
+    >>> vi.hrvar_count(pq_data, hrvar="LevelDesignation", figsize=(10, 5))
     """
     if return_type == "plot":
         out = hrvar_count_viz(data=data, hrvar=hrvar, figsize=figsize)

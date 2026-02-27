@@ -43,8 +43,14 @@ def import_query(x, encoding: str = 'utf-8'):
 
     Examples
     --------
+    Import a standard Viva Insights CSV export:
+
     >>> import vivainsights as vi
     >>> data = vi.import_query("path/to/query.csv")
+
+    Specify a custom encoding for non-UTF-8 files:
+
+    >>> data = vi.import_query("path/to/query.csv", encoding="latin-1")
     """    
     
     # in case '.csv' is not all in lower case, make it lower case

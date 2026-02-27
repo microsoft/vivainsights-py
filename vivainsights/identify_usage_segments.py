@@ -54,9 +54,23 @@ def identify_usage_segments(data, metric=None, metric_str=None, version="12w", r
 
     Examples
     --------
+    Classify usage segments using the 12-week preset:
+
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> vi.identify_usage_segments(pq_data, metric="Emails_sent", version="12w")
+
+    Return a stacked bar chart:
+
+    >>> vi.identify_usage_segments(pq_data, metric="Emails_sent", version="12w", return_type="plot")
+
+    Return a summary table:
+
+    >>> vi.identify_usage_segments(pq_data, metric="Emails_sent", version="12w", return_type="table")
+
+    Use a metric string instead of a column name:
+
+    >>> vi.identify_usage_segments(pq_data, metric_str="Emails_sent", version="4w")
     """
     if metric is None and metric_str is None:
         raise ValueError("Please provide either a metric or a metric_str.")

@@ -42,9 +42,23 @@ def identify_inactiveweeks(data: pd.DataFrame, sd=2, return_type="text"):
 
     Examples
     --------
+    Return a diagnostic text summary:
+
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> vi.identify_inactiveweeks(pq_data, sd=2, return_type="text")
+
+    Return the full dataset with inactive weeks flagged:
+
+    >>> vi.identify_inactiveweeks(pq_data, sd=2, return_type="data")
+
+    Return only the cleaned dataset (inactive weeks removed):
+
+    >>> vi.identify_inactiveweeks(pq_data, sd=2, return_type="data_cleaned")
+
+    Return only the dirty rows (inactive weeks):
+
+    >>> vi.identify_inactiveweeks(pq_data, sd=2, return_type="data_dirty")
     """
     # Work on a copy to avoid mutating the caller's dataframe
     df = data.copy()

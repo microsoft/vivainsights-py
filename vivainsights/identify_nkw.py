@@ -46,9 +46,23 @@ def identify_nkw(
 
     Examples
     --------
+    Return a text summary of non-knowledge workers:
+
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> vi.identify_nkw(pq_data, collab_threshold=15, return_type="text")
+
+    Return a flagged dataset with ``flag_nkw`` column:
+
+    >>> vi.identify_nkw(pq_data, collab_threshold=15, return_type="data_with_flag")
+
+    Return a summary table of NKW counts by organization:
+
+    >>> vi.identify_nkw(pq_data, collab_threshold=15, return_type="data_summary")
+
+    Return only the cleaned data (non-knowledge workers removed):
+
+    >>> vi.identify_nkw(pq_data, collab_threshold=15, return_type="data_clean")
     """
     summary_byPersonId = (
         data.groupby(['PersonId', 'Organization'])

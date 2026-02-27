@@ -44,8 +44,14 @@ def p2p_data_sim(dim=1, size=300, nei=5, p=0.05):
 
     Examples
     --------
+    Generate a small simulated network:
+
     >>> import vivainsights as vi
     >>> sim = vi.p2p_data_sim(size=50)
+
+    Customize the Watts-Strogatz parameters:
+
+    >>> sim = vi.p2p_data_sim(size=100, dim=2, nei=3, p=0.1)
     """
     graph = igraph.Graph.Watts_Strogatz(dim=dim, size=size, nei=nei, p=p)
     edgelist = graph.get_edgelist()

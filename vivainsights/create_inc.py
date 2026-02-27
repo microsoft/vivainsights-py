@@ -54,6 +54,8 @@ def create_inc(data: pd.DataFrame, metric: str, hrvar: typing.Union[typing.List,
 
     Examples
     --------
+    Bar chart showing incidence above a threshold (single HR variable):
+
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> vi.create_inc(
@@ -62,6 +64,27 @@ def create_inc(data: pd.DataFrame, metric: str, hrvar: typing.Union[typing.List,
     ...     hrvar="LevelDesignation",
     ...     threshold=10,
     ...     position="above",
+    ... )
+
+    Heatmap showing incidence with two HR variables:
+
+    >>> vi.create_inc(
+    ...     pq_data,
+    ...     metric="Collaboration_hours",
+    ...     hrvar=["LevelDesignation", "Organization"],
+    ...     threshold=15,
+    ...     position="below",
+    ... )
+
+    Return a summary table instead of a plot:
+
+    >>> vi.create_inc(
+    ...     pq_data,
+    ...     metric="Collaboration_hours",
+    ...     hrvar="Organization",
+    ...     threshold=10,
+    ...     position="above",
+    ...     return_type="table",
     ... )
     """
     
@@ -105,6 +128,8 @@ def create_inc_bar(data: pd.DataFrame, metric: str, hrvar: str, mingroup: int = 
 
     Examples
     --------
+    Bar chart of incidence below a threshold:
+
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> vi.create_inc_bar(
@@ -113,6 +138,28 @@ def create_inc_bar(data: pd.DataFrame, metric: str, hrvar: str, mingroup: int = 
     ...     hrvar="LevelDesignation",
     ...     threshold=20,
     ...     position="below",
+    ... )
+
+    Return a summary table:
+
+    >>> vi.create_inc_bar(
+    ...     pq_data,
+    ...     metric="Collaboration_hours",
+    ...     hrvar="Organization",
+    ...     threshold=10,
+    ...     position="above",
+    ...     return_type="table",
+    ... )
+
+    Customize figure size:
+
+    >>> vi.create_inc_bar(
+    ...     pq_data,
+    ...     metric="Collaboration_hours",
+    ...     hrvar="LevelDesignation",
+    ...     threshold=15,
+    ...     position="above",
+    ...     figsize=(10, 5),
     ... )
     """
 
@@ -176,6 +223,31 @@ def create_inc_grid(data: pd.DataFrame, metric: str, hrvar: typing.List, mingrou
     ------
     ValueError
         If ``hrvar`` is not a list of length 2.
+
+    Examples
+    --------
+    Generate a heatmap of incidence across two HR variables:
+
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> vi.create_inc_grid(
+    ...     pq_data,
+    ...     metric="Collaboration_hours",
+    ...     hrvar=["LevelDesignation", "Organization"],
+    ...     threshold=15,
+    ...     position="above",
+    ... )
+
+    Return a summary table instead:
+
+    >>> vi.create_inc_grid(
+    ...     pq_data,
+    ...     metric="Collaboration_hours",
+    ...     hrvar=["LevelDesignation", "Organization"],
+    ...     threshold=10,
+    ...     position="below",
+    ...     return_type="table",
+    ... )
     """
 
     if not isinstance(hrvar, list) or len(hrvar) != 2:

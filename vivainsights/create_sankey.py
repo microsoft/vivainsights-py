@@ -36,9 +36,17 @@ def create_sankey(data, var1, var2, count = "n"):
 
     Examples
     --------
+    Create a Sankey diagram from a person query dataset:
+
     >>> import vivainsights as vi
-    >>> vi.create_sankey(data=pq_data, var1="Organization", var2="FunctionType")
-    """ 
+    >>> pq_data = vi.load_pq_data()
+    >>> agg = pq_data.groupby(["Organization", "FunctionType"]).agg(n=("PersonId", "nunique")).reset_index()
+    >>> vi.create_sankey(data=agg, var1="Organization", var2="FunctionType", count="n")
+
+    Use a custom count column:
+
+    >>> vi.create_sankey(data=agg, var1="Organization", var2="FunctionType", count="n")
+    """
     #Rename 
     data['pregroup'] = data[[var1]]
     data['group'] = data[[var2]]

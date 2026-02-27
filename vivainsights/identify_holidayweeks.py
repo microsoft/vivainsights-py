@@ -47,10 +47,23 @@ def identify_holidayweeks(data: pd.DataFrame, sd = 1, return_type = "text",figsi
 
     Examples
     --------
+    Return a text summary of detected holiday weeks:
+
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> vi.identify_holidayweeks(pq_data, sd=0.75, return_type="text")
+
+    Return a line chart highlighting holiday weeks:
+
     >>> vi.identify_holidayweeks(pq_data, sd=0.75, return_type="plot")
+
+    Return a cleaned dataset with holiday weeks removed:
+
+    >>> vi.identify_holidayweeks(pq_data, sd=0.75, return_type="cleaned_data")
+
+    Return the dataset with holiday weeks labelled:
+
+    >>> vi.identify_holidayweeks(pq_data, sd=0.75, return_type="labelled_data")
     """
 
     try:

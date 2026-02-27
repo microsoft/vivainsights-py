@@ -39,9 +39,16 @@ def xicor(x, y, ties=True):
 
     Examples
     --------
+    Compute the correlation with tied values handled (default):
+
+    >>> from vivainsights import xicor
     >>> X = [1, 2, 3, 4, 5]
     >>> Y = [2, 1, 4, 3, 5]
     >>> xicor(X, Y)
+
+    Disable tie correction:
+
+    >>> xicor(X, Y, ties=False)
     """
     
     n = len(x)

@@ -251,9 +251,27 @@ def create_bar(
 
     Examples
     --------
+    Return a bar plot (default):
+
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> vi.create_bar(pq_data, metric="Collaboration_hours", hrvar="LevelDesignation")
+
+    Return a summary table instead of a plot:
+
+    >>> vi.create_bar(pq_data, metric="Collaboration_hours", hrvar="LevelDesignation", return_type="table")
+
+    Display values as percentages with a custom title and figure size:
+
+    >>> vi.create_bar(
+    ...     pq_data,
+    ...     metric="Collaboration_hours",
+    ...     hrvar="Organization",
+    ...     percent=True,
+    ...     plot_title="Collaboration Hours",
+    ...     plot_subtitle="Percentage by Organization",
+    ...     figsize=(10, 5),
+    ... )
     """  
     
     ## Handling None value passed to hrvar

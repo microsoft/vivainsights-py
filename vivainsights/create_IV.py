@@ -124,6 +124,8 @@ def p_test(
     
     Examples
     --------    
+    Test p-values for numeric predictors:
+
     >>> import vivainsights as vi
     >>> import pandas as pd
     >>> data = pd.DataFrame({
@@ -134,6 +136,11 @@ def p_test(
     >>> outcome = 'outcome'
     >>> behavior = ['behavior1', 'behavior2']
     >>> vi.p_test(data, outcome, behavior)
+
+    Include a categorical predictor:
+
+    >>> data['department'] = ['HR', 'Eng', 'HR', 'Eng', 'HR']
+    >>> vi.p_test(data, outcome, ['behavior1', 'department'])
     """
     
     # Filter the dataset based on the outcome variable
@@ -242,6 +249,8 @@ def calculate_IV(
 
     Examples
     --------
+    Calculate IV for a numeric predictor:
+
     >>> import vivainsights as vi
     >>> import pandas as pd
     >>> data = pd.DataFrame({
@@ -252,6 +261,11 @@ def calculate_IV(
     >>> predictor = 'predictor'
     >>> bins = 5
     >>> vi.calculate_IV(data, outcome, predictor, bins)
+
+    Calculate IV for a categorical predictor:
+
+    >>> data['dept'] = ['HR', 'Eng', 'HR', 'Eng', 'HR']
+    >>> vi.calculate_IV(data, 'outcome', 'dept', bins=5)
     """
     
     pred_var = data[predictor]
@@ -376,6 +390,24 @@ def map_IV(
     dict
         Dictionary with keys ``"Tables"`` (per-predictor IV DataFrames) and
         ``"Summary"`` (aggregate IV DataFrame sorted descending).
+
+    Examples
+    --------
+    Map IV across all numeric predictors:
+
+    >>> import vivainsights as vi
+    >>> import pandas as pd
+    >>> data = pd.DataFrame({
+    ...     'outcome': [1, 0, 1, 0, 1, 0, 1, 0],
+    ...     'hours': [10, 20, 30, 40, 15, 25, 35, 45],
+    ...     'emails': [5, 15, 25, 35, 10, 20, 30, 40],
+    ... })
+    >>> iv_result = vi.map_IV(data, outcome='outcome', predictors=['hours', 'emails'], bins=3)
+    >>> iv_result['Summary']  # aggregated IV for each predictor
+
+    Let predictors default to all numeric columns:
+
+    >>> iv_result = vi.map_IV(data, outcome='outcome', bins=3)
     """
     
     if predictors is None:
@@ -411,6 +443,9 @@ def plot_WOE(IV, predictor, figsize: tuple = None):
 
     Examples
     --------
+    Plot WOE for a predictor:
+
+    >>> import vivainsights as vi
     >>> import pandas as pd
     >>> data = pd.DataFrame({
     ...     'outcome': [1, 0, 1, 0, 1],
@@ -419,8 +454,12 @@ def plot_WOE(IV, predictor, figsize: tuple = None):
     >>> outcome = 'outcome'
     >>> predictor = 'predictor'
     >>> bins = 5
-    >>> IV = map_IV(data, outcome, [predictor], bins)
-    >>> plot_WOE(IV, predictor)
+    >>> IV = vi.map_IV(data, outcome, [predictor], bins)
+    >>> vi.plot_WOE(IV, predictor)
+
+    Customize the figure size:
+
+    >>> vi.plot_WOE(IV, predictor, figsize=(10, 6))
     """
     # Identify right table
     plot_table = IV['Tables'][predictor]

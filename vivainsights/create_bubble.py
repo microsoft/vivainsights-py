@@ -54,6 +54,8 @@ def create_bubble(data, metric_x, metric_y, hrvar="Organization", mingroup=5, re
 
     Examples
     --------
+    Return a bubble plot (default):
+
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> vi.create_bubble(
@@ -61,6 +63,28 @@ def create_bubble(data, metric_x, metric_y, hrvar="Organization", mingroup=5, re
     ...     metric_x="Collaboration_hours",
     ...     metric_y="Multitasking_hours",
     ...     hrvar="Organization",
+    ... )
+
+    Return a summary table:
+
+    >>> vi.create_bubble(
+    ...     data=pq_data,
+    ...     metric_x="Collaboration_hours",
+    ...     metric_y="Multitasking_hours",
+    ...     hrvar="LevelDesignation",
+    ...     return_type="table",
+    ... )
+
+    Customize bubble size range, minimum group size, and figure size:
+
+    >>> vi.create_bubble(
+    ...     data=pq_data,
+    ...     metric_x="Collaboration_hours",
+    ...     metric_y="Multitasking_hours",
+    ...     hrvar="Organization",
+    ...     bubble_size=(5, 200),
+    ...     mingroup=10,
+    ...     figsize=(12, 8),
     ... )
     """
     # Handling NULL values passed to hrvar
