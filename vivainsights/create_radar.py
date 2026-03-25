@@ -9,19 +9,19 @@ in the same spirit as create_bar.
 
 Core design
 -----------
-- General-purpose: works with any segment column, not just RL12 usage segments.
-- If `segment_col` is not supplied, it can automatically classify people into
-  usage segments by calling `vivainsights.identify_usage_segments(...)`.
-- Keeps the important calculation pipeline:
-    * person-level aggregation within segment
-    * segment-level aggregation
+- General-purpose: works with any HR attribute column, not just RL12 usage segments.
+- If `hrvar` is not supplied, it can automatically classify people into usage segments
+  by calling `vivainsights.identify_usage_segments(...)`.
+- Calculation pipeline:
+    * person-level aggregation within each group
+    * group-level aggregation
     * minimum group size (`mingroup`)
     * indexing modes: "total", "none", "ref_group", "minmax"
 - Returns either a plot or a table.
 
 Typical usage
 -------------
-Pre-computed segment column:
+Pre-computed HR attribute column:
 
 >>> import vivainsights as vi
 >>> from vivainsights.create_radar import create_radar
@@ -35,7 +35,7 @@ Pre-computed segment column:
 ...         "After_hours_collaboration_hours",
 ...         "Internal_network_size",
 ...     ],
-...     segment_col="Organization",
+...     hrvar="Organization",
 ... )
 
 Automatic usage segments via identify_usage_segments:
@@ -49,7 +49,7 @@ Automatic usage segments via identify_usage_segments:
 ...         "Copilot_actions_taken_in_Word",
 ...         "Copilot_actions_taken_in_Powerpoint",
 ...     ],
-...     # segment_col omitted -> identify_usage_segments() is called
+...     hrvar=None,  # -> identify_usage_segments() is called
 ... )
 
 Return the indexed table instead of a plot:
@@ -57,26 +57,26 @@ Return the indexed table instead of a plot:
 >>> tbl = create_radar(
 ...     data=pq_data,
 ...     metrics=["Collaboration_hours", "Meetings_count"],
-...     segment_col="Organization",
+...     hrvar="Organization",
 ...     return_type="table",
 ... )
 
-Reference a specific segment as 100 (ref_group indexing):
+Reference a specific group as 100 (ref_group indexing):
 
 >>> fig = create_radar(
 ...     data=pq_data,
 ...     metrics=["Collaboration_hours", "Meetings_count"],
-...     segment_col="Organization",
+...     hrvar="Organization",
 ...     index_mode="ref_group",
 ...     index_ref_group="Contoso Ltd",
 ... )
 
-Min–max scaling to [0,100] within observed segment ranges:
+Min-max scaling to [0,100] within observed group ranges:
 
 >>> fig = create_radar(
 ...     data=pq_data,
 ...     metrics=["Collaboration_hours", "Meetings_count", "Focus_hours"],
-...     segment_col="Organization",
+...     hrvar="Organization",
 ...     index_mode="minmax",
 ... )
 """
@@ -87,13 +87,13 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+from pandas.api.types import is_object_dtype
 from vivainsights.identify_usage_segments import identify_usage_segments
 from vivainsights.extract_date_range import extract_date_range
 
 # Try vivainsights highlight color; fall back to hex
 try:
     from vivainsights.color_codes import Colors
-
     _HIGHLIGHT = Colors.HIGHLIGHT_NEGATIVE.value
 except Exception:
     _HIGHLIGHT = "#fe7f4f"
@@ -158,178 +158,8 @@ def _reserve_header_space(fig, top: float = _TOP_LIMIT) -> None:
 
 
 # --------------------------------------------------------------------
-# 1) CALC
-# --------------------------------------------------------------------
-IndexMode = Literal["total", "none", "ref_group", "minmax"]
-
-
-def create_radar_calc(
-    data: pd.DataFrame,
-    metrics: List[str],
-    segment_col: str,
-    person_id_col: str = "PersonId",
-    mingroup: int = 5,
-    agg: Literal["mean", "median"] = "mean",
-    index_mode: IndexMode = "total",
-    index_ref_group: Optional[str] = None,
-    dropna: bool = True,
-) -> Tuple[pd.DataFrame, pd.Series]:
-    """
-    Name
-    ----
-    create_radar_calc
-
-    Description
-    -----------
-    Compute segment-level metric values and (optionally) index them for radar plotting.
-
-    Steps:
-      1. Aggregate to person-level within each segment (mean/median).
-      2. Aggregate the person-level values to the segment level.
-      3. Enforce a minimum person count per segment (`mingroup`).
-      4. Apply an indexing mode to make metrics comparable.
-
-    Parameters
-    ----------
-    data : pd.DataFrame
-        Source table containing `metrics`, `segment_col`, and `person_id_col`.
-    metrics : List[str]
-        Numeric metric column names to summarise and index for the radar chart.
-    segment_col : str
-        Column identifying the segment/class for each person (e.g., Organization, Region, usage band).
-    person_id_col : str, default "PersonId"
-        Column uniquely identifying people for person-level aggregation.
-    mingroup : int, default 5
-        Minimum number of unique people required in a segment to retain it.
-    agg : {"mean","median"}, default "mean"
-        Aggregation function for both person-level and segment-level summaries.
-    index_mode : {"total","none","ref_group","minmax"}, default "total"
-        - "total": index each metric vs. the overall person-level average (Total = 100).
-        - "ref_group": index vs. a specific segment given by `index_ref_group` (Ref = 100).
-        - "minmax": scale to [0,100] within the min–max of observed segment values (per metric).
-        - "none": return raw (unindexed) segment values.
-    index_ref_group : Optional[str], default None
-        Required when `index_mode="ref_group"`. Name of the segment to serve as reference (=100).
-    dropna : bool, default True
-        If True, drop rows with NA in any of `[person_id_col, segment_col] + metrics`
-        prior to aggregation.
-
-    Returns
-    -------
-    (segment_level_indexed, ref) : Tuple[pd.DataFrame, pd.Series]
-        segment_level_indexed
-            One row per segment, wide across `metrics`. Values are indexed/scaled as per `index_mode`.
-        ref
-            The reference used for indexing:
-            - For "total" / "ref_group": a pd.Series of reference means/medians.
-            - For "minmax": a two-column Series-like (MultiIndex) with per-metric min and max.
-            - For "none": empty Series.
-    """
-    if not metrics:
-        raise ValueError("`metrics` must be a non-empty list of column names.")
-
-    required_cols = [person_id_col, segment_col] + metrics
-    missing = [c for c in required_cols if c not in data.columns]
-    if missing:
-        raise KeyError(f"Missing required column(s): {missing}")
-
-    df = data[required_cols].copy()
-
-    if dropna:
-        df = df.dropna(subset=required_cols)
-
-    # Person-level aggregation within segment
-    if agg == "mean":
-        person_level = (
-            df.groupby([person_id_col, segment_col])[metrics]
-            .mean()
-            .reset_index()
-        )
-    elif agg == "median":
-        person_level = (
-            df.groupby([person_id_col, segment_col])[metrics]
-            .median()
-            .reset_index()
-        )
-    else:
-        raise ValueError("`agg` must be 'mean' or 'median'.")
-
-    # Segment-level aggregation across people
-    if agg == "mean":
-        segment_level = (
-            person_level.groupby(segment_col)[metrics]
-            .mean()
-            .reset_index()
-        )
-    else:
-        segment_level = (
-            person_level.groupby(segment_col)[metrics]
-            .median()
-            .reset_index()
-        )
-
-    # Enforce mingroup (by unique people per segment)
-    counts = (
-        person_level.groupby(segment_col)[person_id_col]
-        .nunique()
-        .rename("n")
-    )
-    segment_level = segment_level.merge(counts, on=segment_col, how="left")
-    segment_level = segment_level[segment_level["n"] >= mingroup].copy()
-    segment_level.drop(columns=["n"], inplace=True)
-
-    if segment_level.empty:
-        ref = pd.Series(dtype=float)
-        return segment_level, ref
-
-    # Compute reference for indexing
-    if index_mode == "total":
-        ref = (
-            person_level[metrics].mean()
-            if agg == "mean"
-            else person_level[metrics].median()
-        )
-    elif index_mode == "ref_group":
-        if index_ref_group is None:
-            raise ValueError("index_ref_group must be provided when index_mode='ref_group'.")
-        ref_row = segment_level.loc[segment_level[segment_col] == index_ref_group]
-        if ref_row.empty:
-            raise ValueError(f"Reference group '{index_ref_group}' not found in {segment_col}.")
-        ref = ref_row[metrics].iloc[0]
-    elif index_mode == "minmax":
-        mins = segment_level[metrics].min()
-        maxs = segment_level[metrics].max()
-        ref = pd.concat({"min": mins, "max": maxs}, axis=1)
-    elif index_mode == "none":
-        ref = pd.Series(dtype=float)
-    else:
-        raise ValueError("index_mode must be one of: 'total', 'none', 'ref_group', 'minmax'.")
-
-    # Indexing
-    segment_level_indexed = segment_level.copy()
-    if index_mode in ("total", "ref_group"):
-        for m in metrics:
-            denom = ref[m] if (hasattr(ref, "__getitem__") and m in ref) else np.nan
-            segment_level_indexed[m] = (segment_level_indexed[m] / denom) * 100.0
-    elif index_mode == "minmax":
-        mins = ref["min"]
-        maxs = ref["max"]
-        for m in metrics:
-            den = (maxs[m] - mins[m])
-            segment_level_indexed[m] = 100.0 * (
-                segment_level_indexed[m] - mins[m]
-            ) / (den if den != 0 else 1.0)
-    # else: "none" → leave raw values
-
-    return segment_level_indexed, ref
-
-
-# --------------------------------------------------------------------
 # Auto segmentation helper
 # --------------------------------------------------------------------
-from pandas.api.types import is_object_dtype
-
-
 def _auto_segment_using_identify_usage(
     data: pd.DataFrame,
     metrics: List[str],
@@ -339,12 +169,11 @@ def _auto_segment_using_identify_usage(
     Call vivainsights.identify_usage_segments() and infer the segment column
     without hard-coding any specific segment labels.
 
-    - If a single metric is provided, it is used as `metric=...`.
-    - If multiple metrics are provided, they are passed as `metric_str=[...]`.
+    - If a single metric is provided, it is used as ``metric=...``.
+    - If multiple metrics are provided, they are passed as ``metric_str=[...]``.
     - Among the newly-added columns, we look for an object/categorical column with
       a small number of distinct values, and use that as the segment column.
     """
-
     original_cols = set(data.columns)
 
     if len(metrics) == 1:
@@ -375,21 +204,190 @@ def _auto_segment_using_identify_usage(
     if not candidates:
         raise ValueError(
             "Auto usage segmentation did not produce a suitable segment column. "
-            "Consider providing `segment_col` explicitly."
+            "Consider providing `hrvar` explicitly."
         )
 
     candidates.sort(key=lambda x: x[1])
-    segment_col = candidates[0][0]
-    return seg_data, segment_col
+    hrvar = candidates[0][0]
+    return seg_data, hrvar
+
+
+# --------------------------------------------------------------------
+# 1) CALC
+# --------------------------------------------------------------------
+IndexMode = Literal["total", "none", "ref_group", "minmax"]
+
+
+def create_radar_calc(
+    data: pd.DataFrame,
+    metrics: List[str],
+    hrvar: str,
+    id_col: str = "PersonId",
+    mingroup: int = 5,
+    agg: Literal["mean", "median"] = "mean",
+    index_mode: IndexMode = "total",
+    index_ref_group: Optional[str] = None,
+    dropna: bool = True,
+) -> Tuple[pd.DataFrame, pd.Series]:
+    """
+    Name
+    ----
+    create_radar_calc
+
+    Description
+    -----------
+    Compute group-level metric values and (optionally) index them for radar plotting.
+
+    Steps:
+      1. Aggregate to person-level within each group (mean/median).
+      2. Aggregate the person-level values to the group level.
+      3. Enforce a minimum person count per group (`mingroup`).
+      4. Apply an indexing mode to make metrics comparable.
+
+    Parameters
+    ----------
+    data : pd.DataFrame
+        Standard Person Query data frame containing `metrics`, `hrvar`, and `id_col`.
+    metrics : List[str]
+        Numeric metric column names to summarise and index for the radar chart.
+    hrvar : str
+        HR attribute column identifying the group for each person
+        (e.g., "Organization", "LevelDesignation").
+    id_col : str, default "PersonId"
+        Column uniquely identifying people for person-level aggregation.
+    mingroup : int, default 5
+        Minimum number of unique people required in a group to retain it.
+    agg : {"mean","median"}, default "mean"
+        Aggregation function for both person-level and group-level summaries.
+    index_mode : {"total","none","ref_group","minmax"}, default "total"
+        - "total": index each metric vs. the overall person-level average (Total = 100).
+        - "ref_group": index vs. a specific group given by `index_ref_group` (Ref = 100).
+        - "minmax": scale to [0,100] within the min-max of observed group values (per metric).
+        - "none": return raw (unindexed) group values.
+    index_ref_group : Optional[str], default None
+        Required when `index_mode="ref_group"`. Name of the group to serve as reference (=100).
+    dropna : bool, default True
+        If True, drop rows with NA in any of `[id_col, hrvar] + metrics` prior to aggregation.
+
+    Returns
+    -------
+    (group_level_indexed, ref) : Tuple[pd.DataFrame, pd.Series]
+        group_level_indexed
+            One row per group, wide across `metrics`. Values are indexed/scaled as per
+            `index_mode`.
+        ref
+            The reference used for indexing:
+            - For "total" / "ref_group": a pd.Series of reference means/medians.
+            - For "minmax": a two-column DataFrame with per-metric min and max.
+            - For "none": empty Series.
+    """
+    if not metrics:
+        raise ValueError("`metrics` must be a non-empty list of column names.")
+
+    required_cols = [id_col, hrvar] + metrics
+    missing = [c for c in required_cols if c not in data.columns]
+    if missing:
+        raise KeyError(f"Missing required column(s): {missing}")
+
+    df = data[required_cols].copy()
+
+    if dropna:
+        df = df.dropna(subset=required_cols)
+
+    # Person-level aggregation within group
+    if agg == "mean":
+        person_level = (
+            df.groupby([id_col, hrvar])[metrics]
+            .mean()
+            .reset_index()
+        )
+    elif agg == "median":
+        person_level = (
+            df.groupby([id_col, hrvar])[metrics]
+            .median()
+            .reset_index()
+        )
+    else:
+        raise ValueError("`agg` must be 'mean' or 'median'.")
+
+    # Group-level aggregation across people
+    if agg == "mean":
+        group_level = (
+            person_level.groupby(hrvar)[metrics]
+            .mean()
+            .reset_index()
+        )
+    else:
+        group_level = (
+            person_level.groupby(hrvar)[metrics]
+            .median()
+            .reset_index()
+        )
+
+    # Enforce mingroup (by unique people per group)
+    counts = (
+        person_level.groupby(hrvar)[id_col]
+        .nunique()
+        .rename("n")
+    )
+    group_level = group_level.merge(counts, on=hrvar, how="left")
+    group_level = group_level[group_level["n"] >= mingroup].copy()
+    group_level.drop(columns=["n"], inplace=True)
+
+    if group_level.empty:
+        ref = pd.Series(dtype=float)
+        return group_level, ref
+
+    # Compute reference for indexing
+    if index_mode == "total":
+        ref = (
+            person_level[metrics].mean()
+            if agg == "mean"
+            else person_level[metrics].median()
+        )
+    elif index_mode == "ref_group":
+        if index_ref_group is None:
+            raise ValueError("index_ref_group must be provided when index_mode='ref_group'.")
+        ref_row = group_level.loc[group_level[hrvar] == index_ref_group]
+        if ref_row.empty:
+            raise ValueError(f"Reference group '{index_ref_group}' not found in {hrvar}.")
+        ref = ref_row[metrics].iloc[0]
+    elif index_mode == "minmax":
+        mins = group_level[metrics].min()
+        maxs = group_level[metrics].max()
+        ref = pd.concat({"min": mins, "max": maxs}, axis=1)
+    elif index_mode == "none":
+        ref = pd.Series(dtype=float)
+    else:
+        raise ValueError("index_mode must be one of: 'total', 'none', 'ref_group', 'minmax'.")
+
+    # Indexing
+    group_level_indexed = group_level.copy()
+    if index_mode in ("total", "ref_group"):
+        for m in metrics:
+            denom = ref[m] if (hasattr(ref, "__getitem__") and m in ref) else np.nan
+            group_level_indexed[m] = (group_level_indexed[m] / denom) * 100.0
+    elif index_mode == "minmax":
+        mins = ref["min"]
+        maxs = ref["max"]
+        for m in metrics:
+            den = (maxs[m] - mins[m])
+            group_level_indexed[m] = 100.0 * (
+                group_level_indexed[m] - mins[m]
+            ) / (den if den != 0 else 1.0)
+    # else: "none" -> leave raw values
+
+    return group_level_indexed, ref
 
 
 # --------------------------------------------------------------------
 # 2) VIZ
 # --------------------------------------------------------------------
 def create_radar_viz(
-    segment_level_indexed: pd.DataFrame,
+    data: pd.DataFrame,
     metrics: List[str],
-    segment_col: str,
+    hrvar: str,
+    fill_missing: str = "zero",
     figsize: Tuple[float, float] = (8, 6),
     title: Optional[str] = None,
     subtitle: Optional[str] = None,
@@ -402,19 +400,24 @@ def create_radar_viz(
 
     Description
     -----------
-    Render a radar (spider) chart from a wide, segment-level table produced by
-    `create_radar_calc`. Each row in `segment_level_indexed` is plotted as a polygon
-    across the supplied `metrics` in the given order.
+    Render a radar (spider) chart from a wide, group-level table produced by
+    `create_radar_calc`. Each row in `data` is plotted as a polygon across the
+    supplied `metrics` in the given order.
 
     Parameters
     ----------
-    segment_level_indexed : pd.DataFrame
-        One row per segment, columns include `segment_col` and each of `metrics`.
-        Values should already be indexed/scaled to comparable units.
+    data : pd.DataFrame
+        One row per group, columns include `hrvar` and each of `metrics`.
+        Values should already be indexed/scaled to comparable units (i.e. the
+        output of `create_radar_calc`).
     metrics : List[str]
         Ordered list of metric columns to plot around the radar.
-    segment_col : str
-        Column containing the segment labels used in the legend.
+    hrvar : str
+        Column containing the group labels used in the legend.
+    fill_missing : str, default "zero"
+        How to handle NA values in `data` before plotting:
+        - "zero": replace NA with 0 so polygons close correctly.
+        - "none": leave NA as-is (polygon may not render for that group).
     figsize : Tuple[float, float], default (8, 6)
         Matplotlib figure size in inches (width, height).
     title : Optional[str], default None
@@ -423,9 +426,14 @@ def create_radar_viz(
         Optional smaller line beneath the title (figure-level, not axes).
     caption : Optional[str], default None
         Small text near the bottom of the figure (e.g., date range).
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+        The constructed matplotlib Figure.
     """
-    if segment_level_indexed.empty:
-        raise ValueError("`segment_level_indexed` is empty – nothing to plot.")
+    if data.empty:
+        raise ValueError("`data` is empty - nothing to plot.")
 
     num_vars = len(metrics)
     if num_vars == 0:
@@ -437,20 +445,22 @@ def create_radar_viz(
 
     fig, ax = plt.subplots(figsize=figsize, subplot_kw=dict(polar=True))
 
-    segments = list(segment_level_indexed[segment_col].astype(str).unique())
+    groups = list(data[hrvar].astype(str).unique())
 
-    # Plot each segment
-    for seg in segments:
-        row = segment_level_indexed.loc[segment_level_indexed[segment_col].astype(str) == seg]
+    # Plot each group
+    for grp in groups:
+        row = data.loc[data[hrvar].astype(str) == grp]
         if row.empty:
             continue
 
         vals = row[metrics].iloc[0].to_list()
-        # Replace NaNs with 0 for plotting so the polygon renders
-        vals = [0.0 if (pd.isna(v)) else float(v) for v in vals]
+        if fill_missing == "zero":
+            vals = [0.0 if pd.isna(v) else float(v) for v in vals]
+        else:
+            vals = [float(v) for v in vals]
         vals += vals[:1]
 
-        ax.plot(angles, vals, label=seg, linewidth=1.5)
+        ax.plot(angles, vals, label=grp, linewidth=1.5)
         ax.fill(angles, vals, alpha=0.10)
 
     # Formatting
@@ -485,13 +495,13 @@ ReturnType = Literal["plot", "table"]
 def create_radar(
     data: pd.DataFrame,
     metrics: List[str],
-    segment_col: Optional[str] = None,
-    person_id_col: str = "PersonId",
+    hrvar: Optional[str] = "Organization",
+    id_col: str = "PersonId",
     mingroup: int = 5,
     agg: Literal["mean", "median"] = "mean",
     index_mode: IndexMode = "total",
     index_ref_group: Optional[str] = None,
-    dropna: bool = False,  # often False to keep low-usage segments with NaNs
+    dropna: bool = False,
     return_type: ReturnType = "plot",
     figsize: Tuple[float, float] = (8, 6),
     title: Optional[str] = None,
@@ -507,39 +517,40 @@ def create_radar(
 
     Description
     -----------
-    High-level convenience wrapper to compute segment-level metrics and either:
+    High-level convenience wrapper to compute group-level metrics and either:
       (a) return the indexed table (return_type="table"), or
       (b) render a radar chart (return_type="plot").
 
     Parameters
     ----------
     data : pd.DataFrame
-        Source table containing at least `metrics`, `person_id_col`, and either:
-          - a pre-computed `segment_col`, or
-          - enough information for `vivainsights.identify_usage_segments(...)`
-            to classify people into usage segments (see `usage_version`).
+        Standard Person Query data frame containing at least `metrics`, `id_col`, and
+        either a pre-computed `hrvar` column or enough information for
+        `vivainsights.identify_usage_segments(...)` to classify people into usage
+        segments (see `usage_version`).
     metrics : List[str]
         Numeric metric columns to visualise (order determines the radar axes).
-    segment_col : Optional[str], default None
-        Segment label column (e.g., Organization, Region, usage band).
+    hrvar : Optional[str], default "Organization"
+        HR attribute column used for grouping (e.g., "Organization", "LevelDesignation").
         If None, the function will:
           - call `identify_usage_segments()` using `metrics` as the input metric(s), and
           - auto-detect the resulting usage-segment column.
-    person_id_col : str, default "PersonId"
+    id_col : str, default "PersonId"
         Unique person identifier for person-level aggregation.
     mingroup : int, default 5
-        Minimum unique person count per segment.
+        Minimum unique person count per group.
     agg : {"mean","median"}, default "mean"
-        Aggregation function for person- and segment-level summaries.
+        Aggregation function for person- and group-level summaries.
     index_mode : {"total","none","ref_group","minmax"}, default "total"
-        Indexing/scaling mode applied to segment values prior to plotting.
+        Indexing/scaling mode applied to group values prior to plotting.
     index_ref_group : Optional[str], default None
-        Required when `index_mode="ref_group"`. The name of the segment that will be fixed at 100.
+        Required when `index_mode="ref_group"`. The name of the group that will be
+        fixed at 100.
     dropna : bool, default False
         Drop rows with NA in required columns prior to aggregation.
     return_type : {"plot","table"}, default "plot"
         - "plot": return a matplotlib Figure.
-        - "table": return the indexed segment-level DataFrame.
+        - "table": return the indexed group-level DataFrame.
     figsize : Tuple[float, float], default (8, 6)
         Figure size for the plot (ignored when return_type="table").
     title : Optional[str], default None
@@ -547,33 +558,32 @@ def create_radar(
     subtitle : Optional[str], default None
         Optional subtitle line.
     caption_from_date_range : bool, default True
-        If True and `extract_date_range` is available, append a date-range caption
-        derived from `data`.
+        If True, append a date-range caption derived from `data`.
     caption_text : Optional[str], default None
         Additional caption text. If `caption_from_date_range` also yields text,
         both are combined as "date-range | caption_text".
     usage_version : str, default "12w"
         Passed through to `identify_usage_segments` when automatic segmentation
-        is used (i.e., when `segment_col` is None).
+        is used (i.e., when `hrvar` is None).
 
     Returns
     -------
     matplotlib.figure.Figure or pd.DataFrame
         - If `return_type="plot"`: a Figure containing the radar chart.
-        - If `return_type="table"`: the segment-level indexed DataFrame.
+        - If `return_type="table"`: the group-level indexed DataFrame.
     """
     df = data.copy()
 
-    # Automatic usage segmentation if no segment_col provided
-    if segment_col is None:
-        df, segment_col = _auto_segment_using_identify_usage(
+    # Automatic usage segmentation if no hrvar provided
+    if hrvar is None:
+        df, hrvar = _auto_segment_using_identify_usage(
             data=df,
             metrics=metrics,
             version=usage_version,
         )
     else:
-        if segment_col not in df.columns:
-            raise KeyError(f"segment_col '{segment_col}' not found in data.")
+        if hrvar not in df.columns:
+            raise KeyError(f"hrvar '{hrvar}' not found in data.")
 
     # Build caption
     caption = ""
@@ -585,12 +595,12 @@ def create_radar(
     if caption_text:
         caption = caption_text if not caption else f"{caption} | {caption_text}"
 
-    # Compute segment-level table
+    # Compute group-level table
     table, _ = create_radar_calc(
         data=df,
         metrics=metrics,
-        segment_col=segment_col,
-        person_id_col=person_id_col,
+        hrvar=hrvar,
+        id_col=id_col,
         mingroup=mingroup,
         agg=agg,
         index_mode=index_mode,
@@ -603,23 +613,23 @@ def create_radar(
 
     # Default title/subtitle
     if title is None:
-        base_title = "Behavioral Profiles by Segment"
+        base_title = "Behavioral Profiles by Group"
         if index_mode in ("total", "ref_group"):
             base_title += " (Indexed)"
         elif index_mode == "minmax":
-            base_title += " (Min–Max Scaled)"
+            base_title += " (Min-Max Scaled)"
     else:
         base_title = title
 
     if subtitle is None:
-        subtitle_effective = f"Radar view across metrics by {segment_col}"
+        subtitle_effective = f"Radar view across metrics by {hrvar}"
     else:
         subtitle_effective = subtitle
 
     fig = create_radar_viz(
-        segment_level_indexed=table,
+        data=table,
         metrics=metrics,
-        segment_col=segment_col,
+        hrvar=hrvar,
         figsize=figsize,
         title=base_title,
         subtitle=subtitle_effective,

@@ -79,6 +79,30 @@ vivainsights.create\_lorenz module
    :undoc-members:
    :show-inheritance:
 
+vivainsights.create\_radar module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: vivainsights.create_radar
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+vivainsights.create\_survival module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: vivainsights.create_survival
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+vivainsights.create\_survival\_prep module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: vivainsights.create_survival_prep
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 vivainsights.create\_inc module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

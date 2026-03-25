@@ -4,47 +4,55 @@
 # --------------------------------------------------------------------------------------------
 
 """
-create_survival: Parameterized Kaplan–Meier survival workflow (calc + viz + wrapper).
+create_survival: Parameterized Kaplan-Meier survival workflow (calc + viz + wrapper).
 
 Design goals
 ------------
-- General-purpose: works with any grouping column (segments, org, region, etc.).
+- General-purpose: works with any HR attribute column (segments, org, region, etc.).
 - Optional automatic segmentation via vivainsights.identify_usage_segments, without
   hard-coding any specific segment labels.
 - Uses lifelines.KaplanMeierFitter if available; falls back to a NumPy implementation.
 - Reuses the figure header styling used in other vivainsights visuals.
 - Returns either a plot or a table.
 
+The typical workflow starts with `create_survival_prep()` to convert panel data
+into the person-level format expected here.
+
 Example
--------------
+-------
 Single overall curve (no grouping):
 
 >>> import vivainsights as vi
 >>> from vivainsights.create_survival import create_survival
+>>> from vivainsights.create_survival_prep import create_survival_prep
 >>>
 >>> pq_data = vi.load_pq_data()
->>> fig = create_survival(
+>>> surv_data = create_survival_prep(
 ...     data=pq_data,
-...     time_col="Active_connected_hours",
-...     event_col="Days_of_active_Copilot_chat__work__usage",
+...     metric="Copilot_actions_taken_in_Teams",
+... )
+>>> fig = create_survival(
+...     data=surv_data,
+...     time_col="time",
+...     event_col="event",
 ... )
 
-Pre-computed grouping column:
+Grouped by HR attribute:
 
 >>> fig = create_survival(
-...     data=pq_data,
-...     time_col="Active_connected_hours",
-...     event_col="Days_of_active_Copilot_chat__work__usage",
-...     group_col="Organization",
+...     data=surv_data,
+...     time_col="time",
+...     event_col="event",
+...     hrvar="Organization",
 ... )
 
 Automatic usage segmentation via identify_usage_segments:
 
 >>> fig = create_survival(
 ...     data=pq_data,
-...     time_col="Active_connected_hours",
-...     event_col="Days_of_active_Copilot_chat__work__usage",
-...     # group_col omitted -> identify_usage_segments() is called
+...     time_col="time",
+...     event_col="event",
+...     hrvar=None,
 ...     usage_metrics=[
 ...         "Copilot_actions_taken_in_Teams",
 ...         "Copilot_actions_taken_in_Outlook",
@@ -55,10 +63,10 @@ Automatic usage segmentation via identify_usage_segments:
 Table output:
 
 >>> tbl = create_survival(
-...     data=pq_data,
-...     time_col="Active_connected_hours",
-...     event_col="Days_of_active_Copilot_chat__work__usage",
-...     group_col="Organization",
+...     data=surv_data,
+...     time_col="time",
+...     event_col="event",
+...     hrvar="Organization",
 ...     return_type="table",
 ... )
 """
@@ -152,14 +160,49 @@ def _reserve_header_space(fig, top: float = _TOP_LIMIT) -> None:
     fig.subplots_adjust(top=top)
 
 
-# ---------- Pure NumPy Kaplan–Meier (fallback if lifelines absent) ----------
+# ---------- Event coercion helper ----------
+def _coerce_event(x: pd.Series) -> pd.Series:
+    """
+    Coerce an event indicator column to integer 0/1.
+
+    Accepts:
+    - Numeric: any value > 0 is treated as 1 (event occurred).
+    - Boolean: True -> 1, False -> 0.
+    - String: "true"/"yes"/"1" -> 1; "false"/"no"/"0" -> 0 (case-insensitive).
+
+    Raises
+    ------
+    ValueError
+        If the column contains unrecognised string tokens.
+    """
+    if pd.api.types.is_bool_dtype(x):
+        return x.astype(int)
+
+    if pd.api.types.is_numeric_dtype(x):
+        return (x > 0).astype(int)
+
+    # String coercion
+    _true_tokens = {"true", "yes", "1"}
+    _false_tokens = {"false", "no", "0"}
+    lowered = x.str.strip().str.lower()
+    unrecognised = lowered.dropna()[~lowered.dropna().isin(_true_tokens | _false_tokens)]
+    if not unrecognised.empty:
+        raise ValueError(
+            f"Unrecognised event indicator value(s) in event column: "
+            f"{sorted(unrecognised.unique())}. "
+            f"Expected one of: {sorted(_true_tokens | _false_tokens)}."
+        )
+    return lowered.map(lambda v: 1 if v in _true_tokens else (0 if v in _false_tokens else np.nan)).astype("Int64")
+
+
+# ---------- Pure NumPy Kaplan-Meier (fallback if lifelines absent) ----------
 def _km_numpy(
     durations: np.ndarray,
     events: np.ndarray,
     timeline: Optional[np.ndarray] = None,
 ) -> pd.DataFrame:
     """
-    Compute an unweighted Kaplan–Meier curve with tied events handled at the same time.
+    Compute an unweighted Kaplan-Meier curve with tied events handled at the same time.
 
     Parameters
     ----------
@@ -168,7 +211,8 @@ def _km_numpy(
     events : array-like
         1 = event observed, 0 = censored.
     timeline : array-like, optional
-        Times at which to evaluate the survival function. If None, use sorted unique durations.
+        Times at which to evaluate the survival function. If None, use sorted unique
+        durations.
 
     Returns
     -------
@@ -215,8 +259,8 @@ def _auto_segment_using_identify_usage(
     Call vivainsights.identify_usage_segments() and infer the segment column
     without hard-coding any specific segment names.
 
-    - If a single metric is provided, it is used as `metric=...`.
-    - If multiple metrics are provided, they are passed as `metric_str=[...]`.
+    - If a single metric is provided, it is used as ``metric=...``.
+    - If multiple metrics are provided, they are passed as ``metric_str=[...]``.
     - Among the newly-added columns, we look for an object/categorical column with
       a small number of distinct values and use that as the segment column.
     """
@@ -253,13 +297,13 @@ def _auto_segment_using_identify_usage(
     if not candidates:
         raise ValueError(
             "Automatic usage segmentation did not produce a suitable segment column. "
-            "Consider providing `group_col` explicitly."
+            "Consider providing `hrvar` explicitly."
         )
 
     # Choose the column with the fewest distinct categories
     candidates.sort(key=lambda x: x[1])
-    segment_col = candidates[0][0]
-    return seg_data, segment_col
+    hrvar = candidates[0][0]
+    return seg_data, hrvar
 
 
 # =========================
@@ -269,7 +313,7 @@ def create_survival_calc(
     data: pd.DataFrame,
     time_col: str,
     event_col: str,
-    group_col: Optional[str] = None,
+    hrvar: Optional[str] = None,
     id_col: Optional[str] = "PersonId",
     mingroup: int = 5,
     timeline: Optional[Sequence[float]] = None,
@@ -283,21 +327,26 @@ def create_survival_calc(
 
     Description
     -----------
-    Compute Kaplan–Meier survival curves per group (segment, org, etc.).
+    Compute Kaplan-Meier survival curves per group (segment, org, etc.).
     Uses lifelines.KaplanMeierFitter when available (and `use_lifelines=True`),
     otherwise falls back to a simple NumPy implementation.
+
+    The `event_col` is coerced to integer 0/1 via `_coerce_event`, which accepts
+    numeric (>0 = event), boolean, or string tokens ("true"/"yes"/"1").
 
     Parameters
     ----------
     data : pd.DataFrame
-        Input data; one row per subject (or observation) containing `time_col`,
-        `event_col`, and optionally `group_col`.
+        Person-level data frame (one row per subject), as produced by
+        `create_survival_prep()`, containing `time_col`, `event_col`, and
+        optionally `hrvar`.
     time_col : str
         Column containing durations to event or censoring (numeric, e.g., weeks).
     event_col : str
-        Column with 1 if the event occurred, 0 if censored.
-    group_col : str or None, default None
-        Grouping column. If None, a single overall curve is returned.
+        Event indicator column. Accepts numeric (>0 = event), boolean, or string
+        tokens ("true"/"yes"/"1", "false"/"no"/"0").
+    hrvar : str or None, default None
+        HR attribute column for grouping. If None, a single overall curve is returned.
     id_col : str or None, default "PersonId"
         Unique subject identifier used for `mingroup` counting. If None or not present,
         the row count per group is used instead.
@@ -314,50 +363,54 @@ def create_survival_calc(
     Returns
     -------
     survival_long : pd.DataFrame
-        Long-format table with columns [group_col_or_"group", "time", "survival",
+        Long-format table with columns [hrvar_or_"group", "time", "survival",
         "at_risk", "events"].
     counts : pd.Series
         Number of unique subjects per group (after filtering).
     """
-    required = [time_col, event_col] + ([group_col] if group_col else [])
+    required = [time_col, event_col] + ([hrvar] if hrvar else [])
     missing = [c for c in required if (c is not None and c not in data.columns)]
     if missing:
         raise KeyError(f"Missing required column(s): {missing}")
 
     df = data.copy()
+
+    # Coerce event column to 0/1
+    df[event_col] = _coerce_event(df[event_col])
+
     if dropna:
         df = df.dropna(subset=[c for c in required if c is not None])
 
     # Group sizes for mingroup
-    if group_col:
+    if hrvar:
         if id_col and (id_col in df.columns):
-            counts = df.groupby(group_col)[id_col].nunique()
+            counts = df.groupby(hrvar)[id_col].nunique()
         else:
-            counts = df.groupby(group_col)[time_col].size()
+            counts = df.groupby(hrvar)[time_col].size()
         keep = counts[counts >= mingroup].index
-        df = df[df[group_col].isin(keep)].copy()
+        df = df[df[hrvar].isin(keep)].copy()
         counts = counts[counts.index.isin(keep)]
     else:
         counts = pd.Series({"Overall": len(df)})
 
     # If nothing left, return empty
     if df.empty:
-        col_name = group_col if group_col else "group"
+        col_name = hrvar if hrvar else "group"
         empty = pd.DataFrame(columns=[col_name, "time", "survival", "at_risk", "events"])
         return empty, counts
 
     # Build curves
     curves = []
-    if group_col is None:
+    if hrvar is None:
         groups = [None]
     else:
-        groups = sorted(df[group_col].astype(str).unique())
+        groups = sorted(df[hrvar].astype(str).unique())
 
     for g in groups:
-        if group_col is None:
+        if hrvar is None:
             sdf = df
         else:
-            sdf = df[df[group_col].astype(str) == g]
+            sdf = df[df[hrvar].astype(str) == g]
         if sdf.empty:
             continue
 
@@ -382,12 +435,12 @@ def create_survival_calc(
         else:
             out = _km_numpy(durs, evts, tl)
 
-        out[group_col if group_col else "group"] = g if g is not None else "Overall"
+        out[hrvar if hrvar else "group"] = g if g is not None else "Overall"
         curves.append(out)
 
     survival_long = pd.concat(curves, ignore_index=True)
 
-    grp_col = group_col if group_col else "group"
+    grp_col = hrvar if hrvar else "group"
     survival_long = survival_long[[grp_col, "time", "survival", "at_risk", "events"]]
 
     return survival_long, counts
@@ -397,8 +450,8 @@ def create_survival_calc(
 # 2) VIZ
 # =========================
 def create_survival_viz(
-    survival_long: pd.DataFrame,
-    group_col: str,
+    data: pd.DataFrame,
+    hrvar: str,
     figsize: Tuple[float, float] = (8, 6),
     title: Optional[str] = None,
     subtitle: Optional[str] = None,
@@ -412,13 +465,13 @@ def create_survival_viz(
 
     Description
     -----------
-    Render Kaplan–Meier survival step curves for each group in `survival_long`.
+    Render Kaplan-Meier survival step curves for each group in `data`.
 
     Parameters
     ----------
-    survival_long : pd.DataFrame
-        Output of create_survival_calc, with at least [group_col, "time", "survival"].
-    group_col : str
+    data : pd.DataFrame
+        Output of `create_survival_calc`, with at least [hrvar, "time", "survival"].
+    hrvar : str
         Column name identifying the groups to plot.
     figsize : tuple of float, default (8, 6)
         Matplotlib figure size in inches (width, height).
@@ -438,14 +491,14 @@ def create_survival_viz(
     """
     fig, ax = plt.subplots(figsize=figsize)
 
-    if survival_long.empty:
+    if data.empty:
         ax.set_xlabel("Time")
         ax.set_ylabel("Survival probability")
         ax.set_ylim(0, 1)
     else:
-        groups = list(survival_long[group_col].astype(str).unique())
+        groups = list(data[hrvar].astype(str).unique())
         for g in groups:
-            sdf = survival_long[survival_long[group_col].astype(str) == g]
+            sdf = data[data[hrvar].astype(str) == g]
             if sdf.empty:
                 continue
             x = sdf["time"].to_numpy(dtype=float)
@@ -483,7 +536,7 @@ def create_survival(
     data: pd.DataFrame,
     time_col: str,
     event_col: str,
-    group_col: Optional[str] = None,
+    hrvar: Optional[str] = None,
     id_col: str = "PersonId",
     mingroup: int = 5,
     timeline: Optional[Sequence[float]] = None,
@@ -505,31 +558,35 @@ def create_survival(
 
     Description
     -----------
-    High-level convenience wrapper to compute Kaplan–Meier curves and either:
+    High-level convenience wrapper to compute Kaplan-Meier curves and either:
       (a) return the long survival table (return_type="table"), or
       (b) render the survival plot (return_type="plot").
 
+    The input `data` should be a person-level data frame (one row per person)
+    as produced by `create_survival_prep()`.
+
     Grouping behavior
     -----------------
-    - If `group_col` is provided:
-        * Curves are computed per value of that column.
-    - If `group_col` is None and `usage_metrics` is provided:
+    - If `hrvar` is provided:
+        * Curves are computed per value of that HR attribute column.
+    - If `hrvar` is None and `usage_metrics` is provided:
         * vivainsights.identify_usage_segments() is called with `usage_metrics`,
           and the resulting usage segment column is inferred automatically.
-    - If both `group_col` and `usage_metrics` are None:
+    - If both `hrvar` and `usage_metrics` are None:
         * A single overall curve is returned.
 
     Parameters
     ----------
     data : pd.DataFrame
-        Source table containing at least `time_col`, `event_col`, and optionally
-        `group_col` or metrics suitable for usage segmentation.
+        Person-level data frame (one row per person), as produced by
+        `create_survival_prep()`, containing at least `time_col` and `event_col`.
     time_col : str
         Duration-to-event column.
     event_col : str
-        Event indicator (1 = event, 0 = censored).
-    group_col : str or None, default None
-        Grouping column for separate survival curves. See "Grouping behavior".
+        Event indicator column. Accepts numeric (>0 = event), boolean, or string
+        tokens ("true"/"yes"/"1", "false"/"no"/"0").
+    hrvar : str or None, default None
+        HR attribute column for separate survival curves. See "Grouping behavior".
     id_col : str, default "PersonId"
         Unique subject identifier for mingroup counting.
     mingroup : int, default 5
@@ -556,7 +613,7 @@ def create_survival(
         both are combined as "date-range | caption_text".
     usage_metrics : list of str, optional
         Metric column(s) to pass into identify_usage_segments when automatic
-        usage segmentation is used (i.e., when group_col is None).
+        usage segmentation is used (i.e., when hrvar is None).
     usage_version : str, default "12w"
         Parameter forwarded to identify_usage_segments (e.g., "12w", "4w", or None).
 
@@ -567,17 +624,17 @@ def create_survival(
         - If return_type="table": the long survival table.
     """
     df = data.copy()
-    group_col_for_calc: Optional[str] = group_col
+    hrvar_for_calc: Optional[str] = hrvar
 
     # Automatic usage segmentation if requested implicitly
-    if group_col is None and usage_metrics:
-        df, group_col_for_calc = _auto_segment_using_identify_usage(
+    if hrvar is None and usage_metrics:
+        df, hrvar_for_calc = _auto_segment_using_identify_usage(
             data=df,
             usage_metrics=usage_metrics,
             version=usage_version,
         )
-    elif group_col is not None and group_col not in df.columns:
-        raise KeyError(f"group_col '{group_col}' not found in data.")
+    elif hrvar is not None and hrvar not in df.columns:
+        raise KeyError(f"hrvar '{hrvar}' not found in data.")
 
     # Build caption
     caption = ""
@@ -594,7 +651,7 @@ def create_survival(
         data=df,
         time_col=time_col,
         event_col=event_col,
-        group_col=group_col_for_calc,
+        hrvar=hrvar_for_calc,
         id_col=id_col,
         mingroup=mingroup,
         timeline=timeline,
@@ -607,7 +664,7 @@ def create_survival(
 
     # Titles
     if title is None:
-        if group_col_for_calc is None:
+        if hrvar_for_calc is None:
             base_title = "Survival Curve"
         else:
             base_title = "Survival Curve by Group"
@@ -615,18 +672,18 @@ def create_survival(
         base_title = title
 
     if subtitle is None:
-        if group_col_for_calc is None:
-            subtitle_effective = "Kaplan–Meier estimate"
+        if hrvar_for_calc is None:
+            subtitle_effective = "Kaplan-Meier estimate"
         else:
-            subtitle_effective = f"Kaplan–Meier estimate by {group_col_for_calc}"
+            subtitle_effective = f"Kaplan-Meier estimate by {hrvar_for_calc}"
     else:
         subtitle_effective = subtitle
 
-    group_col_for_viz = group_col_for_calc if group_col_for_calc is not None else "group"
+    hrvar_for_viz = hrvar_for_calc if hrvar_for_calc is not None else "group"
 
     fig = create_survival_viz(
-        survival_long=survival_long,
-        group_col=group_col_for_viz,
+        data=survival_long,
+        hrvar=hrvar_for_viz,
         figsize=figsize,
         title=base_title,
         subtitle=subtitle_effective,
