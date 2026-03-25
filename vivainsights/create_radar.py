@@ -90,9 +90,6 @@ from matplotlib.lines import Line2D
 from vivainsights.identify_usage_segments import identify_usage_segments
 from vivainsights.extract_date_range import extract_date_range
 
-def extract_date_range(data, return_type: str = "text") -> str:
-    return ""
-
 # Try vivainsights highlight color; fall back to hex
 try:
     from vivainsights.color_codes import Colors
@@ -330,7 +327,7 @@ def create_radar_calc(
 # --------------------------------------------------------------------
 # Auto segmentation helper
 # --------------------------------------------------------------------
-from pandas.api.types import is_object_dtype, is_categorical_dtype
+from pandas.api.types import is_object_dtype
 
 
 def _auto_segment_using_identify_usage(
@@ -369,7 +366,7 @@ def _auto_segment_using_identify_usage(
     candidates = []
     for c in new_cols:
         s = seg_data[c]
-        if is_object_dtype(s) or is_categorical_dtype(s):
+        if is_object_dtype(s) or isinstance(s.dtype, pd.CategoricalDtype):
             nunique = s.nunique(dropna=True)
             # Usage segment columns typically have a small number of categories.
             if 1 < nunique <= 10:

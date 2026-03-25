@@ -69,17 +69,16 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
-from pandas.api.types import is_object_dtype, is_categorical_dtype
+from pandas.api.types import is_object_dtype
 from vivainsights.extract_date_range import extract_date_range
-from vivainsights.color_codes import Colors
-# ---------- vivainsights helpers ----------
-try:
-    from vivainsights.extract_date_range import extract_date_range
-except Exception:  # pragma: no cover - fallback
-    vi = None
+from vivainsights.identify_usage_segments import identify_usage_segments
 
-    def extract_date_range(data, return_type: str = "text") -> str:
-        return ""
+# ---------- lifelines (optional) ----------
+try:
+    from lifelines import KaplanMeierFitter
+    _HAS_LIFELINES = True
+except ImportError:  # pragma: no cover
+    _HAS_LIFELINES = False
 
 # ---------- Style / header helpers (aligned with create_radar / Lorenz) ----------
 try:
@@ -221,29 +220,21 @@ def _auto_segment_using_identify_usage(
     - Among the newly-added columns, we look for an object/categorical column with
       a small number of distinct values and use that as the segment column.
     """
-    if vi is None or not hasattr(vi, "identify_usage_segments"):
-        raise ImportError(
-            "vivainsights.identify_usage_segments is required for automatic usage "
-            "segmentation but is not available."
-        )
-
     if not usage_metrics:
         raise ValueError("`usage_metrics` must be a non-empty list when using automatic segmentation.")
 
     original_cols = set(data.columns)
 
     if len(usage_metrics) == 1:
-        seg_data = vi.identify_usage_segments(
+        seg_data = identify_usage_segments(
             data=data.copy(),
             metric=usage_metrics[0],
-            metric_str=None,
             version=version,
             return_type="data",
         )
     else:
-        seg_data = vi.identify_usage_segments(
+        seg_data = identify_usage_segments(
             data=data.copy(),
-            metric=None,
             metric_str=usage_metrics,
             version=version,
             return_type="data",
@@ -253,7 +244,7 @@ def _auto_segment_using_identify_usage(
     candidates = []
     for c in new_cols:
         s = seg_data[c]
-        if is_object_dtype(s) or is_categorical_dtype(s):
+        if is_object_dtype(s) or isinstance(s.dtype, pd.CategoricalDtype):
             nunique = s.nunique(dropna=True)
             # Usage segment-like columns usually have small cardinality
             if 1 < nunique <= 10:

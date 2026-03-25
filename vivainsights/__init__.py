@@ -21,8 +21,10 @@ from .create_bubble import *
 from .create_inc import *
 from .create_line import *
 from .create_lorenz import *
+from .create_radar import *
 from .create_rank import *
 from .create_sankey import *
+from .create_survival import *
 from .create_trend import *
 
 # --- Statistical Analysis ---
