@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module calculates the Gini coefficient and plots the Lorenz curve for a given metric.
+Calculate the Gini coefficient and plot the Lorenz curve for a given metric.
 """
 
 __all__ = ['get_value_proportion', 'compute_gini', 'create_lorenz']
@@ -62,19 +62,32 @@ def _reserve_header_space(fig, top=_TOP_LIMIT):
 
 
 def get_value_proportion(df, population_share):
-    """
-    Calculate the proportion of total values (e.g., income, email sent) 
-    that corresponds to a given cumulative share of the population.
+    """Look up the cumulative value share for a given population share.
 
-    Parameters:
-    df (pd.DataFrame): DataFrame containing cumulative population and value proportions.
-    population_share (float): The cumulative share of the population (between 0 and 1).
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame containing ``cum_population`` and ``cum_values_prop``
+        columns (as produced by ``create_lorenz``).
+    population_share : float
+        Cumulative population share, between 0 and 1.
 
-    Returns:
-    float: The proportion of total values corresponding to the given population share.
+    Returns
+    -------
+    float
+        The cumulative value proportion at the given population share.
 
-    Raises:
-    ValueError: If population_share is not between 0 and 1.
+    Raises
+    ------
+    ValueError
+        If *population_share* is not between 0 and 1.
+
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> lorenz_table = vi.create_lorenz(data=pq_data, metric="Emails_sent", return_type="table")
+    >>> vi.get_value_proportion(lorenz_table, population_share=0.5)
     """
     if population_share < 0 or population_share > 1:
         raise ValueError("Population share must be between 0 and 1")
@@ -84,22 +97,31 @@ def get_value_proportion(df, population_share):
     return closest_row['cum_values_prop']
 
 def compute_gini(x):
-    """
-    Description
-    -----------
-    Compute the Gini coefficient, a measure of statistical dispersion to represent inequality.
+    """Compute the Gini coefficient for a numeric vector.
+
+    The Gini coefficient is a measure of statistical dispersion used to
+    represent inequality in a distribution.
 
     Parameters
     ----------
-    x (list, np.ndarray, pd.Series): A numeric vector representing values (e.g., income, emails sent).
+    x : list, numpy.ndarray, or pandas.Series
+        Numeric values (e.g. hours, emails sent).
 
     Returns
     -------
-    float: The Gini coefficient for the given vector of values.
+    float
+        The Gini coefficient.
 
     Raises
     ------
-    ValueError: If input is not a numeric vector.
+    ValueError
+        If *x* is not a numeric vector.
+
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> vi.compute_gini(pq_data["Emails_sent"])
     """
     if not isinstance(x, (list, np.ndarray, pd.Series)):
         raise ValueError("Input must be a numeric vector")
@@ -113,50 +135,54 @@ def compute_gini(x):
     return gini
 
 def create_lorenz(data, metric, return_type="plot",figsize: Optional[Tuple[float, float]] = None ):
-    """
-    Name
-    ----
-    create_lorenz
-    
-    Description
-    -----------
-    Calculate and return the Lorenz curve and Gini coefficient for a given metric.
+    """Calculate the Lorenz curve and Gini coefficient for a metric.
 
     Parameters
     ----------
-    data (pd.DataFrame): DataFrame containing the data to analyze.
-    metric (str): The column name in the DataFrame representing the values to analyze.
-    return_type (str): The type of output to return: 
-                       - "gini": returns the Gini coefficient.
-                       - "table": returns a DataFrame of cumulative population and value shares.
-                       - "plot" (default): displays a Lorenz curve plot with the Gini coefficient.
+    data : pandas.DataFrame
+        DataFrame containing the data to analyse.
+    metric : str
+        Column name of the numeric values to analyse.
+    return_type : str, default "plot"
+        ``"plot"`` to display a Lorenz curve, ``"gini"`` to return the Gini
+        coefficient, or ``"table"`` for a DataFrame of cumulative shares.
+    figsize : tuple of float or None, default None
+        Figure size ``(width, height)`` in inches.  Defaults to ``(8, 6)``.
 
     Returns
     -------
-    float/pd.DataFrame/None: Depending on return_type:
-                             - "gini": returns the Gini coefficient.
-                             - "table": returns a DataFrame of population and value shares.
-                             - "plot": displays the Lorenz curve plot
+    matplotlib.figure.Figure, float, or pandas.DataFrame
+        The Lorenz curve figure, the Gini coefficient, or a table of
+        cumulative population and value shares.
 
     Raises
     ------
-    ValueError: If the metric is not found in the DataFrame, or if an invalid return_type is specified.
-    
-    
+    ValueError
+        If *metric* is not in the DataFrame or *return_type* is invalid.
+
     Examples
     --------
-    Using `pq_data` from `vi.load_pq_data()`, which returns a DataFrame with an "Emails_sent" column.
-    
+    Compute the Gini coefficient:
+
     >>> import vivainsights as vi
-    >>> # Compute the Gini coefficient:
     >>> vi.create_lorenz(data=vi.load_pq_data(), metric="Emails_sent", return_type="gini")
 
-    >>> # Compute the underlying table for the Lorenz curve:
-    >>> vi.create_lorenz(data=vi.load_pq_data(), metric="Emails_sent", return_type="table")
-    
-    >>> # Plot the Lorenz curve
+    Display the Lorenz curve plot:
+
     >>> vi.create_lorenz(data=vi.load_pq_data(), metric="Emails_sent", return_type="plot")
-    
+
+    Return a table of cumulative population and value shares:
+
+    >>> vi.create_lorenz(data=vi.load_pq_data(), metric="Emails_sent", return_type="table")
+
+    Customize the figure size:
+
+    >>> vi.create_lorenz(
+    ...     data=vi.load_pq_data(),
+    ...     metric="Collaboration_hours",
+    ...     return_type="plot",
+    ...     figsize=(10, 8),
+    ... )
     """
     if metric not in data.columns:
         raise ValueError(f"Metric '{metric}' not found in data.")

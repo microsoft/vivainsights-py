@@ -3,8 +3,9 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module extracts HR attributes (organizational data) through a combination of detecting variable class, 
-number of unique values, regular expressions. There is an option to return either just a list of the variable names 
+Extract HR or organizational attribute columns from a Viva Insights dataset.
+
+There is an option to return either just a list of the variable names
 or a DataFrame containing only the variables themselves.
 """
 
@@ -17,42 +18,49 @@ def extract_hr(
     exclude_constants: bool = True,
     return_type: str = "names"):
     """    
-    Name
-    ----
-    extract_hr
-
-    Description
-    -----------
-    The function `extract_hr` extracts HR attributes (organizational data) through a combination of detecting variable class,
+    Extract HR attributes (organizational data) by detecting variable class
+    and number of unique values.
 
     Parameters
-    ---------
-    data : pandas dataframe 
-        Contains the data to extract HR (highly-recurring) variables from
-    max_unique: int 
-        The maximum number of unique values a column can have to be included in the output, defaults to 50 (optional)
-    exclude_constants: boolean
-         A boolean value (True/False) indicating whether to exclude columns with constant values or not. If True, columns with constant values will be excluded. If False, all columns will be included regardless of whether they have constant values or not, defaults to True (optional)
+    ----------
+    data : pandas.DataFrame
+        Data from which to extract HR variables.
+    max_unique : int
+        Maximum number of unique values a column can have to be included.
+        Defaults to 50.
+    exclude_constants : bool
+        Whether to exclude columns with only one unique value.
+        Defaults to ``True``.
     return_type : str
-         The type of output to be returned, either "names" or "vars". If "names", the function will return the names of the columns that meet the specified criteria. If "vars", the function will return the actual columns that meet the specified criteria, defaults to names (optional)
-    
-    Returns 
+        Output type. ``"names"`` (default) prints column names,
+        ``"vars"`` returns the filtered DataFrame,
+        ``"suggestion"`` returns a list of column names.
+
+    Returns
     -------
-    The function is not returning anything. It is printing the column names of the object columns in the filtered dataframe.
-    
-    Example
-    -------
+    pandas.DataFrame, list of str, or None
+        Depends on ``return_type``: a DataFrame of HR columns, a list of
+        column names, or prints names to console.
+
+    Examples
+    --------
+    Print HR variable names to console (default):
+
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
-    >>> vi.extract_hr(
-    >>>   data = pq_data
-    >>> )
-    
-    >>> vi.extract_hr(
-    >>>   data = pq_data,
-    >>>   return_type = "vars"
-    >>> )
-    
+    >>> vi.extract_hr(data=pq_data)
+
+    Return the HR columns as a filtered DataFrame:
+
+    >>> vi.extract_hr(data=pq_data, return_type="vars")
+
+    Return a list of suggested HR column names:
+
+    >>> vi.extract_hr(data=pq_data, return_type="suggestion")
+
+    Adjust the maximum unique values threshold:
+
+    >>> vi.extract_hr(data=pq_data, max_unique=50, return_type="names")
     """
     try:
         if((isinstance(max_unique, int)) and (isinstance(exclude_constants, bool))\

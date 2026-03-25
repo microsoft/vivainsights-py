@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module returns a data frame containing a person query.
+Load a sample person query dataset.
 """
 
 __all__ = ['load_pq_data']
@@ -13,6 +13,23 @@ import pandas as pd
 import os
 
 def load_pq_data():
+    """Load a sample person query dataset.
+
+    Returns a DataFrame containing a de-identified sample of Viva Insights
+    person query data.  The dataset includes collaboration metrics and
+    organizational attributes suitable for demonstrating analysis functions
+    in this package.
+
+    Returns
+    -------
+    pandas.DataFrame
+        A person query dataset with one row per person per week.
+
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    """
     try:
         # Python 3.9+ with importlib.resources.files
         files = importlib.resources.files(__package__).joinpath('data', 'pq_data.csv')

@@ -4,8 +4,9 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-Generate an person-to-person query / edgelist based on the graph according to the Watts-Strogatz
-small-world network model. Organizational data fields are also simulated for `Organization`, `LevelDesignation`, and `City`
+Simulate a person-to-person network using the Watts-Strogatz model.
+
+Organizational data fields are also simulated for `Organization`, `LevelDesignation`, and `City`
 data frame with the same column structure as a person-to-person flexible query.
 This has an edgelist structure and can be used directly as an input to `network_p2p()`.
 """
@@ -16,6 +17,42 @@ import igraph
 import pandas as pd
 
 def p2p_data_sim(dim=1, size=300, nei=5, p=0.05):
+    """Simulate a person-to-person network dataset.
+
+    Generate a synthetic person-to-person edgelist using the Watts-Strogatz
+    small-world model.  Organizational attributes (``Organization``,
+    ``LevelDesignation``, ``City``) are simulated for both primary and
+    secondary collaborators.  The output can be passed directly to
+    ``network_p2p()``.
+
+    Parameters
+    ----------
+    dim : int, default 1
+        Dimension of the Watts-Strogatz lattice.
+    size : int, default 300
+        Number of nodes in the network.
+    nei : int, default 5
+        Number of neighbours each node is connected to in the lattice.
+    p : float, default 0.05
+        Rewiring probability.
+
+    Returns
+    -------
+    pandas.DataFrame
+        An edgelist DataFrame with columns for person IDs, organizational
+        attributes, and a ``StrongTieScore`` column.
+
+    Examples
+    --------
+    Generate a small simulated network:
+
+    >>> import vivainsights as vi
+    >>> sim = vi.p2p_data_sim(size=50)
+
+    Customize the Watts-Strogatz parameters:
+
+    >>> sim = vi.p2p_data_sim(size=100, dim=2, nei=3, p=0.1)
+    """
     graph = igraph.Graph.Watts_Strogatz(dim=dim, size=size, nei=nei, p=p)
     edgelist = graph.get_edgelist()
     df = pd.DataFrame(edgelist, columns=["PrimaryCollaborator_PersonId", "SecondaryCollaborator_PersonId"])

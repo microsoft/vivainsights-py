@@ -3,7 +3,8 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module generates a count of the distinct persons in the data population.
+Count the number of distinct persons by organizational group.
+
 Returns a bar plot of the counts by default, with an option to return a summary table.
 """
 
@@ -15,14 +16,54 @@ from vivainsights.extract_date_range import extract_date_range
 from vivainsights.extract_hr import extract_hr
 
 def hrvar_count_calc(data: pd.DataFrame, hrvar: str):
-    """Calculate the number of distinct persons in the data population, grouped by a selected HR variable."""
+    """Calculate the number of distinct persons in the data population, grouped by a selected HR variable.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Person query data.
+    hrvar : str
+        Name of the organizational attribute for grouping.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Summary table with unique person count per group.
+
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> vi.hrvar_count_calc(pq_data, hrvar="Organization")
+    """
     data = data.groupby([hrvar])
     data = data['PersonId'].nunique().reset_index(name='n')
     output = data.sort_values(by = 'n', ascending=False)
     return output
 
 def hrvar_count_viz(data: pd.DataFrame, hrvar: str, figsize: tuple = None):
-    """Visualise the number of distinct persons in the data population, grouped by a selected HR variable."""
+    """Visualise the number of distinct persons in the data population, grouped by a selected HR variable.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Person query data.
+    hrvar : str
+        Name of the organizational attribute for grouping.
+    figsize : tuple or None, default None
+        Figure size ``(width, height)`` in inches.
+
+    Returns
+    -------
+    matplotlib.figure.Figure
+        The bar chart figure.
+
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> vi.hrvar_count_viz(pq_data, hrvar="Organization")
+    """
     sum_df = hrvar_count_calc(data = data, hrvar = hrvar)
     cap_str = extract_date_range(data, return_type = 'text')
     
@@ -96,45 +137,35 @@ def hrvar_count_viz(data: pd.DataFrame, hrvar: str, figsize: tuple = None):
 
 def hrvar_count_all(data: pd.DataFrame, hrvar_list: list = None, max_unique: int = 50):
     """
-    Name
-    ----
-    hrvar_count_all
+    Create a summary table to validate organizational data.
 
-    Description
-    -----------
-    This function creates a summary table to validate organizational data. 
-    This table provides a summary of the data found in the Viva Insights Data sources page. 
-    This function returns a summary table with the count of distinct fields per HR attribute 
-    and the percentage of employees with missing values for that attribute.
+    Returns the count of distinct fields per HR attribute and the percentage
+    of employees with missing values for that attribute.
 
     Parameters
-    ---------
-    data : pandas dataframe
-        person query data
-    hrvar_list : list, optional
-        list of HR variables to analyze. If None, uses `extract_hr()` to dynamically 
-        identify organizational attributes from the dataset.
+    ----------
+    data : pandas.DataFrame
+        Person query data.
+    hrvar_list : list of str, optional
+        HR variables to analyze. If ``None``, uses ``extract_hr()`` to
+        dynamically identify organizational attributes.
     max_unique : int, optional
-        The maximum number of unique values a column can have to be considered an HR variable.
-        Only used when `hrvar_list` is None (i.e., when using dynamic detection via `extract_hr()`).
+        Maximum number of unique values for a column to be considered an
+        HR variable (only used when ``hrvar_list`` is ``None``).
         Defaults to 50.
 
     Returns
     -------
     pandas.DataFrame
-        A summary table containing:
-        - hrvar: name of the HR variable
-        - distinct_values: count of distinct values in the HR variable
-        - missing_count: count of missing/null values 
-        - missing_percentage: percentage of employees with missing values
+        Summary table with columns ``hrvar``, ``distinct_values``,
+        ``missing_count``, and ``missing_percentage``.
 
-    Example
-    -------
+    Examples
+    --------
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> vi.hrvar_count_all(pq_data)
-    
-    >>> # With custom max_unique threshold
+    >>>
     >>> vi.hrvar_count_all(pq_data, max_unique=100)
     """
     # Default HR variables if none provided - use extract_hr to dynamically detect
@@ -171,30 +202,40 @@ def hrvar_count_all(data: pd.DataFrame, hrvar_list: list = None, max_unique: int
 
 def hrvar_count(data: pd.DataFrame, hrvar: str = 'Organization', figsize: tuple = None, return_type: str = "plot"):
     """
-    Name
-    ----
-    hrvar_count
-
-    Description
-    -----------
-    This function generates a count of the distinct persons in the data population, grouped by a selected HR variable.
+    Count distinct persons in the data population grouped by an HR variable.
 
     Parameters
-    ---------
-    data : ppandas dataframe
-        person query data
+    ----------
+    data : pandas.DataFrame
+        Person query data.
     hrvar : str
-         name of the organizational attribute to be used for grouping
+        Organizational attribute for grouping. Defaults to ``"Organization"``.
     figsize : tuple, optional
-         The `figsize` parameter is an optional tuple that specifies the size of the figure for the boxplot visualization. It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of `(8, 6)` will be used.
-    return_type : str or optional
-        type of output to return. Defaults to "plot".
+        Figure size as ``(width, height)`` in inches. Defaults to ``(8, 6)``.
+    return_type : str
+        ``"plot"`` (default) returns a bar chart; ``"table"`` returns a
+        summary DataFrame.
 
-    Example
+    Returns
     -------
+    matplotlib.figure.Figure or pandas.DataFrame
+        Bar chart or summary table depending on ``return_type``.
+
+    Examples
+    --------
+    Return a bar chart (default):
+
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
-    >>> vi.hrvar_count(pq_data, hrvar = "LevelDesignation")
+    >>> vi.hrvar_count(pq_data, hrvar="LevelDesignation")
+
+    Return a summary table:
+
+    >>> vi.hrvar_count(pq_data, hrvar="Organization", return_type="table")
+
+    Customize figure size:
+
+    >>> vi.hrvar_count(pq_data, hrvar="LevelDesignation", figsize=(10, 5))
     """
     if return_type == "plot":
         out = hrvar_count_viz(data=data, hrvar=hrvar, figsize=figsize)

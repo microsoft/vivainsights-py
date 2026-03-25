@@ -1,78 +1,45 @@
 Reference - Functions
 ======================
 
-This documentation provides a comprehensive reference for all vivainsights functions, organized by functionality to help you quickly find the tools you need.
+This documentation provides a comprehensive reference for all **vivainsights** functions, organized by category. Click any module name to view its full documentation.
 
-📊 Visualization Functions
+.. toctree::
+   :hidden:
+   :glob:
+
+   _api/*
+
+.. _ref-visualization:
+
+Visualization Functions
 ==========================
 
 Core Visualization
 ------------------
 
-vivainsights.create\_bar module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. list-table::
+   :widths: 50 50
+   :header-rows: 0
 
-.. automodule:: vivainsights.create_bar
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.create\_boxplot module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.create_boxplot
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.create\_bubble module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.create_bubble
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.create\_line module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.create_line
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.create\_rank module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.create_rank
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Time Series & Trends
---------------------
-
-vivainsights.create\_trend module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.create_trend
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   * - :doc:`vivainsights.create_bar <_api/vivainsights.create_bar>`
+     - Calculate and visualize the mean of a metric by organizational group.
+   * - :doc:`vivainsights.create_boxplot <_api/vivainsights.create_boxplot>`
+     - Create boxplot visualizations of metric distributions by organizational group.
+   * - :doc:`vivainsights.create_bubble <_api/vivainsights.create_bubble>`
+     - Create a bubble chart visualization of two metrics by organizational group.
+   * - :doc:`vivainsights.create_line <_api/vivainsights.create_line>`
+     - Visualize the average of a metric by sub-population over time as a line chart.
+   * - :doc:`vivainsights.create_rank <_api/vivainsights.create_rank>`
+     - Rank all groups across HR attributes for a selected Viva Insights metric.
+   * - :doc:`vivainsights.create_trend <_api/vivainsights.create_trend>`
+     - Create a week-by-week heatmap of a selected Viva Insights metric.
 
 Specialized Visualizations
 --------------------------
 
-vivainsights.create\_sankey module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.create_sankey
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.create\_lorenz module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. list-table::
+   :widths: 50 50
+   :header-rows: 0
 
 .. automodule:: vivainsights.create_lorenz
    :members:
@@ -110,312 +77,170 @@ vivainsights.create\_inc module
    :members:
    :undoc-members:
    :show-inheritance:
+   * - :doc:`vivainsights.create_sankey <_api/vivainsights.create_sankey>`
+     - Create a Sankey chart from a two-column count table.
+   * - :doc:`vivainsights.create_lorenz <_api/vivainsights.create_lorenz>`
+     - Calculate the Gini coefficient and plot the Lorenz curve for a given metric.
+   * - :doc:`vivainsights.create_inc <_api/vivainsights.create_inc>`
+     - Analyze the proportion of a population above or below a metric threshold.
+   * - :doc:`vivainsights.create_bar_asis <_api/vivainsights.create_bar_asis>`
+     - Create a bar chart with customizable options and no pre-aggregation.
 
 Advanced Analytics Visualizations
 ---------------------------------
 
-vivainsights.create\_bar\_asis module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. list-table::
+   :widths: 50 50
+   :header-rows: 0
 
-.. automodule:: vivainsights.create_bar_asis
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   * - :doc:`vivainsights.create_IV <_api/vivainsights.create_IV>`
+     - Calculate Information Value (IV) and Weight of Evidence (WOE) for predictors.
+   * - :doc:`vivainsights.create_odds_ratios <_api/vivainsights.create_odds_ratios>`
+     - Calculate odds ratios for ordinal metrics against a specified outcome.
 
-vivainsights.create\_IV module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. _ref-analysis:
 
-.. automodule:: vivainsights.create_IV
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.create\_odds\_ratios module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.create_odds_ratios
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-🔍 Data Analysis & Identification
+Data Analysis & Identification
 =================================
 
 Employee Behavior Analysis
 --------------------------
 
-vivainsights.identify\_churn module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. list-table::
+   :widths: 50 50
+   :header-rows: 0
 
-.. automodule:: vivainsights.identify_churn
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.identify\_tenure module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.identify_tenure
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.identify\_habit module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.identify_habit
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.identify\_usage\_segments module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.identify_usage_segments
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   * - :doc:`vivainsights.identify_churn <_api/vivainsights.identify_churn>`
+     - Identify and count employees who have churned from or joined the dataset.
+   * - :doc:`vivainsights.identify_tenure <_api/vivainsights.identify_tenure>`
+     - Calculate and summarize employee tenure based on hire and metric dates.
+   * - :doc:`vivainsights.identify_habit <_api/vivainsights.identify_habit>`
+     - Identify recurring behavioral habits from Viva Insights metrics.
+   * - :doc:`vivainsights.identify_usage_segments <_api/vivainsights.identify_usage_segments>`
+     - Segment employees into usage-based groups from collaboration metrics.
 
 Data Quality & Anomaly Detection
---------------------------------
+---------------------------------
 
-vivainsights.identify\_outlier module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. list-table::
+   :widths: 50 50
+   :header-rows: 0
 
-.. automodule:: vivainsights.identify_outlier
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.identify\_inactiveweeks module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.identify_inactiveweeks
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.identify\_holidayweeks module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.identify_holidayweeks
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.identify\_nkw module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.identify_nkw
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   * - :doc:`vivainsights.identify_outlier <_api/vivainsights.identify_outlier>`
+     - Identify outlier weeks using z-scores for a selected metric.
+   * - :doc:`vivainsights.identify_inactiveweeks <_api/vivainsights.identify_inactiveweeks>`
+     - Identify weeks where collaboration hours fall far below the mean.
+   * - :doc:`vivainsights.identify_holidayweeks <_api/vivainsights.identify_holidayweeks>`
+     - Detect holiday weeks by scanning for anomalous collaboration hours.
+   * - :doc:`vivainsights.identify_nkw <_api/vivainsights.identify_nkw>`
+     - Identify non-knowledge workers based on collaboration activity thresholds.
 
 Time & Date Analysis
 ---------------------
 
-vivainsights.identify\_daterange module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. list-table::
+   :widths: 50 50
+   :header-rows: 0
 
-.. automodule:: vivainsights.identify_daterange
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   * - :doc:`vivainsights.identify_daterange <_api/vivainsights.identify_daterange>`
+     - Identify whether a date column has daily, weekly, or monthly frequency.
+   * - :doc:`vivainsights.extract_date_range <_api/vivainsights.extract_date_range>`
+     - Extract the minimum and maximum date range from a dataset.
 
-vivainsights.extract\_date\_range module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. _ref-network:
 
-.. automodule:: vivainsights.extract_date_range
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-🌐 Network Analysis
+Network Analysis
 ===================
 
-Network Visualization & Analysis
---------------------------------
+.. list-table::
+   :widths: 50 50
+   :header-rows: 0
 
-vivainsights.network\_g2g module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   * - :doc:`vivainsights.network_g2g <_api/vivainsights.network_g2g>`
+     - Create a network plot from a group-to-group query.
+   * - :doc:`vivainsights.network_p2p <_api/vivainsights.network_p2p>`
+     - Perform person-to-person network analysis and visualization.
+   * - :doc:`vivainsights.network_summary <_api/vivainsights.network_summary>`
+     - Summarize node centrality statistics from an igraph network object.
 
-.. automodule:: vivainsights.network_g2g
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. _ref-data:
 
-vivainsights.network\_p2p module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.network_p2p
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.network\_summary module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.network_summary
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-📁 Data Management
+Data Management
 ==================
 
 Sample Data Sources
 -------------------
 
-vivainsights.pq\_data module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. list-table::
+   :widths: 50 50
+   :header-rows: 0
 
-.. automodule:: vivainsights.pq_data
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.mt\_data module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.mt_data
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.g2g\_data module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.g2g_data
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.p2p\_data module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.p2p_data
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.p2g\_data module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.p2g_data
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.p2p\_data\_sim module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.p2p_data_sim
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   * - :doc:`vivainsights.pq_data <_api/vivainsights.pq_data>`
+     - Load a sample person query dataset.
+   * - :doc:`vivainsights.mt_data <_api/vivainsights.mt_data>`
+     - Load a sample meeting query dataset.
+   * - :doc:`vivainsights.g2g_data <_api/vivainsights.g2g_data>`
+     - Load a sample group-to-group query dataset.
+   * - :doc:`vivainsights.p2p_data <_api/vivainsights.p2p_data>`
+     - Load a sample person-to-person query dataset.
+   * - :doc:`vivainsights.p2g_data <_api/vivainsights.p2g_data>`
+     - Load a sample person-to-group query dataset.
+   * - :doc:`vivainsights.p2p_data_sim <_api/vivainsights.p2p_data_sim>`
+     - Simulate a person-to-person network using the Watts-Strogatz model.
 
 Data Import & Export
 --------------------
 
-vivainsights.import\_query module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. list-table::
+   :widths: 50 50
+   :header-rows: 0
 
-.. automodule:: vivainsights.import_query
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   * - :doc:`vivainsights.import_query <_api/vivainsights.import_query>`
+     - Import a Viva Insights query from a CSV file with optimized variable types.
+   * - :doc:`vivainsights.export <_api/vivainsights.export>`
+     - Display and export data frames and plot objects to various formats.
 
-vivainsights.export module
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. _ref-utilities:
 
-.. automodule:: vivainsights.export
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-🔧 Utility Functions
+Utility Functions
 ====================
 
-Data Processing Utilities
--------------------------
+Data Processing
+----------------
 
-vivainsights.extract\_hr module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. list-table::
+   :widths: 50 50
+   :header-rows: 0
 
-.. automodule:: vivainsights.extract_hr
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.hrvar\_count module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.hrvar_count
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.totals\_col module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.totals_col
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Text & Formatting Utilities
----------------------------
-
-vivainsights.us\_to\_space module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.us_to_space
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   * - :doc:`vivainsights.extract_hr <_api/vivainsights.extract_hr>`
+     - Extract HR or organizational attribute columns from a Viva Insights dataset.
+   * - :doc:`vivainsights.hrvar_count <_api/vivainsights.hrvar_count>`
+     - Count the number of distinct persons by organizational group.
+   * - :doc:`vivainsights.totals_col <_api/vivainsights.totals_col>`
+     - Add a totals column with a specified value to a DataFrame.
+   * - :doc:`vivainsights.us_to_space <_api/vivainsights.us_to_space>`
+     - Replace underscores with spaces in a given string.
 
 Validation & Configuration
---------------------------
+----------------------------
 
-vivainsights.check\_inputs module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. list-table::
+   :widths: 50 50
+   :header-rows: 0
 
-.. automodule:: vivainsights.check_inputs
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.color\_codes module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.color_codes
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   * - :doc:`vivainsights.check_inputs <_api/vivainsights.check_inputs>`
+     - Validate that required variables exist in a DataFrame.
+   * - :doc:`vivainsights.color_codes <_api/vivainsights.color_codes>`
+     - Define color palettes and an Enum class for standard vivainsights colors.
 
 Advanced Analytics
-------------------
+-------------------
 
-vivainsights.xicor module
-^^^^^^^^^^^^^^^^^^^^^^^^^
+.. list-table::
+   :widths: 50 50
+   :header-rows: 0
 
-.. automodule:: vivainsights.xicor
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.key\_metrics\_scan module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.keymetrics_scan
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
-===============
-
-.. automodule:: vivainsights
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   * - :doc:`vivainsights.xicor <_api/vivainsights.xicor>`
+     - Calculate the Chatterjee (xi) correlation coefficient for a given metric.
+   * - :doc:`vivainsights.keymetrics_scan <_api/vivainsights.keymetrics_scan>`
+     - Generate a heatmap or summary table scanning key Viva Insights metrics.

@@ -2,6 +2,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+"""
+Calculate Information Value (IV) and Weight of Evidence (WOE) for predictors.
+"""
 
 __all__ = ['p_test', 'calculate_IV', 'map_IV', 'plot_WOE', 'create_IV']
 
@@ -87,15 +90,10 @@ def p_test(
     behavior: list
     ):
     """
-    Name
-    -----
-    p_test
-    
-    Description
-    -----------
-    Performs statistical tests between predictor variables and a binary outcome.
+    Perform statistical tests between predictor variables and a binary outcome.
+
     Automatically selects the appropriate test based on variable type:
-    - Mann-Whitney U test (rank-sum test) for numeric variables
+    - Mann-Whitney U test for numeric variables
     - Chi-square test for categorical variables
     
     Note: The test compares two independent groups (outcome=0 vs outcome=1),
@@ -126,6 +124,8 @@ def p_test(
     
     Examples
     --------    
+    Test p-values for numeric predictors:
+
     >>> import vivainsights as vi
     >>> import pandas as pd
     >>> data = pd.DataFrame({
@@ -136,6 +136,11 @@ def p_test(
     >>> outcome = 'outcome'
     >>> behavior = ['behavior1', 'behavior2']
     >>> vi.p_test(data, outcome, behavior)
+
+    Include a categorical predictor:
+
+    >>> data['department'] = ['HR', 'Eng', 'HR', 'Eng', 'HR']
+    >>> vi.p_test(data, outcome, ['behavior1', 'department'])
     """
     
     # Filter the dataset based on the outcome variable
@@ -211,14 +216,9 @@ def calculate_IV(
     bins: int
     ):
     """
-    Name
-    ----
-    calculate_IV
+    Calculate Information Value (IV) between a single predictor and the outcome.
 
-    Description
-    -----------
-    Calculates Information Value (IV) between a single predictor variable and the outcome variable.
-    For numeric variables, uses binning based on quantiles.
+    For numeric variables, uses quantile-based binning.
     For categorical variables, uses each category as a bin.
 
     Parameters
@@ -249,6 +249,8 @@ def calculate_IV(
 
     Examples
     --------
+    Calculate IV for a numeric predictor:
+
     >>> import vivainsights as vi
     >>> import pandas as pd
     >>> data = pd.DataFrame({
@@ -259,6 +261,11 @@ def calculate_IV(
     >>> predictor = 'predictor'
     >>> bins = 5
     >>> vi.calculate_IV(data, outcome, predictor, bins)
+
+    Calculate IV for a categorical predictor:
+
+    >>> data['dept'] = ['HR', 'Eng', 'HR', 'Eng', 'HR']
+    >>> vi.calculate_IV(data, 'outcome', 'dept', bins=5)
     """
     
     pred_var = data[predictor]
@@ -362,25 +369,45 @@ def map_IV(
     bins: int = 5
     ):
     """
-    Name
-    ----
-    map_IV
-    
-    Description
-    -----------
-    Maps Information Value (IV) calculations for multiple predictor variables. 
-    Calls `calculate_IV()` for every predictor-outcome variable pair.
+    Map Information Value (IV) calculations across multiple predictors.
+
+    Calls ``calculate_IV()`` for every predictor–outcome pair.
 
     Parameters
     ----------
-    - data: DataFrame containing the data
-    - outcome: Name of the outcome variable
-    - predictors: List of predictor variables (if None, all numeric variables except outcome are used)
-    - bins: Number of bins for binning the predictor variables
+    data : pandas.DataFrame
+        DataFrame containing the data.
+    outcome : str
+        Name of the outcome variable.
+    predictors : list of str, optional
+        Predictor variables. If ``None``, all numeric columns except
+        ``outcome`` are used.
+    bins : int
+        Number of bins for numeric predictors.
 
     Returns
     -------
-    - Dictionary containing IV calculations for each predictor variable and a summary DataFrame    
+    dict
+        Dictionary with keys ``"Tables"`` (per-predictor IV DataFrames) and
+        ``"Summary"`` (aggregate IV DataFrame sorted descending).
+
+    Examples
+    --------
+    Map IV across all numeric predictors:
+
+    >>> import vivainsights as vi
+    >>> import pandas as pd
+    >>> data = pd.DataFrame({
+    ...     'outcome': [1, 0, 1, 0, 1, 0, 1, 0],
+    ...     'hours': [10, 20, 30, 40, 15, 25, 35, 45],
+    ...     'emails': [5, 15, 25, 35, 10, 20, 30, 40],
+    ... })
+    >>> iv_result = vi.map_IV(data, outcome='outcome', predictors=['hours', 'emails'], bins=3)
+    >>> iv_result['Summary']  # aggregated IV for each predictor
+
+    Let predictors default to all numeric columns:
+
+    >>> iv_result = vi.map_IV(data, outcome='outcome', bins=3)
     """
     
     if predictors is None:
@@ -398,23 +425,16 @@ def map_IV(
 
 def plot_WOE(IV, predictor, figsize: tuple = None):
     """
-    Name
-    ----
-    plot_WOE
-
-    Description
-    -----------
-    Plots Weight of Evidence (WOE) for a predictor variable.
+    Plot Weight of Evidence (WOE) for a predictor variable.
 
     Parameters
     ----------
     IV : dict
-        Dictionary containing IV calculations for each predictor variable.
+        Dictionary returned by ``map_IV()``.
     predictor : str
-        Name of the predictor variable.
+        Name of the predictor variable to plot.
     figsize : tuple, optional
-        The `figsize` parameter is an optional tuple that specifies the size of the figure for the WOE plot visualization.
-        It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.
+        Figure size as ``(width, height)`` in inches. Defaults to ``(8, 6)``.
 
     Returns
     -------
@@ -423,6 +443,9 @@ def plot_WOE(IV, predictor, figsize: tuple = None):
 
     Examples
     --------
+    Plot WOE for a predictor:
+
+    >>> import vivainsights as vi
     >>> import pandas as pd
     >>> data = pd.DataFrame({
     ...     'outcome': [1, 0, 1, 0, 1],
@@ -431,8 +454,12 @@ def plot_WOE(IV, predictor, figsize: tuple = None):
     >>> outcome = 'outcome'
     >>> predictor = 'predictor'
     >>> bins = 5
-    >>> IV = map_IV(data, outcome, [predictor], bins)
-    >>> plot_WOE(IV, predictor)
+    >>> IV = vi.map_IV(data, outcome, [predictor], bins)
+    >>> vi.plot_WOE(IV, predictor)
+
+    Customize the figure size:
+
+    >>> vi.plot_WOE(IV, predictor, figsize=(10, 6))
     """
     # Identify right table
     plot_table = IV['Tables'][predictor]
@@ -484,62 +511,60 @@ def create_IV(
     return_type ="plot"
     ):
     """
-    Name
-    ----
-    create_IV
-
-    Description
-    -----------
-    Creates Information Value (IV) analysis for predictor variables.
+    Create an Information Value (IV) analysis for predictor variables.
 
     Parameters
     ----------
-    data : pd.DataFrame
+    data : pandas.DataFrame
         DataFrame containing the data.
-    predictors : list, optional
-        List of predictor variables.
+    predictors : list of str, optional
+        Predictor variables.
     outcome : str
-        Name of the outcome variable.
+        Name of the binary outcome variable.
     bins : int, optional
-        Number of bins for binning the predictor variables. Defaults to 5.
+        Number of bins for numeric predictors. Defaults to 5.
     siglevel : float, optional
-        Significance level. Defaults to 0.05.
+        Significance level for filtering predictors. Defaults to 0.05.
     exc_sig : bool, optional
-        Boolean indicating if non-significant predictors should be excluded. 
-        If True, only predictors with p-value <= siglevel are included in the analysis.
-        If False, all predictors are included regardless of significance. Defaults to False.
+        If ``True``, exclude predictors with p-value above ``siglevel``.
+        Defaults to ``False``.
+    figsize : tuple, optional
+        Figure size as ``(width, height)`` in inches.
     return_type : str, optional
-        Type of output to return ("plot", "summary", "list", "plot-WOE", "IV"). Defaults to "plot".
+        Type of output:
+
+        - ``"plot"`` (default): bar chart of IV values.
+        - ``"summary"``: IV summary DataFrame.
+        - ``"list"``: dict of per-predictor IV tables with ODDS/PROB.
+        - ``"plot-WOE"``: list of WOE plot Figures.
+        - ``"IV"``: tuple of (output_list, IV_summary, lnodds).
 
     Returns
     -------
-    Various
-        The type of output to return. Can be "plot", "summary", "list", "plot-WOE", or "IV".
-    
-    Note    
-    ----
-      * create_IV function return_type 'list' and 'summary' has output format as a dictionary, please use for loop to access the key and values.
-      * create_IV function return_type 'IV' has output format as a tuple, tuple element 'output_list'format is dictionary hence please use for loop to access the key and values.
+    matplotlib.figure.Figure, pandas.DataFrame, dict, or list
+        Depends on ``return_type``.
 
-    Example
-    -------
+    Notes
+    -----
+    When ``return_type`` is ``"list"`` or ``"summary"``, the output is a
+    dictionary — use a for-loop to access keys and values.
+
+    Examples
+    --------
     >>> import numpy as np
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
     >>> pred_vars = ["Email_hours", "Meeting_hours", "Chat_hours"]
     >>> pq_data["outcome_sim"] = np.where(pq_data["Internal_network_size"] > 40, 1, 0)
-
-    >>> # Example 1: Return IV tables for all predictors without excluding non-significant ones
-    >>> vi.create_IV(pq_data, predictors=pred_vars, outcome="outcome_sim", exc_sig=False, return_type="IV")
-
-    >>> # Example 2: Exclude non-significant predictors and return summary
+    >>>
+    >>> # IV tables for all predictors
+    >>> vi.create_IV(pq_data, predictors=pred_vars, outcome="outcome_sim", return_type="IV")
+    >>>
+    >>> # Exclude non-significant predictors and return summary
     >>> vi.create_IV(pq_data, predictors=pred_vars, outcome="outcome_sim", exc_sig=True, return_type="summary")
-
-    >>> # Example 3: Return IV for all predictors (single plot)
-    >>> vi.create_IV(pq_data, predictors=pred_vars, outcome="outcome_sim", exc_sig=False, return_type="plot")
-    
-    >>> # Example 4: Return WOE plots for all predictors
-    >>> vi.create_IV(pq_data, predictors=pred_vars, outcome="outcome_sim", exc_sig=False, return_type="plot-WOE")
+    >>>
+    >>> # IV bar chart
+    >>> vi.create_IV(pq_data, predictors=pred_vars, outcome="outcome_sim", return_type="plot")
     """
     
     # Preserve string

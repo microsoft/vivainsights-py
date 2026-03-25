@@ -3,7 +3,8 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module identifies and counts the number of employees who have churned from the dataset.
+Identify and count employees who have churned from or joined the dataset.
+
 This is done by measuring whether an employee who is present in the first `n` (n1) weeks of the data,
 is also present in the last `n` (n2) weeks of the data.
 An additional use case of this function is the ability to identify "new-joiners" by using the argument `flip`.
@@ -20,38 +21,55 @@ def identify_churn(data: pd.DataFrame,
                    flip = False,
                    date_column: str = "MetricDate",
                    date_format = "%Y-%m-%d"):
-  """
-  Name
-  ----
-  identify_churn
+  """Identify employees who have churned from or joined the dataset.
 
-  Description
-  -----------
-  This module identifies and counts the number of employees who have churned from the dataset.
+  Measures whether employees present in the first *n1* weeks are still
+  present in the last *n2* weeks.  Set ``flip=True`` to identify
+  new joiners instead of churned employees.
 
   Parameters
-  ---------
-  data : pandas dataframe
-     The dataframe to export
-  n1 : int
-     First `n` weeks of data to check for the person's presence
-  n2 : int
-    Last `n` weeks of data to check for the person's presence
-  return_type : str
-     Type of return expected
-  flip : boolean
-    Flag to switch between identifying churned users vs new users
-  date_column : str
-     DateTime column based on which churn is calculated, defaults to MetricDate for Nova
-  date_format : datetime
-     DateTime format in input file, defaults to YYYY-mm-dd
-    
+  ----------
+  data : pandas.DataFrame
+      Person query data.
+  n1 : int, default 6
+      Number of initial weeks to check for presence.
+  n2 : int, default 6
+      Number of final weeks to check for presence.
+  return_type : str, default "message"
+      ``"message"`` prints a diagnostic, ``"text"`` returns it as a
+      string, ``"data"`` returns the set of matching ``PersonId`` values.
+  flip : bool, default False
+      If ``True``, identify new joiners rather than churned employees.
+  date_column : str, default "MetricDate"
+      Name of the date column.
+  date_format : str, default "%Y-%m-%d"
+      ``strftime`` format of dates in *date_column*.
+
   Returns
   -------
-  A different output is returned depending on the value passed to the `return_type` argument:
-  - "message"`: Message on console. A diagnostic message.
-  - "text"`: String. A diagnostic message.
-  - "data"`: Character vector containing the the `PersonId` of employees who have been identified as churned.
+  None, str, or set
+      A printed message, a diagnostic string, or a set of ``PersonId``
+      values depending on *return_type*.
+
+  Examples
+  --------
+  Return a diagnostic text summary:
+
+  >>> import vivainsights as vi
+  >>> pq_data = vi.load_pq_data()
+  >>> vi.identify_churn(pq_data, return_type="text")
+
+  Return the set of churned PersonIds:
+
+  >>> vi.identify_churn(pq_data, return_type="data")
+
+  Flip the logic to detect employees who appear only in later weeks:
+
+  >>> vi.identify_churn(pq_data, flip=True, return_type="text")
+
+  Customize the number of boundary weeks to compare:
+
+  >>> vi.identify_churn(pq_data, n1=3, n2=3, return_type="text")
   """
 
   data[date_column] = pd.to_datetime(data[date_column], format = date_format) # Ensure correct format

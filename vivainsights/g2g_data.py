@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module returns a data frame containing a group-to-group query.
+Load a sample group-to-group query dataset.
 
 Example
 -------
@@ -17,6 +17,21 @@ import importlib.resources
 import pandas as pd
 
 def load_g2g_data():
+    """Load a sample group-to-group query dataset.
+
+    Returns a DataFrame containing a de-identified sample of Viva Insights
+    group-to-group query data.
+
+    Returns
+    -------
+    pandas.DataFrame
+        A group-to-group query dataset.
+
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> g2g_data = vi.load_g2g_data()
+    """
     try:
         # Python 3.9+ with importlib.resources.files
         files = importlib.resources.files(__package__).joinpath('data', 'g2g_data.csv')

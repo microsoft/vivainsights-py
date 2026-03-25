@@ -2,6 +2,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+"""
+Segment employees into usage-based groups from collaboration metrics.
+"""
 
 __all__ = ['identify_usage_segments', 'plot_ts_us']
 
@@ -14,71 +17,60 @@ from vivainsights.identify_habit import identify_habit
 
 def identify_usage_segments(data, metric=None, metric_str=None, version="12w", return_type="data", 
                           threshold=None, width=None, max_window=None, power_thres=None):
-    """
-    Identify usage segments based on a metric.
+    """Segment employees into usage-based groups.
+
+    Classifies employees as Power User, Habitual User, Novice User, Low
+    User, or Non-user based on rolling averages and habit detection.
 
     Parameters
     ----------
     data : pandas.DataFrame
-        A dataset containing the metric to be classified. Must include 'PersonId' and 'MetricDate' columns.
-    metric : str, optional
-        Name of the metric column to classify.
-    metric_str : list of str, optional
-        List of metric columns to aggregate for classification.
-    version : str, optional
-        Version of classification: "12w" (12-week rolling average), "4w" (4-week rolling average), or None for custom parameters. Default is "12w".
-    figsize : tuple, optional
-        The `figsize` parameter is an optional tuple that specifies the size of the figure for the boxplot visualization. It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.        
-    return_type : str, optional
-        What to return: "data" (default), "plot", or "table".
-    threshold : int, optional
-        Threshold for habit identification. Required when version=None.
-    width : int, optional
-        Width parameter for habit identification. Required when version=None.
-    max_window : int, optional
-        Maximum window for habit identification. Required when version=None.
-    power_thres : float, optional
-        Power user threshold for usage segment classification. Required when version=None.
+        Person query data.  Must include ``PersonId`` and ``MetricDate``.
+    metric : str or None, default None
+        Single metric column to classify.
+    metric_str : list of str or None, default None
+        Multiple metric columns to aggregate before classification.
+        Provide exactly one of *metric* or *metric_str*.
+    version : str or None, default "12w"
+        ``"12w"`` for 12-week rolling, ``"4w"`` for 4-week rolling, or
+        ``None`` for custom parameters.
+    return_type : str, default "data"
+        ``"data"`` for a classified DataFrame, ``"plot"`` for a stacked
+        bar chart, or ``"table"`` for a summary pivot table.
+    threshold : int or None, default None
+        Habit identification threshold (required when ``version=None``).
+    width : int or None, default None
+        Habit width parameter (required when ``version=None``).
+    max_window : int or None, default None
+        Habit window parameter (required when ``version=None``).
+    power_thres : float or None, default None
+        Power-user threshold (required when ``version=None``).
 
     Returns
     -------
     pandas.DataFrame or matplotlib.figure.Figure
-        Depending on `return_type`, returns a DataFrame with usage segments, a plot visualizing the segments over time, or a summary table.
+        Classified data, a stacked bar chart, or a summary table
+        depending on *return_type*.
 
     Examples
     --------
+    Classify usage segments using the 12-week preset:
+
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
+    >>> vi.identify_usage_segments(pq_data, metric="Emails_sent", version="12w")
 
-    # Example usage with a single metric column
-    >>> vi.identify_usage_segments(data=pq_data, metric="Emails_sent", version="12w", return_type="data")
+    Return a stacked bar chart:
 
-    # Example usage with multiple metric columns
-    >>> result = vi.identify_usage_segments(
-    >>>     data=pq_data,
-    >>>     metric_str=[
-    >>>         "Copilot_actions_taken_in_Teams",
-    >>>         "Copilot_actions_taken_in_Outlook",
-    >>>         "Copilot_actions_taken_in_Excel",
-    >>>         "Copilot_actions_taken_in_Word",
-    >>>         "Copilot_actions_taken_in_Powerpoint"
-    >>>     ],
-    >>>     version="4w",
-    >>>     return_type="plot"
-    >>> )
-    >>> result.show()
-    
-    # Example usage with custom parameters
-    >>> result = vi.identify_usage_segments(
-    >>>     data=pq_data,
-    >>>     metric="Emails_sent",
-    >>>     version=None,
-    >>>     threshold=2,
-    >>>     width=5,
-    >>>     max_window=8,
-    >>>     power_thres=20,
-    >>>     return_type="table"
-    >>> )
+    >>> vi.identify_usage_segments(pq_data, metric="Emails_sent", version="12w", return_type="plot")
+
+    Return a summary table:
+
+    >>> vi.identify_usage_segments(pq_data, metric="Emails_sent", version="12w", return_type="table")
+
+    Use a metric string instead of a column name:
+
+    >>> vi.identify_usage_segments(pq_data, metric_str="Emails_sent", version="4w")
     """
     if metric is None and metric_str is None:
         raise ValueError("Please provide either a metric or a metric_str.")
@@ -233,17 +225,18 @@ def identify_usage_segments(data, metric=None, metric_str=None, version="12w", r
 
 
 def plot_ts_us(data, cus, caption,figsize=None):
-    """
-    Plot usage segments over time.
+    """Plot usage segments over time as a stacked bar chart.
 
     Parameters
     ----------
     data : pandas.DataFrame
-        A dataset containing the usage segments and 'MetricDate' column.
+        Dataset with usage segments and a ``MetricDate`` column.
     cus : str
-        Column name containing the usage segment classifications.
+        Column name containing usage segment classifications.
     caption : str
-        Caption for the plot.
+        Caption text displayed below the chart.
+    figsize : tuple or None, default None
+        Figure size ``(width, height)`` in inches.  Defaults to ``(8, 6)``.
 
     Returns
     -------

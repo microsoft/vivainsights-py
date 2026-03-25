@@ -3,8 +3,9 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This function imports a Viva Insights Query from a .csv file and optimizes the
-variable classifications for other functions in the package. The function takes in a file path (x)
+Import a Viva Insights query from a CSV file with optimized variable types.
+
+The function takes in a file path (x)
 and an optional encoding parameter (default is 'utf-8'). It checks if the file is a .csv file, reads
 in the file using pandas, cleans the column names by removing spaces and special characters, and
 returns the resulting data as a pandas dataframe. If there is an error reading the file, the function prints an error message.
@@ -18,25 +19,38 @@ import os
 
 def import_query(x, encoding: str = 'utf-8'):
     """
-    Name
-    ----
-    import_query
+    Import a Viva Insights query from a CSV file.
 
-    Description
-    ----------- 
-    The function `import_query` reads a CSV file, removes leading and trailing spaces from column names,
-    and replaces spaces and special characters with underscores in column names.
-    
+    Reads the file, strips whitespace from column names and replaces spaces
+    and special characters with underscores.
+
     Parameters
     ----------
     x : str
-        The parameter `x` is the input file name or path. It should be a string representing the file name or path of the CSV file you want to import.
+        Path to a ``.csv`` file.
     encoding : str, optional
-        The encoding parameter specifies the character encoding to be used when reading the CSV file. The default value is 'utf-8', which is a widely used encoding for text files. However, you can specify a different encoding if needed.
-    
+        Character encoding for reading the file. Defaults to ``"utf-8"``.
+
     Returns
     -------
-    The variable `data` if the input file is a valid CSV file. If the input file is not a valid CSVfile, the function will print an error message and return `None`.
+    pandas.DataFrame
+        The imported data with cleaned column names.
+
+    Raises
+    ------
+    ValueError
+        If the file does not exist, is not a CSV, or cannot be read.
+
+    Examples
+    --------
+    Import a standard Viva Insights CSV export:
+
+    >>> import vivainsights as vi
+    >>> data = vi.import_query("path/to/query.csv")
+
+    Specify a custom encoding for non-UTF-8 files:
+
+    >>> data = vi.import_query("path/to/query.csv", encoding="latin-1")
     """    
     
     # in case '.csv' is not all in lower case, make it lower case

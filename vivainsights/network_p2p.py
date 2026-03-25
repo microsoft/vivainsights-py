@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module performs network analysis with a person-to-person query
+Perform person-to-person network analysis and visualization.
 """
 
 __all__ = ['network_p2p']
@@ -45,146 +45,96 @@ def network_p2p(data,
     figsize: tuple = None
 ):
     """
-    Name
-    ----
-    network_p2p
-
-    Description
-    ------------
-    This function returns a network plot given a data frame containing a person-to-person query.
+    Return a network plot given a data frame containing a person-to-person query.
 
     Parameters
     ----------
-    data : dataframe 
+    data : pandas.DataFrame
         Data frame containing a person-to-person query.
-    hrvar : str 
-        String containing the label for the HR attribute.
-    return_type : str 
-        A different output is returned depending on the value passed to the `return_type` argument: 
-        - `'plot'` (default)
-        - `'plot-pdf'`
-        - `'sankey'`
-        - `'table'`
-        - `'data'`
-        - `'network'`
+    hrvar : str
+        Label for the HR attribute. Defaults to ``"Organization"``.
+    return_type : str
+        Type of output to return. Valid values:
 
-    centrality : str 
-        string to determines which centrality measure is used to scale the size of the nodes. All centrality measures are automatically calculated when it is set to one of the below values, and reflected in the `'network'` and `'data'` outputs. 
-        Measures include: 
-        - `betweenness`
-        - `closeness`
-        - `degree`
-        - `eigenvector`
-        - `pagerank`
-        When `centrality` is set to None, no centrality is calculated in the outputs and all the nodes would have the same size. 
+        - ``"plot"`` (default): matplotlib Figure.
+        - ``"plot-pdf"``: save network plot as PDF.
+        - ``"sankey"``: sankey plot of communities × HR attribute.
+        - ``"table"``: vertex summary table.
+        - ``"data"``: vertex-level DataFrame.
+        - ``"network"``: igraph object.
 
-    community : str 
-        String determining which community detection algorithms to apply. Valid values include: 
-        - `None` (default): compute analysis or visuals without computing communities.
-        - `"multilevel"` (a version of louvain)
-        - `"leiden"`
-        - `"edge_betweenness"`
-        - `"fastgreedy"`
-        - `"infomap"`
-        - `"label_propagation"`
-        - `"leading_eigenvector"`
-        - `"optimal_modularity"`
-        - `"spinglass"`
-        - `"walk_trap"`
-
-    weight : str 
-        String to specify which column to use as weights for the network. To create a graph without weights, supply `None` to this argument.
-    comm_args : list
-        list containing the arguments to be passed through to igraph's clustering algorithms. Arguments must be named. See examples section on how to supply arguments in a named list.
+    centrality : str, optional
+        Centrality measure used to scale node sizes. Valid values:
+        ``"betweenness"``, ``"closeness"``, ``"degree"``, ``"eigenvector"``,
+        ``"pagerank"``. When ``None`` (default), nodes are uniform size.
+    community : str, optional
+        Community detection algorithm. Valid values:
+        ``"multilevel"``, ``"leiden"``, ``"edge_betweenness"``,
+        ``"fastgreedy"``, ``"infomap"``, ``"label_propagation"``,
+        ``"leading_eigenvector"``, ``"optimal_modularity"``,
+        ``"spinglass"``, ``"walk_trap"``. Defaults to ``None``.
+    weight : str, optional
+        Column to use as edge weights. ``None`` creates an unweighted graph.
+    comm_args : dict, optional
+        Keyword arguments passed to igraph's clustering algorithm.
     layout : str
-        String to specify the node placement algorithm to be used. Defaults to `"mds"` for the deterministic multi-dimensional scaling of nodes. 
-        See <https://rdrr.io/cran/ggraph/man/layout_tbl_graph_igraph.html> for a full  list of options.
-    path : str (file path)
-        File path for saving the PDF output. Defaults to a timestamped path based on current parameters.
-        
-    bg_fill : str 
-        String to specify background fill color.
+        Node placement algorithm. Defaults to ``"mds"``.
+    path : str
+        File path for PDF output. Defaults to an auto-generated name.
+    bg_fill : str
+        Background fill colour. Defaults to ``"#FFFFFF"``.
     font_col : str
-        String to specify font color.
+        Font colour. Defaults to ``"grey20"``.
     legend_pos : str
-        String to specify position of legend. Valid values include:  
-        String to specify position of legend. Valid values include: 
-        - `"best"`
-        - `"upper right"`
-        - `"upper left"`
-        - `"lower left"`
-        - `"right"`
-        -  `"center left"`
-        - `"center right"`
-        - `"lower center"`
-        - `"upper center"`
-        - `"center"`
-    palette : str 
-        String specifying the function to generate a color palette with a single argument `n`. Uses `"rainbow"` by default.
-    node_alpha : int 
-        A numeric value between 0 and 1 to specify the transparency of the nodes. Defaults to 0.7.
-    :param edge_alpha : int
-        A numeric value between 0 and 1 to specify the transparency of the edges (only for 'ggraph' mode). Defaults to 1.
-    edge_col: String to specify edge link color.
-    node_sizes: int
-        Numeric vector of length two to specify the range of node sizes to rescale to, when `centrality` is set to a non-null value.
-    node_scale: int
-        A numeric value to multiply or divide the size of the nodes. 
-        This is applied to the 'node_size' attribute in the graph to increase or decrease the size of the nodes.
+        Legend position (e.g., ``"best"``, ``"upper left"``).
+    palette : str
+        Colour palette name. Defaults to ``"rainbow"``.
+    node_alpha : float
+        Node transparency (0–1). Defaults to 0.7.
+    edge_alpha : float
+        Edge transparency (0–1). Defaults to 1.
+    edge_col : str
+        Edge colour. Defaults to ``"#777777"``.
+    node_sizes : list of int
+        Two-element list ``[min, max]`` for rescaling node sizes when
+        ``centrality`` is set. Defaults to ``[1, 20]``.
+    node_scale : float
+        Multiplier applied to node sizes. Defaults to 1.
     seed : int
-        Seed for the random number generator passed to either `set.seed()` when the louvain or leiden community detection algorithm is used, to ensure consistency. Only applicable when `community` is set to one of the valid non-null values.
+        Random seed for community detection reproducibility.
     legend_ncols : int
-        Value is either 0 or 1, Parameter to change the orientation horizontal to vertical of legend in the plot.
-    figsize : tuple
-        The `figsize` parameter is an optional tuple that specifies the size of the figure for the boxplot visualization. It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.
-        
+        ``0`` for horizontal legend, ``1`` for vertical.
+    figsize : tuple, optional
+        Figure size as ``(width, height)`` in inches. Defaults to ``(8, 6)``.
+
     Returns
     -------
-    A different output is returned depending on the value passed to the `return_type` argument:     
-    - `'plot'`: return a network plot, interactively within R.
-    - `'plot-pdf'`: save a network plot as PDF. This option is recommended when the graph is large, which make take a long time to run if `return_type = 'plot'` is selected. Use this together with `path` to control the save location.
-    - `'sankey'`: return a sankey plot combining communities and HR attribute. This is only valid if a community detection method is selected at community`.
-    - `'table'`: return a vertex summary table with counts in communities and HR attribute. When `centrality` is non-NULL, the average centrality values are calculated per group.
-    - `'data'`: return a vertex data file that matches vertices with communities and HR attributes.
-    - `'network'`: return 'igraph' object.
+    matplotlib.figure.Figure, pandas.DataFrame, or igraph.Graph
+        Output depends on ``return_type``:
+
+        - ``"plot"``: matplotlib Figure.
+        - ``"plot-pdf"``: saves PDF and returns ``None``.
+        - ``"sankey"``: sankey plot Figure.
+        - ``"table"``: vertex summary DataFrame.
+        - ``"data"``: vertex-level DataFrame.
+        - ``"network"``: igraph object.
 
     Examples
     --------
     >>> import vivainsights as vi
     >>> sample_data = vi.p2p_data_sim()
-    >>> # Return a network visual
-    >>> vi.network_p2p(data = sample_data, return_type = "plot")
-
-    >>>  # Return the vertex table with counts in communities and HR attribute
-    >>> # Resolution is set to a low value to yield fewer communities
-    >>> vi.network_p2p(data = sample_data, community = "leiden", comm_args = {"resolution": 0.01}, return_type = "table")
-    
-    >>> # Return the vertex table with centrality calculations
-    >>> vi.network_p2p(data = sample_data, centrality = "betweenness", return_type = "table")
-    
+    >>> vi.network_p2p(data=sample_data, return_type="plot")
+    >>>
+    >>> # Community detection with custom resolution
     >>> vi.network_p2p(
-    >>>    data = sample_data, # or whatever your query is stored
-    >>>    node_scale = 50, # adjust this parameter to make nodes bigger/smaller
-    >>>    return_type = "plot"
-    >>>    )
-    
-    >>> # Return the sankey output based on centrality and community
-    >>> vi.network_p2p(
-    >>>    data = sample_data, # or whatever your query is stored
-    >>>    return_type = "sankey", # another return type for visualization 
-    >>>    centrality = "betweenness", # centrality can be set as per requirement
-    >>>    community = "leiden" # Adjust community 
-    >>>    )
-    
-    >>> # Return the plot output based on different color scheme, legend orientation and position, font color change
-    >>> vi.network_p2p(
-    >>>    data = sample_data, # or whatever your query is stored
-    >>>    return_type = "plot",
-    >>>    font_col = "grey20", # Color change option for fonts in chart
-    >>>    legend_pos = "upper left", # Adjust the legend position using this parameter
-    >>>    legend_ncols = 1 # Adjust this parameter to 0 or 1 to change legend orientation from vertical to horizontal
-    >>>    )
-    
+    ...     data=sample_data,
+    ...     community="leiden",
+    ...     comm_args={"resolution": 0.01},
+    ...     return_type="table",
+    ... )
+    >>>
+    >>> # Centrality-based node sizing
+    >>> vi.network_p2p(data=sample_data, centrality="betweenness", return_type="table")
     """
     # Only set default path if user didn't provide one
     if path == "":

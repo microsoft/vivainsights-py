@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
+Create boxplot visualizations of metric distributions by organizational group.
+
 The function `create_boxplot` creates a boxplot visualization and summary table for a given metric
 and grouping variable in a dataset.
 """
@@ -17,6 +19,27 @@ from vivainsights.color_codes import *
 from vivainsights.totals_col import *
 
 def create_boxplot_calc(data: pd.DataFrame, metric, hrvar, mingroup):
+        """Compute person-level metric averages per HR group.
+
+        Used internally by ``create_boxplot``.
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            Person query data.
+        metric : str
+            Name of the metric column.
+        hrvar : str
+            Name of the organizational attribute for grouping.
+        mingroup : int
+            Minimum group size; groups below this threshold are dropped.
+
+        Returns
+        -------
+        pandas.DataFrame
+            Person-level averages with groups meeting the *mingroup*
+            threshold.
+        """
         # Data calculations    
         plot_data = (
         data.rename(columns={hrvar: "group"}) # Rename hrvar to "group"
@@ -48,6 +71,25 @@ def create_boxplot_calc(data: pd.DataFrame, metric, hrvar, mingroup):
 
 
 def create_boxplot_summary(data: pd.DataFrame, metric, hrvar, mingroup):
+        """Return summary statistics for a metric by HR group.
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            Person query data.
+        metric : str
+            Name of the metric column.
+        hrvar : str
+            Name of the organizational attribute for grouping.
+        mingroup : int
+            Minimum group size.
+
+        Returns
+        -------
+        pandas.DataFrame
+            Summary table with mean, median, standard deviation, min, max,
+            and count per group.
+        """
 
         # Data calculations            
         plot_data = create_boxplot_calc(data, metric, hrvar, mingroup)
@@ -61,7 +103,29 @@ def create_boxplot_summary(data: pd.DataFrame, metric, hrvar, mingroup):
         return(summary_table)
 
 
-def create_boxplot_viz(data: pd.DataFrame, metric, hrvar, mingroup,figsize: tuple = None):    
+def create_boxplot_viz(data: pd.DataFrame, metric, hrvar, mingroup,figsize: tuple = None):
+        """Create a boxplot visualization of metric distributions by group.
+
+        Used internally by ``create_boxplot`` when ``return_type="plot"``.
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            Person query data.
+        metric : str
+            Name of the metric column.
+        hrvar : str
+            Name of the organizational attribute for grouping.
+        mingroup : int
+            Minimum group size.
+        figsize : tuple or None, default None
+            Figure size ``(width, height)`` in inches.
+
+        Returns
+        -------
+        matplotlib.figure.Figure
+            The boxplot figure.
+        """
         
         # Clean labels for plotting
         clean_nm = metric.replace("_", " ")
@@ -162,41 +226,58 @@ def create_boxplot_viz(data: pd.DataFrame, metric, hrvar, mingroup,figsize: tupl
         """
     
 def create_boxplot(data: pd.DataFrame, metric: str, hrvar: str ="Organization", mingroup=5, return_type: str = "plot", figsize: tuple = None):
-    """
-    Name
-    -----
-    create_boxplot
+    """Create a boxplot of metric distributions by organizational group.
 
-    Description
-    -----------
-    This function creates a boxplot visualization and summary table for a given metric and HR variable
-    in a pandas DataFrame.
-    
+    Generates a boxplot showing the distribution of a selected metric across
+    groups defined by an HR variable.  Metrics are aggregated at the person
+    level before plotting.
+
     Parameters
     ----------
-    data : pandas dataframe
-        A pandas DataFrame containing the data for analysis.
+    data : pandas.DataFrame
+        Person query data.
     metric : str
-        The `metric` parameter is a string that represents the variable or metric for which you want to create the boxplot visualization and summary table. This variable should be present in the input data` DataFrame.
-    hrvar : str, optional
-        The `hrvar` parameter is the HR variable that you want to use for grouping the data. By default, it is set to "Organization", but you can pass a different HR variable if needed.
-    mingroup: int, optional
-        The `mingroup` parameter is an optional parameter that specifies the minimum number of observations required in each group for the boxplot to be created. If a group has fewer observations than the `mingroup` value, it will be excluded from the boxplot. The default value is 5.
-    figsize : tuple, optional
-        The `figsize` parameter is an optional tuple that specifies the size of the figure for the boxplot visualization. It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.
-    return_type : str, optional
-        The `return_type` parameter determines the type of output that the function will return. It can take one of three values:
-    
+        Name of the metric to visualize.
+    hrvar : str, default "Organization"
+        Name of the organizational attribute for grouping.
+    mingroup : int, default 5
+        Minimum group size; smaller groups are excluded.
+    return_type : str, default "plot"
+        ``"plot"`` for a matplotlib figure, ``"table"`` for summary
+        statistics, or ``"data"`` for the processed plot data.
+    figsize : tuple or None, default None
+        Figure size ``(width, height)`` in inches.  Defaults to ``(8, 6)``.
+
     Returns
     -------
-    The function `create_boxplot` returns different outputs based on the value of the `return_type` parameter
+    matplotlib.figure.Figure or pandas.DataFrame
+        A boxplot figure, a summary table, or the processed data,
+        depending on *return_type*.
 
-    Example
-    -------
+    Examples
+    --------
+    Return a boxplot (default):
+
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
-    >>> vi.create_boxplot(pq_data, metric = "Collaboration_hours", hrvar = "Organization", return_type = "plot")
-    
+    >>> vi.create_boxplot(pq_data, metric="Collaboration_hours", hrvar="Organization")
+
+    Return a summary table with mean, median, sd, min, max:
+
+    >>> vi.create_boxplot(pq_data, metric="Collaboration_hours", hrvar="Organization", return_type="table")
+
+    Return the processed person-level data:
+
+    >>> vi.create_boxplot(pq_data, metric="Collaboration_hours", hrvar="Organization", return_type="data")
+
+    Customize the figure size:
+
+    >>> vi.create_boxplot(
+    ...     pq_data,
+    ...     metric="Collaboration_hours",
+    ...     hrvar="LevelDesignation",
+    ...     figsize=(12, 8),
+    ... )
     """
     # Check inputs
     required_variables = ["MetricDate", metric, "PersonId"]

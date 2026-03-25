@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
+Identify weeks where collaboration hours fall far below the mean.
+
 The function `identify_inactiveweeks` identifies weeks where collaboration hours are more than a
 specified number of standard deviations below the mean and returns the result in the specified
 format.
@@ -14,38 +16,49 @@ import pandas as pd
 from vivainsights.create_bar import create_bar_calc
 
 def identify_inactiveweeks(data: pd.DataFrame, sd=2, return_type="text"):
-    """
-    Name
-    ----
-    identify_inactiveweeks
+    """Identify weeks where collaboration hours fall far below the mean.
 
-    Description
-    -----------
-    The function `identify_inactiveweeks` identifies weeks where collaboration hours are more than a
-    specified number of standard deviations below the mean and returns the result in the specified
-    format.
-    
+    Uses z-scores per person to flag weeks with abnormally low
+    collaboration activity.
+
     Parameters
     ----------
-    data : pandas dataframe
-        The `data` parameter is a pandas DataFrame that contains the following columns:
-    sd : int
-        The `sd` parameter stands for the number of standard deviations below the mean that is considered as inactive. In this code, it is used to identify weeks where the collaboration hours are more than `sd` standard deviations below the mean, defaults to 2 (optional)
-    return_type : str
-         The `return_type` parameter determines the type of output that the function will return. 
-         It can have the following values:, defaults to text (optional)
-         
-         - 'text': Returns a string with the number of inactive weeks.
-         - 'data_dirty' or 'dirty_data': Returns a Pandas DataFrame with the rows that are inactive.
-         - 'data_cleaned' or 'cleaned_data': Returns a Pandas DataFrame with the rows that are not inactive.
-         - 'plot': Returns a plot showing the number of inactive weeks for each user.
-         - 'data': Returns a Pandas DataFrame with the number of inactive weeks for each user.
-        
-        The default value is 'text'.
-    
+    data : pandas.DataFrame
+        Person query data.  Must contain ``PersonId`` and
+        ``Collaboration_hours``.
+    sd : int, default 2
+        Number of standard deviations below the mean to flag as inactive.
+    return_type : str, default "text"
+        ``"text"`` for a diagnostic message, ``"data_dirty"`` /
+        ``"dirty_data"`` for inactive rows only, ``"data_cleaned"`` /
+        ``"cleaned_data"`` for active rows only, or ``"data"`` for the
+        full dataset with an ``inactiveweek`` flag.
+
     Returns
     -------
-    The function `identify_inactiveweeks` returns different outputs based on the value of the `return_type` parameter.
+    str or pandas.DataFrame
+        A diagnostic message or a filtered / labelled DataFrame depending
+        on *return_type*.
+
+    Examples
+    --------
+    Return a diagnostic text summary:
+
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> vi.identify_inactiveweeks(pq_data, sd=2, return_type="text")
+
+    Return the full dataset with inactive weeks flagged:
+
+    >>> vi.identify_inactiveweeks(pq_data, sd=2, return_type="data")
+
+    Return only the cleaned dataset (inactive weeks removed):
+
+    >>> vi.identify_inactiveweeks(pq_data, sd=2, return_type="data_cleaned")
+
+    Return only the dirty rows (inactive weeks):
+
+    >>> vi.identify_inactiveweeks(pq_data, sd=2, return_type="data_dirty")
     """
     # Work on a copy to avoid mutating the caller's dataframe
     df = data.copy()

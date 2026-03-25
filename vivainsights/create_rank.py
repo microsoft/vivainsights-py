@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module performs a rank operation on all groups across HR attributes for a selected Viva Insights metric.
+Rank all groups across HR attributes for a selected Viva Insights metric.
 """
 
 __all__ = ['create_rank_calc', 'create_rank_viz', 'create_rank']
@@ -19,6 +19,28 @@ def create_rank_calc(data: pd.DataFrame,
                      hrvar = ['Organization', 'FunctionType'],
                      mingroup = 5,
                      stats = False):
+    """Compute ranked group averages across multiple HR attributes.
+
+    Used internally by ``create_rank``.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Person query data.
+    metric : str
+        Name of the metric column.
+    hrvar : list of str, default ['Organization', 'FunctionType']
+        HR attributes to rank across.
+    mingroup : int, default 5
+        Minimum group size.
+    stats : bool, default False
+        If ``True``, include sd, median, min, and max columns.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Ranked summary table sorted by descending metric mean.
+    """
     
     output_list = [] # create an empty list to store the outputs
     
@@ -47,6 +69,28 @@ def create_rank_viz(data: pd.DataFrame,
                     hrvar = ['Organization', 'FunctionType', 'LevelDesignation', 'SupervisorIndicator'],
                     mingroup = 5,
                     figsize: tuple = None):
+    """Create a dumbbell chart showing min/max groups per HR attribute.
+
+    Used internally by ``create_rank`` when ``return_type="plot"``.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Person query data.
+    metric : str
+        Name of the metric column.
+    hrvar : list of str
+        HR attributes to rank across.
+    mingroup : int, default 5
+        Minimum group size.
+    figsize : tuple or None, default None
+        Figure size ``(width, height)`` in inches.
+
+    Returns
+    -------
+    matplotlib.figure.Figure
+        The dumbbell chart figure.
+    """
 
     cap_str = extract_date_range(data, return_type = 'text')
     col_highlight = '#fe7f4f'
@@ -126,43 +170,52 @@ def create_rank_viz(data: pd.DataFrame,
     return fig
 
 def create_rank(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, return_type: str = "plot", figsize: tuple = None):
-    """
-    Name
-    ----
-    create_rank
+    """Rank all groups across HR attributes for a selected metric.
 
-    Description
-    -----------
-    This function performs a rank operation on all groups across HR attributes for a specified metric.
+    Computes the mean of the metric for every level of each HR variable
+    and displays the highest and lowest values in a dumbbell chart.
 
     Parameters
-    ---------
-    data : pandas dataframe
-        person query data
+    ----------
+    data : pandas.DataFrame
+        Person query data.
     metric : str
-         name of the metric to be analysed
-    hrvar : str 
-        name(s) of the organizational attribute(s) to be used for grouping
-    figsize : tuple, optional
-        size of the plot to be generated. Defaults to (8, 6).
-    return_type : str or optional 
-        type of output to return. Defaults to "plot".
+        Name of the metric to analyse.
+    hrvar : str or list of str
+        One or more HR attributes to rank across.
+    mingroup : int, default 5
+        Minimum group size.
+    return_type : str, default "plot"
+        ``"plot"`` for a matplotlib figure, ``"table"`` for a DataFrame.
+    figsize : tuple or None, default None
+        Figure size ``(width, height)`` in inches.  Defaults to ``(8, 6)``.
 
     Returns
     -------
-    A plot or a table depending on the return_type argument.
+    matplotlib.figure.Figure or pandas.DataFrame
+        A dumbbell chart or a ranked summary table.
 
-    Example
-    -------
+    Examples
+    --------
+    Return a dumbbell chart (default):
+
     >>> import vivainsights as vi
-    >>> pq_data = vi.load_pq_data() 
-      
-    >>> # Return plot
-    >>> rank_plot = vi.create_rank(data = pq_data, hrvar = ["FunctionType", "Organization"], metric = "Emails_sent", return_type = "plot")
-    >>> vi.export(rank_plot)
-    
-    >>> # Return table
-    >>> vi.create_rank(data = pq_data, hrvar = ["FunctionType", "Organization"], metric = "Emails_sent", return_type = "table")
+    >>> pq_data = vi.load_pq_data()
+    >>> vi.create_rank(pq_data, hrvar=["FunctionType", "Organization"], metric="Emails_sent")
+
+    Return a ranked summary table:
+
+    >>> vi.create_rank(pq_data, hrvar=["FunctionType", "Organization"], metric="Emails_sent", return_type="table")
+
+    Customize figure size and minimum group size:
+
+    >>> vi.create_rank(
+    ...     pq_data,
+    ...     hrvar=["LevelDesignation", "Organization"],
+    ...     metric="Collaboration_hours",
+    ...     mingroup=10,
+    ...     figsize=(10, 5),
+    ... )
     """
     if type(hrvar)==str:
         hrvar = [hrvar]

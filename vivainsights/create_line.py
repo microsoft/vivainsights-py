@@ -3,7 +3,8 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module visualizes the average of metric by sub-population over time. 
+Visualize the average of a metric by sub-population over time as a line chart.
+
 Returns a line plot showing the average of a selected metric by default.
 Additional options available to return a summary table.
 """
@@ -27,7 +28,27 @@ from matplotlib.ticker import MaxNLocator, FuncFormatter
 warnings.filterwarnings("ignore")
 
 
-def create_line_calc(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5):  
+def create_line_calc(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5):
+    """Compute weekly averages of a metric by HR group.
+
+    Used internally by ``create_line``.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Person query data.
+    metric : str
+        Name of the metric column.
+    hrvar : str
+        Name of the organizational attribute for grouping.
+    mingroup : int, default 5
+        Minimum group size.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Weekly mean of the metric per group with a count column.
+    """
     output = data.groupby(['MetricDate', hrvar]).agg(
         metric = (metric, 'mean'),
         n = ('PersonId', 'nunique')
@@ -51,6 +72,30 @@ def _add_header_decoration(fig, color='#fe7f4f'):
 
 
 def create_line_viz(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, figsize: tuple = None):
+    """Create a line chart of a metric over time by HR group.
+
+    When the grouping variable has four or fewer unique values a single
+    multi-line chart is produced; otherwise a faceted grid is used.
+    Called internally by ``create_line`` when ``return_type="plot"``.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Person query data.
+    metric : str
+        Name of the metric column.
+    hrvar : str
+        Name of the organizational attribute for grouping.
+    mingroup : int, default 5
+        Minimum group size.
+    figsize : tuple or None, default None
+        Figure size ``(width, height)`` in inches.
+
+    Returns
+    -------
+    matplotlib.figure.Figure or seaborn.FacetGrid
+        The line chart.
+    """
     # summarised output
     sum_df = create_line_calc(data, metric, hrvar, mingroup)
     sum_df['MetricDate'] = pd.to_datetime(sum_df['MetricDate'], format='%Y-%m-%d', errors='coerce')
@@ -183,43 +228,52 @@ def create_line_viz(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, f
 
 
 def create_line(data: pd.DataFrame, metric: str, hrvar: str, mingroup = 5, return_type: str = 'plot', figsize: tuple = None):
-    """
-    Name
-    ----
-    create_line
-    
-    Description
-    -----------
-    Provides a week by week view of a selected metric, visualised as line charts.
+    """Visualize a metric over time as a line chart.
+
+    Provides a week-by-week view of a selected metric, grouped by an HR
+    variable.  Returns a line chart or a summary table depending on
+    *return_type*.
 
     Parameters
     ----------
-    data : pandas dataframe
-        person query data
+    data : pandas.DataFrame
+        Person query data.
     metric : str
-        name of the metric to be analysed
+        Name of the metric to analyse.
     hrvar : str
-        name of the organizational attribute to be used for grouping
-    mingroup : int, optional
-        Numeric value setting the privacy threshold / minimum group size, by default 5
-    figsize : tuple, optional
-        Size of the figure to be plotted, by default None which sets it to (8, 6)
-    return_type : str, optional
-        type of output to return. Defaults to "plot".
-     
+        Name of the organizational attribute for grouping.
+    mingroup : int, default 5
+        Minimum group size.
+    return_type : str, default "plot"
+        ``"plot"`` for a matplotlib figure, ``"table"`` for a DataFrame.
+    figsize : tuple or None, default None
+        Figure size ``(width, height)`` in inches.  Defaults to ``(8, 6)``.
+
     Returns
     -------
-    Various
-        The output, either a plot or a table, depending on the value passed to `return_type`.
+    matplotlib.figure.Figure, seaborn.FacetGrid, or pandas.DataFrame
+        A line chart or a summary table.
 
-    Example
-    -------
+    Examples
+    --------
+    Return a line chart (default):
+
     >>> import vivainsights as vi
     >>> pq_data = vi.load_pq_data()
-    >>> # Return plot
-    >>> create_line(pq_data, metric = "Collaboration_hours", hrvar = "LevelDesignation")
-    >>> # Return table
-    >>> create_line(pq_data, metric = "Collaboration_hours", hrvar = "LevelDesignation", return_type = "table")
+    >>> vi.create_line(pq_data, metric="Collaboration_hours", hrvar="LevelDesignation")
+
+    Return a summary table of weekly averages:
+
+    >>> vi.create_line(pq_data, metric="Collaboration_hours", hrvar="LevelDesignation", return_type="table")
+
+    Customize figure size:
+
+    >>> vi.create_line(
+    ...     pq_data,
+    ...     metric="Collaboration_hours",
+    ...     hrvar="Organization",
+    ...     figsize=(12, 6),
+    ... )
     """    
     
     ## Handling None value passed to hrvar

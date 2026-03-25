@@ -3,8 +3,9 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-Takes a vector of dates and identify whether the frequency is 'daily', 'weekly', or 'monthly'. 
-The primary use case for this function is to provide an accurate description of the query type 
+Identify whether a date column has daily, weekly, or monthly frequency.
+
+The primary use case for this function is to provide an accurate description of the query type
 used and for raising errors should a wrong date grouping be used in the data input.
 """
 
@@ -13,6 +14,25 @@ __all__ = ['identify_datefreq']
 import pandas as pd
 
 def identify_datefreq(x):
+    """Identify whether dates have daily, weekly, or monthly frequency.
+
+    Parameters
+    ----------
+    x : array-like
+        A sequence of date values (strings or datetime objects).
+
+    Returns
+    -------
+    str
+        ``"daily"``, ``"weekly"``, ``"monthly"``, or a message if the
+        frequency cannot be determined.
+
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> vi.identify_datefreq(pq_data["MetricDate"])
+    """
     x = pd.to_datetime(x)
     
     # Data frame for checking

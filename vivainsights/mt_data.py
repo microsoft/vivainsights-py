@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module returns a data frame containing a meeting query.
+Load a sample meeting query dataset.
 """
 
 __all__ = ['load_mt_data']
@@ -12,6 +12,21 @@ import importlib.resources
 import pandas as pd
 
 def load_mt_data():
+    """Load a sample meeting query dataset.
+
+    Returns a DataFrame containing a de-identified sample of Viva Insights
+    meeting query data.
+
+    Returns
+    -------
+    pandas.DataFrame
+        A meeting query dataset with one row per meeting.
+
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> mt_data = vi.load_mt_data()
+    """
     try:
         # Python 3.9+ with importlib.resources.files
         files = importlib.resources.files(__package__).joinpath('data', 'mt_data.csv')

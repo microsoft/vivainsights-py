@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module returns a network plot given a data frame containing a group-to-group query.
+Create a network plot from a group-to-group query.
 """
 
 __all__ = ['network_g2g']
@@ -18,77 +18,63 @@ import random
 
 def network_g2g(data, primary=None, secondary=None, metric="Group_collaboration_time_invested", algorithm="fr", node_colour="lightblue", exc_threshold=0.1, org_count=None, node_scale = 1, edge_scale = 10, subtitle="Collaboration Across Organizations",figsize=None, return_type="plot"):
     """
-    Name
-    ----
-    network_g2g
-
-    Description
-    ------------
-    This function returns a network plot given a data frame containing a group-to-group query.
+    Return a network plot given a data frame containing a group-to-group query.
 
     Parameters
     ----------
-    data : data frame
+    data : pandas.DataFrame
         Data frame containing a group-to-group query.
-    primary : str
-        String containing the variable name for the Primary Collaborator column.
-    secondary : str
-        String containing the variable name for the SecondaryCollaborator column.
-    metric: str
-        String containing the variable name for metric. Defaults to `Meeting_Count`.
+    primary : str, optional
+        Variable name for the Primary Collaborator column. Auto-detected if ``None``.
+    secondary : str, optional
+        Variable name for the Secondary Collaborator column. Auto-detected if ``None``.
+    metric : str
+        Variable name for the collaboration metric. Defaults to ``"Group_collaboration_time_invested"``.
     algorithm : str
-        String to specify the node placement algorithm to be used. 
-        - Defaults to `"fr"` for the force-directed algorithm of Fruchterman and Reingold. 
-        - See <https://rdrr.io/cran/ggraph/man/layout_tbl_graph_igraph.html> for a full list of options.
-    node_colour : str or dictionary 
-        String or named vector to specify the colour to be used for displaying nodes. 
-        - Defaults to `"lightblue"`. 
-        - If `"vary"` is supplied, a different colour is shown for each node at random. 
-        - If a named dictionary is supplied, the names must match the values of the variable provided for the `primary` and `secondary` columns. 
-        - See example section for details.
-    exc_threshold: Numeric value between 0 and 1 specifying the exclusion threshold to apply. 
-        - Defaults to 0.1, which means that the plot will only display collaboration above 10% of a node's total collaboration. 
-        - This argument has no impact on `"data"` or `"table"` return.
-    org_count : optional 
-        Optional data frame to provide the size of each organizationin the `secondary` attribute. 
-        - The data frame should contain only two columns: 
-        - Name of the `secondary` attribute excluding any prefixes, e.g. `"Organization"`. 
-        - Must be of character or factor type. `"n"`. Must be of numeric type. 
-        - Defaults to `None`, where node sizes will be fixed.
-    node_scale : Numeric value controlling the size of the nodes. 1 keeps the size of the nodes as is. 
-    edge_scale: Numeric value controlling the width of the edges. 1 keeps the size of the edges as is. Defaults to 10. 
-    subtitle : str 
-        String to override default plot subtitle.
+        Node placement algorithm. Defaults to ``"fr"`` (Fruchterman-Reingold).
+    node_colour : str or dict
+        Colour for displaying nodes. Defaults to ``"lightblue"``. If ``"vary"``,
+        a random colour is assigned to each node. A dictionary can map specific
+        node names to colours.
+    exc_threshold : float
+        Exclusion threshold between 0 and 1. Defaults to 0.1 (collaboration
+        below 10 %% of a node's total is hidden). Has no impact on ``"data"``
+        or ``"table"`` return.
+    org_count : pandas.DataFrame, optional
+        Data frame with two columns (group name and ``"n"``) providing the size
+        of each organization. Defaults to ``None`` (fixed node sizes).
+    node_scale : float
+        Multiplier controlling node size. Defaults to 1.
+    edge_scale : float
+        Multiplier controlling edge width. Defaults to 10.
+    subtitle : str
+        Override for the default plot subtitle.
     figsize : tuple, optional
-        The `figsize` parameter is an optional tuple that specifies the size of the figure for the boxplot visualization. It should be in the format `(width, height)`, where `width` and `height` are in inches. If not provided, a default size of (8, 6) will be used.        
+        Figure size as ``(width, height)`` in inches. Defaults to ``(8, 6)``.
     return_type : str
-        String specifying what to return. This must be one of the following strings:
-        - `"plot"`
-        - `"table"`
-        - `"network"`
-        - `"data"`
-        - Defaults to `"plot"`.
+        Type of output to return. Valid values:
+
+        - ``"plot"`` (default): matplotlib Figure.
+        - ``"table"``: interaction matrix as a DataFrame.
+        - ``"network"``: igraph object.
+        - ``"data"``: long-format DataFrame of underlying data.
 
     Returns
     -------
-    A different output is returned depending on the value passed to the `return` argument:
-    - `"plot"`: 'ggplot' object. A group-to-group network plot.
-    - `"table"`: data frame. An interactive matrix of the network.
-    - `"network`: 'igraph' object used for creating the network plot.
-    - `"data"`: data frame. A long table of the underlying data.
+    matplotlib.figure.Figure, pandas.DataFrame, or igraph.Graph
+        Output depends on ``return_type``.
 
-    Example
-    -------
-    
-    >>> network_g2g(data = vi.load_g2g_data(), metric = "Group_meeting_count")
-    # Return a network visual
-    
-    >>> network_g2g(data = vi.load_g2g_data(), return_type = "table")
-    # Return the interaction matrix
-    
-    >>> network_g2g(data = vi.load_g2g_data(), exc_threshold = 0)
-    # Return a network visual with no exclusion threshold
-    
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> # Return a network visual
+    >>> vi.network_g2g(data=vi.load_g2g_data(), metric="Group_meeting_count")
+    >>>
+    >>> # Return the interaction matrix
+    >>> vi.network_g2g(data=vi.load_g2g_data(), return_type="table")
+    >>>
+    >>> # No exclusion threshold
+    >>> vi.network_g2g(data=vi.load_g2g_data(), exc_threshold=0)
     """ 
     if primary is None:
         #Only return first match

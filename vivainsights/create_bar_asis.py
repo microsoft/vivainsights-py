@@ -2,6 +2,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+"""
+Create a bar chart with customizable options and no pre-aggregation.
+"""
 
 __all__ = ['create_bar_asis']
 
@@ -12,25 +15,66 @@ import seaborn as sns
 
 def create_bar_asis(data, group_var, bar_var, title=None, subtitle=None, caption=None, ylab=None, xlab=None,
                     percent=False, bar_colour="default", rounding=1):
-    """
-    Create a bar chart with customizable options.
+    """Create a bar chart from pre-aggregated data.
 
-    Parameters:
-        - data: DataFrame, the data to be plotted.
-        - group_var: str, the variable to be grouped by on the x-axis.
-        - bar_var: str, the variable to be plotted on the y-axis.
-        - title: str, optional, title of the plot.
-        - subtitle: str, optional, subtitle of the plot.
-        - caption: str, optional, caption of the plot.
-        - ylab: str, optional, label for the y-axis.
-        - xlab: str, optional, label for the x-axis.
-        - percent: bool, optional, whether to display values as percentages.
-        - bar_colour: str, optional, color of the bars. Available options: "default", "alert", "darkblue".
-        - rounding: int, optional, number of decimal places to round the values.
+    Unlike ``create_bar``, this function does not perform any
+    aggregation and plots the data as-is.
 
-    Returns:
-        - None: Displays the plot.
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Pre-aggregated data to plot.
+    group_var : str
+        Column name for the x-axis categories.
+    bar_var : str
+        Column name for the y-axis values.
+    title : str or None, default None
+        Plot title.
+    subtitle : str or None, default None
+        Plot subtitle.
+    caption : str or None, default None
+        Plot caption.
+    ylab : str or None, default None
+        Label for the y-axis.
+    xlab : str or None, default None
+        Label for the x-axis.
+    percent : bool, default False
+        Whether to format bar labels as percentages.
+    bar_colour : str, default "default"
+        Colour preset: ``"default"``, ``"alert"``, or ``"darkblue"``.
+    rounding : int, default 1
+        Number of decimal places for bar labels.
 
+    Returns
+    -------
+    None
+        Displays the plot.
+
+    Examples
+    --------
+    Basic bar chart from pre-aggregated data:
+
+    >>> import vivainsights as vi
+    >>> import pandas as pd
+    >>> df = pd.DataFrame({"Group": ["A", "B", "C"], "Value": [10, 20, 15]})
+    >>> vi.create_bar_asis(df, group_var="Group", bar_var="Value")
+
+    Customize title, subtitle, caption, and bar colour:
+
+    >>> vi.create_bar_asis(
+    ...     df,
+    ...     group_var="Group",
+    ...     bar_var="Value",
+    ...     title="Custom Title",
+    ...     subtitle="Breakdown by Group",
+    ...     caption="Source: sample data",
+    ...     bar_colour="alert",
+    ... )
+
+    Display values as percentages with custom rounding:
+
+    >>> pct = pd.DataFrame({"Team": ["X", "Y"], "Rate": [0.75, 0.62]})
+    >>> vi.create_bar_asis(pct, group_var="Team", bar_var="Rate", percent=True, rounding=2)
     """
 
     # Set default colors if not specified

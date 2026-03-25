@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """
-This module returns a data frame containing a person-to-person query.
+Load a sample person-to-person query dataset.
 """
 
 __all__ = ['load_p2p_data']
@@ -12,6 +12,21 @@ import importlib.resources
 import pandas as pd
 
 def load_p2p_data():
+    """Load a sample person-to-person query dataset.
+
+    Returns a DataFrame containing a de-identified sample of Viva Insights
+    person-to-person query data with an edgelist structure.
+
+    Returns
+    -------
+    pandas.DataFrame
+        A person-to-person query dataset.
+
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> p2p_data = vi.load_p2p_data()
+    """
     try:
         # Python 3.9+ with importlib.resources.files
         files = importlib.resources.files(__package__).joinpath('data', 'p2p_data.csv')

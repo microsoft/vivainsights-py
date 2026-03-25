@@ -2,33 +2,39 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+"""
+Extract the minimum and maximum date range from a dataset.
+"""
 import pandas as pd
-"""Extracts the date range from a dataframe."""
 
 __all__ = ['extract_date_range']
 
 def extract_date_range(data: pd.DataFrame, return_type: str = "table"):
     """
-    Name
-    ----
-    extract_date_range
+    Extract the date range from a DataFrame.
 
-    Description
-    -----------
-    The function `extract_date_range` extracts the date range from a dataframe and returns it either as
-    a table or as a text string.
+    Looks for ``Date``, ``MetricDate``, or ``StartDate``/``EndDate`` columns
+    and returns the minimum and maximum dates.
 
     Parameters
-    ---------
-    data : pandas dataframe
-         The `data` parameter is a pandas DataFrame that contains the data from which you want to extract the date range. It should have at least one column that represents the date
+    ----------
+    data : pandas.DataFrame
+        DataFrame containing at least one recognised date column.
     return_type : str
-        The `return_type` parameter is a string that specifies the format in which the date range should be returned. It has two possible values:, defaults to table
-    
-    Returns 
+        ``"table"`` (default) returns a single-row DataFrame with ``Start``
+        and ``End`` columns; ``"text"`` returns a human-readable string.
+
+    Returns
     -------
-    The function `extract_date_range` returns either a pandas DataFrame or a string, depending
-    on the value of the `return_type` parameter.
+    pandas.DataFrame or str
+        Date range as a table or descriptive string.
+
+    Examples
+    --------
+    >>> import vivainsights as vi
+    >>> pq_data = vi.load_pq_data()
+    >>> vi.extract_date_range(pq_data)
+    >>> vi.extract_date_range(pq_data, return_type="text")
     """
     date_var = None
     
