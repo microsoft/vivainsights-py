@@ -185,10 +185,14 @@ def _coerce_event(x: pd.Series) -> pd.Series:
         If the column contains unrecognised string tokens.
     """
     if pd.api.types.is_bool_dtype(x):
-        return x.astype(int)
+        return x.astype("Int64")
 
     if pd.api.types.is_numeric_dtype(x):
-        return (x > 0).astype(int)
+        na_mask = x.isna()
+        result = (x > 0).astype("Int64")
+        if na_mask.any():
+            result[na_mask] = pd.NA
+        return result
 
     # Object dtype: may hold a mix of numeric values and strings.
     # Try numeric coercion first; parse remaining non-numeric values as tokens.
@@ -420,7 +424,10 @@ def create_survival_calc(
         df = df[df[hrvar].isin(keep)].copy()
         counts = counts[counts.index.isin(keep)]
     else:
-        counts = pd.Series({"Overall": len(df)})
+        if id_col and id_col in df.columns:
+            counts = pd.Series({"Overall": df[id_col].nunique()})
+        else:
+            counts = pd.Series({"Overall": len(df)})
 
     # If nothing left, return empty
     if df.empty:
@@ -541,7 +548,7 @@ def create_survival_viz(
 
     # Caption
     if caption:
-        fig.text(0.5, 0.01, caption, ha="center", va="center", fontsize=9)
+        fig.text(0.01, 0.01, caption, ha="left", va="center", fontsize=9)
 
     # Legend (outside on the right) — only when labeled artists exist
     if ax.get_legend_handles_labels()[0]:
@@ -652,6 +659,9 @@ def create_survival(
         - If return_type="plot": a Figure containing the survival curves.
         - If return_type="table": the long survival table.
     """
+    if return_type not in ("plot", "table"):
+        raise ValueError(f"return_type must be 'plot' or 'table', got {return_type!r}.")
+
     df = data.copy()
     hrvar_for_calc: Optional[str] = hrvar
 
