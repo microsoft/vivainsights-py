@@ -90,6 +90,7 @@ from matplotlib.lines import Line2D
 from pandas.api.types import is_object_dtype
 from vivainsights.identify_usage_segments import identify_usage_segments
 from vivainsights.extract_date_range import extract_date_range
+from vivainsights.us_to_space import us_to_space
 
 # Try vivainsights highlight color; fall back to hex
 try:
@@ -466,11 +467,12 @@ def create_radar_viz(
     # Formatting
     ax.set_theta_offset(np.pi / 2)
     ax.set_theta_direction(-1)
-    ax.set_thetagrids([a * 180 / np.pi for a in angles[:-1]], metrics)
+    axis_labels = [us_to_space(m) for m in metrics]
+    ax.set_thetagrids([a * 180 / np.pi for a in angles[:-1]], axis_labels)
 
-    # Bottom caption
+    # Bottom caption (left-aligned, matching the title anchor)
     if caption:
-        fig.text(0.5, 0.01, caption, ha="center", va="center", fontsize=9)
+        fig.text(0.01, 0.01, caption, ha="left", va="center", fontsize=9)
 
     # Legend (simple, positioned outside on the right)
     ax.legend(loc="upper right", bbox_to_anchor=(1.3, 1.1))
@@ -585,15 +587,30 @@ def create_radar(
         if hrvar not in df.columns:
             raise KeyError(f"hrvar '{hrvar}' not found in data.")
 
-    # Build caption
+    # Index method label (mirrors R: index_label in create_radar)
+    _index_labels = {
+        "total":     "Index: population average = 100",
+        "minmax":    "Index: min-max scaled [0, 100]",
+        "none":      "Raw values (no indexing)",
+    }
+    if index_mode == "ref_group":
+        ref_name = index_ref_group or ""
+        index_label = f"Index: {ref_name} = 100"
+    else:
+        index_label = _index_labels.get(index_mode, "")
+
+    # Build caption: "<date range> | <index label>"
     caption = ""
     if caption_from_date_range:
         try:
             caption = extract_date_range(df, return_type="text")
         except Exception:
             caption = ""
+    # Always append the index label
+    caption = f"{caption} | {index_label}" if caption else index_label
+    # Append any user-supplied extra text
     if caption_text:
-        caption = caption_text if not caption else f"{caption} | {caption_text}"
+        caption = f"{caption} | {caption_text}"
 
     # Compute group-level table
     table, _ = create_radar_calc(
