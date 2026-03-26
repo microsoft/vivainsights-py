@@ -673,9 +673,9 @@ def create_survival(
 
     if subtitle is None:
         if hrvar_for_calc is None:
-            subtitle_effective = "Kaplan-Meier estimate"
+            subtitle_effective = "Kaplan\u2013Meier estimate"
         else:
-            subtitle_effective = f"Kaplan-Meier estimate by {hrvar_for_calc}"
+            subtitle_effective = f"Kaplan\u2013Meier estimate by {hrvar_for_calc}"
     else:
         subtitle_effective = subtitle
 
