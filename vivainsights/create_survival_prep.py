@@ -40,7 +40,6 @@ Pass the output directly to create_survival:
 
 from typing import Callable, Optional
 
-import numpy as np
 import pandas as pd
 
 __all__ = ["create_survival_prep"]
@@ -159,32 +158,38 @@ def create_survival_prep(
     # Apply event_condition
     df["_event_flag"] = event_condition(df[metric]).astype(bool)
 
-    # Build per-person records
-    records = []
-    for person_id, grp in df.groupby(id_col, sort=False):
-        grp = grp.reset_index(drop=True)
-        flags = grp["_event_flag"].to_numpy()
-        n_periods = len(flags)
+    # 1-based chronological period number within each person
+    df["_period"] = df.groupby(id_col, sort=False).cumcount() + 1
 
-        event_indices = np.where(flags)[0]
-        if len(event_indices) > 0:
-            # 1-based period index of first event
-            time_val = int(event_indices[0]) + 1
-            event_val = 1
-        else:
-            time_val = n_periods
-            event_val = 0
+    # Whether the event ever occurred per person
+    event_series = df.groupby(id_col, sort=False)["_event_flag"].any().astype(int)
 
-        row: dict = {id_col: person_id, "time": time_val, "event": event_val}
+    # First period where event occurred (present only for people who had an event)
+    first_event_period = (
+        df.loc[df["_event_flag"]]
+        .groupby(id_col, sort=False)["_period"]
+        .min()
+    )
 
-        if hrvar and hrvar in df.columns:
-            # Most recent non-null value
-            hrvar_vals = grp[hrvar].dropna()
-            row[hrvar] = hrvar_vals.iloc[-1] if not hrvar_vals.empty else np.nan
+    # Total observed periods per person (used for censored observations)
+    total_periods = df.groupby(id_col, sort=False)["_period"].max()
 
-        records.append(row)
+    # time = first event period if event occurred, else total observed periods
+    time_series = first_event_period.combine_first(total_periods).astype(int)
 
-    result = pd.DataFrame(records)
+    result = pd.DataFrame({"time": time_series, "event": event_series})
+    result.index.name = id_col
+    result = result.reset_index()
+
+    # Carry through hrvar: most recent non-null value per person
+    if hrvar and hrvar in df.columns:
+        hrvar_series = (
+            df.dropna(subset=[hrvar])
+            .groupby(id_col, sort=False)[hrvar]
+            .last()
+            .rename(hrvar)
+        )
+        result = result.merge(hrvar_series, on=id_col, how="left")
 
     # Column ordering: id, time, event, [hrvar]
     cols = [id_col, "time", "event"]
