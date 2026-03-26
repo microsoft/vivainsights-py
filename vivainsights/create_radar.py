@@ -367,6 +367,15 @@ def create_radar_calc(
     if index_mode in ("total", "ref_group"):
         for m in metrics:
             denom = ref[m] if (hasattr(ref, "__getitem__") and m in ref) else np.nan
+            if pd.isna(denom) or denom == 0:
+                import warnings
+                warnings.warn(
+                    f"Reference value for metric '{m}' is {denom}; "
+                    "indexed values will be NaN for this metric.",
+                    RuntimeWarning,
+                    stacklevel=3,
+                )
+                denom = np.nan
             group_level_indexed[m] = (group_level_indexed[m] / denom) * 100.0
     elif index_mode == "minmax":
         mins = ref["min"]

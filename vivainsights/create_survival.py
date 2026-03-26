@@ -48,16 +48,26 @@ Grouped by HR attribute:
 
 Automatic usage segmentation via identify_usage_segments:
 
->>> fig = create_survival(
+>>> # pq_data must be prepared first so it has time/event columns
+>>> surv_data = create_survival_prep(
 ...     data=pq_data,
+...     metric="Copilot_actions_taken_in_Teams",
+... )
+>>> # Segment people by usage pattern and plot a curve per segment
+>>> from vivainsights.identify_usage_segments import identify_usage_segments
+>>> seg_data = identify_usage_segments(
+...     data=pq_data, metric="Copilot_actions_taken_in_Teams", return_type="data"
+... )
+>>> surv_seg = create_survival_prep(
+...     data=seg_data,
+...     metric="Copilot_actions_taken_in_Teams",
+...     hrvar="UsageSegment",
+... )
+>>> fig = create_survival(
+...     data=surv_seg,
 ...     time_col="time",
 ...     event_col="event",
-...     hrvar=None,
-...     usage_metrics=[
-...         "Copilot_actions_taken_in_Teams",
-...         "Copilot_actions_taken_in_Outlook",
-...     ],
-...     usage_version="12w",
+...     hrvar="UsageSegment",
 ... )
 
 Table output:
@@ -180,18 +190,34 @@ def _coerce_event(x: pd.Series) -> pd.Series:
     if pd.api.types.is_numeric_dtype(x):
         return (x > 0).astype(int)
 
-    # String coercion
+    # Object dtype: may hold a mix of numeric values and strings.
+    # Try numeric coercion first; parse remaining non-numeric values as tokens.
+    numeric = pd.to_numeric(x, errors="coerce")
+    if numeric.notna().all():
+        return (numeric > 0).astype(int)
+
     _true_tokens = {"true", "yes", "1"}
     _false_tokens = {"false", "no", "0"}
-    lowered = x.str.strip().str.lower()
-    unrecognised = lowered.dropna()[~lowered.dropna().isin(_true_tokens | _false_tokens)]
-    if not unrecognised.empty:
-        raise ValueError(
-            f"Unrecognised event indicator value(s) in event column: "
-            f"{sorted(unrecognised.unique())}. "
-            f"Expected one of: {sorted(_true_tokens | _false_tokens)}."
-        )
-    return lowered.map(lambda v: 1 if v in _true_tokens else (0 if v in _false_tokens else np.nan)).astype("Int64")
+
+    result = pd.array([pd.NA] * len(x), dtype="Int64")
+    for i, (raw, num) in enumerate(zip(x, numeric)):
+        if pd.notna(num):
+            result[i] = int(num > 0)
+        elif pd.isna(raw):
+            result[i] = pd.NA
+        else:
+            token = str(raw).strip().lower()
+            if token in _true_tokens:
+                result[i] = 1
+            elif token in _false_tokens:
+                result[i] = 0
+            else:
+                raise ValueError(
+                    f"Unrecognised event indicator value: {raw!r}. "
+                    f"Expected numeric, bool, or one of: "
+                    f"{sorted(_true_tokens | _false_tokens)}."
+                )
+    return pd.Series(result, index=x.index)
 
 
 # ---------- Pure NumPy Kaplan-Meier (fallback if lifelines absent) ----------
@@ -379,6 +405,10 @@ def create_survival_calc(
 
     if dropna:
         df = df.dropna(subset=[c for c in required if c is not None])
+    else:
+        # Always drop NAs in time/event regardless of dropna setting —
+        # .to_numpy(dtype=int/float) cannot handle pd.NA or NaN.
+        df = df.dropna(subset=[time_col, event_col])
 
     # Group sizes for mingroup
     if hrvar:
