@@ -543,8 +543,9 @@ def create_survival_viz(
     if caption:
         fig.text(0.5, 0.01, caption, ha="center", va="center", fontsize=9)
 
-    # Legend (outside on the right, similar to other vi visuals)
-    ax.legend(loc="upper right", bbox_to_anchor=(1.3, 1.1))
+    # Legend (outside on the right) — only when labeled artists exist
+    if ax.get_legend_handles_labels()[0]:
+        ax.legend(loc="upper right", bbox_to_anchor=(1.3, 1.1))
 
     # Layout + header styling
     plt.tight_layout()

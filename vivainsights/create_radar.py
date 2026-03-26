@@ -82,6 +82,7 @@ Min-max scaling to [0,100] within observed group ranges:
 """
 
 from typing import List, Optional, Tuple, Literal, Union
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -368,7 +369,6 @@ def create_radar_calc(
         for m in metrics:
             denom = ref[m] if (hasattr(ref, "__getitem__") and m in ref) else np.nan
             if pd.isna(denom) or denom == 0:
-                import warnings
                 warnings.warn(
                     f"Reference value for metric '{m}' is {denom}; "
                     "indexed values will be NaN for this metric.",
@@ -445,6 +445,9 @@ def create_radar_viz(
     if data.empty:
         raise ValueError("`data` is empty - nothing to plot.")
 
+    if fill_missing not in ("zero", "none"):
+        raise ValueError(f"`fill_missing` must be 'zero' or 'none', got {fill_missing!r}.")
+
     num_vars = len(metrics)
     if num_vars == 0:
         raise ValueError("`metrics` must be a non-empty list.")
@@ -466,8 +469,8 @@ def create_radar_viz(
         vals = row[metrics].iloc[0].to_list()
         if fill_missing == "zero":
             vals = [0.0 if pd.isna(v) else float(v) for v in vals]
-        else:
-            vals = [float(v) for v in vals]
+        else:  # "none" — keep missing as NaN so the polygon renders honestly
+            vals = [np.nan if pd.isna(v) else float(v) for v in vals]
         vals += vals[:1]
 
         ax.plot(angles, vals, label=grp, linewidth=1.5)
@@ -483,8 +486,9 @@ def create_radar_viz(
     if caption:
         fig.text(0.01, 0.01, caption, ha="left", va="center", fontsize=9)
 
-    # Legend (simple, positioned outside on the right)
-    ax.legend(loc="upper right", bbox_to_anchor=(1.3, 1.1))
+    # Legend (outside on the right) — only when labeled artists exist
+    if ax.get_legend_handles_labels()[0]:
+        ax.legend(loc="upper right", bbox_to_anchor=(1.3, 1.1))
 
     # Let Matplotlib tighten elements first...
     plt.tight_layout()
