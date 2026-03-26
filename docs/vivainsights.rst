@@ -41,42 +41,12 @@ Specialized Visualizations
    :widths: 50 50
    :header-rows: 0
 
-.. automodule:: vivainsights.create_lorenz
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.create\_radar module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.create_radar
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.create\_survival module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.create_survival
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.create\_survival\_prep module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.create_survival_prep
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-vivainsights.create\_inc module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: vivainsights.create_inc
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   * - :doc:`vivainsights.create_radar <_api/vivainsights.create_radar>`
+     - Create a radar (spider) chart comparing groups across multiple metrics.
+   * - :doc:`vivainsights.create_survival <_api/vivainsights.create_survival>`
+     - Plot Kaplan–Meier survival curves, optionally grouped by an HR attribute.
+   * - :doc:`vivainsights.create_survival_prep <_api/vivainsights.create_survival_prep>`
+     - Convert a panel Person Query dataset into person-level survival format.
    * - :doc:`vivainsights.create_sankey <_api/vivainsights.create_sankey>`
      - Create a Sankey chart from a two-column count table.
    * - :doc:`vivainsights.create_lorenz <_api/vivainsights.create_lorenz>`
