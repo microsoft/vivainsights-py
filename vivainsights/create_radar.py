@@ -508,8 +508,7 @@ def create_radar(
     figsize: Tuple[float, float] = (8, 6),
     title: Optional[str] = None,
     subtitle: Optional[str] = None,
-    caption_from_date_range: bool = True,
-    caption_text: Optional[str] = None,
+    caption: Optional[str] = None,
     usage_version: str = "12w",
 ) -> Union[plt.Figure, pd.DataFrame]:
     """
@@ -559,11 +558,10 @@ def create_radar(
         Plot title. If None, a default title is inferred based on `index_mode`.
     subtitle : Optional[str], default None
         Optional subtitle line.
-    caption_from_date_range : bool, default True
-        If True, append a date-range caption derived from `data`.
-    caption_text : Optional[str], default None
-        Additional caption text. If `caption_from_date_range` also yields text,
-        both are combined as "date-range | caption_text".
+    caption : Optional[str], default None
+        Additional caption text appended after the auto-generated date range and
+        index label, e.g. "caption" → "Data from … | Index: … | caption".
+        If None, only the date range and index label are shown.
     usage_version : str, default "12w"
         Passed through to `identify_usage_segments` when automatic segmentation
         is used (i.e., when `hrvar` is None).
@@ -599,18 +597,15 @@ def create_radar(
     else:
         index_label = _index_labels.get(index_mode, "")
 
-    # Build caption: "<date range> | <index label>"
-    caption = ""
-    if caption_from_date_range:
-        try:
-            caption = extract_date_range(df, return_type="text")
-        except Exception:
-            caption = ""
-    # Always append the index label
-    caption = f"{caption} | {index_label}" if caption else index_label
+    # Build caption: "<date range> | <index label>" (always auto-generated)
+    auto_caption = ""
+    try:
+        auto_caption = extract_date_range(df, return_type="text")
+    except Exception:
+        pass
+    auto_caption = f"{auto_caption} | {index_label}" if auto_caption else index_label
     # Append any user-supplied extra text
-    if caption_text:
-        caption = f"{caption} | {caption_text}"
+    caption_final = f"{auto_caption} | {caption}" if caption else auto_caption
 
     # Compute group-level table
     table, _ = create_radar_calc(
@@ -650,6 +645,6 @@ def create_radar(
         figsize=figsize,
         title=base_title,
         subtitle=subtitle_effective,
-        caption=caption,
+        caption=caption_final,
     )
     return fig

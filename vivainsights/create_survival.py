@@ -78,7 +78,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from pandas.api.types import is_object_dtype
-from vivainsights.extract_date_range import extract_date_range
 from vivainsights.identify_usage_segments import identify_usage_segments
 
 # ---------- lifelines (optional) ----------
@@ -546,8 +545,7 @@ def create_survival(
     figsize: Tuple[float, float] = (8, 6),
     title: Optional[str] = None,
     subtitle: Optional[str] = None,
-    caption_from_date_range: bool = True,
-    caption_text: Optional[str] = None,
+    caption: Optional[str] = None,
     usage_metrics: Optional[List[str]] = None,
     usage_version: str = "12w",
 ) -> Union[plt.Figure, pd.DataFrame]:
@@ -606,11 +604,11 @@ def create_survival(
         Plot title. If None, a default is used.
     subtitle : str, optional
         Optional subtitle beneath the title.
-    caption_from_date_range : bool, default True
-        If True and extract_date_range is available, append a date-range caption.
-    caption_text : str, optional
-        Additional caption text. If `caption_from_date_range` also yields text,
-        both are combined as "date-range | caption_text".
+    caption : str, optional
+        Caption text shown at the bottom of the figure.
+        Note: the typical input (output of `create_survival_prep`) contains no date
+        column, so date ranges cannot be extracted automatically. Pass the date range
+        string manually if needed, e.g. via `vi.extract_date_range(raw_data)`.
     usage_metrics : list of str, optional
         Metric column(s) to pass into identify_usage_segments when automatic
         usage segmentation is used (i.e., when hrvar is None).
@@ -635,16 +633,6 @@ def create_survival(
         )
     elif hrvar is not None and hrvar not in df.columns:
         raise KeyError(f"hrvar '{hrvar}' not found in data.")
-
-    # Build caption
-    caption = ""
-    if caption_from_date_range:
-        try:
-            caption = extract_date_range(df, return_type="text")
-        except Exception:
-            caption = ""
-    if caption_text:
-        caption = caption_text if not caption else f"{caption} | {caption_text}"
 
     # Compute survival curves
     survival_long, counts = create_survival_calc(
