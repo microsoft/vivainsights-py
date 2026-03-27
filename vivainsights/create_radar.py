@@ -9,9 +9,7 @@ in the same spirit as create_bar.
 
 Core design
 -----------
-- General-purpose: works with any HR attribute column, not just RL12 usage segments.
-- If `hrvar` is not supplied, it can automatically classify people into usage segments
-  by calling `vivainsights.identify_usage_segments(...)`.
+- General-purpose: works with any HR attribute column.
 - Calculation pipeline:
     * person-level aggregation within each group
     * group-level aggregation
@@ -21,7 +19,6 @@ Core design
 
 Typical usage
 -------------
-Pre-computed HR attribute column:
 
 >>> import vivainsights as vi
 >>> from vivainsights.create_radar import create_radar
@@ -36,20 +33,6 @@ Pre-computed HR attribute column:
 ...         "Internal_network_size",
 ...     ],
 ...     hrvar="Organization",
-... )
-
-Automatic usage segments via identify_usage_segments:
-
->>> # Segment people automatically into usage segments based on the same metrics
->>> fig = create_radar(
-...     data=pq_data,
-...     metrics=[
-...         "Copilot_actions_taken_in_Excel",
-...         "Copilot_actions_taken_in_Outlook",
-...         "Copilot_actions_taken_in_Word",
-...         "Copilot_actions_taken_in_Powerpoint",
-...     ],
-...     hrvar=None,  # -> identify_usage_segments() is called
 ... )
 
 Return the indexed table instead of a plot:
@@ -88,8 +71,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
-from pandas.api.types import is_object_dtype
-from vivainsights.identify_usage_segments import identify_usage_segments
 from vivainsights.extract_date_range import extract_date_range
 from vivainsights.us_to_space import us_to_space
 
@@ -157,61 +138,6 @@ def _reserve_header_space(fig, top: float = _TOP_LIMIT) -> None:
         pass
 
     fig.subplots_adjust(top=top)
-
-
-# --------------------------------------------------------------------
-# Auto segmentation helper
-# --------------------------------------------------------------------
-def _auto_segment_using_identify_usage(
-    data: pd.DataFrame,
-    metrics: List[str],
-    version: str = "12w",
-) -> Tuple[pd.DataFrame, str]:
-    """
-    Call vivainsights.identify_usage_segments() and infer the segment column
-    without hard-coding any specific segment labels.
-
-    - If a single metric is provided, it is used as ``metric=...``.
-    - If multiple metrics are provided, they are passed as ``metric_str=[...]``.
-    - Among the newly-added columns, we look for an object/categorical column with
-      a small number of distinct values, and use that as the segment column.
-    """
-    original_cols = set(data.columns)
-
-    if len(metrics) == 1:
-        seg_data = identify_usage_segments(
-            data=data.copy(),
-            metric=metrics[0],
-            version=version,
-            return_type="data",
-        )
-    else:
-        seg_data = identify_usage_segments(
-            data=data.copy(),
-            metric_str=metrics,
-            version=version,
-            return_type="data",
-        )
-
-    new_cols = [c for c in seg_data.columns if c not in original_cols]
-    candidates = []
-    for c in new_cols:
-        s = seg_data[c]
-        if is_object_dtype(s) or isinstance(s.dtype, pd.CategoricalDtype):
-            nunique = s.nunique(dropna=True)
-            # Usage segment columns typically have a small number of categories.
-            if 1 < nunique <= 10:
-                candidates.append((c, nunique))
-
-    if not candidates:
-        raise ValueError(
-            "Auto usage segmentation did not produce a suitable segment column. "
-            "Consider providing `hrvar` explicitly."
-        )
-
-    candidates.sort(key=lambda x: x[1])
-    hrvar = candidates[0][0]
-    return seg_data, hrvar
 
 
 # --------------------------------------------------------------------
@@ -510,7 +436,7 @@ ReturnType = Literal["plot", "table"]
 def create_radar(
     data: pd.DataFrame,
     metrics: List[str],
-    hrvar: Optional[str] = "Organization",
+    hrvar: str = "Organization",
     id_col: str = "PersonId",
     mingroup: int = 5,
     agg: Literal["mean", "median"] = "mean",
@@ -522,7 +448,6 @@ def create_radar(
     title: Optional[str] = None,
     subtitle: Optional[str] = None,
     caption: Optional[str] = None,
-    usage_version: str = "12w",
 ) -> Union[plt.Figure, pd.DataFrame]:
     """
     Name
@@ -538,17 +463,12 @@ def create_radar(
     Parameters
     ----------
     data : pd.DataFrame
-        Standard Person Query data frame containing at least `metrics`, `id_col`, and
-        either a pre-computed `hrvar` column or enough information for
-        `vivainsights.identify_usage_segments(...)` to classify people into usage
-        segments (see `usage_version`).
+        Standard Person Query data frame containing at least `metrics`, `id_col`,
+        and `hrvar`.
     metrics : List[str]
         Numeric metric columns to visualise (order determines the radar axes).
-    hrvar : Optional[str], default "Organization"
+    hrvar : str, default "Organization"
         HR attribute column used for grouping (e.g., "Organization", "LevelDesignation").
-        If None, the function will:
-          - call `identify_usage_segments()` using `metrics` as the input metric(s), and
-          - auto-detect the resulting usage-segment column.
     id_col : str, default "PersonId"
         Unique person identifier for person-level aggregation.
     mingroup : int, default 5
@@ -575,9 +495,6 @@ def create_radar(
         Additional caption text appended after the auto-generated date range and
         index label, e.g. "caption" → "Data from … | Index: … | caption".
         If None, only the date range and index label are shown.
-    usage_version : str, default "12w"
-        Passed through to `identify_usage_segments` when automatic segmentation
-        is used (i.e., when `hrvar` is None).
 
     Returns
     -------
@@ -587,16 +504,8 @@ def create_radar(
     """
     df = data.copy()
 
-    # Automatic usage segmentation if no hrvar provided
-    if hrvar is None:
-        df, hrvar = _auto_segment_using_identify_usage(
-            data=df,
-            metrics=metrics,
-            version=usage_version,
-        )
-    else:
-        if hrvar not in df.columns:
-            raise KeyError(f"hrvar '{hrvar}' not found in data.")
+    if hrvar not in df.columns:
+        raise KeyError(f"hrvar '{hrvar}' not found in data.")
 
     # Index method label (mirrors R: index_label in create_radar)
     _index_labels = {
