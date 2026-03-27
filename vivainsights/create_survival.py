@@ -240,7 +240,11 @@ def _km_numpy(
             S *= (1.0 - d_t / at_risk)
         survival.append(S)
 
-    return pd.DataFrame(
+    n_total = int(np.sum(mask))
+    anchor = pd.DataFrame(
+        {"time": [0.0], "at_risk": [n_total], "events": [0], "survival": [1.0]}
+    )
+    result = pd.DataFrame(
         {
             "time": timeline,
             "at_risk": at_risk_seq,
@@ -248,6 +252,7 @@ def _km_numpy(
             "survival": survival,
         }
     )
+    return pd.concat([anchor, result], ignore_index=True)
 
 
 # =========================

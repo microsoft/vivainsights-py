@@ -297,12 +297,13 @@ def create_radar_calc(
             if pd.isna(denom) or denom == 0:
                 warnings.warn(
                     f"Reference value for metric '{m}' is {denom}; "
-                    "indexed values will be NaN for this metric.",
+                    "indexed values set to 100 (neutral baseline) for this metric.",
                     RuntimeWarning,
                     stacklevel=3,
                 )
-                denom = np.nan
-            group_level_indexed[m] = (group_level_indexed[m] / denom) * 100.0
+                group_level_indexed[m] = 100.0
+            else:
+                group_level_indexed[m] = (group_level_indexed[m] / denom) * 100.0
     elif index_mode == "minmax":
         mins = ref["min"]
         maxs = ref["max"]
