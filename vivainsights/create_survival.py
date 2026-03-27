@@ -9,8 +9,6 @@ create_survival: Parameterized Kaplan-Meier survival workflow (calc + viz + wrap
 Design goals
 ------------
 - General-purpose: works with any HR attribute column (segments, org, region, etc.).
-- Optional automatic segmentation via vivainsights.identify_usage_segments, without
-  hard-coding any specific segment labels.
 - Uses lifelines.KaplanMeierFitter if available; falls back to a NumPy implementation.
 - Reuses the figure header styling used in other vivainsights visuals.
 - Returns either a plot or a table.
@@ -46,30 +44,6 @@ Grouped by HR attribute:
 ...     hrvar="Organization",
 ... )
 
-Automatic usage segmentation via identify_usage_segments:
-
->>> # pq_data must be prepared first so it has time/event columns
->>> surv_data = create_survival_prep(
-...     data=pq_data,
-...     metric="Copilot_actions_taken_in_Teams",
-... )
->>> # Segment people by usage pattern and plot a curve per segment
->>> from vivainsights.identify_usage_segments import identify_usage_segments
->>> seg_data = identify_usage_segments(
-...     data=pq_data, metric="Copilot_actions_taken_in_Teams", return_type="data"
-... )
->>> surv_seg = create_survival_prep(
-...     data=seg_data,
-...     metric="Copilot_actions_taken_in_Teams",
-...     hrvar="UsageSegment",
-... )
->>> fig = create_survival(
-...     data=surv_seg,
-...     time_col="time",
-...     event_col="event",
-...     hrvar="UsageSegment",
-... )
-
 Table output:
 
 >>> tbl = create_survival(
@@ -87,8 +61,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
-from pandas.api.types import is_object_dtype
-from vivainsights.identify_usage_segments import identify_usage_segments
 
 # ---------- lifelines (optional) ----------
 try:
@@ -276,63 +248,6 @@ def _km_numpy(
             "survival": survival,
         }
     )
-
-
-# ---------- Auto-segmentation helper (uses identify_usage_segments) ----------
-def _auto_segment_using_identify_usage(
-    data: pd.DataFrame,
-    usage_metrics: List[str],
-    version: str = "12w",
-) -> Tuple[pd.DataFrame, str]:
-    """
-    Call vivainsights.identify_usage_segments() and infer the segment column
-    without hard-coding any specific segment names.
-
-    - If a single metric is provided, it is used as ``metric=...``.
-    - If multiple metrics are provided, they are passed as ``metric_str=[...]``.
-    - Among the newly-added columns, we look for an object/categorical column with
-      a small number of distinct values and use that as the segment column.
-    """
-    if not usage_metrics:
-        raise ValueError("`usage_metrics` must be a non-empty list when using automatic segmentation.")
-
-    original_cols = set(data.columns)
-
-    if len(usage_metrics) == 1:
-        seg_data = identify_usage_segments(
-            data=data.copy(),
-            metric=usage_metrics[0],
-            version=version,
-            return_type="data",
-        )
-    else:
-        seg_data = identify_usage_segments(
-            data=data.copy(),
-            metric_str=usage_metrics,
-            version=version,
-            return_type="data",
-        )
-
-    new_cols = [c for c in seg_data.columns if c not in original_cols]
-    candidates = []
-    for c in new_cols:
-        s = seg_data[c]
-        if is_object_dtype(s) or isinstance(s.dtype, pd.CategoricalDtype):
-            nunique = s.nunique(dropna=True)
-            # Usage segment-like columns usually have small cardinality
-            if 1 < nunique <= 10:
-                candidates.append((c, nunique))
-
-    if not candidates:
-        raise ValueError(
-            "Automatic usage segmentation did not produce a suitable segment column. "
-            "Consider providing `hrvar` explicitly."
-        )
-
-    # Choose the column with the fewest distinct categories
-    candidates.sort(key=lambda x: x[1])
-    hrvar = candidates[0][0]
-    return seg_data, hrvar
 
 
 # =========================
@@ -584,8 +499,6 @@ def create_survival(
     title: Optional[str] = None,
     subtitle: Optional[str] = None,
     caption: Optional[str] = None,
-    usage_metrics: Optional[List[str]] = None,
-    usage_version: str = "12w",
 ) -> Union[plt.Figure, pd.DataFrame]:
     """
     Name
@@ -600,16 +513,6 @@ def create_survival(
 
     The input `data` should be a person-level data frame (one row per person)
     as produced by `create_survival_prep()`.
-
-    Grouping behavior
-    -----------------
-    - If `hrvar` is provided:
-        * Curves are computed per value of that HR attribute column.
-    - If `hrvar` is None and `usage_metrics` is provided:
-        * vivainsights.identify_usage_segments() is called with `usage_metrics`,
-          and the resulting usage segment column is inferred automatically.
-    - If both `hrvar` and `usage_metrics` are None:
-        * A single overall curve is returned.
 
     Parameters
     ----------
@@ -647,11 +550,6 @@ def create_survival(
         Note: the typical input (output of `create_survival_prep`) contains no date
         column, so date ranges cannot be extracted automatically. Pass the date range
         string manually if needed, e.g. via `vi.extract_date_range(raw_data)`.
-    usage_metrics : list of str, optional
-        Metric column(s) to pass into identify_usage_segments when automatic
-        usage segmentation is used (i.e., when hrvar is None).
-    usage_version : str, default "12w"
-        Parameter forwarded to identify_usage_segments (e.g., "12w", "4w", or None).
 
     Returns
     -------
@@ -665,14 +563,7 @@ def create_survival(
     df = data.copy()
     hrvar_for_calc: Optional[str] = hrvar
 
-    # Automatic usage segmentation if requested implicitly
-    if hrvar is None and usage_metrics:
-        df, hrvar_for_calc = _auto_segment_using_identify_usage(
-            data=df,
-            usage_metrics=usage_metrics,
-            version=usage_version,
-        )
-    elif hrvar is not None and hrvar not in df.columns:
+    if hrvar is not None and hrvar not in df.columns:
         raise KeyError(f"hrvar '{hrvar}' not found in data.")
 
     # Compute survival curves
