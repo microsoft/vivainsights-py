@@ -312,8 +312,8 @@ def create_survival_calc(
     Returns
     -------
     survival_long : pd.DataFrame
-        Long-format table with columns [hrvar_or_"group", "time", "survival",
-        "at_risk", "events"].
+        Long-format table with columns [``hrvar`` (or ``"group"`` when ungrouped),
+        ``"time"``, ``"survival"``, ``"at_risk"``, ``"events"``].
     counts : pd.Series
         Number of unique subjects per group (after filtering).
     """
