@@ -27,6 +27,8 @@ Also check out our package cheat sheet for a quick glimpse of what **vivainsight
    modules   
    demo-vivainsights-py
    demo-create_odds_ratios
+   demo-create_survival
+   demo-create_radar
    faq.md
    NEWS.md
    CONTRIBUTORS.md
