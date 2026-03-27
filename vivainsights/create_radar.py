@@ -503,6 +503,9 @@ def create_radar(
         - If `return_type="plot"`: a Figure containing the radar chart.
         - If `return_type="table"`: the group-level indexed DataFrame.
     """
+    if return_type not in ("plot", "table"):
+        raise ValueError(f"return_type must be 'plot' or 'table', got {return_type!r}.")
+
     df = data.copy()
 
     if hrvar not in df.columns:
