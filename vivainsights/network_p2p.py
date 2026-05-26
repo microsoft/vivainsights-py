@@ -88,7 +88,9 @@ def network_p2p(data,
     legend_pos : str
         Legend position (e.g., ``"best"``, ``"upper left"``).
     palette : str
-        Colour palette name. Defaults to ``"rainbow"``.
+        Colour palette name used for category colours. Accepts ``"rainbow"``
+        or any Matplotlib colormap name returned by ``matplotlib.pyplot.colormaps()``.
+        Defaults to ``"rainbow"``.
     node_alpha : float
         Node transparency (0–1). Defaults to 0.7.
     edge_alpha : float
@@ -287,13 +289,26 @@ def network_p2p(data,
         
         def rainbow(n):
             return [f"#{random.randint(0, 0xFFFFFF):06x}" for _ in range(n)]
-            
+
+        def resolve_palette(name, n):
+            if name == "rainbow":
+                return rainbow(n)
+            if name in plt.colormaps():
+                cmap = plt.get_cmap(name)
+                if n <= 1:
+                    return [mcolors.to_hex(cmap(0))]
+                return [mcolors.to_hex(cmap(i / (n - 1))) for i in range(n)]
+            raise ValueError(
+                "Invalid input for `palette`. Use 'rainbow' or a Matplotlib "
+                "colormap name from `matplotlib.pyplot.colormaps()`."
+            )
+             
         # Set colours
         vert_tb = vert_tb.drop_duplicates()
         
         colour_tb = (
             pd.DataFrame({v_attr: g.vs[v_attr]})
-             .assign(colour = eval(f"{palette}(len(vert_tb))"))
+             .assign(colour = resolve_palette(palette, len(vert_tb)))
         )
 
         # Colour vector

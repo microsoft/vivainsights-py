@@ -4,6 +4,7 @@ import re
 import unittest
 import warnings
 import tempfile
+from unittest.mock import patch
 
 import matplotlib
 matplotlib.use("Agg")
@@ -95,6 +96,28 @@ class TestNetworkP2P(unittest.TestCase):
         self.assertTrue(possible_fig, "No matplotlib figure detected for return_type='plot'.")
         self.assert_no_unexpected_warnings(w)
 
+    def test_return_type_plot_with_matplotlib_palette(self):
+        result, w = self.call_with_warnings(
+            vi.network_p2p,
+            data=self.p2p_data,
+            return_type="plot",
+            palette="viridis",
+            seed=123
+        )
+        possible_fig = False
+        if result is None:
+            possible_fig = len(plt.get_fignums()) > 0
+        elif isinstance(result, matplotlib.figure.Figure):
+            possible_fig = True
+        elif isinstance(result, tuple):
+            if any(isinstance(x, matplotlib.figure.Figure) for x in result):
+                possible_fig = True
+        elif hasattr(result, "figure") and isinstance(result.figure, matplotlib.figure.Figure):
+            possible_fig = True
+
+        self.assertTrue(possible_fig, "No matplotlib figure detected for palette='viridis'.")
+        self.assert_no_unexpected_warnings(w)
+
     def test_return_type_data(self):
         result, w = self.call_with_warnings(
             vi.network_p2p,
@@ -183,7 +206,6 @@ class TestNetworkP2P(unittest.TestCase):
     # ---------------------------
     @unittest.skipUnless(HAS_PLOTLY, "plotly not installed - skipping sankey test")
     def test_return_type_sankey(self):
-        from unittest.mock import patch
         # Prevent Plotly from invoking any renderer that needs nbformat/ipykernel
         with patch("plotly.graph_objects.Figure.show", return_value=None) as mocked_show:
             result, w = self.call_with_warnings(
@@ -206,6 +228,18 @@ class TestNetworkP2P(unittest.TestCase):
     def test_invalid_return_type(self):
         with self.assertRaises(Exception):
             vi.network_p2p(data=self.p2p_data, return_type="INVALID_TYPE", seed=123)
+
+    def test_palette_injection_like_input_raises_and_no_system_call(self):
+        payload = '__import__("os").system("echo x") or rainbow'
+        with patch("os.system") as mock_system:
+            with self.assertRaises(ValueError):
+                vi.network_p2p(
+                    data=self.p2p_data,
+                    return_type="plot",
+                    palette=payload,
+                    seed=123
+                )
+            mock_system.assert_not_called()
 
     # ---------------------------
     # Weighted vs unweighted vertex counts
