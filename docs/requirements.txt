@@ -12,3 +12,4 @@ sphinx-design
 setuptools
 adjustText
 igraph
+ipython
