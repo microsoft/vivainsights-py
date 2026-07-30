@@ -14,8 +14,14 @@ returns the resulting data as a pandas dataframe. If there is an error reading t
 __all__ = ['import_query']
 
 import pandas as pd
-import re 
+import re
 import os
+
+
+def _clean_column_name(column_name):
+    column_name = re.sub('%', 'Percent', column_name.strip())
+    return re.sub('[^a-zA-Z0-9,]', '_', column_name)
+
 
 def import_query(x, encoding: str = 'utf-8'):
     """
@@ -51,30 +57,20 @@ def import_query(x, encoding: str = 'utf-8'):
     Specify a custom encoding for non-UTF-8 files:
 
     >>> data = vi.import_query("path/to/query.csv", encoding="latin-1")
-    """    
-    
-    # in case '.csv' is not all in lower case, make it lower case
-    if x[-4:].lower() == '.csv':
-        in_df = x[:-4] + '.csv'
-    else:
-        in_df = x
-        
-    if not os.path.isfile(in_df):
+    """
+    input_path = os.fspath(x)
+
+    if not os.path.isfile(input_path):
         raise ValueError("input file does not exist")
-    
-    elif not in_df.endswith('.csv'):
+
+    if not input_path.lower().endswith('.csv'):
         raise ValueError("the input must be a .csv file")
-    
-    else:
-        try:
-            # Try to read in csv file, if file can not be read, exception is thrown.
-            data = pd.read_csv(x, encoding=encoding, delimiter=',')
-            # Replace mentions of '%' with literal string 'Percent'
-            data.columns = [re.sub('%', 'Percent', c.strip()) for c in data]
-            # Remove leading and trailing spaces
-            # Remove spaces and special characters and replacing them with underscores within column names.
-            data.columns = [re.sub('[^a-zA-Z0-9,]', '_', c.strip()) for c in data]
-            
-            return data
-        except: 
-            raise ValueError('something went wrong when reading the file')
+
+    try:
+        data = pd.read_csv(input_path, encoding=encoding, delimiter=',')
+    except (OSError, UnicodeError, pd.errors.ParserError) as exc:
+        raise ValueError(f"could not read CSV file: {exc}") from exc
+
+    data.columns = [_clean_column_name(column) for column in data.columns]
+
+    return data

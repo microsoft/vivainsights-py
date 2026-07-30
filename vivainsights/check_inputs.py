@@ -6,10 +6,11 @@
 Validate that required variables exist in a DataFrame.
 """
 import pandas as pd
+from typing import Sequence
 
 __all__ = ['check_inputs']
 
-def check_inputs(data: pd.DataFrame, requirements: str):
+def check_inputs(data: pd.DataFrame, requirements: Sequence[str]):
   """
   Check that each variable in ``requirements`` exists as a column in ``data``.
 
@@ -19,6 +20,11 @@ def check_inputs(data: pd.DataFrame, requirements: str):
       DataFrame to validate.
   requirements : list of str
       Column names that must be present in ``data``.
+
+  Returns
+  -------
+  None
+      Returns nothing when all required columns are present.
 
   Raises
   ------

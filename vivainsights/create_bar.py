@@ -284,5 +284,5 @@ def create_bar(
     elif return_type == "table":
         out = create_bar_calc(data=data, metric=metric, hrvar=hrvar, mingroup=mingroup)
     else:
-        out = "Invalid input. Please check your inputs and try again."
+        raise ValueError("return_type must be 'plot' or 'table'.")
     return out

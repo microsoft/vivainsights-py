@@ -204,9 +204,8 @@ def identify_usage_segments(data, metric=None, metric_str=None, version="12w", r
             
         # Create pivot table
         summary_table = (
-            data.groupby(["MetricDate", segment_col])
-            .size()
-            .reset_index(name="count")
+            data.groupby(["MetricDate", segment_col], as_index=False)
+            .agg(count=("PersonId", "nunique"))
         )
         summary_table = summary_table.pivot(index="MetricDate", columns=segment_col, values="count").fillna(0)
         
@@ -264,7 +263,9 @@ def plot_ts_us(data, cus, caption,figsize=None):
 
     # Plot the stacked bar chart
     fig, ax = plt.subplots(figsize=figsize if figsize else (8, 6))
-    pivot_data.plot(kind="bar", stacked=True, color=colors, ax=ax)
+    plot_data = pivot_data.copy()
+    plot_data.index = pivot_data.index.strftime("%Y-%m-%d")
+    plot_data.plot(kind="bar", stacked=True, color=colors, ax=ax)
 
     # Customize the plot
     ax.set_title("Usage Segments", fontsize=14, fontweight="bold")
@@ -272,7 +273,7 @@ def plot_ts_us(data, cus, caption,figsize=None):
     ax.set_ylabel("Proportion of Users", fontsize=12)
     ax.legend(title="Usage Segment", fontsize=10)
     ax.set_xticks(range(len(pivot_data.index)))
-    ax.set_xticklabels(pivot_data.index.strftime("%Y-%m-%d"), rotation=45, ha="right")
+    ax.set_xticklabels(plot_data.index, rotation=45, ha="right")
     ax.text(
         0, -0.15, caption, transform=ax.transAxes, fontsize=10, alpha=0.7, ha="left"
     )

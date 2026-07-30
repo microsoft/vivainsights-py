@@ -2,7 +2,12 @@
 vivainsights - A Python package for analyzing Viva Insights data.
 """
 
-__version__ = "0.4.2"
+from importlib.metadata import PackageNotFoundError, version
+
+try:
+    __version__ = version("vivainsights")
+except PackageNotFoundError:
+    __version__ = "0+unknown"
 
 # --- Data Loading ---
 from .pq_data import *
@@ -40,6 +45,7 @@ from .network_summary import *
 
 # --- Identification & Segmentation ---
 from .identify_churn import *
+from .identify_daterange import *
 from .identify_habit import *
 from .identify_holidayweeks import *
 from .identify_inactiveweeks import *

@@ -350,7 +350,12 @@ def calculate_IV(
     n_yes_event = cut_table_0 * np.sum(cut_table_1)
 
     # Compute WOE (Weight of Evidence)
-    cut_table_2['WOE'] = np.where((cut_table[1] > 0) & (cut_table[0] > 0), np.log(n_non_event / n_yes_event), 0)
+    valid_woe = (cut_table_1 > 0) & (cut_table_0 > 0)
+    woe = np.zeros_like(n_non_event)
+    woe[valid_woe] = np.log(
+        n_non_event[valid_woe] / n_yes_event[valid_woe]
+    )
+    cut_table_2['WOE'] = woe
 
     # Compute IV_weight
     p1 = cut_table[1] / cut_table[1].sum()

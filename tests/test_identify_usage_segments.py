@@ -91,6 +91,25 @@ class TestIdentifyUsageSegments(unittest.TestCase):
         
         # Check that index is MetricDate
         self.assertTrue(all(isinstance(idx, pd.Timestamp) for idx in result.index))
+
+    def test_table_counts_distinct_people(self):
+        duplicate_data = pd.concat(
+            [self.test_data, self.test_data.iloc[[0]]],
+            ignore_index=True
+        )
+
+        result = identify_usage_segments(
+            duplicate_data,
+            metric='test_metric',
+            version='12w',
+            return_type='table'
+        )
+
+        first_date = self.test_data.iloc[0]['MetricDate']
+        expected_people = duplicate_data.loc[
+            duplicate_data['MetricDate'] == first_date, 'PersonId'
+        ].nunique()
+        self.assertEqual(result.loc[first_date].sum(), expected_people)
     
     def test_identify_usage_segments_table_custom(self):
         """Test table return type for custom parameters."""

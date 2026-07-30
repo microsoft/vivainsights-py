@@ -196,6 +196,7 @@ def hrvar_count_all(data: pd.DataFrame, hrvar_list: list = None, max_unique: int
     
     # Create DataFrame and sort by missing percentage (descending) to highlight problematic variables first
     summary_df = pd.DataFrame(summary_data)
+    summary_df['hrvar'] = summary_df['hrvar'].astype('object')
     summary_df = summary_df.sort_values('missing_percentage', ascending=False).reset_index(drop=True)
     
     return summary_df

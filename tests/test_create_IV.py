@@ -8,6 +8,7 @@ from vivainsights.create_IV import create_IV, p_test, calculate_IV, map_IV
 from vivainsights.pq_data import load_pq_data
 import tracemalloc
 import gc
+import warnings
 
 
 class TestCreateIV(unittest.TestCase):
@@ -325,6 +326,19 @@ class TestCalculateIV(unittest.TestCase):
         # Should have one row per category
         n_categories = len(self.pq_data['Organization'].unique())
         self.assertEqual(len(result), n_categories)
+
+    def test_calculate_IV_avoids_invalid_woe_operations(self):
+        """Test empty event groups do not emit divide-by-zero warnings."""
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", RuntimeWarning)
+            result = calculate_IV(
+                data=self.pq_data,
+                outcome='Binary_Outcome',
+                predictor='Organization',
+                bins=5
+            )
+
+        self.assertTrue(np.isfinite(result['WOE']).all())
     
     def test_calculate_IV_with_numeric_variable_still_works(self):
         """Test that calculate_IV still works with numeric variables after categorical support"""

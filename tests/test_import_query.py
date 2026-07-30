@@ -29,6 +29,5 @@ class TestImportQueryFunction(unittest.TestCase):
             import_query('nonexistent_file.csv')
         self.assertEqual(str(context.exception), "input file does not exist")
 
-
 if __name__ == '__main__':
     unittest.main()
