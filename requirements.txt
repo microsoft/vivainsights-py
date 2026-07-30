@@ -9,3 +9,4 @@ plotly
 scikit-learn
 setuptools
 adjustText
+importlib-metadata; python_version < "3.8"
