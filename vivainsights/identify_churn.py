@@ -93,9 +93,9 @@ def identify_churn(data: pd.DataFrame,
 
     # Message
     printMessage = (f"Churn:\nThere are {len(churner_id)} employees from "
-                    f"{min(firstnweeks).date()} to {max(firstnweeks).date()} "
+                    f"{pd.Timestamp(min(firstnweeks)).date()} to {pd.Timestamp(max(firstnweeks)).date()} "
                     f"({n1} weeks) who are no longer present in "
-                    f"{min(lastnweeks).date()} to {max(lastnweeks).date()} "
+                    f"{pd.Timestamp(min(lastnweeks)).date()} to {pd.Timestamp(max(lastnweeks)).date()} "
                     f"({n2} weeks).")
 
   elif flip == True:
@@ -106,9 +106,9 @@ def identify_churn(data: pd.DataFrame,
 
     # Message
     printMessage = (f"New joiners:\nThere are {len(churner_id)} employees from "
-                    f"{min(lastnweeks).date()} to {max(lastnweeks).date()} "
+                    f"{pd.Timestamp(min(lastnweeks)).date()} to {pd.Timestamp(max(lastnweeks)).date()} "
                     f"({n2} weeks) who were not present in "
-                    f"{min(firstnweeks).date()} to {max(firstnweeks).date()} "
+                    f"{pd.Timestamp(min(firstnweeks)).date()} to {pd.Timestamp(max(firstnweeks)).date()} "
                     f"({n1} weeks).")
 
   else:
