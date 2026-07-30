@@ -10,3 +10,5 @@ scikit-learn
 setuptools
 adjustText
 importlib-metadata; python_version < "3.8"
+importlib-resources; python_version < "3.9"
+typing-extensions; python_version < "3.8"

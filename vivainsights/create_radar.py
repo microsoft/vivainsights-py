@@ -64,7 +64,11 @@ Min-max scaling to [0,100] within observed group ranges:
 ... )
 """
 
-from typing import List, Optional, Tuple, Literal, Union
+from typing import List, Optional, Tuple, Union
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
 import warnings
 
 import numpy as np
