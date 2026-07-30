@@ -7,13 +7,20 @@
 
 ## Overview
 
-This is an Python package for analyzing and visualizing data from Microsoft Viva Insights.
+This is a Python package for analyzing and visualizing data from Microsoft Viva Insights.
 
 Access to the Analyst Experience is required. With this library, you can generate visualizations and compute analyses in a way that adheres to the analysis best practices of the Viva Insights query outputs. 
 
 For the full package documentation, please see [here](https://microsoft.github.io/vivainsights-py/). The **vivainsights** library is published on the [Python Package Index (PyPi)](https://pypi.org/project/vivainsights/). 
 
-For users who prefer R to Python, we recommend the [R library counterpart](https://microsoft.github.io/vivainsights/) which mirrors the design of the Python package. 
+The API is designed to remain conceptually parallel with the
+[R package](https://microsoft.github.io/vivainsights/) so analysts can move
+between the two languages more easily.
+
+Viva Insights metric and organizational-attribute columns can vary by query,
+product version, and language locale. The package therefore uses caller-supplied
+column names for these fields. Person queries consistently use `PersonId` and
+`MetricDate` for their identifier and observation-date columns.
 
 Example visualization output from the library (`create_rank()`):
 
@@ -21,22 +28,22 @@ Example visualization output from the library (`create_rank()`):
 
 ## Installation
 
-You can install **vivainsights** by running this in Command Line: 
-```
+Install **vivainsights** from PyPI:
+
+```console
 pip install vivainsights
 ```
 
-Alternatively, you can install the development version of **vivainsights** from this GitHub repository:
-```
-pip install -e git+https://github.com/microsoft/vivainsights-py#egg=vivainsights
+Alternatively, install the development version from GitHub:
+
+```console
+pip install "vivainsights @ git+https://github.com/microsoft/vivainsights-py.git"
 ```
 
-To install from a specific branch, run the following command replacing branch name with `<remote-branch-name>`:
-```
-pip install -e git+https://github.com/microsoft/vivainsights-py@<remote-branch-name>#egg=vivainsights
-```
-
-For examples on how to create analyses and visualizations, please see the [documentation](https://microsoft.github.io/vivainsights-py/).
+See the [Analyst Guide](https://microsoft.github.io/vivainsights-py/analyst-guide.html)
+for importing evolving or localized schemas and the
+[R and Python API guide](https://microsoft.github.io/vivainsights-py/r-python-parity.html)
+for cross-language examples.
 
 ---
 

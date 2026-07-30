@@ -1,3 +1,16 @@
+# Version 0.4.3
+
+- Improved compatibility with current pandas releases, including group-to-group
+  network calculations and usage-segment plots.
+- Corrected usage-segment tables to count distinct people rather than rows.
+- Avoided invalid intermediate calculations when an Information Value group has
+  no events or non-events.
+- Invalid `return_type` values passed to `create_bar()` now raise a clear
+  `ValueError`.
+- Exposed the documented `identify_datefreq()` function from the package-level
+  API.
+- Modernized package builds, CI coverage, and strict documentation validation.
+
 # Version 0.4.2
 
 - Add `check_query()` and `hrvar_count_all()` for validating loaded queries

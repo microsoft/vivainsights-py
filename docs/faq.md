@@ -23,7 +23,7 @@ You are recommended to use the latest stable version of Python. You can find the
 ### How do I install the package? 
 
 To install the package, simply run the following on your command prompt: 
-```cmd
+```console
 pip install vivainsights
 ```
 
@@ -37,17 +37,14 @@ import vivainsights as vi
 There are two ways to install from this GitHub repository. 
 
 The first way to do this is to: 
-1. Clone this repository to your local drive. 
-2. On PowerShell, change directory (`cd`) to the repository on your local drive, and run `python setup.py install`. This should install 'vivainsights' to your python package registry. To check whether it is installed, you can run `pip freeze` on your command prompt.
+1. Clone this repository to your local drive.
+2. On PowerShell, change directory (`cd`) to the repository and run
+   `python -m pip install -e .`. To check whether it is installed, run
+   `python -m pip show vivainsights`.
 
 The second way is to install from this GitHub repository directly using pip. Just run the following in command prompt:
-```cmd
-pip install -e git+https://github.com/microsoft/vivainsights-py#egg=vivainsights
-```
-
-You can also install from a specific branch with the following, replacing the branch name with `<remote-branch-name>`:
-```cmd
-pip install -e git+https://github.com/microsoft/vivainsights-py@<remote-branch-name>#egg=vivainsights
+```console
+pip install "vivainsights @ git+https://github.com/microsoft/vivainsights-py.git"
 ```
 
 
