@@ -1,13 +1,13 @@
 [build-system]
 requires = [
-    "setuptools>=42",
+    "setuptools>=61",
     "wheel"
 ]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "vivainsights"
-version = "0.4.2"
+version = "0.4.3"
 authors = [
   { name="Martin Chan", email="martinchan@microsoft.com" },
   { name="Aadarsh Indurkhya", email="aindurkhya@microsoft.com" },
@@ -21,17 +21,26 @@ authors = [
 ]
 description = "Python library to analyze and visualize data from Microsoft Viva Insights."
 readme = "README.md"
-license = "MIT"
-license-files = ["LICENSE.md"]
+license = { file = "LICENSE.md" }
 requires-python = ">=3.7"
 dynamic = ["dependencies"]
 classifiers = [
+    "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Operating System :: OS Independent",
 ]
 
-[tool.setuptools]
-packages = ["vivainsights"]
+[tool.setuptools.packages.find]
+include = ["vivainsights*"]
+namespaces = true
 
 [tool.setuptools.package-data]
 vivainsights = ["data/*.csv"]
@@ -41,4 +50,5 @@ dependencies = {file = ["requirements.txt"]}
 
 [project.urls]
 "Homepage" = "https://github.com/microsoft/vivainsights-py"
+"Documentation" = "https://microsoft.github.io/vivainsights-py/"
 "Bug Tracker" = "https://github.com/microsoft/vivainsights-py/issues"
