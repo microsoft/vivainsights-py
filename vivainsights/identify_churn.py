@@ -124,4 +124,4 @@ def identify_churn(data: pd.DataFrame,
     return churner_id
 
   else:
-    raise ValueError("Invalid `return`")
+    raise ValueError("return_type must be 'message', 'text', or 'data'.")

@@ -82,4 +82,4 @@ def network_summary(graph, hrvar = None, return_type = "table"):
         else:
             return #TODO: return plot
     else: 
-        raise ValueError("Invalid input to `return`")
+        raise ValueError("return_type must be 'table', 'network', or 'plot'.")

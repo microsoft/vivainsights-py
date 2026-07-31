@@ -141,5 +141,8 @@ def identify_tenure(data: pd.DataFrame,
             .loc[:, ["PersonId", "TenureYear"]])
 
   else:
-    raise ValueError("Error: please check inputs for `return`")
+    raise ValueError(
+      "return_type must be 'message', 'text', 'plot', 'data', "
+      "'data_cleaned', or 'data_dirty'."
+  )
 

@@ -323,4 +323,4 @@ def create_boxplot(data: pd.DataFrame, metric: str, hrvar: str ="Organization", 
         
         return plot_data
     else:
-        raise ValueError("Please enter a valid input for `return`.")
+        raise ValueError("return_type must be 'plot', 'table', or 'data'.")
