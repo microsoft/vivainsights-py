@@ -41,9 +41,14 @@ pip install "vivainsights @ git+https://github.com/microsoft/vivainsights-py.git
 ```
 
 See the [Analyst Guide](https://microsoft.github.io/vivainsights-py/analyst-guide.html)
-for importing evolving or localized schemas and the
+for importing evolving or localized schemas, the
+[function discovery guide](https://microsoft.github.io/vivainsights-py/function-discovery.html)
+for choosing the right function for a task, and the
 [R and Python API guide](https://microsoft.github.io/vivainsights-py/r-python-parity.html)
 for cross-language examples.
+
+AI agents can start from the machine-readable index at
+[llms.txt](https://microsoft.github.io/vivainsights-py/llms.txt).
 
 ---
 

@@ -43,7 +43,15 @@ include = ["vivainsights*"]
 namespaces = true
 
 [tool.setuptools.package-data]
-vivainsights = ["data/*.csv"]
+vivainsights = ["data/*.csv", "discovery/*.yml"]
+
+[project.optional-dependencies]
+dev = [
+    "build",
+    "coverage",
+    "pyyaml",
+    "twine",
+]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}

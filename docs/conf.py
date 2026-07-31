@@ -83,6 +83,9 @@ html_favicon = '_static/favicon.svg'
 html_theme = 'furo'
 html_static_path = ['_static']
 
+# Publish the agent discovery index at the site root.
+html_extra_path = ['llms.txt']
+
 # Custom CSS files
 html_css_files = [
     'custom.css',

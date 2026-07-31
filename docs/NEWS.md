@@ -1,5 +1,8 @@
 # Version 0.4.3
 
+- Added a task-oriented function discovery guide and an agent-readable
+  `llms.txt`, both generated from a versioned workflow catalogue shipped with the
+  package.
 - Improved compatibility with current pandas releases, including group-to-group
   network calculations and usage-segment plots.
 - Corrected usage-segment tables to count distinct people rather than rows.
@@ -9,6 +12,8 @@
   `ValueError`.
 - Exposed the documented `identify_datefreq()` function from the package-level
   API.
+- Clarified invalid `return_type` errors that previously referenced the R
+  package's `return` argument.
 - Modernized package builds, CI coverage, and strict documentation validation.
 
 # Version 0.4.2

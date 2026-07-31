@@ -46,7 +46,9 @@ Most functions accept a `return_type` argument to switch between a plot (`'plot'
 Viva Insights column names can vary with the query, product version, and
 language locale. Functions therefore accept column names such as `metric` and
 `hrvar` explicitly. See the [Analyst Guide](analyst-guide.md) for guidance on
-localized and evolving schemas.
+localized and evolving schemas, and the
+[function discovery guide](function-discovery.md) to find the right function for
+a task.
 
 For a comprehensive walkthrough — including trend analysis, ranking, network visualization, and more — see the **[demo notebook](https://microsoft.github.io/vivainsights-py/demo-vivainsights-py.html)**.
 

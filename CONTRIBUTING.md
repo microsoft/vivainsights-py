@@ -32,6 +32,17 @@ Documentation changes should also build without warnings:
 sphinx-build -W --keep-going -b html docs docs/_build/html
 ```
 
+## Contributing
+
+Update the discovery catalogue at `vivainsights/discovery/workflows.yml` when you
+add or change a public function, then regenerate the derived artifacts:
+
+```console
+python tools/generate_discovery.py
+```
+
+CI regenerates these files and fails if the committed output differs.
+
 ## Code of Conduct
 
 Please note that we have a code of conduct in place to ensure that our community is welcoming and inclusive. By participating in this project, you agree to abide by its terms.
