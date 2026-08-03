@@ -1,5 +1,20 @@
 """
 vivainsights - A Python package for analyzing Viva Insights data.
+
+Person queries always use ``PersonId`` and ``MetricDate``. Metric and
+organizational attribute names vary by query, product version, and language
+locale, so they are passed explicitly through arguments such as ``metric`` and
+``hrvar``. Most analysis functions select their output form with
+``return_type``.
+
+Finding the right function:
+
+* Task guide: https://microsoft.github.io/vivainsights-py/function-discovery.html
+* Agent index: https://microsoft.github.io/vivainsights-py/llms.txt
+* Machine-readable catalogue of supported workflows, shipped with this package::
+
+      from importlib import resources
+      resources.files("vivainsights").joinpath("discovery", "workflows.yml")
 """
 
 try:

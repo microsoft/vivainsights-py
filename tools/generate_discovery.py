@@ -112,13 +112,13 @@ def build_llms(catalogue):
     lines = [
         "# vivainsights (Python)",
         "",
-        f"> {GENERATED_NOTE}",
+        "> Python package for analyzing and visualizing Microsoft Viva Insights data."
+        " Use these established workflows instead of reimplementing Viva Insights"
+        " aggregation, segmentation, or visualization logic.",
         "",
-        "Python package for analyzing and visualizing Microsoft Viva Insights data.",
-        "Prefer these functions over reimplementing Viva Insights aggregation,",
-        "segmentation, or visualization logic.",
+        f"<!-- {GENERATED_NOTE} -->",
         "",
-        "## Conventions",
+        "Conventions:",
         "",
         "- Import as `import vivainsights as vi`.",
         "- Person queries always use `PersonId` and `MetricDate`.",
@@ -129,6 +129,8 @@ def build_llms(catalogue):
         "  because `return` is a reserved keyword in Python.",
         "- Grouped functions expose `mingroup`; keep this privacy threshold unless the",
         "  user explicitly chooses another valid threshold.",
+        "- The full workflow catalogue ships with the package at",
+        "  `vivainsights/discovery/workflows.yml`.",
         "",
         "## Workflows",
         "",
@@ -142,10 +144,10 @@ def build_llms(catalogue):
             else workflow["returns"]
         )
         lines.append(
-            f"- {workflow['task']}: `{workflow['python_function']}()`; "
+            f"- [{workflow['task']}]({workflow['documentation']}): "
+            f"`{workflow['python_function']}()`; "
             f"input: {workflow['input_grain']}; {returns}; "
-            f"privacy: {workflow['privacy']} "
-            f"docs: {workflow['documentation']}"
+            f"privacy: {workflow['privacy']}"
         )
 
     lines.extend(
@@ -153,11 +155,16 @@ def build_llms(catalogue):
             "",
             "## Documentation",
             "",
-            "- Function reference: https://microsoft.github.io/vivainsights-py/modules.html",
-            "- Task guide: https://microsoft.github.io/vivainsights-py/function-discovery.html",
-            "- Analyst guide: https://microsoft.github.io/vivainsights-py/analyst-guide.html",
-            "- R and Python parity: https://microsoft.github.io/vivainsights-py/r-python-parity.html",
-            f"- R package: {catalogue['r']['documentation']}",
+            "- [Task guide](https://microsoft.github.io/vivainsights-py/function-discovery.html):"
+            " choose a function for an analysis task.",
+            "- [Function reference](https://microsoft.github.io/vivainsights-py/modules.html):"
+            " full API documentation.",
+            "- [Analyst guide](https://microsoft.github.io/vivainsights-py/analyst-guide.html):"
+            " importing evolving and localized query schemas.",
+            "- [R and Python parity](https://microsoft.github.io/vivainsights-py/r-python-parity.html):"
+            " moving between the two packages.",
+            f"- [R package]({catalogue['r']['documentation']}):"
+            " the R counterpart of this package.",
         ]
     )
 

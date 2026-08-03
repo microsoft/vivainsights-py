@@ -164,6 +164,44 @@ class TestGeneratedDiscoveryArtifacts(unittest.TestCase):
         self.assertIn("mingroup", llms)
         self.assertIn("return_type", llms)
 
+    def test_llms_follows_llmstxt_structure(self):
+        """llms.txt must follow the llmstxt.org structure.
+
+        The spec requires an H1 project name, a blockquote summary, and H2
+        sections whose list items are markdown links with optional notes.
+        """
+        lines = generate_discovery.LLMS_PATH.read_text(encoding="utf-8").splitlines()
+
+        self.assertTrue(lines[0].startswith("# "), "first line must be an H1")
+
+        blockquote = [line for line in lines if line.startswith("> ")]
+        self.assertTrue(blockquote, "a blockquote summary is required")
+        self.assertNotIn(
+            "Do not edit manually",
+            blockquote[0],
+            "the blockquote must summarize the project, not carry provenance",
+        )
+
+        self.assertTrue([line for line in lines if line.startswith("## ")])
+
+        list_items = [line for line in lines if line.startswith("- ")]
+        self.assertTrue(list_items)
+        for item in list_items:
+            if item.startswith("- ["):
+                self.assertRegex(item, r"^- \[[^\]]+\]\(https?://[^)]+\)")
+
+        section = None
+        linked_sections = {"## Workflows", "## Documentation"}
+        for line in lines:
+            if line.startswith("## "):
+                section = line
+            elif line.startswith("- ") and section in linked_sections:
+                self.assertRegex(
+                    line,
+                    r"^- \[[^\]]+\]\(https?://[^)]+\)",
+                    f"{section} entries must be markdown links: {line[:60]}",
+                )
+
     def test_guide_documents_every_workflow(self):
         guide = generate_discovery.GUIDE_PATH.read_text(encoding="utf-8")
         for workflow in self.catalogue["workflows"]:

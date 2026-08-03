@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-    "setuptools>=61",
+    "setuptools>=77",
     "wheel"
 ]
 build-backend = "setuptools.build_meta"
@@ -21,7 +21,15 @@ authors = [
 ]
 description = "Python library to analyze and visualize data from Microsoft Viva Insights."
 readme = "README.md"
-license = { file = "LICENSE.md" }
+keywords = [
+    "viva-insights",
+    "people-analytics",
+    "organizational-network-analysis",
+    "collaboration-analytics",
+    "workplace-analytics",
+]
+license = "MIT"
+license-files = ["LICENSE.md"]
 requires-python = ">=3.7"
 dynamic = ["dependencies"]
 classifiers = [
