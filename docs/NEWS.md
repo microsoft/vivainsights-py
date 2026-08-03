@@ -3,8 +3,8 @@
 - Added a task-oriented function discovery guide and an agent-readable
   `llms.txt`, both generated from a versioned workflow catalogue shipped with the
   package.
-- Declared an SPDX license expression and package keywords so the published
-  metadata follows current packaging standards.
+- Published a short `MIT` licence expression and package keywords instead of
+  embedding the full licence text in the distribution metadata.
 - Improved compatibility with current pandas releases, including group-to-group
   network calculations and usage-segment plots.
 - Corrected usage-segment tables to count distinct people rather than rows.

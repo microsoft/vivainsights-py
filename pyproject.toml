@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-    "setuptools>=77",
+    "setuptools>=61",
     "wheel"
 ]
 build-backend = "setuptools.build_meta"
@@ -28,8 +28,12 @@ keywords = [
     "collaboration-analytics",
     "workplace-analytics",
 ]
-license = "MIT"
-license-files = ["LICENSE.md"]
+# NOTE: The SPDX form (license = "MIT" plus license-files) from PEP 639 requires
+# setuptools>=77, which in turn requires Python >=3.9. While this package still
+# supports Python 3.7, the table form below is used because it resolves on every
+# supported interpreter. Using `text` keeps the published metadata a short
+# expression instead of embedding the whole licence file.
+license = { text = "MIT" }
 requires-python = ">=3.7"
 dynamic = ["dependencies"]
 classifiers = [
