@@ -82,6 +82,22 @@ html_css_files = [
     'custom.css',
 ]
 
+# Privacy-preserving analytics. data-domains restricts collection to the
+# published documentation host, so local builds do not send data.
+html_js_files = [
+    (
+        "https://ca-umami-prod.lemonglacier-6a5930b7.uksouth.azurecontainerapps.io/script.js",
+        {
+            "defer": "defer",
+            "data-website-id": "c621353a-f4f5-4f73-ad75-9317cd1a0401",
+            "data-domains": "microsoft.github.io",
+            "data-do-not-track": "true",
+            "data-exclude-search": "true",
+            "data-exclude-hash": "true",
+        },
+    ),
+]
+
 # Recognize both .rst and .md files as source files
 source_suffix = {
     '.rst': 'restructuredtext',
