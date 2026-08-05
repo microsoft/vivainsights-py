@@ -200,6 +200,8 @@ Validation & Configuration
 
    * - :doc:`vivainsights.check_inputs <_api/vivainsights.check_inputs>`
      - Validate that required variables exist in a DataFrame.
+   * - :doc:`vivainsights.check_query <_api/vivainsights.check_query>`
+     - Validate a loaded query and summarize its population and date range.
    * - :doc:`vivainsights.color_codes <_api/vivainsights.color_codes>`
      - Define color palettes and an Enum class for standard vivainsights colors.
 

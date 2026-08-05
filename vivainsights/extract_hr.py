@@ -80,13 +80,13 @@ def extract_hr(
             error = "Please check input to `return_type`."
 
         if return_type == "vars":
-            return unqdf.select_dtypes(['object'])
+            return unqdf.select_dtypes(include=['object', 'string'])
         
         if return_type == "suggestion":
-            return unqdf.select_dtypes(['object']).columns.tolist()
+            return unqdf.select_dtypes(include=['object', 'string']).columns.tolist()
         
         #return print(*unqdf.columns+',\n')
-        return print(*unqdf.select_dtypes(['object']).columns+',\n')
+        return print(*unqdf.select_dtypes(include=['object', 'string']).columns+',\n')
     
     except:
         print(error)

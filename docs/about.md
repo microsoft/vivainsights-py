@@ -1,3 +1,5 @@
+# About vivainsights
+
 **vivainsights** is a Python package for analyzing and visualizing data from Microsoft Viva Insights.
 
 Access to the Viva Insights Analyst Experience is required. With this library, you can generate visualizations and compute analyses in a way that adheres to the analysis best practices of the Viva Insights query outputs. 
@@ -23,11 +25,6 @@ To upgrade to the latest version:
 pip install --upgrade vivainsights
 ```
 
-If you want to install with optional dependencies for development or documentation, you can use:
-
-```bash
-pip install vivainsights[dev]
-```
 To get started, we recommend checking out the [demo Jupyter notebook](https://microsoft.github.io/vivainsights-py/demo-vivainsights-py.html) and the code examples below. You can also find more details in our [GitHub repository](https://github.com/microsoft/vivainsights-py/).
 
 ## Quick start
@@ -45,6 +42,13 @@ vi.create_bar(data=pq_data, metric='Emails_sent', hrvar='Organization', mingroup
 ```
 
 Most functions accept a `return_type` argument to switch between a plot (`'plot'`) and a summary table (`'table'`) as a Pandas DataFrame. Use `vi.export()` to save outputs to clipboard or to a local file.
+
+Viva Insights column names can vary with the query, product version, and
+language locale. Functions therefore accept column names such as `metric` and
+`hrvar` explicitly. See the [Analyst Guide](analyst-guide.md) for guidance on
+localized and evolving schemas, and the
+[function discovery guide](function-discovery.md) to find the right function for
+a task.
 
 For a comprehensive walkthrough — including trend analysis, ranking, network visualization, and more — see the **[demo notebook](https://microsoft.github.io/vivainsights-py/demo-vivainsights-py.html)**.
 

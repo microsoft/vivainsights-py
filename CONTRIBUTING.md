@@ -7,7 +7,7 @@ Thank you for your interest in contributing to vivainsights! We welcome contribu
 To get started, please follow these steps:
 
 1. Fork the repository and clone it to your local machine.
-2. Install the project dependencies by running `pip install -r requirements.txt`.
+2. Install the package in editable mode by running `python -m pip install -e .`.
 3. Create a new branch for your changes.
 4. Make your changes and commit them to your branch.
 5. Push your branch to your forked repository.
@@ -19,7 +19,29 @@ We follow the PEP 8 style guide for Python code. Please make sure your code adhe
 
 ## Testing
 
-We use the `pytest` testing framework for our tests. Please make sure your changes include tests, and that all tests pass before submitting a pull request.
+Tests use Python's `unittest` framework. Please include tests for behavioral
+changes and run:
+
+```console
+python -m unittest discover -s tests -p "test_*.py"
+```
+
+Documentation changes should also build without warnings:
+
+```console
+sphinx-build -W --keep-going -b html docs docs/_build/html
+```
+
+## Contributing
+
+Update the discovery catalogue at `vivainsights/discovery/workflows.yml` when you
+add or change a public function, then regenerate the derived artifacts:
+
+```console
+python tools/generate_discovery.py
+```
+
+CI regenerates these files and fails if the committed output differs.
 
 ## Code of Conduct
 

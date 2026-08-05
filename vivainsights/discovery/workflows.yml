@@ -1,0 +1,845 @@
+# Catalogue of primary vivainsights workflows.
+#
+# This file is the single source of truth for function discovery. The task guide
+# and the agent-readable llms.txt are generated from it by
+# tools/generate_discovery.py, and CI fails if the generated files drift.
+#
+# Column guidance:
+#   required_columns  fixed person-query fields that must be present.
+#   selected_columns  caller-supplied roles. Metric and organizational
+#                     attribute names vary by query, product version, and
+#                     language locale, so they are named by role, not by value.
+schema_version: 1
+package: vivainsights
+language: python
+r:
+  package: vivainsights
+  repository: https://github.com/microsoft/vivainsights
+  documentation: https://microsoft.github.io/vivainsights/
+parity_vocabulary:
+  - aligned
+  - partial
+  - r_only
+  - python_only
+  - planned
+  - language_native
+workflows:
+  - id: import-query
+    task: Import a Viva Insights query export
+    intents:
+      - load a Viva Insights CSV export
+      - read a person query into Python
+      - start an analysis from an exported query
+    python_function: import_query
+    input_grain: Viva Insights CSV export
+    required_columns: []
+    selected_columns: []
+    privacy: Import applies no disclosure thresholds; validate and aggregate before sharing results.
+    returns: DataFrame with cleaned column names
+    return_types: []
+    example: vi.import_query("query.csv")
+    runnable: false
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.import_query.html
+    related: [check_query, extract_hr, extract_date_range]
+    r_function: import_query
+    parity: partial
+
+  - id: validate-query
+    task: Validate a loaded query before analysis
+    intents:
+      - check whether my query is valid
+      - run data validation on a person query
+      - sanity check a Viva Insights dataset
+    python_function: check_query
+    input_grain: Person-period query
+    required_columns: [PersonId, MetricDate]
+    selected_columns: []
+    privacy: Validation reports population counts; review before sharing externally.
+    returns: Printed message or descriptive text
+    return_types: [message, text]
+    example: vi.check_query(vi.load_pq_data(), return_type="text")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.check_query.html
+    related: [hrvar_count_all, extract_hr, extract_date_range, identify_datefreq]
+    r_function: check_query
+    parity: partial
+
+  - id: inspect-organizational-attributes
+    task: Summarize organizational attributes and their data quality
+    intents:
+      - list the HR attributes in my data
+      - check missing values in organizational attributes
+      - see how many distinct values each attribute has
+    python_function: hrvar_count_all
+    input_grain: Person-period query
+    required_columns: []
+    selected_columns: [hrvar_list]
+    privacy: Distinct-value counts can be small; apply disclosure policy before sharing.
+    returns: Summary DataFrame of attributes, distinct values, and missing counts
+    return_types: []
+    example: vi.hrvar_count_all(vi.load_pq_data())
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.hrvar_count.html
+    related: [hrvar_count, extract_hr, check_query]
+    r_function: hrvar_count_all
+    parity: partial
+
+  - id: count-population-by-group
+    task: Count distinct people in each group
+    intents:
+      - how many employees are in each organization
+      - count headcount by HR attribute
+      - check group sizes before analysis
+    python_function: hrvar_count
+    input_grain: Person-period query
+    required_columns: [PersonId]
+    selected_columns: [hrvar]
+    privacy: Small groups may be identifying; apply disclosure policy before sharing.
+    returns: Bar chart or summary table of distinct people per group
+    return_types: [plot, table]
+    example: vi.hrvar_count(vi.load_pq_data(), hrvar="Organization", return_type="table")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.hrvar_count.html
+    related: [hrvar_count_all, totals_col, create_bar]
+    r_function: hrvar_count
+    parity: partial
+
+  - id: compare-groups
+    task: Compare the average of a metric across groups
+    intents:
+      - compare organizations on a metric
+      - plot average collaboration by HR attribute
+      - summarize group averages
+    python_function: create_bar
+    input_grain: Person-period query
+    required_columns: [PersonId]
+    selected_columns: [metric, hrvar]
+    privacy: Groups with fewer than mingroup distinct people are excluded.
+    returns: Bar chart or summary table
+    return_types: [plot, table]
+    example: vi.create_bar(vi.load_pq_data(), metric="Emails_sent", hrvar="Organization", return_type="table")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_bar.html
+    related: [create_boxplot, create_rank, create_bubble, create_bar_asis]
+    r_function: create_bar
+    parity: partial
+
+  - id: compare-distributions
+    task: Compare the distribution of a metric across groups
+    intents:
+      - show the spread of a metric by group
+      - compare medians and outliers across organizations
+      - create a boxplot by HR attribute
+    python_function: create_boxplot
+    input_grain: Person-period query
+    required_columns: [PersonId, MetricDate]
+    selected_columns: [metric, hrvar]
+    privacy: Groups with fewer than mingroup distinct people are excluded.
+    returns: Boxplot, summary table, or person-level data
+    return_types: [plot, table, data]
+    example: vi.create_boxplot(vi.load_pq_data(), metric="Emails_sent", hrvar="Organization", return_type="table")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_boxplot.html
+    related: [create_bar, create_lorenz, create_inc]
+    r_function: create_boxplot
+    parity: partial
+
+  - id: rank-groups
+    task: Rank groups on a metric
+    intents:
+      - which groups are highest and lowest on a metric
+      - rank organizations by collaboration
+      - find top and bottom groups
+    python_function: create_rank
+    input_grain: Person-period query
+    required_columns: [PersonId]
+    selected_columns: [metric, hrvar]
+    privacy: Groups with fewer than mingroup distinct people are excluded.
+    returns: Ranked plot or table
+    return_types: [plot, table]
+    example: vi.create_rank(vi.load_pq_data(), metric="Emails_sent", hrvar="Organization", return_type="table")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_rank.html
+    related: [create_bar, keymetrics_scan]
+    r_function: create_rank
+    parity: partial
+
+  - id: trend-over-time
+    task: Track a metric over time by group
+    intents:
+      - show a metric trend over time
+      - plot weekly collaboration by organization
+      - has this metric changed over time
+    python_function: create_line
+    input_grain: Person-period query
+    required_columns: [PersonId, MetricDate]
+    selected_columns: [metric, hrvar]
+    privacy: Groups with fewer than mingroup distinct people are excluded.
+    returns: Line chart or summary table
+    return_types: [plot, table]
+    example: vi.create_line(vi.load_pq_data(), metric="Emails_sent", hrvar="Organization", return_type="table")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_line.html
+    related: [create_trend, keymetrics_scan]
+    r_function: create_line
+    parity: partial
+
+  - id: weekly-pattern-heatmap
+    task: Show week-by-week patterns for a metric
+    intents:
+      - create a heatmap of weekly activity
+      - show how a metric varies week by week
+      - visualize seasonality by group
+    python_function: create_trend
+    input_grain: Person-period query
+    required_columns: [PersonId, MetricDate]
+    selected_columns: [metric, hrvar]
+    privacy: Groups with fewer than mingroup distinct people are excluded.
+    returns: Heatmap or summary table
+    return_types: [plot, table]
+    example: vi.create_trend(vi.load_pq_data(), metric="Emails_sent", hrvar="Organization", return_type="table")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_trend.html
+    related: [create_line, identify_outlier]
+    r_function: create_trend
+    parity: partial
+
+  - id: scan-key-metrics
+    task: Scan several metrics across groups at once
+    intents:
+      - compare many metrics by organization
+      - build a key metrics overview
+      - scan a scorecard of metrics
+    python_function: keymetrics_scan
+    input_grain: Person-period query
+    required_columns: [PersonId]
+    selected_columns: [metrics, hrvar]
+    privacy: Groups with fewer than mingroup distinct people are excluded.
+    returns: Heatmap or summary table of metrics by group
+    return_types: [plot, table]
+    example: vi.keymetrics_scan(vi.load_pq_data(), hrvar="Organization", metrics=["Emails_sent", "Collaboration_hours"], return_type="table")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.keymetrics_scan.html
+    related: [create_rank, create_radar, create_bar]
+    r_function: keymetrics_scan
+    parity: partial
+
+  - id: compare-two-metrics
+    task: Compare two metrics across groups
+    intents:
+      - plot one metric against another by group
+      - show the relationship between two metrics
+      - create a bubble chart of groups
+    python_function: create_bubble
+    input_grain: Person-period query
+    required_columns: [PersonId]
+    selected_columns: [metric_x, metric_y, hrvar]
+    privacy: Groups with fewer than mingroup distinct people are excluded.
+    returns: Bubble chart or summary table
+    return_types: [plot, table]
+    example: vi.create_bubble(vi.load_pq_data(), metric_x="Emails_sent", metric_y="Collaboration_hours", hrvar="Organization", return_type="table")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_bubble.html
+    related: [create_bar, create_boxplot, xicor]
+    r_function: create_bubble
+    parity: partial
+
+  - id: multi-metric-profile
+    task: Profile groups across several metrics on one chart
+    intents:
+      - create a radar chart comparing groups
+      - show a multi-metric profile by organization
+      - compare groups on several metrics at once
+    python_function: create_radar
+    input_grain: Person-period query
+    required_columns: [PersonId]
+    selected_columns: [metrics, hrvar]
+    privacy: Groups with fewer than mingroup distinct people are excluded.
+    returns: Radar chart or indexed summary table
+    return_types: [plot, table]
+    example: vi.create_radar(vi.load_pq_data(), metrics=["Emails_sent", "Collaboration_hours"], hrvar="Organization", return_type="table")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_radar.html
+    related: [keymetrics_scan, create_rank]
+    r_function: create_radar
+    parity: partial
+
+  - id: threshold-incidence
+    task: Measure how many people fall above or below a threshold
+    intents:
+      - what proportion of people exceed a threshold
+      - show incidence above a metric value
+      - compare threshold rates across groups
+    python_function: create_inc
+    input_grain: Person-period query
+    required_columns: [PersonId]
+    selected_columns: [metric, hrvar, threshold, position]
+    privacy: Groups with fewer than mingroup distinct people are excluded.
+    returns: Incidence plot, summary table, or underlying data
+    return_types: [plot, table, data]
+    example: vi.create_inc(vi.load_pq_data(), metric="Emails_sent", hrvar="Organization", threshold=20, position="above", return_type="table")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_inc.html
+    related: [create_bar, create_boxplot, create_lorenz]
+    r_function: create_inc
+    parity: partial
+
+  - id: concentration-inequality
+    task: Measure how concentrated a metric is across the population
+    intents:
+      - calculate a Gini coefficient
+      - plot a Lorenz curve
+      - is this metric concentrated in a few people
+    python_function: create_lorenz
+    input_grain: Person-period query
+    required_columns: [PersonId]
+    selected_columns: [metric]
+    privacy: Curves describe the whole population; apply disclosure policy before sharing.
+    returns: Lorenz curve, summary table, or Gini coefficient
+    return_types: [plot, table, gini]
+    example: vi.create_lorenz(vi.load_pq_data(), metric="Emails_sent", return_type="gini")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_lorenz.html
+    related: [create_inc, create_boxplot]
+    r_function: create_lorenz
+    parity: partial
+
+  - id: plot-precomputed-table
+    task: Plot a summary table that is already aggregated
+    intents:
+      - plot a table I already calculated
+      - create a bar chart without re-aggregating
+      - visualize a precomputed summary
+    python_function: create_bar_asis
+    input_grain: Pre-aggregated summary table
+    required_columns: []
+    selected_columns: [group_var, bar_var]
+    privacy: Apply disclosure thresholds when computing the summary table.
+    returns: Bar chart figure
+    return_types: []
+    example: vi.create_bar_asis(vi.create_bar(vi.load_pq_data(), metric="Emails_sent", hrvar="Organization", return_type="table"), group_var="Organization", bar_var="metric")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_bar_asis.html
+    related: [create_bar, export]
+    r_function: create_bar_asis
+    parity: partial
+
+  - id: flow-between-states
+    task: Visualize movement between two categorical states
+    intents:
+      - show how people move between segments
+      - create a Sankey chart of transitions
+      - visualize flows between categories
+    python_function: create_sankey
+    input_grain: Two-column count table
+    required_columns: []
+    selected_columns: [var1, var2, count]
+    privacy: Small flows may be identifying; apply disclosure policy before sharing.
+    returns: Plotly Sankey figure
+    return_types: []
+    example: vi.create_sankey(transitions, var1="UsageSegments_previous", var2="UsageSegments", count="n")
+    runnable: false
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_sankey.html
+    related: [identify_usage_segments, network_p2p]
+    r_function: create_sankey
+    parity: partial
+
+  - id: drivers-information-value
+    task: Rank predictors of a binary outcome
+    intents:
+      - which metrics predict an outcome
+      - calculate information value
+      - find drivers of a binary flag
+    python_function: create_IV
+    input_grain: Person-period query with a binary outcome column
+    required_columns: [PersonId]
+    selected_columns: [predictors, outcome]
+    privacy: Outcome flags can be sensitive; apply disclosure policy before sharing.
+    returns: Plot, summary table, information value scores, or a list of outputs
+    return_types: [plot, summary, IV, list, plot-WOE]
+    example: vi.create_IV(data, predictors=["Emails_sent", "Collaboration_hours"], outcome="IsHighUsage", return_type="summary")
+    runnable: false
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_IV.html
+    related: [create_odds_ratios, xicor]
+    r_function: create_IV
+    parity: partial
+
+  - id: odds-ratios
+    task: Calculate odds ratios for an outcome
+    intents:
+      - calculate odds ratios
+      - how much more likely is an outcome
+      - quantify the effect of ordinal metrics
+    python_function: create_odds_ratios
+    input_grain: Person-period query with a binary outcome column
+    required_columns: [PersonId]
+    selected_columns: [ord_metrics, metric]
+    privacy: Outcome flags can be sensitive; apply disclosure policy before sharing.
+    returns: Odds ratio table or plot
+    return_types: [table, plot]
+    example: vi.create_odds_ratios(data, ord_metrics=["Emails_sent"], metric="IsHighUsage", return_type="table")
+    runnable: false
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_odds_ratios.html
+    related: [create_IV, xicor]
+    r_function: create_odds_ratios
+    parity: partial
+
+  - id: rank-correlation
+    task: Measure association between two metrics
+    intents:
+      - correlate two metrics
+      - measure dependence between variables
+      - calculate the Chatterjee coefficient
+    python_function: xicor
+    input_grain: Two numeric series
+    required_columns: []
+    selected_columns: [x, y]
+    privacy: Correlations are population level; apply disclosure policy before sharing.
+    returns: Correlation coefficient
+    return_types: []
+    example: vi.xicor(vi.load_pq_data()["Emails_sent"], vi.load_pq_data()["Collaboration_hours"])
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.xicor.html
+    related: [create_IV, create_bubble]
+    r_function: xicor
+    parity: partial
+
+  - id: prepare-survival-data
+    task: Reshape a person query for survival analysis
+    intents:
+      - prepare data for survival analysis
+      - build time and event columns
+      - convert a panel query to person-level survival format
+    python_function: create_survival_prep
+    input_grain: Person-period query
+    required_columns: [PersonId, MetricDate]
+    selected_columns: [metric, event_condition, hrvar]
+    privacy: Person-level survival data is identifying; aggregate before sharing.
+    returns: Person-level DataFrame with time and event columns
+    return_types: []
+    example: vi.create_survival_prep(vi.load_pq_data(), metric="Emails_sent")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_survival_prep.html
+    related: [create_survival, identify_churn]
+    r_function: create_survival_prep
+    parity: partial
+
+  - id: survival-analysis
+    task: Estimate time until an event occurs
+    intents:
+      - run a survival analysis
+      - plot Kaplan-Meier curves
+      - how long until people adopt a behaviour
+    python_function: create_survival
+    input_grain: Person-level survival table
+    required_columns: [PersonId]
+    selected_columns: [time_col, event_col, hrvar]
+    privacy: Groups with fewer than mingroup distinct people are excluded.
+    returns: Survival curve plot or survival table
+    return_types: [plot, table]
+    example: vi.create_survival(surv_data, time_col="time", event_col="event", hrvar="Organization", return_type="table")
+    runnable: false
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_survival.html
+    related: [create_survival_prep, identify_churn]
+    r_function: create_survival
+    parity: partial
+
+  - id: usage-segments
+    task: Segment people by how consistently they use a behaviour
+    intents:
+      - segment users by usage intensity
+      - find power users and habitual users
+      - classify adoption segments
+    python_function: identify_usage_segments
+    input_grain: Person-period query
+    required_columns: [PersonId, MetricDate]
+    selected_columns: [metric, metric_str]
+    privacy: Segment tables count distinct people; apply disclosure policy before sharing.
+    returns: Classified data, stacked bar chart, or summary table
+    return_types: [data, plot, table]
+    example: vi.identify_usage_segments(vi.load_pq_data(), metric="Emails_sent", version="12w", return_type="table")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.identify_usage_segments.html
+    related: [identify_habit, create_sankey]
+    r_function: identify_usage_segments
+    parity: partial
+
+  - id: habitual-usage
+    task: Identify habitual behaviour over a rolling window
+    intents:
+      - who uses this consistently
+      - detect habits from a metric
+      - measure sustained adoption
+    python_function: identify_habit
+    input_grain: Person-period query
+    required_columns: [PersonId, MetricDate]
+    selected_columns: [metric, hrvar]
+    privacy: Person-level habit flags are identifying; aggregate before sharing.
+    returns: Habit data, plot, or summary
+    return_types: [data, plot, summary]
+    example: vi.identify_habit(vi.load_pq_data(), metric="Emails_sent", threshold=1, width=4, max_window=4, return_type="data")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.identify_habit.html
+    related: [identify_usage_segments]
+    r_function: identify_habits
+    parity: partial
+
+  - id: churn-and-joiners
+    task: Identify people who left or joined the dataset
+    intents:
+      - who churned between two periods
+      - find new joiners
+      - compare population at start and end
+    python_function: identify_churn
+    input_grain: Person-period query
+    required_columns: [PersonId, MetricDate]
+    selected_columns: []
+    privacy: Person identifiers are returned with return_type="data"; aggregate before sharing.
+    returns: Message, descriptive text, or the identifiers involved
+    return_types: [message, text, data]
+    example: vi.identify_churn(vi.load_pq_data(), n1=6, n2=6, return_type="text")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.identify_churn.html
+    related: [identify_tenure, create_survival]
+    r_function: identify_churn
+    parity: partial
+
+  - id: tenure
+    task: Summarize employee tenure
+    intents:
+      - calculate tenure from hire date
+      - show the tenure distribution
+      - find implausible hire dates
+    python_function: identify_tenure
+    input_grain: Person-period query with a hire date column
+    required_columns: [PersonId, MetricDate]
+    selected_columns: [beg_date, end_date]
+    privacy: Hire dates are identifying; aggregate before sharing.
+    returns: Message, text, plot, or cleaned and flagged data
+    return_types: [message, text, plot, data, data_cleaned, data_dirty]
+    example: vi.identify_tenure(data, beg_date="HireDate", end_date="MetricDate", return_type="text")
+    runnable: false
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.identify_tenure.html
+    related: [identify_churn]
+    r_function: identify_tenure
+    parity: partial
+
+  - id: outlier-weeks
+    task: Find weeks that deviate from the norm
+    intents:
+      - find unusual weeks
+      - detect outliers over time
+      - which weeks look anomalous
+    python_function: identify_outlier
+    input_grain: Person-period query
+    required_columns: [MetricDate]
+    selected_columns: [group_var, metric]
+    privacy: Weekly aggregates only; apply disclosure policy before sharing.
+    returns: DataFrame of weekly values with z-scores
+    return_types: []
+    example: vi.identify_outlier(vi.load_pq_data(), group_var="MetricDate", metric="Collaboration_hours")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.identify_outlier.html
+    related: [identify_inactiveweeks, identify_holidayweeks, create_trend]
+    r_function: identify_outlier
+    parity: partial
+
+  - id: inactive-weeks
+    task: Flag weeks where a person was unusually inactive
+    intents:
+      - find inactive weeks
+      - remove low activity weeks
+      - clean out non-working periods
+    python_function: identify_inactiveweeks
+    input_grain: Person-period query
+    required_columns: [PersonId, MetricDate]
+    selected_columns: []
+    privacy: Person-week flags are identifying; aggregate before sharing.
+    returns: Text summary, flagged data, or cleaned data
+    return_types: [text, data, cleaned_data, dirty_data]
+    example: vi.identify_inactiveweeks(vi.load_pq_data(), sd=2, return_type="text")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.identify_inactiveweeks.html
+    related: [identify_holidayweeks, identify_outlier]
+    r_function: identify_inactiveweeks
+    parity: partial
+
+  - id: holiday-weeks
+    task: Detect and remove holiday weeks
+    intents:
+      - find holiday weeks
+      - exclude vacation periods
+      - remove weeks with unusually low collaboration
+    python_function: identify_holidayweeks
+    input_grain: Person-period query
+    required_columns: [MetricDate]
+    selected_columns: []
+    privacy: Weekly aggregates only; apply disclosure policy before sharing.
+    returns: Text summary, plot, flagged weeks, or cleaned data
+    return_types: [text, plot, holidayweeks_data, cleaned_data, labelled_data]
+    example: vi.identify_holidayweeks(vi.load_pq_data(), sd=1, return_type="text")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.identify_holidayweeks.html
+    related: [identify_inactiveweeks, identify_outlier]
+    r_function: identify_holidayweeks
+    parity: partial
+
+  - id: non-knowledge-workers
+    task: Identify populations with very low collaboration
+    intents:
+      - find non-knowledge workers
+      - exclude low collaboration populations
+      - check who should be out of scope
+    python_function: identify_nkw
+    input_grain: Person-period query
+    required_columns: [PersonId]
+    selected_columns: [collab_threshold]
+    privacy: Person-level flags are identifying; aggregate before sharing.
+    returns: Summary by group, flagged data, text, or a cleaned dataset
+    return_types: [data_summary, data_with_flag, text, data_clean]
+    example: vi.identify_nkw(vi.load_pq_data(), collab_threshold=5, return_type="data_summary")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.identify_nkw.html
+    related: [check_query, hrvar_count_all]
+    r_function: identify_nkw
+    parity: partial
+
+  - id: date-range
+    task: Find the date range covered by a query
+    intents:
+      - what period does this data cover
+      - find the first and last week
+      - describe the date range
+    python_function: extract_date_range
+    input_grain: Person-period query
+    required_columns: [MetricDate]
+    selected_columns: []
+    privacy: Date ranges are not identifying.
+    returns: Single-row table or descriptive text
+    return_types: [table, text]
+    example: vi.extract_date_range(vi.load_pq_data(), return_type="text")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.extract_date_range.html
+    related: [identify_datefreq, check_query]
+    r_function: extract_date_range
+    parity: partial
+
+  - id: date-frequency
+    task: Determine whether data is daily, weekly, or monthly
+    intents:
+      - is this data weekly or daily
+      - check the date granularity
+      - identify the query interval
+    python_function: identify_datefreq
+    input_grain: Date column
+    required_columns: [MetricDate]
+    selected_columns: []
+    privacy: Date frequency is not identifying.
+    returns: One of daily, weekly, or monthly
+    return_types: []
+    example: vi.identify_datefreq(vi.load_pq_data()["MetricDate"])
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.identify_daterange.html
+    related: [extract_date_range, check_query]
+    r_function: identify_datefreq
+    parity: partial
+
+  - id: list-organizational-attributes
+    task: Find which columns are organizational attributes
+    intents:
+      - which columns can I group by
+      - list HR attributes
+      - suggest grouping variables
+    python_function: extract_hr
+    input_grain: Person-period query
+    required_columns: []
+    selected_columns: []
+    privacy: Attribute names only; values are not returned with return_type="names".
+    returns: Printed names, a filtered DataFrame, or a list of column names
+    return_types: [names, vars, suggestion]
+    example: vi.extract_hr(vi.load_pq_data(), return_type="suggestion")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.extract_hr.html
+    related: [hrvar_count_all, check_query]
+    r_function: extract_hr
+    parity: partial
+
+  - id: validate-required-columns
+    task: Check that required columns exist before running an analysis
+    intents:
+      - verify required columns are present
+      - fail early if a column is missing
+      - validate inputs before analysis
+    python_function: check_inputs
+    input_grain: Any DataFrame
+    required_columns: []
+    selected_columns: [requirements]
+    privacy: No data values are returned.
+    returns: Nothing when all required columns are present
+    return_types: []
+    example: vi.check_inputs(vi.load_pq_data(), ["PersonId", "MetricDate"])
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.check_inputs.html
+    related: [check_query, extract_hr]
+    r_function: check_inputs
+    parity: partial
+
+  - id: group-network
+    task: Analyze collaboration between groups
+    intents:
+      - show collaboration across organizations
+      - build a group-to-group network
+      - which teams work together
+    python_function: network_g2g
+    input_grain: Group-to-group query
+    required_columns: []
+    selected_columns: [primary, secondary, metric]
+    privacy: Group-level flows can be small; apply disclosure policy before sharing.
+    returns: Network plot, interaction matrix, long-format data, or an igraph object
+    return_types: [plot, table, data, network]
+    example: vi.network_g2g(vi.load_g2g_data(), return_type="table")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.network_g2g.html
+    related: [network_summary, load_g2g_data]
+    r_function: network_g2g
+    parity: partial
+
+  - id: person-network
+    task: Analyze a person-to-person collaboration network
+    intents:
+      - build a person network
+      - find network communities
+      - visualize how individuals collaborate
+    python_function: network_p2p
+    input_grain: Person-to-person query
+    required_columns: []
+    selected_columns: [hrvar, community, centrality]
+    privacy: Network outputs can identify individuals; apply organizational privacy and disclosure policy.
+    returns: Plot, PDF plot, table, node data, Sankey chart, or an igraph object
+    return_types: [plot, plot-pdf, table, data, network, sankey]
+    example: vi.network_p2p(vi.p2p_data_sim(size=100), return_type="network")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.network_p2p.html
+    related: [network_summary, p2p_data_sim, create_sankey]
+    r_function: network_p2p
+    parity: partial
+
+  - id: network-centrality
+    task: Summarize centrality for a network
+    intents:
+      - calculate network centrality
+      - who is most connected
+      - summarize node statistics
+    python_function: network_summary
+    input_grain: igraph network object
+    required_columns: []
+    selected_columns: [hrvar]
+    privacy: Node-level centrality is identifying; aggregate before sharing.
+    returns: Centrality table, grouped summary, or plot
+    return_types: [table, network, plot]
+    example: vi.network_summary(vi.network_p2p(vi.p2p_data_sim(size=100), return_type="network"), return_type="table")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.network_summary.html
+    related: [network_p2p, network_g2g]
+    r_function: network_summary
+    parity: partial
+
+  - id: simulate-person-network
+    task: Simulate a person-to-person network for testing
+    intents:
+      - generate sample network data
+      - simulate a collaboration network
+      - create test data for network analysis
+    python_function: p2p_data_sim
+    input_grain: Simulation parameters
+    required_columns: []
+    selected_columns: []
+    privacy: Simulated data contains no real people.
+    returns: Simulated person-to-person DataFrame
+    return_types: []
+    example: vi.p2p_data_sim(size=100)
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.p2p_data_sim.html
+    related: [network_p2p, load_p2p_data]
+    r_function: p2p_data_sim
+    parity: partial
+
+  - id: load-sample-data
+    task: Load bundled sample datasets
+    intents:
+      - get sample Viva Insights data
+      - load demo data to try the package
+      - find example datasets
+    python_function: load_pq_data
+    input_grain: None
+    required_columns: []
+    selected_columns: []
+    privacy: Sample data is de-identified and safe to share.
+    returns: Sample DataFrame
+    return_types: []
+    example: vi.load_pq_data()
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.pq_data.html
+    related: [load_mt_data, load_g2g_data, load_p2p_data, load_p2g_data, p2p_data_sim]
+    r_function: pq_data
+    parity: partial
+
+  - id: add-total-column
+    task: Add a constant column to analyse the whole population
+    intents:
+      - analyse everyone without grouping
+      - add a total column
+      - compare the organization against itself
+    python_function: totals_col
+    input_grain: Person-period query
+    required_columns: []
+    selected_columns: [total_value]
+    privacy: Adds a constant column only.
+    returns: DataFrame with an added constant column
+    return_types: []
+    example: vi.totals_col(vi.load_pq_data())
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.totals_col.html
+    related: [create_bar, hrvar_count]
+    r_function: totals_col
+    parity: partial
+
+  - id: format-metric-labels
+    task: Convert column names into readable labels
+    intents:
+      - make metric names readable
+      - replace underscores in labels
+      - format a column name for a chart title
+    python_function: us_to_space
+    input_grain: Column name
+    required_columns: []
+    selected_columns: []
+    privacy: Formats text only.
+    returns: Formatted string
+    return_types: []
+    example: vi.us_to_space("Collaboration_hours")
+    runnable: true
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.us_to_space.html
+    related: [create_bar, export]
+    r_function: us_to_space
+    parity: partial
+
+  - id: export-results
+    task: Save or copy an analysis output
+    intents:
+      - export a table to CSV
+      - save a plot to file
+      - copy results to the clipboard
+    python_function: export
+    input_grain: DataFrame or figure
+    required_columns: []
+    selected_columns: []
+    privacy: Exported files inherit the disclosure properties of the analysis output.
+    returns: Writes a file or displays the object
+    return_types: []
+    example: vi.export(summary_table, file_format="csv", path="summary")
+    runnable: false
+    documentation: https://microsoft.github.io/vivainsights-py/_api/vivainsights.export.html
+    related: [create_bar, create_rank]
+    r_function: export
+    parity: partial

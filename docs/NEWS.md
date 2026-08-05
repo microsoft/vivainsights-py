@@ -1,3 +1,23 @@
+# Version 0.4.3
+
+- Added a task-oriented function discovery guide and an agent-readable
+  `llms.txt`, both generated from a versioned workflow catalogue shipped with the
+  package.
+- Published a short `MIT` licence expression and package keywords instead of
+  embedding the full licence text in the distribution metadata.
+- Improved compatibility with current pandas releases, including group-to-group
+  network calculations and usage-segment plots.
+- Corrected usage-segment tables to count distinct people rather than rows.
+- Avoided invalid intermediate calculations when an Information Value group has
+  no events or non-events.
+- Invalid `return_type` values passed to `create_bar()` now raise a clear
+  `ValueError`.
+- Exposed the documented `identify_datefreq()` function from the package-level
+  API.
+- Clarified invalid `return_type` errors that previously referenced the R
+  package's `return` argument.
+- Modernized package builds, CI coverage, and strict documentation validation.
+
 # Version 0.4.2
 
 - Add `check_query()` and `hrvar_count_all()` for validating loaded queries

@@ -100,6 +100,10 @@ def create_boxplot_summary(data: pd.DataFrame, metric, hrvar, mingroup):
             .agg(["mean", "median", "std", "min", "max", "count"])
             .rename(columns={"mean": "mean", "median": "median", "std": "sd", "min": "min", "max": "max", "count": "n"})
         )
+        if "group" not in summary_table.columns:
+            summary_table = summary_table.reset_index()
+        else:
+            summary_table = summary_table.reset_index(drop=True)
         return(summary_table)
 
 
@@ -319,4 +323,4 @@ def create_boxplot(data: pd.DataFrame, metric: str, hrvar: str ="Organization", 
         
         return plot_data
     else:
-        raise ValueError("Please enter a valid input for `return`.")
+        raise ValueError("return_type must be 'plot', 'table', or 'data'.")

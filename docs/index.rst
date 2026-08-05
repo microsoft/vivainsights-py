@@ -20,15 +20,29 @@ Also check out our package cheat sheet for a quick glimpse of what **vivainsight
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contents
+   :caption: Guides
    :hidden:
 
-   about.md
-   modules   
+   analyst-guide.md
+   function-discovery.md
+   r-python-parity.md
    demo-vivainsights-py
    demo-create_odds_ratios
    demo-create_survival
    demo-create_radar
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Reference
+   :hidden:
+
+   modules
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Project
+   :hidden:
+
    faq.md
    NEWS.md
    CONTRIBUTORS.md

@@ -392,7 +392,7 @@ def network_p2p(data,
                     markerscale = 1,
                     fontsize= 5,
                     labelcolor = 'grey',
-                    ncols = leg_cols
+                    ncol = leg_cols
                 )
     
                 return fig

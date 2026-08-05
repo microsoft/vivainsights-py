@@ -8,7 +8,11 @@ Load a sample person-to-person query dataset.
 
 __all__ = ['load_p2p_data']
 
-import importlib.resources
+try:
+    from importlib import resources
+    resources.files
+except (ImportError, AttributeError):
+    import importlib_resources as resources
 import pandas as pd
 
 def load_p2p_data():
@@ -29,14 +33,14 @@ def load_p2p_data():
     """
     try:
         # Python 3.9+ with importlib.resources.files
-        files = importlib.resources.files(__package__).joinpath('data', 'p2p_data.csv')
-        with importlib.resources.as_file(files) as csv_path:
+        files = resources.files(__package__).joinpath('data', 'p2p_data.csv')
+        with resources.as_file(files) as csv_path:
             out = pd.read_csv(csv_path, encoding='utf-8')
     except (TypeError, FileNotFoundError):
         # Fallback for older Python or different package structure
         try:
-            files = importlib.resources.files(__package__.rsplit('.', 1)[0]).joinpath('data', 'p2p_data.csv')
-            with importlib.resources.as_file(files) as csv_path:
+            files = resources.files(__package__.rsplit('.', 1)[0]).joinpath('data', 'p2p_data.csv')
+            with resources.as_file(files) as csv_path:
                 out = pd.read_csv(csv_path, encoding='utf-8')
         except Exception:
             print('Error: please report issue to repo maintainer')

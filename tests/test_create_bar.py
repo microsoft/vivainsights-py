@@ -40,6 +40,19 @@ class TestCreateBarViz(unittest.TestCase):
         
         tracemalloc.stop()
         self.assertIsInstance(fig, plt.Figure)
+
+    def test_create_bar_rejects_invalid_return_type(self):
+        pq_data = load_pq_data()
+
+        with self.assertRaisesRegex(
+            ValueError, "return_type must be 'plot' or 'table'"
+        ):
+            create_bar(
+                data=pq_data,
+                metric='Emails_sent',
+                hrvar='Organization',
+                return_type='invalid'
+            )
         
         
 class TestCreateBarCalc(unittest.TestCase):

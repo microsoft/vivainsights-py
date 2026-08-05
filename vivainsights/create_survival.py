@@ -55,7 +55,11 @@ Table output:
 ... )
 """
 
-from typing import List, Optional, Tuple, Literal, Sequence, Union
+from typing import List, Optional, Tuple, Sequence, Union
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
 
 import numpy as np
 import pandas as pd

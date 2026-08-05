@@ -1,13 +1,13 @@
 [build-system]
 requires = [
-    "setuptools>=42",
+    "setuptools>=61",
     "wheel"
 ]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "vivainsights"
-version = "0.4.2"
+version = "0.4.3"
 authors = [
   { name="Martin Chan", email="martinchan@microsoft.com" },
   { name="Aadarsh Indurkhya", email="aindurkhya@microsoft.com" },
@@ -21,24 +21,54 @@ authors = [
 ]
 description = "Python library to analyze and visualize data from Microsoft Viva Insights."
 readme = "README.md"
-license = "MIT"
-license-files = ["LICENSE.md"]
+keywords = [
+    "viva-insights",
+    "people-analytics",
+    "organizational-network-analysis",
+    "collaboration-analytics",
+    "workplace-analytics",
+]
+# NOTE: The SPDX form (license = "MIT" plus license-files) from PEP 639 requires
+# setuptools>=77, which in turn requires Python >=3.9. While this package still
+# supports Python 3.7, the table form below is used because it resolves on every
+# supported interpreter. Using `text` keeps the published metadata a short
+# expression instead of embedding the whole licence file.
+license = { text = "MIT" }
 requires-python = ">=3.7"
 dynamic = ["dependencies"]
 classifiers = [
+    "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Operating System :: OS Independent",
 ]
 
-[tool.setuptools]
-packages = ["vivainsights"]
+[tool.setuptools.packages.find]
+include = ["vivainsights*"]
+namespaces = true
 
 [tool.setuptools.package-data]
-vivainsights = ["data/*.csv"]
+vivainsights = ["data/*.csv", "discovery/*.yml"]
+
+[project.optional-dependencies]
+dev = [
+    "build",
+    "coverage",
+    "pyyaml",
+    "twine",
+]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
 
 [project.urls]
 "Homepage" = "https://github.com/microsoft/vivainsights-py"
+"Documentation" = "https://microsoft.github.io/vivainsights-py/"
 "Bug Tracker" = "https://github.com/microsoft/vivainsights-py/issues"

@@ -14,11 +14,7 @@ matplotlib.use('agg')
 # Add the parent directory to sys.path to make vivainsights importable
 sys.path.insert(0, os.path.abspath('..'))
 
-# Try to import vivainsights to check if it's available
-try:
-    import vivainsights
-except ImportError as e:
-    print(f"Warning: Could not import vivainsights: {e}")
+import vivainsights
 
 # Mock imports for autodoc in case some dependencies are missing
 autodoc_mock_imports = ["adjustText", "PyQt5", "igraph"]
@@ -26,7 +22,7 @@ autodoc_mock_imports = ["adjustText", "PyQt5", "igraph"]
 project = 'vivainsights'
 copyright = '2026, Microsoft Corporation'
 author = 'Martin Chan'
-release = '0.4.2'
+release = vivainsights.__version__
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -65,7 +61,17 @@ autodoc_typehints = "description"
 autodoc_typehints_description_target = "documented"
 
 templates_path = ['_templates']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'autosummary_collapsible.rst', 'setup.rst']
+exclude_patterns = [
+    '_build',
+    'Thumbs.db',
+    '.DS_Store',
+    'autosummary_collapsible.rst',
+    'collapsible_examples.rst',
+    'collapsible_template.md',
+    'copilot_usage_glint_sentiment.ipynb',
+    'setup.rst',
+    'test_dropdown.rst',
+]
 
 # Add path to logo and favicon
 html_logo = '_static/vivainsights-py.png'
@@ -76,6 +82,9 @@ html_favicon = '_static/favicon.svg'
 
 html_theme = 'furo'
 html_static_path = ['_static']
+
+# Publish the agent discovery index at the site root.
+html_extra_path = ['llms.txt']
 
 # Custom CSS files
 html_css_files = [

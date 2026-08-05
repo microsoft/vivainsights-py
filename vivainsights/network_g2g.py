@@ -98,8 +98,8 @@ def network_g2g(data, primary=None, secondary=None, metric="Group_collaboration_
     plot_data = plot_data.assign(SecondaryOrg=np.where(plot_data.SecondaryOrg == "Within Group", plot_data.PrimaryOrg, plot_data.SecondaryOrg))    
     plot_data = plot_data.groupby(["PrimaryOrg", "SecondaryOrg"]).agg({"Metric": "mean"}).reset_index()
     plot_data = plot_data.query('PrimaryOrg != "Other_Collaborators" & SecondaryOrg != "Other_Collaborators"')
-    plot_data = plot_data.groupby("PrimaryOrg")
-    plot_data = plot_data.apply(lambda func: func.assign(metric_prop=func.Metric / func.Metric.sum())).reset_index(drop=True)
+    primary_totals = plot_data.groupby("PrimaryOrg")["Metric"].transform("sum")
+    plot_data = plot_data.assign(metric_prop=plot_data["Metric"] / primary_totals)
     plot_data = plot_data.loc[:, ["PrimaryOrg", "SecondaryOrg", "metric_prop"]]
 
     if return_type == "table":
