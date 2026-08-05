@@ -51,6 +51,27 @@ class TestIdentifyUsageSegments(unittest.TestCase):
         # Check that UsageSegments_4w column is present
         self.assertIn('UsageSegments_4w', result.columns)
     
+    def test_preset_power_thres_override(self):
+        """Test that power_thres overrides the preset default of 15."""
+        default_result = identify_usage_segments(
+            self.test_data.copy(),
+            metric='test_metric',
+            version='12w',
+            return_type='data'
+        )
+        override_result = identify_usage_segments(
+            self.test_data.copy(),
+            metric='test_metric',
+            version='12w',
+            return_type='data',
+            power_thres=1
+        )
+
+        # A lower power threshold cannot produce fewer Power Users
+        default_power = (default_result['UsageSegments_12w'] == 'Power User').sum()
+        override_power = (override_result['UsageSegments_12w'] == 'Power User').sum()
+        self.assertGreater(override_power, default_power)
+
     def test_identify_usage_segments_custom_data(self):
         """Test custom parameters version returns data correctly."""
         result = identify_usage_segments(
