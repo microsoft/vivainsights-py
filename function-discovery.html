@@ -1,0 +1,1378 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="author" title="About these documents" href="about.html"><link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Moving between R and Python" href="r-python-parity.html"><link rel="prev" title="Analyst Guide" href="analyst-guide.html">
+        <link rel="prefetch" href="_static/vivainsights-py.png" as="image">
+
+    <link rel="shortcut icon" href="_static/favicon.svg"><!-- Generated with Sphinx 9.0.4 and Furo 2025.12.19 -->
+        <title>Find the right function - vivainsights 0.4.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=ac958071" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">vivainsights 0.4.3 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="_static/vivainsights-py.png" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">vivainsights 0.4.3 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="analyst-guide.html">Analyst Guide</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Find the right function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="r-python-parity.html">Moving between R and Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo-vivainsights-py.html">Demo Notebook for the vivainsights Python package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo-create_odds_ratios.html">Demo: Using <code class="docutils literal notranslate"><span class="pre">create_odds_ratios</span></code> from the vivainsights Python Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo-create_survival.html">Survival Curves with <code class="docutils literal notranslate"><span class="pre">create_survival()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo-create_radar.html">Radar Charts with <code class="docutils literal notranslate"><span class="pre">create_radar()</span></code></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">vivainsights</a><input aria-label="Toggle navigation of vivainsights" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="vivainsights.html">Reference - Functions</a><input aria-label="Toggle navigation of Reference - Functions" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.check_inputs.html">vivainsights.check_inputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.check_query.html">vivainsights.check_query</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.color_codes.html">vivainsights.color_codes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.create_IV.html">vivainsights.create_IV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.create_bar.html">vivainsights.create_bar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.create_bar_asis.html">vivainsights.create_bar_asis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.create_boxplot.html">vivainsights.create_boxplot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.create_bubble.html">vivainsights.create_bubble</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.create_inc.html">vivainsights.create_inc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.create_line.html">vivainsights.create_line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.create_lorenz.html">vivainsights.create_lorenz</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.create_odds_ratios.html">vivainsights.create_odds_ratios</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.create_radar.html">vivainsights.create_radar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.create_rank.html">vivainsights.create_rank</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.create_sankey.html">vivainsights.create_sankey</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.create_survival.html">vivainsights.create_survival</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.create_survival_prep.html">vivainsights.create_survival_prep</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.create_trend.html">vivainsights.create_trend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.export.html">vivainsights.export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.extract_date_range.html">vivainsights.extract_date_range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.extract_hr.html">vivainsights.extract_hr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.g2g_data.html">vivainsights.g2g_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.hrvar_count.html">vivainsights.hrvar_count</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.identify_churn.html">vivainsights.identify_churn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.identify_daterange.html">vivainsights.identify_daterange</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.identify_habit.html">vivainsights.identify_habit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.identify_holidayweeks.html">vivainsights.identify_holidayweeks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.identify_inactiveweeks.html">vivainsights.identify_inactiveweeks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.identify_nkw.html">vivainsights.identify_nkw</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.identify_outlier.html">vivainsights.identify_outlier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.identify_tenure.html">vivainsights.identify_tenure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.identify_usage_segments.html">vivainsights.identify_usage_segments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.import_query.html">vivainsights.import_query</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.keymetrics_scan.html">vivainsights.keymetrics_scan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.mt_data.html">vivainsights.mt_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.network_g2g.html">vivainsights.network_g2g</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.network_p2p.html">vivainsights.network_p2p</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.network_summary.html">vivainsights.network_summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.p2g_data.html">vivainsights.p2g_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.p2p_data.html">vivainsights.p2p_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.p2p_data_sim.html">vivainsights.p2p_data_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.pq_data.html">vivainsights.pq_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.totals_col.html">vivainsights.totals_col</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.us_to_space.html">vivainsights.us_to_space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_api/vivainsights.xicor.html">vivainsights.xicor</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="vivainsights.html#visualization-functions">Visualization Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vivainsights.html#data-analysis-identification">Data Analysis &amp; Identification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vivainsights.html#network-analysis">Network Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vivainsights.html#data-management">Data Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vivainsights.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html">Version 0.4.3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-4-2">Version 0.4.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-4-1">Version 0.4.1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-4-0">Version 0.4.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-3-4">Version 0.3.4</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-3-3">Version 0.3.3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-3-2">Version 0.3.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-3-1">Version 0.3.1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-3-0">Version 0.3.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-2-4">Version 0.2.4</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-2-3">Version 0.2.3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-2-2">Version 0.2.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-2-1">Version 0.2.1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-2-0">Version 0.2.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEWS.html#version-0-1-0">Version 0.1.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTORS.html">Contributors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SECURITY.html">Security</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/function-discovery.md.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <!-- Generated by tools/generate_discovery.py from vivainsights/discovery/workflows.yml. Do not edit manually. -->
+<section id="find-the-right-function">
+<h1>Find the right function<a class="headerlink" href="#find-the-right-function" title="Link to this heading">¶</a></h1>
+<p>This guide maps analysis tasks to <strong>vivainsights</strong> functions so analysts and
+AI agents can use established package workflows instead of rebuilding Viva
+Insights aggregation and visualization logic.</p>
+<p>Person queries consistently use <code class="docutils literal notranslate"><span class="pre">PersonId</span></code> and <code class="docutils literal notranslate"><span class="pre">MetricDate</span></code>. Metric and
+organizational attribute names vary by query, product version, and language
+locale, so they are passed explicitly through arguments such as <code class="docutils literal notranslate"><span class="pre">metric</span></code> and
+<code class="docutils literal notranslate"><span class="pre">hrvar</span></code>.</p>
+<section id="task-index">
+<h2>Task index<a class="headerlink" href="#task-index" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Task</p></th>
+<th class="head"><p>Function</p></th>
+<th class="head"><p>Returns</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Import a Viva Insights query export</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">import_query()</span></code></p></td>
+<td><p>DataFrame with cleaned column names</p></td>
+</tr>
+<tr class="row-odd"><td><p>Validate a loaded query before analysis</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">check_query()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">message</span></code>, <code class="docutils literal notranslate"><span class="pre">text</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Summarize organizational attributes and their data quality</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hrvar_count_all()</span></code></p></td>
+<td><p>Summary DataFrame of attributes, distinct values, and missing counts</p></td>
+</tr>
+<tr class="row-odd"><td><p>Count distinct people in each group</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hrvar_count()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">plot</span></code>, <code class="docutils literal notranslate"><span class="pre">table</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Compare the average of a metric across groups</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">create_bar()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">plot</span></code>, <code class="docutils literal notranslate"><span class="pre">table</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Compare the distribution of a metric across groups</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">create_boxplot()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">plot</span></code>, <code class="docutils literal notranslate"><span class="pre">table</span></code>, <code class="docutils literal notranslate"><span class="pre">data</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Rank groups on a metric</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">create_rank()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">plot</span></code>, <code class="docutils literal notranslate"><span class="pre">table</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Track a metric over time by group</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">create_line()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">plot</span></code>, <code class="docutils literal notranslate"><span class="pre">table</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Show week-by-week patterns for a metric</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">create_trend()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">plot</span></code>, <code class="docutils literal notranslate"><span class="pre">table</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Scan several metrics across groups at once</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">keymetrics_scan()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">plot</span></code>, <code class="docutils literal notranslate"><span class="pre">table</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Compare two metrics across groups</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">create_bubble()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">plot</span></code>, <code class="docutils literal notranslate"><span class="pre">table</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Profile groups across several metrics on one chart</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">create_radar()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">plot</span></code>, <code class="docutils literal notranslate"><span class="pre">table</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Measure how many people fall above or below a threshold</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">create_inc()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">plot</span></code>, <code class="docutils literal notranslate"><span class="pre">table</span></code>, <code class="docutils literal notranslate"><span class="pre">data</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Measure how concentrated a metric is across the population</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">create_lorenz()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">plot</span></code>, <code class="docutils literal notranslate"><span class="pre">table</span></code>, <code class="docutils literal notranslate"><span class="pre">gini</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Plot a summary table that is already aggregated</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">create_bar_asis()</span></code></p></td>
+<td><p>Bar chart figure</p></td>
+</tr>
+<tr class="row-odd"><td><p>Visualize movement between two categorical states</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">create_sankey()</span></code></p></td>
+<td><p>Plotly Sankey figure</p></td>
+</tr>
+<tr class="row-even"><td><p>Rank predictors of a binary outcome</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">create_IV()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">plot</span></code>, <code class="docutils literal notranslate"><span class="pre">summary</span></code>, <code class="docutils literal notranslate"><span class="pre">IV</span></code>, <code class="docutils literal notranslate"><span class="pre">list</span></code>, <code class="docutils literal notranslate"><span class="pre">plot-WOE</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Calculate odds ratios for an outcome</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">create_odds_ratios()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">table</span></code>, <code class="docutils literal notranslate"><span class="pre">plot</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Measure association between two metrics</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xicor()</span></code></p></td>
+<td><p>Correlation coefficient</p></td>
+</tr>
+<tr class="row-odd"><td><p>Reshape a person query for survival analysis</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">create_survival_prep()</span></code></p></td>
+<td><p>Person-level DataFrame with time and event columns</p></td>
+</tr>
+<tr class="row-even"><td><p>Estimate time until an event occurs</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">create_survival()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">plot</span></code>, <code class="docutils literal notranslate"><span class="pre">table</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Segment people by how consistently they use a behaviour</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">identify_usage_segments()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">data</span></code>, <code class="docutils literal notranslate"><span class="pre">plot</span></code>, <code class="docutils literal notranslate"><span class="pre">table</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Identify habitual behaviour over a rolling window</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">identify_habit()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">data</span></code>, <code class="docutils literal notranslate"><span class="pre">plot</span></code>, <code class="docutils literal notranslate"><span class="pre">summary</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Identify people who left or joined the dataset</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">identify_churn()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">message</span></code>, <code class="docutils literal notranslate"><span class="pre">text</span></code>, <code class="docutils literal notranslate"><span class="pre">data</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Summarize employee tenure</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">identify_tenure()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">message</span></code>, <code class="docutils literal notranslate"><span class="pre">text</span></code>, <code class="docutils literal notranslate"><span class="pre">plot</span></code>, <code class="docutils literal notranslate"><span class="pre">data</span></code>, <code class="docutils literal notranslate"><span class="pre">data_cleaned</span></code>, <code class="docutils literal notranslate"><span class="pre">data_dirty</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Find weeks that deviate from the norm</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">identify_outlier()</span></code></p></td>
+<td><p>DataFrame of weekly values with z-scores</p></td>
+</tr>
+<tr class="row-even"><td><p>Flag weeks where a person was unusually inactive</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">identify_inactiveweeks()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">text</span></code>, <code class="docutils literal notranslate"><span class="pre">data</span></code>, <code class="docutils literal notranslate"><span class="pre">cleaned_data</span></code>, <code class="docutils literal notranslate"><span class="pre">dirty_data</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Detect and remove holiday weeks</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">identify_holidayweeks()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">text</span></code>, <code class="docutils literal notranslate"><span class="pre">plot</span></code>, <code class="docutils literal notranslate"><span class="pre">holidayweeks_data</span></code>, <code class="docutils literal notranslate"><span class="pre">cleaned_data</span></code>, <code class="docutils literal notranslate"><span class="pre">labelled_data</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Identify populations with very low collaboration</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">identify_nkw()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">data_summary</span></code>, <code class="docutils literal notranslate"><span class="pre">data_with_flag</span></code>, <code class="docutils literal notranslate"><span class="pre">text</span></code>, <code class="docutils literal notranslate"><span class="pre">data_clean</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Find the date range covered by a query</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">extract_date_range()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">table</span></code>, <code class="docutils literal notranslate"><span class="pre">text</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Determine whether data is daily, weekly, or monthly</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">identify_datefreq()</span></code></p></td>
+<td><p>One of daily, weekly, or monthly</p></td>
+</tr>
+<tr class="row-odd"><td><p>Find which columns are organizational attributes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">extract_hr()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">names</span></code>, <code class="docutils literal notranslate"><span class="pre">vars</span></code>, <code class="docutils literal notranslate"><span class="pre">suggestion</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Check that required columns exist before running an analysis</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">check_inputs()</span></code></p></td>
+<td><p>Nothing when all required columns are present</p></td>
+</tr>
+<tr class="row-odd"><td><p>Analyze collaboration between groups</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">network_g2g()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">plot</span></code>, <code class="docutils literal notranslate"><span class="pre">table</span></code>, <code class="docutils literal notranslate"><span class="pre">data</span></code>, <code class="docutils literal notranslate"><span class="pre">network</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Analyze a person-to-person collaboration network</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">network_p2p()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">plot</span></code>, <code class="docutils literal notranslate"><span class="pre">plot-pdf</span></code>, <code class="docutils literal notranslate"><span class="pre">table</span></code>, <code class="docutils literal notranslate"><span class="pre">data</span></code>, <code class="docutils literal notranslate"><span class="pre">network</span></code>, <code class="docutils literal notranslate"><span class="pre">sankey</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Summarize centrality for a network</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">network_summary()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">table</span></code>, <code class="docutils literal notranslate"><span class="pre">network</span></code>, <code class="docutils literal notranslate"><span class="pre">plot</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Simulate a person-to-person network for testing</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">p2p_data_sim()</span></code></p></td>
+<td><p>Simulated person-to-person DataFrame</p></td>
+</tr>
+<tr class="row-odd"><td><p>Load bundled sample datasets</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">load_pq_data()</span></code></p></td>
+<td><p>Sample DataFrame</p></td>
+</tr>
+<tr class="row-even"><td><p>Add a constant column to analyse the whole population</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">totals_col()</span></code></p></td>
+<td><p>DataFrame with an added constant column</p></td>
+</tr>
+<tr class="row-odd"><td><p>Convert column names into readable labels</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">us_to_space()</span></code></p></td>
+<td><p>Formatted string</p></td>
+</tr>
+<tr class="row-even"><td><p>Save or copy an analysis output</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export()</span></code></p></td>
+<td><p>Writes a file or displays the object</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="workflow-details">
+<h2>Workflow details<a class="headerlink" href="#workflow-details" title="Link to this heading">¶</a></h2>
+<section id="import-a-viva-insights-query-export">
+<h3>Import a Viva Insights query export<a class="headerlink" href="#import-a-viva-insights-query-export" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.import_query.html"><code class="docutils literal notranslate"><span class="pre">import_query()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: load a Viva Insights CSV export; read a person query into Python; start an analysis from an exported query</p></li>
+<li><p><strong>Input</strong>: Viva Insights CSV export</p></li>
+<li><p><strong>Columns</strong>: none</p></li>
+<li><p><strong>Returns</strong>: DataFrame with cleaned column names</p></li>
+<li><p><strong>Privacy</strong>: Import applies no disclosure thresholds; validate and aggregate before sharing results.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">check_query()</span></code>, <code class="docutils literal notranslate"><span class="pre">extract_hr()</span></code>, <code class="docutils literal notranslate"><span class="pre">extract_date_range()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">import_query()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">import_query</span><span class="p">(</span><span class="s2">"query.csv"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="validate-a-loaded-query-before-analysis">
+<h3>Validate a loaded query before analysis<a class="headerlink" href="#validate-a-loaded-query-before-analysis" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.check_query.html"><code class="docutils literal notranslate"><span class="pre">check_query()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: check whether my query is valid; run data validation on a person query; sanity check a Viva Insights dataset</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">PersonId</span></code>, <code class="docutils literal notranslate"><span class="pre">MetricDate</span></code></p></li>
+<li><p><strong>Returns</strong>: Printed message or descriptive text</p></li>
+<li><p><strong>Privacy</strong>: Validation reports population counts; review before sharing externally.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">hrvar_count_all()</span></code>, <code class="docutils literal notranslate"><span class="pre">extract_hr()</span></code>, <code class="docutils literal notranslate"><span class="pre">extract_date_range()</span></code>, <code class="docutils literal notranslate"><span class="pre">identify_datefreq()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">check_query()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">check_query</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="summarize-organizational-attributes-and-their-data-quality">
+<h3>Summarize organizational attributes and their data quality<a class="headerlink" href="#summarize-organizational-attributes-and-their-data-quality" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.hrvar_count.html"><code class="docutils literal notranslate"><span class="pre">hrvar_count_all()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: list the HR attributes in my data; check missing values in organizational attributes; see how many distinct values each attribute has</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: selected: <code class="docutils literal notranslate"><span class="pre">hrvar_list</span></code></p></li>
+<li><p><strong>Returns</strong>: Summary DataFrame of attributes, distinct values, and missing counts</p></li>
+<li><p><strong>Privacy</strong>: Distinct-value counts can be small; apply disclosure policy before sharing.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">hrvar_count()</span></code>, <code class="docutils literal notranslate"><span class="pre">extract_hr()</span></code>, <code class="docutils literal notranslate"><span class="pre">check_query()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">hrvar_count_all()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">hrvar_count_all</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="count-distinct-people-in-each-group">
+<h3>Count distinct people in each group<a class="headerlink" href="#count-distinct-people-in-each-group" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.hrvar_count.html"><code class="docutils literal notranslate"><span class="pre">hrvar_count()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: how many employees are in each organization; count headcount by HR attribute; check group sizes before analysis</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">PersonId</span></code>; selected: <code class="docutils literal notranslate"><span class="pre">hrvar</span></code></p></li>
+<li><p><strong>Returns</strong>: Bar chart or summary table of distinct people per group</p></li>
+<li><p><strong>Privacy</strong>: Small groups may be identifying; apply disclosure policy before sharing.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">hrvar_count_all()</span></code>, <code class="docutils literal notranslate"><span class="pre">totals_col()</span></code>, <code class="docutils literal notranslate"><span class="pre">create_bar()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">hrvar_count()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">hrvar_count</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="n">hrvar</span><span class="o">=</span><span class="s2">"Organization"</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"table"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="compare-the-average-of-a-metric-across-groups">
+<h3>Compare the average of a metric across groups<a class="headerlink" href="#compare-the-average-of-a-metric-across-groups" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_bar.html"><code class="docutils literal notranslate"><span class="pre">create_bar()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: compare organizations on a metric; plot average collaboration by HR attribute; summarize group averages</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">PersonId</span></code>; selected: <code class="docutils literal notranslate"><span class="pre">metric</span></code>, <code class="docutils literal notranslate"><span class="pre">hrvar</span></code></p></li>
+<li><p><strong>Returns</strong>: Bar chart or summary table</p></li>
+<li><p><strong>Privacy</strong>: Groups with fewer than mingroup distinct people are excluded.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">create_boxplot()</span></code>, <code class="docutils literal notranslate"><span class="pre">create_rank()</span></code>, <code class="docutils literal notranslate"><span class="pre">create_bubble()</span></code>, <code class="docutils literal notranslate"><span class="pre">create_bar_asis()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">create_bar()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">create_bar</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="n">metric</span><span class="o">=</span><span class="s2">"Emails_sent"</span><span class="p">,</span> <span class="n">hrvar</span><span class="o">=</span><span class="s2">"Organization"</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"table"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="compare-the-distribution-of-a-metric-across-groups">
+<h3>Compare the distribution of a metric across groups<a class="headerlink" href="#compare-the-distribution-of-a-metric-across-groups" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_boxplot.html"><code class="docutils literal notranslate"><span class="pre">create_boxplot()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: show the spread of a metric by group; compare medians and outliers across organizations; create a boxplot by HR attribute</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">PersonId</span></code>, <code class="docutils literal notranslate"><span class="pre">MetricDate</span></code>; selected: <code class="docutils literal notranslate"><span class="pre">metric</span></code>, <code class="docutils literal notranslate"><span class="pre">hrvar</span></code></p></li>
+<li><p><strong>Returns</strong>: Boxplot, summary table, or person-level data</p></li>
+<li><p><strong>Privacy</strong>: Groups with fewer than mingroup distinct people are excluded.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">create_bar()</span></code>, <code class="docutils literal notranslate"><span class="pre">create_lorenz()</span></code>, <code class="docutils literal notranslate"><span class="pre">create_inc()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">create_boxplot()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">create_boxplot</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="n">metric</span><span class="o">=</span><span class="s2">"Emails_sent"</span><span class="p">,</span> <span class="n">hrvar</span><span class="o">=</span><span class="s2">"Organization"</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"table"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="rank-groups-on-a-metric">
+<h3>Rank groups on a metric<a class="headerlink" href="#rank-groups-on-a-metric" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_rank.html"><code class="docutils literal notranslate"><span class="pre">create_rank()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: which groups are highest and lowest on a metric; rank organizations by collaboration; find top and bottom groups</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">PersonId</span></code>; selected: <code class="docutils literal notranslate"><span class="pre">metric</span></code>, <code class="docutils literal notranslate"><span class="pre">hrvar</span></code></p></li>
+<li><p><strong>Returns</strong>: Ranked plot or table</p></li>
+<li><p><strong>Privacy</strong>: Groups with fewer than mingroup distinct people are excluded.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">create_bar()</span></code>, <code class="docutils literal notranslate"><span class="pre">keymetrics_scan()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">create_rank()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">create_rank</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="n">metric</span><span class="o">=</span><span class="s2">"Emails_sent"</span><span class="p">,</span> <span class="n">hrvar</span><span class="o">=</span><span class="s2">"Organization"</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"table"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="track-a-metric-over-time-by-group">
+<h3>Track a metric over time by group<a class="headerlink" href="#track-a-metric-over-time-by-group" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_line.html"><code class="docutils literal notranslate"><span class="pre">create_line()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: show a metric trend over time; plot weekly collaboration by organization; has this metric changed over time</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">PersonId</span></code>, <code class="docutils literal notranslate"><span class="pre">MetricDate</span></code>; selected: <code class="docutils literal notranslate"><span class="pre">metric</span></code>, <code class="docutils literal notranslate"><span class="pre">hrvar</span></code></p></li>
+<li><p><strong>Returns</strong>: Line chart or summary table</p></li>
+<li><p><strong>Privacy</strong>: Groups with fewer than mingroup distinct people are excluded.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">create_trend()</span></code>, <code class="docutils literal notranslate"><span class="pre">keymetrics_scan()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">create_line()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">create_line</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="n">metric</span><span class="o">=</span><span class="s2">"Emails_sent"</span><span class="p">,</span> <span class="n">hrvar</span><span class="o">=</span><span class="s2">"Organization"</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"table"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="show-week-by-week-patterns-for-a-metric">
+<h3>Show week-by-week patterns for a metric<a class="headerlink" href="#show-week-by-week-patterns-for-a-metric" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_trend.html"><code class="docutils literal notranslate"><span class="pre">create_trend()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: create a heatmap of weekly activity; show how a metric varies week by week; visualize seasonality by group</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">PersonId</span></code>, <code class="docutils literal notranslate"><span class="pre">MetricDate</span></code>; selected: <code class="docutils literal notranslate"><span class="pre">metric</span></code>, <code class="docutils literal notranslate"><span class="pre">hrvar</span></code></p></li>
+<li><p><strong>Returns</strong>: Heatmap or summary table</p></li>
+<li><p><strong>Privacy</strong>: Groups with fewer than mingroup distinct people are excluded.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">create_line()</span></code>, <code class="docutils literal notranslate"><span class="pre">identify_outlier()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">create_trend()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">create_trend</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="n">metric</span><span class="o">=</span><span class="s2">"Emails_sent"</span><span class="p">,</span> <span class="n">hrvar</span><span class="o">=</span><span class="s2">"Organization"</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"table"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="scan-several-metrics-across-groups-at-once">
+<h3>Scan several metrics across groups at once<a class="headerlink" href="#scan-several-metrics-across-groups-at-once" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.keymetrics_scan.html"><code class="docutils literal notranslate"><span class="pre">keymetrics_scan()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: compare many metrics by organization; build a key metrics overview; scan a scorecard of metrics</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">PersonId</span></code>; selected: <code class="docutils literal notranslate"><span class="pre">metrics</span></code>, <code class="docutils literal notranslate"><span class="pre">hrvar</span></code></p></li>
+<li><p><strong>Returns</strong>: Heatmap or summary table of metrics by group</p></li>
+<li><p><strong>Privacy</strong>: Groups with fewer than mingroup distinct people are excluded.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">create_rank()</span></code>, <code class="docutils literal notranslate"><span class="pre">create_radar()</span></code>, <code class="docutils literal notranslate"><span class="pre">create_bar()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">keymetrics_scan()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">keymetrics_scan</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="n">hrvar</span><span class="o">=</span><span class="s2">"Organization"</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s2">"Emails_sent"</span><span class="p">,</span> <span class="s2">"Collaboration_hours"</span><span class="p">],</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"table"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="compare-two-metrics-across-groups">
+<h3>Compare two metrics across groups<a class="headerlink" href="#compare-two-metrics-across-groups" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_bubble.html"><code class="docutils literal notranslate"><span class="pre">create_bubble()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: plot one metric against another by group; show the relationship between two metrics; create a bubble chart of groups</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">PersonId</span></code>; selected: <code class="docutils literal notranslate"><span class="pre">metric_x</span></code>, <code class="docutils literal notranslate"><span class="pre">metric_y</span></code>, <code class="docutils literal notranslate"><span class="pre">hrvar</span></code></p></li>
+<li><p><strong>Returns</strong>: Bubble chart or summary table</p></li>
+<li><p><strong>Privacy</strong>: Groups with fewer than mingroup distinct people are excluded.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">create_bar()</span></code>, <code class="docutils literal notranslate"><span class="pre">create_boxplot()</span></code>, <code class="docutils literal notranslate"><span class="pre">xicor()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">create_bubble()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">create_bubble</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="n">metric_x</span><span class="o">=</span><span class="s2">"Emails_sent"</span><span class="p">,</span> <span class="n">metric_y</span><span class="o">=</span><span class="s2">"Collaboration_hours"</span><span class="p">,</span> <span class="n">hrvar</span><span class="o">=</span><span class="s2">"Organization"</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"table"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="profile-groups-across-several-metrics-on-one-chart">
+<h3>Profile groups across several metrics on one chart<a class="headerlink" href="#profile-groups-across-several-metrics-on-one-chart" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_radar.html"><code class="docutils literal notranslate"><span class="pre">create_radar()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: create a radar chart comparing groups; show a multi-metric profile by organization; compare groups on several metrics at once</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">PersonId</span></code>; selected: <code class="docutils literal notranslate"><span class="pre">metrics</span></code>, <code class="docutils literal notranslate"><span class="pre">hrvar</span></code></p></li>
+<li><p><strong>Returns</strong>: Radar chart or indexed summary table</p></li>
+<li><p><strong>Privacy</strong>: Groups with fewer than mingroup distinct people are excluded.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">keymetrics_scan()</span></code>, <code class="docutils literal notranslate"><span class="pre">create_rank()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">create_radar()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">create_radar</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s2">"Emails_sent"</span><span class="p">,</span> <span class="s2">"Collaboration_hours"</span><span class="p">],</span> <span class="n">hrvar</span><span class="o">=</span><span class="s2">"Organization"</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"table"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="measure-how-many-people-fall-above-or-below-a-threshold">
+<h3>Measure how many people fall above or below a threshold<a class="headerlink" href="#measure-how-many-people-fall-above-or-below-a-threshold" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_inc.html"><code class="docutils literal notranslate"><span class="pre">create_inc()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: what proportion of people exceed a threshold; show incidence above a metric value; compare threshold rates across groups</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">PersonId</span></code>; selected: <code class="docutils literal notranslate"><span class="pre">metric</span></code>, <code class="docutils literal notranslate"><span class="pre">hrvar</span></code>, <code class="docutils literal notranslate"><span class="pre">threshold</span></code>, <code class="docutils literal notranslate"><span class="pre">position</span></code></p></li>
+<li><p><strong>Returns</strong>: Incidence plot, summary table, or underlying data</p></li>
+<li><p><strong>Privacy</strong>: Groups with fewer than mingroup distinct people are excluded.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">create_bar()</span></code>, <code class="docutils literal notranslate"><span class="pre">create_boxplot()</span></code>, <code class="docutils literal notranslate"><span class="pre">create_lorenz()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">create_inc()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">create_inc</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="n">metric</span><span class="o">=</span><span class="s2">"Emails_sent"</span><span class="p">,</span> <span class="n">hrvar</span><span class="o">=</span><span class="s2">"Organization"</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">"above"</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"table"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="measure-how-concentrated-a-metric-is-across-the-population">
+<h3>Measure how concentrated a metric is across the population<a class="headerlink" href="#measure-how-concentrated-a-metric-is-across-the-population" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_lorenz.html"><code class="docutils literal notranslate"><span class="pre">create_lorenz()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: calculate a Gini coefficient; plot a Lorenz curve; is this metric concentrated in a few people</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">PersonId</span></code>; selected: <code class="docutils literal notranslate"><span class="pre">metric</span></code></p></li>
+<li><p><strong>Returns</strong>: Lorenz curve, summary table, or Gini coefficient</p></li>
+<li><p><strong>Privacy</strong>: Curves describe the whole population; apply disclosure policy before sharing.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">create_inc()</span></code>, <code class="docutils literal notranslate"><span class="pre">create_boxplot()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">create_lorenz()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">create_lorenz</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="n">metric</span><span class="o">=</span><span class="s2">"Emails_sent"</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"gini"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="plot-a-summary-table-that-is-already-aggregated">
+<h3>Plot a summary table that is already aggregated<a class="headerlink" href="#plot-a-summary-table-that-is-already-aggregated" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_bar_asis.html"><code class="docutils literal notranslate"><span class="pre">create_bar_asis()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: plot a table I already calculated; create a bar chart without re-aggregating; visualize a precomputed summary</p></li>
+<li><p><strong>Input</strong>: Pre-aggregated summary table</p></li>
+<li><p><strong>Columns</strong>: selected: <code class="docutils literal notranslate"><span class="pre">group_var</span></code>, <code class="docutils literal notranslate"><span class="pre">bar_var</span></code></p></li>
+<li><p><strong>Returns</strong>: Bar chart figure</p></li>
+<li><p><strong>Privacy</strong>: Apply disclosure thresholds when computing the summary table.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">create_bar()</span></code>, <code class="docutils literal notranslate"><span class="pre">export()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">create_bar_asis()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">create_bar_asis</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">create_bar</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="n">metric</span><span class="o">=</span><span class="s2">"Emails_sent"</span><span class="p">,</span> <span class="n">hrvar</span><span class="o">=</span><span class="s2">"Organization"</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"table"</span><span class="p">),</span> <span class="n">group_var</span><span class="o">=</span><span class="s2">"Organization"</span><span class="p">,</span> <span class="n">bar_var</span><span class="o">=</span><span class="s2">"metric"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="visualize-movement-between-two-categorical-states">
+<h3>Visualize movement between two categorical states<a class="headerlink" href="#visualize-movement-between-two-categorical-states" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_sankey.html"><code class="docutils literal notranslate"><span class="pre">create_sankey()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: show how people move between segments; create a Sankey chart of transitions; visualize flows between categories</p></li>
+<li><p><strong>Input</strong>: Two-column count table</p></li>
+<li><p><strong>Columns</strong>: selected: <code class="docutils literal notranslate"><span class="pre">var1</span></code>, <code class="docutils literal notranslate"><span class="pre">var2</span></code>, <code class="docutils literal notranslate"><span class="pre">count</span></code></p></li>
+<li><p><strong>Returns</strong>: Plotly Sankey figure</p></li>
+<li><p><strong>Privacy</strong>: Small flows may be identifying; apply disclosure policy before sharing.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">identify_usage_segments()</span></code>, <code class="docutils literal notranslate"><span class="pre">network_p2p()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">create_sankey()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">create_sankey</span><span class="p">(</span><span class="n">transitions</span><span class="p">,</span> <span class="n">var1</span><span class="o">=</span><span class="s2">"UsageSegments_previous"</span><span class="p">,</span> <span class="n">var2</span><span class="o">=</span><span class="s2">"UsageSegments"</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="s2">"n"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="rank-predictors-of-a-binary-outcome">
+<h3>Rank predictors of a binary outcome<a class="headerlink" href="#rank-predictors-of-a-binary-outcome" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_IV.html"><code class="docutils literal notranslate"><span class="pre">create_IV()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: which metrics predict an outcome; calculate information value; find drivers of a binary flag</p></li>
+<li><p><strong>Input</strong>: Person-period query with a binary outcome column</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">PersonId</span></code>; selected: <code class="docutils literal notranslate"><span class="pre">predictors</span></code>, <code class="docutils literal notranslate"><span class="pre">outcome</span></code></p></li>
+<li><p><strong>Returns</strong>: Plot, summary table, information value scores, or a list of outputs</p></li>
+<li><p><strong>Privacy</strong>: Outcome flags can be sensitive; apply disclosure policy before sharing.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">create_odds_ratios()</span></code>, <code class="docutils literal notranslate"><span class="pre">xicor()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">create_IV()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">create_IV</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">predictors</span><span class="o">=</span><span class="p">[</span><span class="s2">"Emails_sent"</span><span class="p">,</span> <span class="s2">"Collaboration_hours"</span><span class="p">],</span> <span class="n">outcome</span><span class="o">=</span><span class="s2">"IsHighUsage"</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"summary"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="calculate-odds-ratios-for-an-outcome">
+<h3>Calculate odds ratios for an outcome<a class="headerlink" href="#calculate-odds-ratios-for-an-outcome" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_odds_ratios.html"><code class="docutils literal notranslate"><span class="pre">create_odds_ratios()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: calculate odds ratios; how much more likely is an outcome; quantify the effect of ordinal metrics</p></li>
+<li><p><strong>Input</strong>: Person-period query with a binary outcome column</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">PersonId</span></code>; selected: <code class="docutils literal notranslate"><span class="pre">ord_metrics</span></code>, <code class="docutils literal notranslate"><span class="pre">metric</span></code></p></li>
+<li><p><strong>Returns</strong>: Odds ratio table or plot</p></li>
+<li><p><strong>Privacy</strong>: Outcome flags can be sensitive; apply disclosure policy before sharing.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">create_IV()</span></code>, <code class="docutils literal notranslate"><span class="pre">xicor()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">create_odds_ratios()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">create_odds_ratios</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ord_metrics</span><span class="o">=</span><span class="p">[</span><span class="s2">"Emails_sent"</span><span class="p">],</span> <span class="n">metric</span><span class="o">=</span><span class="s2">"IsHighUsage"</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"table"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="measure-association-between-two-metrics">
+<h3>Measure association between two metrics<a class="headerlink" href="#measure-association-between-two-metrics" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.xicor.html"><code class="docutils literal notranslate"><span class="pre">xicor()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: correlate two metrics; measure dependence between variables; calculate the Chatterjee coefficient</p></li>
+<li><p><strong>Input</strong>: Two numeric series</p></li>
+<li><p><strong>Columns</strong>: selected: <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code></p></li>
+<li><p><strong>Returns</strong>: Correlation coefficient</p></li>
+<li><p><strong>Privacy</strong>: Correlations are population level; apply disclosure policy before sharing.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">create_IV()</span></code>, <code class="docutils literal notranslate"><span class="pre">create_bubble()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">xicor()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">xicor</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">()[</span><span class="s2">"Emails_sent"</span><span class="p">],</span> <span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">()[</span><span class="s2">"Collaboration_hours"</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="reshape-a-person-query-for-survival-analysis">
+<h3>Reshape a person query for survival analysis<a class="headerlink" href="#reshape-a-person-query-for-survival-analysis" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_survival_prep.html"><code class="docutils literal notranslate"><span class="pre">create_survival_prep()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: prepare data for survival analysis; build time and event columns; convert a panel query to person-level survival format</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">PersonId</span></code>, <code class="docutils literal notranslate"><span class="pre">MetricDate</span></code>; selected: <code class="docutils literal notranslate"><span class="pre">metric</span></code>, <code class="docutils literal notranslate"><span class="pre">event_condition</span></code>, <code class="docutils literal notranslate"><span class="pre">hrvar</span></code></p></li>
+<li><p><strong>Returns</strong>: Person-level DataFrame with time and event columns</p></li>
+<li><p><strong>Privacy</strong>: Person-level survival data is identifying; aggregate before sharing.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">create_survival()</span></code>, <code class="docutils literal notranslate"><span class="pre">identify_churn()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">create_survival_prep()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">create_survival_prep</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="n">metric</span><span class="o">=</span><span class="s2">"Emails_sent"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="estimate-time-until-an-event-occurs">
+<h3>Estimate time until an event occurs<a class="headerlink" href="#estimate-time-until-an-event-occurs" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.create_survival.html"><code class="docutils literal notranslate"><span class="pre">create_survival()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: run a survival analysis; plot Kaplan-Meier curves; how long until people adopt a behaviour</p></li>
+<li><p><strong>Input</strong>: Person-level survival table</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">PersonId</span></code>; selected: <code class="docutils literal notranslate"><span class="pre">time_col</span></code>, <code class="docutils literal notranslate"><span class="pre">event_col</span></code>, <code class="docutils literal notranslate"><span class="pre">hrvar</span></code></p></li>
+<li><p><strong>Returns</strong>: Survival curve plot or survival table</p></li>
+<li><p><strong>Privacy</strong>: Groups with fewer than mingroup distinct people are excluded.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">create_survival_prep()</span></code>, <code class="docutils literal notranslate"><span class="pre">identify_churn()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">create_survival()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">create_survival</span><span class="p">(</span><span class="n">surv_data</span><span class="p">,</span> <span class="n">time_col</span><span class="o">=</span><span class="s2">"time"</span><span class="p">,</span> <span class="n">event_col</span><span class="o">=</span><span class="s2">"event"</span><span class="p">,</span> <span class="n">hrvar</span><span class="o">=</span><span class="s2">"Organization"</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"table"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="segment-people-by-how-consistently-they-use-a-behaviour">
+<h3>Segment people by how consistently they use a behaviour<a class="headerlink" href="#segment-people-by-how-consistently-they-use-a-behaviour" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.identify_usage_segments.html"><code class="docutils literal notranslate"><span class="pre">identify_usage_segments()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: segment users by usage intensity; find power users and habitual users; classify adoption segments</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">PersonId</span></code>, <code class="docutils literal notranslate"><span class="pre">MetricDate</span></code>; selected: <code class="docutils literal notranslate"><span class="pre">metric</span></code>, <code class="docutils literal notranslate"><span class="pre">metric_str</span></code></p></li>
+<li><p><strong>Returns</strong>: Classified data, stacked bar chart, or summary table</p></li>
+<li><p><strong>Privacy</strong>: Segment tables count distinct people; apply disclosure policy before sharing.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">identify_habit()</span></code>, <code class="docutils literal notranslate"><span class="pre">create_sankey()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">identify_usage_segments()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">identify_usage_segments</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="n">metric</span><span class="o">=</span><span class="s2">"Emails_sent"</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">"12w"</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"table"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="identify-habitual-behaviour-over-a-rolling-window">
+<h3>Identify habitual behaviour over a rolling window<a class="headerlink" href="#identify-habitual-behaviour-over-a-rolling-window" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.identify_habit.html"><code class="docutils literal notranslate"><span class="pre">identify_habit()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: who uses this consistently; detect habits from a metric; measure sustained adoption</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">PersonId</span></code>, <code class="docutils literal notranslate"><span class="pre">MetricDate</span></code>; selected: <code class="docutils literal notranslate"><span class="pre">metric</span></code>, <code class="docutils literal notranslate"><span class="pre">hrvar</span></code></p></li>
+<li><p><strong>Returns</strong>: Habit data, plot, or summary</p></li>
+<li><p><strong>Privacy</strong>: Person-level habit flags are identifying; aggregate before sharing.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">identify_usage_segments()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">identify_habits()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">identify_habit</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="n">metric</span><span class="o">=</span><span class="s2">"Emails_sent"</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">max_window</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"data"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="identify-people-who-left-or-joined-the-dataset">
+<h3>Identify people who left or joined the dataset<a class="headerlink" href="#identify-people-who-left-or-joined-the-dataset" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.identify_churn.html"><code class="docutils literal notranslate"><span class="pre">identify_churn()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: who churned between two periods; find new joiners; compare population at start and end</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">PersonId</span></code>, <code class="docutils literal notranslate"><span class="pre">MetricDate</span></code></p></li>
+<li><p><strong>Returns</strong>: Message, descriptive text, or the identifiers involved</p></li>
+<li><p><strong>Privacy</strong>: Person identifiers are returned with return_type=”data”; aggregate before sharing.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">identify_tenure()</span></code>, <code class="docutils literal notranslate"><span class="pre">create_survival()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">identify_churn()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">identify_churn</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="n">n1</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">n2</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="summarize-employee-tenure">
+<h3>Summarize employee tenure<a class="headerlink" href="#summarize-employee-tenure" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.identify_tenure.html"><code class="docutils literal notranslate"><span class="pre">identify_tenure()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: calculate tenure from hire date; show the tenure distribution; find implausible hire dates</p></li>
+<li><p><strong>Input</strong>: Person-period query with a hire date column</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">PersonId</span></code>, <code class="docutils literal notranslate"><span class="pre">MetricDate</span></code>; selected: <code class="docutils literal notranslate"><span class="pre">beg_date</span></code>, <code class="docutils literal notranslate"><span class="pre">end_date</span></code></p></li>
+<li><p><strong>Returns</strong>: Message, text, plot, or cleaned and flagged data</p></li>
+<li><p><strong>Privacy</strong>: Hire dates are identifying; aggregate before sharing.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">identify_churn()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">identify_tenure()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">identify_tenure</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">beg_date</span><span class="o">=</span><span class="s2">"HireDate"</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="s2">"MetricDate"</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="find-weeks-that-deviate-from-the-norm">
+<h3>Find weeks that deviate from the norm<a class="headerlink" href="#find-weeks-that-deviate-from-the-norm" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.identify_outlier.html"><code class="docutils literal notranslate"><span class="pre">identify_outlier()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: find unusual weeks; detect outliers over time; which weeks look anomalous</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">MetricDate</span></code>; selected: <code class="docutils literal notranslate"><span class="pre">group_var</span></code>, <code class="docutils literal notranslate"><span class="pre">metric</span></code></p></li>
+<li><p><strong>Returns</strong>: DataFrame of weekly values with z-scores</p></li>
+<li><p><strong>Privacy</strong>: Weekly aggregates only; apply disclosure policy before sharing.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">identify_inactiveweeks()</span></code>, <code class="docutils literal notranslate"><span class="pre">identify_holidayweeks()</span></code>, <code class="docutils literal notranslate"><span class="pre">create_trend()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">identify_outlier()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">identify_outlier</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="n">group_var</span><span class="o">=</span><span class="s2">"MetricDate"</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s2">"Collaboration_hours"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="flag-weeks-where-a-person-was-unusually-inactive">
+<h3>Flag weeks where a person was unusually inactive<a class="headerlink" href="#flag-weeks-where-a-person-was-unusually-inactive" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.identify_inactiveweeks.html"><code class="docutils literal notranslate"><span class="pre">identify_inactiveweeks()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: find inactive weeks; remove low activity weeks; clean out non-working periods</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">PersonId</span></code>, <code class="docutils literal notranslate"><span class="pre">MetricDate</span></code></p></li>
+<li><p><strong>Returns</strong>: Text summary, flagged data, or cleaned data</p></li>
+<li><p><strong>Privacy</strong>: Person-week flags are identifying; aggregate before sharing.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">identify_holidayweeks()</span></code>, <code class="docutils literal notranslate"><span class="pre">identify_outlier()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">identify_inactiveweeks()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">identify_inactiveweeks</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="n">sd</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="detect-and-remove-holiday-weeks">
+<h3>Detect and remove holiday weeks<a class="headerlink" href="#detect-and-remove-holiday-weeks" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.identify_holidayweeks.html"><code class="docutils literal notranslate"><span class="pre">identify_holidayweeks()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: find holiday weeks; exclude vacation periods; remove weeks with unusually low collaboration</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">MetricDate</span></code></p></li>
+<li><p><strong>Returns</strong>: Text summary, plot, flagged weeks, or cleaned data</p></li>
+<li><p><strong>Privacy</strong>: Weekly aggregates only; apply disclosure policy before sharing.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">identify_inactiveweeks()</span></code>, <code class="docutils literal notranslate"><span class="pre">identify_outlier()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">identify_holidayweeks()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">identify_holidayweeks</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="n">sd</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="identify-populations-with-very-low-collaboration">
+<h3>Identify populations with very low collaboration<a class="headerlink" href="#identify-populations-with-very-low-collaboration" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.identify_nkw.html"><code class="docutils literal notranslate"><span class="pre">identify_nkw()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: find non-knowledge workers; exclude low collaboration populations; check who should be out of scope</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">PersonId</span></code>; selected: <code class="docutils literal notranslate"><span class="pre">collab_threshold</span></code></p></li>
+<li><p><strong>Returns</strong>: Summary by group, flagged data, text, or a cleaned dataset</p></li>
+<li><p><strong>Privacy</strong>: Person-level flags are identifying; aggregate before sharing.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">check_query()</span></code>, <code class="docutils literal notranslate"><span class="pre">hrvar_count_all()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">identify_nkw()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">identify_nkw</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="n">collab_threshold</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"data_summary"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="find-the-date-range-covered-by-a-query">
+<h3>Find the date range covered by a query<a class="headerlink" href="#find-the-date-range-covered-by-a-query" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.extract_date_range.html"><code class="docutils literal notranslate"><span class="pre">extract_date_range()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: what period does this data cover; find the first and last week; describe the date range</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">MetricDate</span></code></p></li>
+<li><p><strong>Returns</strong>: Single-row table or descriptive text</p></li>
+<li><p><strong>Privacy</strong>: Date ranges are not identifying.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">identify_datefreq()</span></code>, <code class="docutils literal notranslate"><span class="pre">check_query()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">extract_date_range()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">extract_date_range</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"text"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="determine-whether-data-is-daily-weekly-or-monthly">
+<h3>Determine whether data is daily, weekly, or monthly<a class="headerlink" href="#determine-whether-data-is-daily-weekly-or-monthly" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.identify_daterange.html"><code class="docutils literal notranslate"><span class="pre">identify_datefreq()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: is this data weekly or daily; check the date granularity; identify the query interval</p></li>
+<li><p><strong>Input</strong>: Date column</p></li>
+<li><p><strong>Columns</strong>: fixed: <code class="docutils literal notranslate"><span class="pre">MetricDate</span></code></p></li>
+<li><p><strong>Returns</strong>: One of daily, weekly, or monthly</p></li>
+<li><p><strong>Privacy</strong>: Date frequency is not identifying.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">extract_date_range()</span></code>, <code class="docutils literal notranslate"><span class="pre">check_query()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">identify_datefreq()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">identify_datefreq</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">()[</span><span class="s2">"MetricDate"</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="find-which-columns-are-organizational-attributes">
+<h3>Find which columns are organizational attributes<a class="headerlink" href="#find-which-columns-are-organizational-attributes" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.extract_hr.html"><code class="docutils literal notranslate"><span class="pre">extract_hr()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: which columns can I group by; list HR attributes; suggest grouping variables</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: none</p></li>
+<li><p><strong>Returns</strong>: Printed names, a filtered DataFrame, or a list of column names</p></li>
+<li><p><strong>Privacy</strong>: Attribute names only; values are not returned with return_type=”names”.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">hrvar_count_all()</span></code>, <code class="docutils literal notranslate"><span class="pre">check_query()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">extract_hr()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">extract_hr</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"suggestion"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="check-that-required-columns-exist-before-running-an-analysis">
+<h3>Check that required columns exist before running an analysis<a class="headerlink" href="#check-that-required-columns-exist-before-running-an-analysis" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.check_inputs.html"><code class="docutils literal notranslate"><span class="pre">check_inputs()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: verify required columns are present; fail early if a column is missing; validate inputs before analysis</p></li>
+<li><p><strong>Input</strong>: Any DataFrame</p></li>
+<li><p><strong>Columns</strong>: selected: <code class="docutils literal notranslate"><span class="pre">requirements</span></code></p></li>
+<li><p><strong>Returns</strong>: Nothing when all required columns are present</p></li>
+<li><p><strong>Privacy</strong>: No data values are returned.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">check_query()</span></code>, <code class="docutils literal notranslate"><span class="pre">extract_hr()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">check_inputs()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">check_inputs</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">(),</span> <span class="p">[</span><span class="s2">"PersonId"</span><span class="p">,</span> <span class="s2">"MetricDate"</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="analyze-collaboration-between-groups">
+<h3>Analyze collaboration between groups<a class="headerlink" href="#analyze-collaboration-between-groups" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.network_g2g.html"><code class="docutils literal notranslate"><span class="pre">network_g2g()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: show collaboration across organizations; build a group-to-group network; which teams work together</p></li>
+<li><p><strong>Input</strong>: Group-to-group query</p></li>
+<li><p><strong>Columns</strong>: selected: <code class="docutils literal notranslate"><span class="pre">primary</span></code>, <code class="docutils literal notranslate"><span class="pre">secondary</span></code>, <code class="docutils literal notranslate"><span class="pre">metric</span></code></p></li>
+<li><p><strong>Returns</strong>: Network plot, interaction matrix, long-format data, or an igraph object</p></li>
+<li><p><strong>Privacy</strong>: Group-level flows can be small; apply disclosure policy before sharing.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">network_summary()</span></code>, <code class="docutils literal notranslate"><span class="pre">load_g2g_data()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">network_g2g()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">network_g2g</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_g2g_data</span><span class="p">(),</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"table"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="analyze-a-person-to-person-collaboration-network">
+<h3>Analyze a person-to-person collaboration network<a class="headerlink" href="#analyze-a-person-to-person-collaboration-network" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.network_p2p.html"><code class="docutils literal notranslate"><span class="pre">network_p2p()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: build a person network; find network communities; visualize how individuals collaborate</p></li>
+<li><p><strong>Input</strong>: Person-to-person query</p></li>
+<li><p><strong>Columns</strong>: selected: <code class="docutils literal notranslate"><span class="pre">hrvar</span></code>, <code class="docutils literal notranslate"><span class="pre">community</span></code>, <code class="docutils literal notranslate"><span class="pre">centrality</span></code></p></li>
+<li><p><strong>Returns</strong>: Plot, PDF plot, table, node data, Sankey chart, or an igraph object</p></li>
+<li><p><strong>Privacy</strong>: Network outputs can identify individuals; apply organizational privacy and disclosure policy.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">network_summary()</span></code>, <code class="docutils literal notranslate"><span class="pre">p2p_data_sim()</span></code>, <code class="docutils literal notranslate"><span class="pre">create_sankey()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">network_p2p()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">network_p2p</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">p2p_data_sim</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"network"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="summarize-centrality-for-a-network">
+<h3>Summarize centrality for a network<a class="headerlink" href="#summarize-centrality-for-a-network" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.network_summary.html"><code class="docutils literal notranslate"><span class="pre">network_summary()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: calculate network centrality; who is most connected; summarize node statistics</p></li>
+<li><p><strong>Input</strong>: igraph network object</p></li>
+<li><p><strong>Columns</strong>: selected: <code class="docutils literal notranslate"><span class="pre">hrvar</span></code></p></li>
+<li><p><strong>Returns</strong>: Centrality table, grouped summary, or plot</p></li>
+<li><p><strong>Privacy</strong>: Node-level centrality is identifying; aggregate before sharing.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">network_p2p()</span></code>, <code class="docutils literal notranslate"><span class="pre">network_g2g()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">network_summary()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">network_summary</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">network_p2p</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">p2p_data_sim</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"network"</span><span class="p">),</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"table"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="simulate-a-person-to-person-network-for-testing">
+<h3>Simulate a person-to-person network for testing<a class="headerlink" href="#simulate-a-person-to-person-network-for-testing" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.p2p_data_sim.html"><code class="docutils literal notranslate"><span class="pre">p2p_data_sim()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: generate sample network data; simulate a collaboration network; create test data for network analysis</p></li>
+<li><p><strong>Input</strong>: Simulation parameters</p></li>
+<li><p><strong>Columns</strong>: none</p></li>
+<li><p><strong>Returns</strong>: Simulated person-to-person DataFrame</p></li>
+<li><p><strong>Privacy</strong>: Simulated data contains no real people.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">network_p2p()</span></code>, <code class="docutils literal notranslate"><span class="pre">load_p2p_data()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">p2p_data_sim()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">p2p_data_sim</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="load-bundled-sample-datasets">
+<h3>Load bundled sample datasets<a class="headerlink" href="#load-bundled-sample-datasets" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.pq_data.html"><code class="docutils literal notranslate"><span class="pre">load_pq_data()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: get sample Viva Insights data; load demo data to try the package; find example datasets</p></li>
+<li><p><strong>Input</strong>: None</p></li>
+<li><p><strong>Columns</strong>: none</p></li>
+<li><p><strong>Returns</strong>: Sample DataFrame</p></li>
+<li><p><strong>Privacy</strong>: Sample data is de-identified and safe to share.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">load_mt_data()</span></code>, <code class="docutils literal notranslate"><span class="pre">load_g2g_data()</span></code>, <code class="docutils literal notranslate"><span class="pre">load_p2p_data()</span></code>, <code class="docutils literal notranslate"><span class="pre">load_p2g_data()</span></code>, <code class="docutils literal notranslate"><span class="pre">p2p_data_sim()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">pq_data()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="add-a-constant-column-to-analyse-the-whole-population">
+<h3>Add a constant column to analyse the whole population<a class="headerlink" href="#add-a-constant-column-to-analyse-the-whole-population" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.totals_col.html"><code class="docutils literal notranslate"><span class="pre">totals_col()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: analyse everyone without grouping; add a total column; compare the organization against itself</p></li>
+<li><p><strong>Input</strong>: Person-period query</p></li>
+<li><p><strong>Columns</strong>: selected: <code class="docutils literal notranslate"><span class="pre">total_value</span></code></p></li>
+<li><p><strong>Returns</strong>: DataFrame with an added constant column</p></li>
+<li><p><strong>Privacy</strong>: Adds a constant column only.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">create_bar()</span></code>, <code class="docutils literal notranslate"><span class="pre">hrvar_count()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">totals_col()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">totals_col</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">load_pq_data</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="convert-column-names-into-readable-labels">
+<h3>Convert column names into readable labels<a class="headerlink" href="#convert-column-names-into-readable-labels" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.us_to_space.html"><code class="docutils literal notranslate"><span class="pre">us_to_space()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: make metric names readable; replace underscores in labels; format a column name for a chart title</p></li>
+<li><p><strong>Input</strong>: Column name</p></li>
+<li><p><strong>Columns</strong>: none</p></li>
+<li><p><strong>Returns</strong>: Formatted string</p></li>
+<li><p><strong>Privacy</strong>: Formats text only.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">create_bar()</span></code>, <code class="docutils literal notranslate"><span class="pre">export()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">us_to_space()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">us_to_space</span><span class="p">(</span><span class="s2">"Collaboration_hours"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="save-or-copy-an-analysis-output">
+<h3>Save or copy an analysis output<a class="headerlink" href="#save-or-copy-an-analysis-output" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Function</strong>: <a class="reference external" href="https://microsoft.github.io/vivainsights-py/_api/vivainsights.export.html"><code class="docutils literal notranslate"><span class="pre">export()</span></code></a></p></li>
+<li><p><strong>Use when</strong>: export a table to CSV; save a plot to file; copy results to the clipboard</p></li>
+<li><p><strong>Input</strong>: DataFrame or figure</p></li>
+<li><p><strong>Columns</strong>: none</p></li>
+<li><p><strong>Returns</strong>: Writes a file or displays the object</p></li>
+<li><p><strong>Privacy</strong>: Exported files inherit the disclosure properties of the analysis output.</p></li>
+<li><p><strong>Related</strong>: <code class="docutils literal notranslate"><span class="pre">create_bar()</span></code>, <code class="docutils literal notranslate"><span class="pre">create_rank()</span></code></p></li>
+<li><p><strong>R counterpart</strong>: <code class="docutils literal notranslate"><span class="pre">export()</span></code> (partial)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">vivainsights</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vi</span>
+
+<span class="n">vi</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">summary_table</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s2">"csv"</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s2">"summary"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="r-python-parity.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Moving between R and Python</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="analyst-guide.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Analyst Guide</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, Microsoft Corporation
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Find the right function</a><ul>
+<li><a class="reference internal" href="#task-index">Task index</a></li>
+<li><a class="reference internal" href="#workflow-details">Workflow details</a><ul>
+<li><a class="reference internal" href="#import-a-viva-insights-query-export">Import a Viva Insights query export</a></li>
+<li><a class="reference internal" href="#validate-a-loaded-query-before-analysis">Validate a loaded query before analysis</a></li>
+<li><a class="reference internal" href="#summarize-organizational-attributes-and-their-data-quality">Summarize organizational attributes and their data quality</a></li>
+<li><a class="reference internal" href="#count-distinct-people-in-each-group">Count distinct people in each group</a></li>
+<li><a class="reference internal" href="#compare-the-average-of-a-metric-across-groups">Compare the average of a metric across groups</a></li>
+<li><a class="reference internal" href="#compare-the-distribution-of-a-metric-across-groups">Compare the distribution of a metric across groups</a></li>
+<li><a class="reference internal" href="#rank-groups-on-a-metric">Rank groups on a metric</a></li>
+<li><a class="reference internal" href="#track-a-metric-over-time-by-group">Track a metric over time by group</a></li>
+<li><a class="reference internal" href="#show-week-by-week-patterns-for-a-metric">Show week-by-week patterns for a metric</a></li>
+<li><a class="reference internal" href="#scan-several-metrics-across-groups-at-once">Scan several metrics across groups at once</a></li>
+<li><a class="reference internal" href="#compare-two-metrics-across-groups">Compare two metrics across groups</a></li>
+<li><a class="reference internal" href="#profile-groups-across-several-metrics-on-one-chart">Profile groups across several metrics on one chart</a></li>
+<li><a class="reference internal" href="#measure-how-many-people-fall-above-or-below-a-threshold">Measure how many people fall above or below a threshold</a></li>
+<li><a class="reference internal" href="#measure-how-concentrated-a-metric-is-across-the-population">Measure how concentrated a metric is across the population</a></li>
+<li><a class="reference internal" href="#plot-a-summary-table-that-is-already-aggregated">Plot a summary table that is already aggregated</a></li>
+<li><a class="reference internal" href="#visualize-movement-between-two-categorical-states">Visualize movement between two categorical states</a></li>
+<li><a class="reference internal" href="#rank-predictors-of-a-binary-outcome">Rank predictors of a binary outcome</a></li>
+<li><a class="reference internal" href="#calculate-odds-ratios-for-an-outcome">Calculate odds ratios for an outcome</a></li>
+<li><a class="reference internal" href="#measure-association-between-two-metrics">Measure association between two metrics</a></li>
+<li><a class="reference internal" href="#reshape-a-person-query-for-survival-analysis">Reshape a person query for survival analysis</a></li>
+<li><a class="reference internal" href="#estimate-time-until-an-event-occurs">Estimate time until an event occurs</a></li>
+<li><a class="reference internal" href="#segment-people-by-how-consistently-they-use-a-behaviour">Segment people by how consistently they use a behaviour</a></li>
+<li><a class="reference internal" href="#identify-habitual-behaviour-over-a-rolling-window">Identify habitual behaviour over a rolling window</a></li>
+<li><a class="reference internal" href="#identify-people-who-left-or-joined-the-dataset">Identify people who left or joined the dataset</a></li>
+<li><a class="reference internal" href="#summarize-employee-tenure">Summarize employee tenure</a></li>
+<li><a class="reference internal" href="#find-weeks-that-deviate-from-the-norm">Find weeks that deviate from the norm</a></li>
+<li><a class="reference internal" href="#flag-weeks-where-a-person-was-unusually-inactive">Flag weeks where a person was unusually inactive</a></li>
+<li><a class="reference internal" href="#detect-and-remove-holiday-weeks">Detect and remove holiday weeks</a></li>
+<li><a class="reference internal" href="#identify-populations-with-very-low-collaboration">Identify populations with very low collaboration</a></li>
+<li><a class="reference internal" href="#find-the-date-range-covered-by-a-query">Find the date range covered by a query</a></li>
+<li><a class="reference internal" href="#determine-whether-data-is-daily-weekly-or-monthly">Determine whether data is daily, weekly, or monthly</a></li>
+<li><a class="reference internal" href="#find-which-columns-are-organizational-attributes">Find which columns are organizational attributes</a></li>
+<li><a class="reference internal" href="#check-that-required-columns-exist-before-running-an-analysis">Check that required columns exist before running an analysis</a></li>
+<li><a class="reference internal" href="#analyze-collaboration-between-groups">Analyze collaboration between groups</a></li>
+<li><a class="reference internal" href="#analyze-a-person-to-person-collaboration-network">Analyze a person-to-person collaboration network</a></li>
+<li><a class="reference internal" href="#summarize-centrality-for-a-network">Summarize centrality for a network</a></li>
+<li><a class="reference internal" href="#simulate-a-person-to-person-network-for-testing">Simulate a person-to-person network for testing</a></li>
+<li><a class="reference internal" href="#load-bundled-sample-datasets">Load bundled sample datasets</a></li>
+<li><a class="reference internal" href="#add-a-constant-column-to-analyse-the-whole-population">Add a constant column to analyse the whole population</a></li>
+<li><a class="reference internal" href="#convert-column-names-into-readable-labels">Convert column names into readable labels</a></li>
+<li><a class="reference internal" href="#save-or-copy-an-analysis-output">Save or copy an analysis output</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=5bfaad31"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script data-do-not-track="true" data-domains="microsoft.github.io" data-exclude-hash="true" data-exclude-search="true" data-website-id="c621353a-f4f5-4f73-ad75-9317cd1a0401" defer="defer" src="https://ca-umami-prod.lemonglacier-6a5930b7.uksouth.azurecontainerapps.io/script.js"></script>
+    </body>
+</html>
