@@ -19,8 +19,55 @@ def identify_usage_segments(data, metric=None, metric_str=None, version="12w", r
                           threshold=None, width=None, max_window=None, power_thres=None):
     """Segment employees into usage-based groups.
 
-    Classifies employees as Power User, Habitual User, Novice User, Low
-    User, or Non-user based on rolling averages and habit detection.
+    Classifies each person-week as a Power User, Habitual User, Novice
+    User, Low User, or Non-user, based on a rolling weekly average of the
+    target metric and a habit rule counting how many weeks in the rolling
+    window had any activity.  A week counts as an active (qualifying)
+    week when ``target_metric >= 1``.
+
+    **Segment definitions (12-week version)**
+
+    Conditions are evaluated in order, and the first match wins:
+
+    1. **Power User** - had an action in at least 9 of the trailing 12
+       weeks *and* a rolling 12-week weekly average of 15 or more actions.
+    2. **Habitual User** - had an action in at least 9 of the trailing 12
+       weeks, but below the Power User volume threshold.
+    3. **Novice User** - rolling 12-week weekly average of at least 1,
+       without meeting the habit rule.
+    4. **Low User** - some action in the rolling period, but a rolling
+       weekly average below 1, without meeting the habit rule.
+    5. **Non-user** - no actions at all in the rolling period.
+
+    **Segment definitions (4-week version)**
+
+    Identical in structure, but the rolling window is 4 weeks and the
+    habit rule requires an action in all 4 of the trailing 4 weeks:
+
+    1. **Power User** - an action in 4 of the trailing 4 weeks and a
+       rolling 4-week weekly average of 15 or more actions.
+    2. **Habitual User** - an action in 4 of the trailing 4 weeks, below
+       the Power User volume threshold.
+    3. **Novice User** - rolling 4-week weekly average of at least 1,
+       without meeting the habit rule.
+    4. **Low User** - some action in the rolling period, but a rolling
+       weekly average below 1, without meeting the habit rule.
+    5. **Non-user** - no actions in the rolling period.
+
+    Because Power User is evaluated first and requires the habit rule to
+    be met, Power Users are a high-volume subset of habitual users; the
+    "Habitual User" label therefore only covers habitual users who fall
+    below the power threshold.
+
+    **Incomplete histories**
+
+    Rolling averages are computed with ``min_periods=1``, so a person with
+    fewer weeks of data than the window still receives an average based on
+    the weeks available.  The habit rule, by contrast, always requires the
+    configured number of qualifying weeks (9 of 12, or 4 of 4).  Early
+    weeks in a panel and recent entrants can therefore be classified as
+    Novice or Low Users even when their observed activity is high, simply
+    because there is not yet enough history to satisfy the habit rule.
 
     Parameters
     ----------
@@ -33,24 +80,49 @@ def identify_usage_segments(data, metric=None, metric_str=None, version="12w", r
         Provide exactly one of *metric* or *metric_str*.
     version : str or None, default "12w"
         ``"12w"`` for 12-week rolling, ``"4w"`` for 4-week rolling, or
-        ``None`` for custom parameters.
+        ``None`` for custom parameters.  Note that when *return_type* is
+        ``"data"`` both the 12-week and 4-week segments are returned
+        regardless of *version*; *version* selects which column is used
+        for ``"plot"`` and ``"table"``.
     return_type : str, default "data"
         ``"data"`` for a classified DataFrame, ``"plot"`` for a stacked
         bar chart, or ``"table"`` for a summary pivot table.
     threshold : int or None, default None
-        Habit identification threshold (required when ``version=None``).
+        Minimum value of the metric for a week to count as a qualifying
+        week (required when ``version=None``).  The presets use ``1``.
     width : int or None, default None
-        Habit width parameter (required when ``version=None``).
+        Number of qualifying weeks required within the window for the
+        habit rule (required when ``version=None``).  The presets use
+        ``9`` (12-week) and ``4`` (4-week).
     max_window : int or None, default None
-        Habit window parameter (required when ``version=None``).
+        Number of weeks in the rolling window (required when
+        ``version=None``).  The presets use ``12`` and ``4``.
     power_thres : float or None, default None
-        Power-user threshold (required when ``version=None``).
+        Rolling weekly average at or above which a habitual user is
+        classified as a Power User.  Required when ``version=None``.  For
+        the ``"12w"`` and ``"4w"`` presets this is optional and defaults
+        to ``15``; supplying a value overrides the preset threshold for
+        both ``UsageSegments_12w`` and ``UsageSegments_4w``.
 
     Returns
     -------
     pandas.DataFrame or matplotlib.figure.Figure
-        Classified data, a stacked bar chart, or a summary table
-        depending on *return_type*.
+        The output depends on *return_type*:
+
+        - ``"data"``: the input DataFrame with additional columns.  For
+          the presets these are ``target_metric``, ``target_metric_l12w``,
+          ``target_metric_l4w`` (rolling weekly averages), ``IsHabit12w``
+          and ``IsHabit4w`` (booleans for the habit rule), and
+          ``UsageSegments_12w`` and ``UsageSegments_4w`` (the segment
+          labels).  When ``version=None`` the columns are
+          ``target_metric``, ``target_metric_l{max_window}w``,
+          ``IsHabitCustom``, and ``UsageSegments``.
+        - ``"plot"``: a stacked bar chart of the proportion of users in
+          each segment over time.
+        - ``"table"``: a pivot table with one row per ``MetricDate`` and
+          one column per segment (``Non-user``, ``Low User``,
+          ``Novice User``, ``Habitual User``, ``Power User``), where the
+          values are counts of distinct ``PersonId`` values.
 
     Examples
     --------
@@ -71,6 +143,15 @@ def identify_usage_segments(data, metric=None, metric_str=None, version="12w", r
     Use a metric string instead of a column name:
 
     >>> vi.identify_usage_segments(pq_data, metric_str="Emails_sent", version="4w")
+
+    Select the relevant segment column after classification:
+
+    >>> out = vi.identify_usage_segments(pq_data, metric="Emails_sent", version="12w")
+    >>> out[["PersonId", "MetricDate", "UsageSegments_12w"]].head()
+
+    Override the power user threshold on a preset:
+
+    >>> vi.identify_usage_segments(pq_data, metric="Emails_sent", version="12w", power_thres=20)
     """
     if metric is None and metric_str is None:
         raise ValueError("Please provide either a metric or a metric_str.")
@@ -133,6 +214,8 @@ def identify_usage_segments(data, metric=None, metric_str=None, version="12w", r
         
     else:
         # Use existing 12w and 4w logic
+        # `power_thres` is optional for the presets and defaults to 15
+        preset_power_thres = 15 if power_thres is None else power_thres
         data["target_metric_l12w"] = data.groupby("PersonId")["target_metric"].transform(
             lambda x: x.rolling(window=12, min_periods=1).mean()
         )
@@ -154,7 +237,7 @@ def identify_usage_segments(data, metric=None, metric_str=None, version="12w", r
         # Define usage segments
         data["UsageSegments_12w"] = np.select(
             [
-                (data["IsHabit12w"] == True) & (data["target_metric_l12w"] >= 15),
+                (data["IsHabit12w"] == True) & (data["target_metric_l12w"] >= preset_power_thres),
                 (data["IsHabit12w"] == True),
                 (data["target_metric_l12w"] >= 1),
                 (data["target_metric_l12w"] > 0),
@@ -166,7 +249,7 @@ def identify_usage_segments(data, metric=None, metric_str=None, version="12w", r
 
         data["UsageSegments_4w"] = np.select(
             [
-                (data["IsHabit4w"] == True) & (data["target_metric_l4w"] >= 15),
+                (data["IsHabit4w"] == True) & (data["target_metric_l4w"] >= preset_power_thres),
                 (data["IsHabit4w"] == True),
                 (data["target_metric_l4w"] >= 1),
                 (data["target_metric_l4w"] > 0),
@@ -192,10 +275,10 @@ def identify_usage_segments(data, metric=None, metric_str=None, version="12w", r
         # Create summary table with MetricDate as rows and segments as columns
         if version == "12w":
             segment_col = "UsageSegments_12w"
-            print("Usage segments generated with 12-week parameters: threshold=1, width=9, max_window=12, power_thres=15")
+            print(f"Usage segments generated with 12-week parameters: threshold=1, width=9, max_window=12, power_thres={15 if power_thres is None else power_thres}")
         elif version == "4w":
             segment_col = "UsageSegments_4w"
-            print("Usage segments generated with 4-week parameters: threshold=1, width=4, max_window=4, power_thres=15")
+            print(f"Usage segments generated with 4-week parameters: threshold=1, width=4, max_window=4, power_thres={15 if power_thres is None else power_thres}")
         elif version is None:
             segment_col = "UsageSegments"
             # Diagnostic message already printed above
