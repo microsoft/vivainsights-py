@@ -1,0 +1,88 @@
+/* Custom styles for collapsible documentation */
+
+/* Style dropdown headers */
+.sd-dropdown .sd-summary-title {
+    font-weight: 600;
+    font-size: 1.1em;
+}
+
+/* Add hover effects to dropdowns */
+.sd-dropdown .sd-summary-content:hover {
+    background-color: var(--color-background-hover);
+    transition: background-color 0.2s ease;
+}
+
+/* Style function signatures in dropdowns */
+.sd-dropdown .sig {
+    font-family: var(--font-stack-monospace);
+    background-color: var(--color-background-secondary);
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    margin: 0.5rem 0;
+}
+
+/* Compact function documentation */
+.sd-dropdown .py.function {
+    margin-bottom: 1rem;
+}
+
+.sd-dropdown .py.function .sig {
+    margin-bottom: 0.5rem;
+}
+
+/* Style for quick reference tables */
+.function-table .sd-dropdown {
+    margin: 0;
+}
+
+.function-table .sd-dropdown .sd-summary-content {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.9em;
+}
+
+/* Tab styling for better visual separation */
+.sd-tab-set .sd-tab-label {
+    font-weight: 600;
+}
+
+/* Grid card improvements */
+.sd-card-header {
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Icon styling for dropdowns */
+.sd-dropdown .sd-summary-icon {
+    margin-right: 0.5rem;
+}
+
+/* --- Autosummary table normalization --- */
+/* Force all autosummary tables to use consistent column widths */
+table.autosummary {
+    table-layout: fixed;
+    width: 100%;
+}
+
+table.autosummary col:first-child {
+    width: 55%;
+}
+
+table.autosummary col:last-child {
+    width: 45%;
+}
+
+table.autosummary td {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sd-dropdown .sd-summary-title {
+        font-size: 1em;
+    }
+    
+    .sd-grid-item {
+        margin-bottom: 1rem;
+    }
+}
