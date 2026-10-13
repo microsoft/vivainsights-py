@@ -52,25 +52,30 @@ class TestIdentifyUsageSegments(unittest.TestCase):
         self.assertIn('UsageSegments_4w', result.columns)
     
     def test_preset_power_thres_override(self):
-        """Test that power_thres overrides the preset default of 15."""
+        """Test that power_thres overrides the default for both presets."""
+        data = pd.DataFrame({
+            'PersonId': ['P1'] * 12,
+            'MetricDate': pd.date_range('2023-01-01', periods=12, freq='W'),
+            'test_metric': [14] * 12
+        })
         default_result = identify_usage_segments(
-            self.test_data.copy(),
+            data.copy(),
             metric='test_metric',
             version='12w',
             return_type='data'
         )
         override_result = identify_usage_segments(
-            self.test_data.copy(),
+            data.copy(),
             metric='test_metric',
             version='12w',
             return_type='data',
-            power_thres=1
+            power_thres=14
         )
 
-        # A lower power threshold cannot produce fewer Power Users
-        default_power = (default_result['UsageSegments_12w'] == 'Power User').sum()
-        override_power = (override_result['UsageSegments_12w'] == 'Power User').sum()
-        self.assertGreater(override_power, default_power)
+        self.assertEqual(default_result.iloc[-1]['UsageSegments_12w'], 'Habitual User')
+        self.assertEqual(override_result.iloc[-1]['UsageSegments_12w'], 'Power User')
+        self.assertEqual(default_result.iloc[-1]['UsageSegments_4w'], 'Habitual User')
+        self.assertEqual(override_result.iloc[-1]['UsageSegments_4w'], 'Power User')
 
     def test_identify_usage_segments_custom_data(self):
         """Test custom parameters version returns data correctly."""

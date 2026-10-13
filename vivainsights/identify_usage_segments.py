@@ -22,8 +22,10 @@ def identify_usage_segments(data, metric=None, metric_str=None, version="12w", r
     Classifies each person-week as a Power User, Habitual User, Novice
     User, Low User, or Non-user, based on a rolling weekly average of the
     target metric and a habit rule counting how many weeks in the rolling
-    window had any activity.  A week counts as an active (qualifying)
-    week when ``target_metric >= 1``.
+    window had qualifying activity.  In the ``"12w"`` and ``"4w"``
+    presets, a week qualifies when ``target_metric >= 1``.  With
+    ``version=None``, the supplied ``threshold`` determines whether a
+    week qualifies.
 
     **Segment definitions (12-week version)**
 

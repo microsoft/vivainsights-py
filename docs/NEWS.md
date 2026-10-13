@@ -1,3 +1,8 @@
+# Unreleased
+
+- Clarify the 12-week and 4-week usage-segment definitions and allow preset
+  Power User thresholds to be overridden.
+
 # Version 0.4.3
 
 - Added a task-oriented function discovery guide and an agent-readable
