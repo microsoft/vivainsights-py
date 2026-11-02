@@ -1,0 +1,8 @@
+﻿vivainsights.xicor
+==================
+
+.. automodule:: vivainsights.xicor
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
